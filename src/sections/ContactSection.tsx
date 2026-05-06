@@ -12,19 +12,12 @@ const socialLinks = [
 export default function ContactSection() {
   return (
     <section id="contact" className="relative py-24 md:py-32 px-6 md:px-12 overflow-hidden">
-      {/* GTA-style background image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: 'url(/images/bg-contact.jpg)' }}
-      />
-      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/bg-contact.jpg)' }} />
       <div className="absolute inset-0 bg-[#1B2838]/75" />
 
       <div className="relative z-10 max-w-7xl mx-auto">
         <ScrollReveal>
-          <p className="text-xs uppercase tracking-[0.08em] text-[#C9B99A] mb-12">
-            CONNECT
-          </p>
+          <p className="text-xs uppercase tracking-[0.08em] text-[#C9B99A] mb-12">CONNECT</p>
         </ScrollReveal>
 
         <ScrollReveal delay={0.15}>
@@ -40,24 +33,16 @@ export default function ContactSection() {
         </ScrollReveal>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-          {/* Contact Info Panel */}
           <ScrollReveal delay={0.35} direction="left" distance={30}>
-            <div
-              className="bg-[rgba(27,40,56,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.3)] p-6"
-              style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}
-            >
+            <div className="bg-[rgba(27,40,56,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.3)] p-6" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
               <div className="flex gap-1 mb-3">
-                {[0, 1, 2].map(i => (
-                  <div key={i} className="w-[3px] h-[3px] rounded-full bg-[#FFB840]" />
-                ))}
+                {[0, 1, 2].map(i => <div key={i} className="w-[3px] h-[3px] rounded-full bg-[#FFB840]" />)}
               </div>
-              <p className="text-xs uppercase tracking-[0.08em] text-[#FFB840] mb-6">
-                CONTACT INFO
-              </p>
+              <p className="text-xs uppercase tracking-[0.08em] text-[#FFB840] mb-6">CONTACT INFO</p>
               <div className="space-y-4 font-mono-hud text-sm">
                 <div>
                   <span className="text-[#FF9500] text-xs uppercase">EMAIL:</span>
-                  <p className="text-[#F0EBE1] mt-1">thekingstake@email.com</p>
+                  <p className="text-[#F0EBE1] mt-1">aasotumediagroup@gmail.com</p>
                 </div>
                 <div>
                   <span className="text-[#FF9500] text-xs uppercase">PHONE:</span>
@@ -71,36 +56,20 @@ export default function ContactSection() {
             </div>
           </ScrollReveal>
 
-          {/* Social Media Panel */}
           <ScrollReveal delay={0.35} direction="right" distance={30}>
-            <div
-              className="bg-[rgba(27,40,56,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.3)] p-6"
-              style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}
-            >
+            <div className="bg-[rgba(27,40,56,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.3)] p-6" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
               <div className="flex gap-1 mb-3">
-                {[0, 1, 2].map(i => (
-                  <div key={i} className="w-[3px] h-[3px] rounded-full bg-[#FFB840]" />
-                ))}
+                {[0, 1, 2].map(i => <div key={i} className="w-[3px] h-[3px] rounded-full bg-[#FFB840]" />)}
               </div>
-              <p className="text-xs uppercase tracking-[0.08em] text-[#FFB840] mb-6">
-                FOLLOW THE MOVEMENT
-              </p>
+              <p className="text-xs uppercase tracking-[0.08em] text-[#FFB840] mb-6">FOLLOW THE MOVEMENT</p>
               <div className="space-y-4">
                 {socialLinks.map(social => {
                   const Icon = social.icon
                   return (
-                    <a
-                      key={social.label}
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-3 group cursor-pointer"
-                    >
+                    <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group cursor-pointer">
                       <Icon size={18} className="text-[#C9B99A] group-hover:text-[#FF9500] transition-colors" />
                       <div>
-                        <p className="text-base text-[#F0EBE1] group-hover:text-[#FF9500] transition-colors">
-                          {social.label}
-                        </p>
+                        <p className="text-base text-[#F0EBE1] group-hover:text-[#FF9500] transition-colors">{social.label}</p>
                         <p className="text-xs text-[#C9B99A]">{social.followers}</p>
                       </div>
                       <ArrowRight size={14} className="text-[#FF9500] ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -109,12 +78,7 @@ export default function ContactSection() {
                 })}
               </div>
               <div className="mt-6 pt-4 border-t border-[rgba(240,235,225,0.08)]">
-                <a
-                  href="https://www.facebook.com/thekingstake"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-mono-hud text-xs text-[#FF9500] hover:underline cursor-pointer"
-                >
+                <a href="https://www.facebook.com/thekingstake" target="_blank" rel="noopener noreferrer" className="font-mono-hud text-xs text-[#FF9500] hover:underline cursor-pointer">
                   www.facebook.com/thekingstake
                 </a>
               </div>
@@ -122,11 +86,10 @@ export default function ContactSection() {
           </ScrollReveal>
         </div>
 
-        {/* Primary CTA */}
         <ScrollReveal delay={0.5} className="flex justify-center mt-12">
           <CTAButton
             size="large"
-            onClick={() => window.location.href = 'mailto:thekingstake@email.com'}
+            onClick={() => window.location.href = 'mailto:aasotumediagroup@gmail.com'}
           >
             GET IN TOUCH
           </CTAButton>

@@ -1,18 +1,24 @@
+import { Routes, Route, useLocation } from 'react-router'
 import { useEffect, useRef, useCallback, useState } from 'react'
 import Lenis from 'lenis'
 import Navigation from './components/Navigation'
 import MenuOverlay from './components/MenuOverlay'
 import Footer from './components/Footer'
 import CustomCursor from './components/CustomCursor'
-import HeroSection from './sections/HeroSection'
-import AboutSection from './sections/AboutSection'
-import ServicesSection from './sections/ServicesSection'
-import MarqueeDivider from './components/MarqueeDivider'
-import LegalHubSection from './sections/LegalHubSection'
-import BlogPreviewSection from './sections/BlogPreviewSection'
-import ContactSection from './sections/ContactSection'
+import HomePage from './pages/Home'
+import BlogPage from './pages/BlogPage'
+import BlogPostPage from './pages/BlogPostPage'
+import ServiceDetailPage from './pages/ServiceDetailPage'
+import LegalHubPage from './pages/LegalHubPage'
+import LegalFormPage from './pages/LegalFormPage'
+import AdminDashboard from './pages/AdminDashboard'
+import AdminBlog from './pages/AdminBlog'
+import AdminServices from './pages/AdminServices'
+import AdminLegal from './pages/AdminLegal'
+import Login from './pages/Login'
+import NotFound from './pages/NotFound'
 
-function App() {
+function AppLayout({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const lenisRef = useRef<Lenis | null>(null)
 
@@ -30,50 +36,61 @@ function App() {
     }
     requestAnimationFrame(raf)
 
-    return () => {
-      lenis.destroy()
-    }
+    return () => { lenis.destroy() }
   }, [])
 
   const scrollToSection = useCallback((id: string) => {
     setMenuOpen(false)
     setTimeout(() => {
       const el = document.getElementById(id)
-      if (el) {
-        lenisRef.current?.scrollTo(el, { offset: -64 })
-      }
+      if (el) lenisRef.current?.scrollTo(el, { offset: -64 })
     }, menuOpen ? 400 : 0)
   }, [menuOpen])
 
   return (
-    <div className="relative min-h-screen">
+    <>
       <CustomCursor />
-      <Navigation
-        onMenuToggle={() => setMenuOpen(true)}
-        onNavClick={scrollToSection}
-      />
-      <MenuOverlay
-        isOpen={menuOpen}
-        onClose={() => setMenuOpen(false)}
-        onNavClick={scrollToSection}
-      />
-      <main>
-        <HeroSection onExploreClick={() => scrollToSection('about')} />
-        <AboutSection />
-        <ServicesSection />
-        <MarqueeDivider
-          text="#TheKingsTake — The People's Voice — AASOTU Media Group — Advocacy. Truth. Justice."
-        />
-        <LegalHubSection />
-        <BlogPreviewSection />
-        <MarqueeDivider
-          text="#TheKingsTake — Justice. Truth. Power. — 12,000 Strong and Growing — The People's Voice"
-        />
-        <ContactSection />
-      </main>
+      <Navigation onMenuToggle={() => setMenuOpen(true)} onNavClick={scrollToSection} />
+      <MenuOverlay isOpen={menuOpen} onClose={() => setMenuOpen(false)} onNavClick={scrollToSection} />
+      {children}
       <Footer onNavClick={scrollToSection} />
-    </div>
+    </>
   )
+}
+
+function AppRoutes() {
+  const location = useLocation()
+  const isLoginPage = location.pathname === '/login'
+
+  if (isLoginPage) {
+    return (
+      <Routes>
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    )
+  }
+
+  return (
+    <AppLayout>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/blog" element={<BlogPage />} />
+        <Route path="/blog/:slug" element={<BlogPostPage />} />
+        <Route path="/services/:slug" element={<ServiceDetailPage />} />
+        <Route path="/legal" element={<LegalHubPage />} />
+        <Route path="/legal/:slug" element={<LegalFormPage />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/blog" element={<AdminBlog />} />
+        <Route path="/admin/services" element={<AdminServices />} />
+        <Route path="/admin/legal" element={<AdminLegal />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </AppLayout>
+  )
+}
+
+function App() {
+  return <AppRoutes />
 }
 
 export default App

@@ -1,14 +1,21 @@
 import { authRouter } from "./auth-router";
+import { blogRouter } from "./blog-router";
+import { serviceRouter } from "./service-router";
+import { bookingRouter } from "./booking-router";
+import { legalRouter } from "./legal-router";
+import { stripeRouter } from "./stripe-router";
+import { aiRouter } from "./ai-router";
 import { createRouter, publicQuery } from "./middleware";
 
 export const appRouter = createRouter({
   ping: publicQuery.query(() => ({ ok: true, ts: Date.now() })),
   auth: authRouter,
-
-  // TODO: add feature routers here, e.g.
-  // todo: createRouter({
-  //   list: publicQuery.query(() => findTodos()),
-  // }),
+  blog: blogRouter,
+  service: serviceRouter,
+  booking: bookingRouter,
+  legal: legalRouter,
+  stripe: stripeRouter,
+  ai: aiRouter,
 });
 
 export type AppRouter = typeof appRouter;
