@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TheKingsTake | AI Courtroom Simulator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #0a0a0a;
+            --black-lighter: #111111;
+            --white: #f5f5f5;
+            --gray: #888888;
+            --gray-dark: #444444;
+            --accent: #ff3b3b;
+            --accent-orange: #ff6b1a;
+            --accent-gold: #d4a017;
+            --green: #4caf50;
+            --panel-bg: rgba(255,255,255,0.03);
+            --border: rgba(255,255,255,0.08);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--black);
+            color: var(--white);
+            line-height: 1.7;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        .mono { font-family: 'IBM Plex Mono', monospace; }
+        .oswald { font-family: 'Oswald', sans-serif; }
+
+        /* ===== HERO ===== */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 24px 40px;
+            overflow: hidden;
+            text-align: center;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(212,160,23,0.08) 0%, transparent 70%),
+                        radial-gradient(ellipse 60% 40% at 80% 20%, rgba(255,59,59,0.06) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        .hero-tag {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--accent-gold);
+            border: 1px solid rgba(212,160,23,0.3);
+            padding: 8px 20px;
+            margin-bottom: 28px;
+            background: rgba(212,160,23,0.05);
+        }
+        .hero h1 {
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(32px, 8vw, 48px);
+            font-weight: 700;
+            line-height: 1.05;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+            margin-bottom: 16px;
+        }
+        .hero h1 span {
+            display: block;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-subtitle {
+            font-size: 15px;
+            color: var(--gray);
+            max-width: 320px;
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+        .hero-visual {
+            width: 100%;
+            max-width: 340px;
+            aspect-ratio: 16/10;
+            border: 1px solid var(--border);
+            background: var(--panel-bg);
+            margin-bottom: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-visual::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(212,160,23,0.05) 0%, transparent 50%, rgba(255,59,59,0.05) 100%);
+        }
+        .courtroom-scene {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 12px;
+        }
+        .bench { width: 80%; height: 30%; background: linear-gradient(180deg, #1a1008 0%, #0d0804 100%); border-top: 2px solid var(--accent-gold); position: relative; }
+        .judge-seat { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 40px; height: 25px; background: #2a1a0a; border: 1px solid var(--accent-gold); }
+        .judge { position: absolute; top: -42px; left: 50%; transform: translateX(-50%); width: 24px; height: 24px; border-radius: 50%; background: var(--accent-gold); opacity: 0.8; }
+        .witness-box { position: absolute; bottom: 0; left: 10%; width: 18%; height: 55%; background: rgba(255,255,255,0.02); border: 1px solid rgba(212,160,23,0.2); border-bottom: none; }
+        .defense-table { position: absolute; bottom: 0; right: 8%; width: 28%; height: 25%; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,59,59,0.2); border-bottom: none; }
+        .prosecution-table { position: absolute; bottom: 0; left: 32%; width: 28%; height: 25%; background: rgba(255,255,255,0.02); border: 1px solid rgba(76,175,80,0.2); border-bottom: none; }
+        .hud-line { position: absolute; top: 8px; left: 8px; right: 8px; height: 1px; background: linear-gradient(90deg, transparent, var(--accent-gold), transparent); opacity: 0.4; }
+        .hud-corner { position: absolute; width: 12px; height: 12px; border-color: var(--accent-gold); border-style: solid; opacity: 0.4; }
+        .hud-corner.tl { top: 4px; left: 4px; border-width: 1px 0 0 1px; }
+        .hud-corner.tr { top: 4px; right: 4px; border-width: 1px 1px 0 0; }
+        .hud-corner.bl { bottom: 4px; left: 4px; border-width: 0 0 1px 1px; }
+        .hud-corner.br { bottom: 4px; right: 4px; border-width: 0 1px 1px 0; }
+        .status-label {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 8px;
+            color: var(--green);
+            letter-spacing: 1px;
+        }
+        .scroll-indicator {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: var(--gray);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+        /* ===== SECTIONS ===== */
+        section { padding: 48px 24px; position: relative; }
+        .section-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent-gold);
+            margin-bottom: 12px;
+        }
+        .section-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(24px, 6vw, 32px);
+            font-weight: 600;
+            line-height: 1.15;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+        .section-body {
+            font-size: 14px;
+            color: var(--gray);
+            line-height: 1.75;
+            margin-bottom: 20px;
+        }
+        .section-body strong { color: var(--white); font-weight: 600; }
+
+        /* ===== PANELS ===== */
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            padding: 20px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--accent-gold), var(--accent));
+        }
+        .panel-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .panel-icon {
+            width: 28px;
+            height: 28px;
+            background: rgba(212,160,23,0.1);
+            border: 1px solid rgba(212,160,23,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        .panel-text {
+            font-size: 13px;
+            color: var(--gray);
+            line-height: 1.7;
+        }
+
+        /* ===== FEATURE GRID ===== */
+        .feature-list { display: flex; flex-direction: column; gap: 12px; }
+        .feature-item {
+            display: flex;
+            gap: 14px;
+            padding: 16px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+        }
+        .feature-number {
+            font-family: 'Oswald', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--accent-gold);
+            opacity: 0.6;
+            line-height: 1;
+            min-width: 36px;
+        }
+        .feature-title { font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 4px; }
+        .feature-desc { font-size: 12px; color: var(--gray); line-height: 1.6; }
+
+        /* ===== STEPS ===== */
+        .step-flow { display: flex; flex-direction: column; gap: 0; position: relative; }
+        .step-flow::before {
+            content: '';
+            position: absolute;
+            left: 19px;
+            top: 28px;
+            bottom: 28px;
+            width: 1px;
+            background: linear-gradient(180deg, var(--accent-gold), var(--accent));
+            opacity: 0.3;
+        }
+        .step {
+            display: flex;
+            gap: 16px;
+            padding: 16px 0;
+            position: relative;
+        }
+        .step-badge {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--black-lighter);
+            border: 2px solid var(--accent-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Oswald', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent-gold);
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .step-content h4 { font-size: 14px; font-weight: 600; color: var(--white); margin-bottom: 4px; }
+        .step-content p { font-size: 12px; color: var(--gray); line-height: 1.6; }
+
+        /* ===== UPL SECTION ===== */
+        .upl-banner {
+            background: linear-gradient(135deg, rgba(76,175,80,0.08) 0%, rgba(76,175,80,0.02) 100%);
+            border: 1px solid rgba(76,175,80,0.2);
+            padding: 20px;
+            margin: 24px 0;
+        }
+        .upl-banner .panel-title { color: var(--green); }
+        .upl-list { list-style: none; padding: 0; }
+        .upl-list li {
+            font-size: 12px;
+            color: var(--gray);
+            padding: 6px 0;
+            padding-left: 20px;
+            position: relative;
+            line-height: 1.6;
+        }
+        .upl-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--green);
+            font-weight: 700;
+        }
+        .upl-disclaimer {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            color: var(--gray-dark);
+            background: rgba(0,0,0,0.3);
+            padding: 12px;
+            border-left: 2px solid var(--green);
+            margin-top: 16px;
+            line-height: 1.8;
+        }
+
+        /* ===== GAME FRAMEWORK ===== */
+        .game-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, rgba(212,160,23,0.1), rgba(255,59,59,0.05));
+            border: 1px solid rgba(212,160,23,0.3);
+            padding: 10px 16px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent-gold);
+            margin-bottom: 20px;
+        }
+
+        /* ===== PRICING ===== */
+        .pricing-grid { display: flex; flex-direction: column; gap: 12px; }
+        .pricing-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            padding: 24px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .pricing-card.featured {
+            border-color: rgba(212,160,23,0.4);
+            background: linear-gradient(180deg, rgba(212,160,23,0.05) 0%, var(--panel-bg) 30%);
+        }
+        .pricing-card.featured::before {
+            content: 'MOST POPULAR';
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--accent-gold);
+            color: var(--black);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 8px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            padding: 4px 10px;
+        }
+        .pricing-tier { font-family: 'Oswald', sans-serif; font-size: 18px; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
+        .pricing-price { font-family: 'Oswald', sans-serif; font-size: 36px; font-weight: 700; color: var(--accent-gold); line-height: 1; margin-bottom: 16px; }
+        .pricing-price span { font-size: 14px; color: var(--gray); font-weight: 400; }
+        .pricing-features { list-style: none; padding: 0; margin-bottom: 20px; }
+        .pricing-features li {
+            font-size: 12px;
+            color: var(--gray);
+            padding: 5px 0;
+            padding-left: 16px;
+            position: relative;
+        }
+        .pricing-features li::before { content: '›'; position: absolute; left: 0; color: var(--accent-gold); font-weight: 700; }
+
+        /* ===== NOVEL IMPLICATIONS ===== */
+        .implications-list { display: flex; flex-direction: column; gap: 16px; }
+        .implication-item {
+            padding: 20px;
+            background: var(--panel-bg);
+            border-left: 3px solid var(--accent);
+        }
+        .implication-item.alt { border-left-color: var(--accent-gold); }
+        .implication-item.alt2 { border-left-color: var(--green); }
+        .impl-title { font-family: 'Oswald', sans-serif; font-size: 15px; font-weight: 600; text-transform: uppercase; margin-bottom: 8px; }
+        .impl-text { font-size: 13px; color: var(--gray); line-height: 1.7; }
+        .impl-tag {
+            display: inline-block;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            background: rgba(255,59,59,0.1);
+            border: 1px solid rgba(255,59,59,0.2);
+            color: var(--accent);
+            margin-top: 8px;
+        }
+        .impl-tag.gold { background: rgba(212,160,23,0.1); border-color: rgba(212,160,23,0.2); color: var(--accent-gold); }
+        .impl-tag.green { background: rgba(76,175,80,0.1); border-color: rgba(76,175,80,0.2); color: var(--green); }
+
+        /* ===== CTA ===== */
+        .cta-section {
+            text-align: center;
+            padding: 64px 24px;
+            position: relative;
+        }
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(212,160,23,0.06) 0%, transparent 70%);
+        }
+        .cta-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: clamp(22px, 6vw, 30px);
+            font-weight: 700;
+            text-transform: uppercase;
+            line-height: 1.2;
+            margin-bottom: 12px;
+        }
+        .cta-body { font-size: 14px; color: var(--gray); margin-bottom: 28px; max-width: 300px; margin-left: auto; margin-right: auto; }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 32px;
+            font-family: 'Oswald', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            color: var(--black);
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-orange));
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            max-width: 280px;
+            position: relative;
+            z-index: 1;
+        }
+        .btn-secondary {
+            background: transparent;
+            color: var(--accent-gold);
+            border: 1px solid rgba(212,160,23,0.4);
+            margin-top: 10px;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            padding: 32px 24px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+        .footer-brand { font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+        .footer-copy { font-size: 10px; color: var(--gray-dark); font-family: 'IBM Plex Mono', monospace; }
+        .footer-links { display: flex; justify-content: center; gap: 16px; margin: 12px 0; }
+        .footer-links a { font-size: 11px; color: var(--gray); text-decoration: none; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* ===== ANIMATIONS ===== */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.7s ease forwards;
+        }
+        .fade-in-d1 { animation-delay: 0.15s; }
+        .fade-in-d2 { animation-delay: 0.3s; }
+        .fade-in-d3 { animation-delay: 0.45s; }
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== MARQUEE ===== */
+        .marquee {
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 12px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            margin: 32px 0;
+        }
+        .marquee-inner {
+            display: inline-block;
+            animation: marquee 20s linear infinite;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--gray-dark);
+        }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        /* ===== DIVIDER ===== */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+    <div class="hero-tag fade-in">AASOTU Media Group LLC Presents</div>
+    <h1 class="fade-in fade-in-d1">
+        AI Courtroom<br>
+        <span>Simulator</span>
+    </h1>
+    <p class="hero-subtitle fade-in fade-in-d2">
+        The world's first immersive legal experience that lets you try any case, with any personalities, in a realistic courtroom — without ever stepping into a real courthouse.
+    </p>
+
+    <div class="hero-visual fade-in fade-in-d2">
+        <div class="hud-line"></div>
+        <div class="hud-corner tl"></div>
+        <div class="hud-corner tr"></div>
+        <div class="hud-corner bl"></div>
+        <div class="hud-corner br"></div>
+        <div class="status-label">● LIVE SESSION</div>
+        <div class="courtroom-scene">
+            <div class="witness-box"></div>
+            <div class="prosecution-table"></div>
+            <div class="bench">
+                <div class="judge-seat"></div>
+                <div class="judge"></div>
+            </div>
+            <div class="defense-table"></div>
+        </div>
+    </div>
+
+    <div class="scroll-indicator fade-in fade-in-d3">▼ Scroll to Explore</div>
+</section>
+
+<!-- ===== MARQUEE ===== -->
+<div class="marquee">
+    <div class="marquee-inner">
+        EDUCATIONAL SIMULATION • NOT LEGAL ADVICE • NO ATTORNEY-CLIENT RELATIONSHIP • GAME-BASED LEARNING PLATFORM • EDUCATIONAL SIMULATION • NOT LEGAL ADVICE • NO ATTORNEY-CLIENT RELATIONSHIP • GAME-BASED LEARNING PLATFORM • EDUCATIONAL SIMULATION • NOT LEGAL ADVICE • NO ATTORNEY-CLIENT RELATIONSHIP • GAME-BASED LEARNING PLATFORM •
+    </div>
+</div>
+
+<!-- ===== WHAT IS IT ===== -->
+<section>
+    <div class="game-badge">
+        <span>◆</span> Educational Gaming Platform
+    </div>
+    <div class="section-label">01 / Overview</div>
+    <h2 class="section-title">What Is The<br>AI Courtroom Simulator?</h2>
+    <p class="section-body">
+        The AI Courtroom Simulator is a <strong>first-of-its-kind interactive educational platform</strong> that transforms anyone into a courtroom participant. Using advanced artificial intelligence, the simulator creates realistic legal proceedings complete with dynamic AI-powered personalities — judges, attorneys, witnesses, and jurors — each with distinct behavioral traits, biases, and courtroom styles.
+    </p>
+    <p class="section-body">
+        Think of it as a <strong>"flight simulator for the legal system."</strong> Pilots train in simulators before flying real planes. Law students, pro se litigants, and curious citizens can now train in our simulator before facing a real courtroom.
+    </p>
+
+    <div class="panel">
+        <div class="panel-title"><div class="panel-icon">⚖</div> Legal Positioning</div>
+        <p class="panel-text">
+            This platform is explicitly designed and marketed as an <strong>educational game and simulation tool</strong>. It does not provide legal advice, create attorney-client relationships, or substitute for licensed legal counsel. All outcomes are generated by AI for learning purposes only.
+        </p>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== HOW IT WORKS ===== -->
+<section>
+    <div class="section-label">02 / Process</div>
+    <h2 class="section-title">How It Works</h2>
+    <p class="section-body">Four simple steps to enter the courtroom.</p>
+
+    <div class="step-flow">
+        <div class="step">
+            <div class="step-badge">1</div>
+            <div class="step-content">
+                <h4>Choose Your Case Type</h4>
+                <p>Criminal or civil. Select from templates — assault, custody, contract dispute, eviction, personal injury — or input your own scenario.</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-badge">2</div>
+            <div class="step-content">
+                <h4>Assign Personality Profiles</h4>
+                <p>Pick specific personality types for each role — hostile judge, sympathetic juror, aggressive prosecutor, nervous witness — or let the AI randomize for an unpredictable trial.</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-badge">3</div>
+            <div class="step-content">
+                <h4>Enter the Virtual Courtroom</h4>
+                <p>A fully visual courtroom renders in real-time. Characters speak, object, react, and adapt. The proceeding follows authentic courtroom procedure and rules of evidence.</p>
+            </div>
+        </div>
+        <div class="step">
+            <div class="step-badge">4</div>
+            <div class="step-content">
+                <h4>Learn From the Outcome</h4>
+                <p>Receive detailed feedback on arguments made, evidence presented, and strategic decisions. See how different approaches produce different verdicts.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== KEY FEATURES ===== -->
+<section>
+    <div class="section-label">03 / Capabilities</div>
+    <h2 class="section-title">Platform<br>Capabilities</h2>
+
+    <div class="feature-list">
+        <div class="feature-item">
+            <div class="feature-number">01</div>
+            <div>
+                <div class="feature-title">Criminal Court Simulation</div>
+                <div class="feature-desc">From arraignment to sentencing. Practice DUI defenses, cross-examinations, motion hearings, and closing arguments in a realistic criminal courtroom.</div>
+            </div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-number">02</div>
+            <div>
+                <div class="feature-title">Civil Matter Simulation</div>
+                <div class="feature-desc">Family court, contract disputes, small claims, evictions, personal injury. Experience civil procedure, discovery motions, and bench trials.</div>
+            </div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-number">03</div>
+            <div>
+                <div class="feature-title">Dynamic AI Personalities</div>
+                <div class="feature-desc">Select or randomize personalities — strict judge, lenient judge, hostile witness, credible witness, aggressive attorney, passive attorney. Each session plays out differently.</div>
+            </div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-number">04</div>
+            <div>
+                <div class="feature-title">Visual Courtroom Environment</div>
+                <div class="feature-desc">A rendered courtroom with judge's bench, witness stand, jury box, counsel tables, gallery seating. Characters animate and react in real-time.</div>
+            </div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-number">05</div>
+            <div>
+                <div class="feature-title">Real-Time Adaptation</div>
+                <div class="feature-desc">The AI adjusts proceedings based on your arguments. Object successfully and the judge sustains. Present weak evidence and the jury notices.</div>
+            </div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-number">06</div>
+            <div>
+                <div class="feature-title">Post-Session Analysis</div>
+                <div class="feature-desc">Detailed breakdown of what worked, what didn't, and why the verdict went the way it did. Compare multiple strategy approaches.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== NOVEL IMPLICATIONS ===== -->
+<section>
+    <div class="section-label">04 / Innovation</div>
+    <h2 class="section-title">Why This Is<br>Groundbreaking</h2>
+    <p class="section-body">The AI Courtroom Simulator represents a paradigm shift in how people understand, prepare for, and engage with the legal system. Here is what makes it truly novel.</p>
+
+    <div class="implications-list">
+        <div class="implication-item">
+            <div class="impl-title">Democratizing Courtroom Experience</div>
+            <div class="impl-text">
+                Before this platform, only law students with access to expensive moot court programs or litigants already deep in costly cases could experience a courtroom. Now anyone with a phone can step into a simulated trial, understand procedures, and build confidence — for the price of a meal.
+            </div>
+            <span class="impl-tag">ACCESS & EQUITY</span>
+        </div>
+
+        <div class="implication-item alt">
+            <div class="impl-title">Pro Se Litigant Preparation</div>
+            <div class="impl-text">
+                Every year, millions of people represent themselves in court — often because they cannot afford attorneys. This simulator lets pro se litigants practice their arguments, anticipate opposing counsel tactics, and understand courtroom etiquette before their actual hearing date.
+            </div>
+            <span class="impl-tag gold">PRO SE EMPOWERMENT</span>
+        </div>
+
+        <div class="implication-item alt2">
+            <div class="impl-title">Bias Awareness Training</div>
+            <div class="impl-text">
+                By running the same case with different judge and jury personality profiles, users can observe how implicit bias affects outcomes. A custody case before a "traditionalist" judge versus a "progressive" judge produces starkly different simulations — raising awareness of systemic inequities.
+            </div>
+            <span class="impl-tag green">SYSTEMIC INSIGHT</span>
+        </div>
+
+        <div class="implication-item">
+            <div class="impl-title">Law School Supplement</div>
+            <div class="impl-text">
+                Traditional legal education is theory-heavy and practice-light. This simulator bridges the gap by letting students try cases the week they learn the concepts. A student studying hearsay rules can immediately simulate a trial where objections are sustained or overruled based on evidence quality.
+            </div>
+            <span class="impl-tag">EDUCATIONAL TOOL</span>
+        </div>
+
+        <div class="implication-item alt">
+            <div class="impl-title">Attorney Strategy Testing</div>
+            <div class="impl-text">
+                Licensed attorneys can use the simulator as a sandbox to test opening statements, practice cross-examination strategies, and model jury reactions before the real trial. It becomes a low-risk rehearsal space for high-stakes litigation.
+            </div>
+            <span class="impl-tag gold">PROFESSIONAL TOOL</span>
+        </div>
+
+        <div class="implication-item alt2">
+            <div class="impl-title">Community Legal Literacy</div>
+            <div class="impl-text">
+                Entire communities can use shared simulations to understand how local courts operate, what to expect at their own hearings, and how to navigate the system. This builds collective legal literacy in underserved neighborhoods where court fear is a documented barrier to justice.
+            </div>
+            <span class="impl-tag green">COMMUNITY IMPACT</span>
+        </div>
+
+        <div class="implication-item">
+            <div class="impl-title">Scalable & Ever-Expanding</div>
+            <div class="impl-text">
+                Unlike physical mock trials that require people, space, and scheduling, this simulator runs 24/7 on any device. New case types, updated laws, and fresh personality profiles can be added continuously — making it a living platform that grows with its users.
+            </div>
+            <span class="impl-tag">INFINITE SCALABILITY</span>
+        </div>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== UPL COMPLIANCE ===== -->
+<section>
+    <div class="section-label">05 / Legal Compliance</div>
+    <h2 class="section-title">UPL-Safe<br>By Design</h2>
+    <p class="section-body">
+        <strong>Unauthorized Practice of Law (UPL)</strong> statutes prohibit non-attorneys from providing legal advice or representing others in court. The AI Courtroom Simulator is architected from the ground up to remain firmly outside UPL boundaries.
+    </p>
+
+    <div class="upl-banner">
+        <div class="panel-title">✓ How We Stay Compliant</div>
+        <ul class="upl-list">
+            <li><strong>Educational Game Framework:</strong> Platform is marketed and operates as a simulation game, not a legal service.</li>
+            <li><strong>No Legal Advice Given:</strong> All AI-generated content is labeled "for educational simulation purposes only."</li>
+            <li><strong>No Attorney-Client Relationship:</strong> Users agree to Terms of Service explicitly disclaiming any attorney-client privilege or duty.</li>
+            <li><strong>No Representation:</strong> The simulator does not file documents, appear in court, or communicate with real courts on behalf of users.</li>
+            <li><strong>Prominent Disclaimers:</strong> Every session begins with a mandatory notice: "This is a simulation. Consult a licensed attorney for real legal matters."</li>
+            <li><strong>Peer-Reviewed Content:</strong> All case templates and procedural rules are based on publicly available court rules, not tailored legal counsel.</li>
+            <li><strong>No User Data Sold:</strong> All simulation inputs remain private and are never used to provide "legal guidance."</li>
+        </ul>
+        <div class="upl-disclaimer">
+            DISCLAIMER: The AI Courtroom Simulator is an educational entertainment product. It does not constitute legal advice, does not create an attorney-client relationship, and is not a substitute for consultation with a licensed attorney in your jurisdiction. All simulated outcomes are generated by artificial intelligence for learning purposes and have no bearing on actual legal proceedings. If you have a real legal matter, please contact a licensed attorney.
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-title"><div class="panel-icon">📋</div> Game Classification Standards</div>
+        <p class="panel-text">
+            The platform satisfies the criteria for educational game classification: (1) primary purpose is learning and entertainment, (2) no personalized legal recommendations are provided, (3) outcomes do not affect real-world legal rights or obligations, (4) users do not rely on the platform as a source of legal counsel, and (5) all content is clearly labeled as simulated.
+        </p>
+    </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ===== PRICING ===== -->
+<section>
+    <div class="section-label">06 / Access</div>
+    <h2 class="section-title">Choose Your<br>Access Level</h2>
+
+    <div class="pricing-grid">
+        <div class="pricing-card">
+            <div class="pricing-tier">Observer</div>
+            <div class="pricing-price">$15<span>/month</span></div>
+            <ul class="pricing-features">
+                <li>Watch 5 pre-scripted simulations per month</li>
+                <li>Criminal & civil case library access</li>
+                <li>Basic personality presets</li>
+                <li>Session transcripts</li>
+                <li>Community forum access</li>
+            </ul>
+        </div>
+
+        <div class="pricing-card featured">
+            <div class="pricing-tier">Participant</div>
+            <div class="pricing-price">$29<span>/month</span></div>
+            <ul class="pricing-features">
+                <li>Everything in Observer</li>
+                <li>Create & run your own simulations</li>
+                <li>Custom personality builder</li>
+                <li>Real-time strategy input during trials</li>
+                <li>Post-session analysis & scoring</li>
+                <li>Save & replay past sessions</li>
+                <li>Priority access to new case types</li>
+            </ul>
+        </div>
+
+        <div class="pricing-card">
+            <div class="pricing-tier">Litigator</div>
+            <div class="pricing-price">$49<span>/month</span></div>
+            <ul class="pricing-features">
+                <li>Everything in Participant</li>
+                <li>Unlimited simulations</li>
+                <li>Advanced AI judge with appeal logic</li>
+                <li>Multi-session case progression</li>
+                <li>Export session reports (PDF)</li>
+                <li>Strategy comparison engine</li>
+                <li>Early access to new features</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- ===== MARQUEE ===== -->
+<div class="marquee">
+    <div class="marquee-inner">
+        EDUCATIONAL SIMULATION • NOT LEGAL ADVICE • NO ATTORNEY-CLIENT RELATIONSHIP • GAME-BASED LEARNING PLATFORM • EDUCATIONAL SIMULATION • NOT LEGAL ADVICE • NO ATTORNEY-CLIENT RELATIONSHIP • GAME-BASED LEARNING PLATFORM • EDUCATIONAL SIMULATION • NOT LEGAL ADVICE • NO ATTORNEY-CLIENT RELATIONSHIP • GAME-BASED LEARNING PLATFORM •
+    </div>
+</div>
+
+<!-- ===== CTA ===== -->
+<section class="cta-section">
+    <h2 class="cta-title">The Future of<br>Legal Education<br>Is Here</h2>
+    <p class="cta-body">
+        Be among the first to experience the courtroom before you ever step inside one. Join the waitlist for early access.
+    </p>
+    <button class="btn" onclick="alert('Coming soon! Early access launching Q3 2025.')">Join the Waitlist</button>
+    <button class="btn btn-secondary" onclick="window.scrollTo({top:0,behavior:'smooth'})">Back to Top</button>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+    <div class="footer-brand">#THEKINGSTAKE</div>
+    <div class="footer-links">
+        <a href="#">Book</a>
+        <a href="#">Services</a>
+        <a href="#">Legal Hub</a>
+        <a href="#">Blog</a>
+    </div>
+    <div class="footer-copy">&copy; 2025 AASOTU Media Group LLC. All rights reserved.</div>
+</footer>
+
+</body>
+</html>
