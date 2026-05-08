@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>#TheKingsTake — Action Plan</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a0a0a;
+            color: #f5f5f5;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 100%;
+        }
+        .header {
+            text-align: center;
+            padding: 20px 0 30px;
+            border-bottom: 1px solid rgba(255,149,0,0.2);
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #FF9500;
+            margin-bottom: 6px;
+        }
+        .header p {
+            font-size: 12px;
+            color: #888;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .section { margin-bottom: 28px; }
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #FF9500;
+            margin-bottom: 12px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(255,149,0,0.15);
+        }
+
+        .done { color: #4caf50; }
+        .pending { color: #FF9500; }
+        .todo { color: #ff3b3b; }
+
+        .item {
+            background: rgba(255,255,255,0.03);
+            border-left: 3px solid #444;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        .item.done { border-left-color: #4caf50; }
+        .item.pending { border-left-color: #FF9500; }
+        .item.todo { border-left-color: #ff3b3b; }
+        .item strong { display: block; margin-bottom: 2px; font-size: 14px; }
+        .item small { color: #888; font-size: 11px; }
+
+        .key-box {
+            background: rgba(255,149,0,0.08);
+            border: 1px solid rgba(255,149,0,0.3);
+            padding: 14px;
+            margin: 12px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            word-break: break-all;
+        }
+        .key-box label {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #FF9500;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            text-align: center;
+            font-size: 11px;
+            color: #555;
+        }
+
+        .links a {
+            display: block;
+            color: #FF9500;
+            text-decoration: none;
+            padding: 8px 0;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>#TheKingsTake</h1>
+    <p>Action Plan — Mobile Quick Reference</p>
+</div>
+
+<div class="section">
+    <div class="section-title done">✓ COMPLETE — Site Live</div>
+    <div class="item done">
+        <strong>thekingstake.com</strong>
+        <small>Domain connected, Railway deployed, site loading</small>
+    </div>
+    <div class="item done">
+        <strong>GitHub Repo Pushed</strong>
+        <small>github.com/delanorgnik2025-pixel/TheKingsTake</small>
+    </div>
+    <div class="item done">
+        <strong>Static Content Fixed</strong>
+        <small>Blog (5 posts), Legal Hub (6 forms), Services (6 cards) all render</small>
+    </div>
+    <div class="item done">
+        <strong>Stripe LIVE Keys Connected</strong>
+        <small>Ready to process real payments</small>
+    </div>
+    <div class="item done">
+        <strong>Book Set to Pre-Order</strong>
+        <small>$24.99 — badge says "Pre-Order"</small>
+    </div>
+    <div class="item done">
+        <strong>Eleven Labs Voice Router Built</strong>
+        <small>11 courtroom personas ready — just needs API key</small>
+    </div>
+</div>
+
+<div class="section">
+    <div class="section-title todo">! URGENT — Do Before Launch</div>
+    <div class="item todo">
+        <strong>1. Get Eleven Labs API Key</strong>
+        <small>Go to elevenlabs.io/app/settings/api-keys → copy key starting with "sk_" → add to Railway Variables as ELEVEN_LABS_API_KEY</small>
+    </div>
+    <div class="item todo">
+        <strong>2. Get OpenAI API Key</strong>
+        <small>Go to platform.openai.com/api-keys → create new key → add to Railway as OPENAI_API_KEY</small>
+    </div>
+    <div class="item todo">
+        <strong>3. Generate Fresh GitHub Token</strong>
+        <small>github.com → Settings → Developer settings → Tokens (classic) → check "repo" → copy token → paste to me → I push latest code</small>
+    </div>
+    <div class="item todo">
+        <strong>4. Enable Book Pre-Order Checkout</strong>
+        <small>Stripe checkout button needs wiring — give me token and I'll activate it</small>
+    </div>
+</div>
+
+<div class="section">
+    <div class="section-title pending">○ NEXT PHASE — Growth</div>
+    <div class="item pending">
+        <strong>Write Your First Real Blog Post</strong>
+        <small>Log in as admin → /admin → Blog Manager → Create Post</small>
+    </div>
+    <div class="item pending">
+        <strong>Upload PDF Book for Pre-Orders</strong>
+        <small>When book is ready, add download link to pre-order flow</small>
+    </div>
+    <div class="item pending">
+        <strong>Connect Social Media Links</strong>
+        <small>Update Facebook, Instagram, YouTube URLs in Contact section</small>
+    </div>
+    <div class="item pending">
+        <strong>Test Complete Purchase Flow</strong>
+        <small>Buy your own book to verify Stripe works end-to-end</small>
+    </div>
+</div>
+
+<div class="section">
+    <div class="section-title">★ Key Links</div>
+    <div class="links">
+        <a href="https://thekingstake.com">🌐 thekingstake.com</a>
+        <a href="https://railway.app">🚂 railway.app (deployment)</a>
+        <a href="https://github.com/delanorgnik2025-pixel/TheKingsTake">📁 GitHub Repo</a>
+        <a href="https://dashboard.stripe.com">💳 Stripe Dashboard</a>
+        <a href="https://elevenlabs.io/app/settings/api-keys">🎙️ Eleven Labs API Keys</a>
+        <a href="https://platform.openai.com/api-keys">🤖 OpenAI API Keys</a>
+    </div>
+</div>
+
+<div class="section">
+    <div class="section-title">★ Railway Variables</div>
+    <p style="font-size:12px;color:#888;margin-bottom:12px;">Railway → Project → TheKingsTake service → Variables tab</p>
+    <div class="key-box">
+        <label>STRIPE_PUBLISHABLE_KEY</label>
+        [Already added to Railway Variables]
+    </div>
+    <div class="key-box">
+        <label>STRIPE_SECRET_KEY</label>
+        [Already added to Railway Variables]
+    </div>
+    <div class="key-box" style="border-color:rgba(255,59,59,0.3);background:rgba(255,59,59,0.05);">
+        <label style="color:#ff3b3b;">NEEDS: ELEVEN_LABS_API_KEY</label>
+        Get from elevenlabs.io → paste here
+    </div>
+    <div class="key-box" style="border-color:rgba(255,59,59,0.3);background:rgba(255,59,59,0.05);">
+        <label style="color:#ff3b3b;">NEEDS: OPENAI_API_KEY</label>
+        Get from platform.openai.com → paste here
+    </div>
+</div>
+
+<div class="footer">
+    #TheKingsTake — AASOTU Media Group LLC<br>
+    Last updated: May 8, 2025
+</div>
+
+</body>
+</html>
