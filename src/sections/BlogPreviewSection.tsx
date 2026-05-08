@@ -4,11 +4,21 @@ import { Link } from 'react-router'
 import { ArrowRight } from 'lucide-react'
 import { trpc } from '@/providers/trpc'
 import ScrollReveal from '../components/ScrollReveal'
+import { useMemo } from 'react'
+
+// Static fallback posts — render immediately even if database is empty
+const FALLBACK_POSTS = [
+  { id: 1, slug: "upl-law-traps-black-families", title: "The UPL Law: How It Traps Black Families in the Justice System", excerpt: "The Unauthorized Practice of Law was designed to protect, but it's become a weapon against our communities.", category: "ADVOCACY", coverImage: "/images/blog-post-1.jpg", published: true, featured: true, content: "", createdAt: new Date("2025-01-15") },
+  { id: 2, slug: "5-criminal-motions-to-know", title: "5 Criminal Motions Every Defendant Should Know About", excerpt: "Knowledge is power in the courtroom. These five motions can be the difference between conviction and dismissal.", category: "LEGAL", coverImage: "/images/blog-post-2.jpg", published: true, featured: false, content: "", createdAt: new Date("2025-02-01") },
+  { id: 3, slug: "building-networks-protect-our-own", title: "Building Networks: Why We Must Connect to Protect Our Own", excerpt: "The system works against us when we're divided. Here's why community networks are our strongest defense.", category: "COMMUNITY", coverImage: "/images/blog-post-3.jpg", published: true, featured: false, content: "", createdAt: new Date("2025-02-20") },
+  { id: 4, slug: "from-the-loins-of-the-beast", title: "From the Loins of the Beast: My Journey to #TheKingsTake", excerpt: "How writing 'The African American State of the Union' transformed my understanding of our struggle.", category: "VOICE", coverImage: "/images/blog-post-4.jpg", published: true, featured: false, content: "", createdAt: new Date("2025-03-01") },
+  { id: 5, slug: "know-your-rights-police-encounters", title: "Know Your Rights: What to Do During a Police Encounter", excerpt: "Your constitutional rights don't disappear when a police officer approaches you. Here's exactly what to say and what not to say.", category: "LEGAL", coverImage: "/images/blog-post-2.jpg", published: true, featured: true, content: "", createdAt: new Date("2025-03-15") },
+];
 
 export default function BlogPreviewSection() {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [showHint, setShowHint] = useState(true)
-  const { data: posts } = trpc.blog.list.useQuery({ limit: 10 })
+  const { data: apiPosts } = trpc.blog.list.useQuery({ limit: 10 })
 
   useEffect(() => {
     const el = scrollRef.current
@@ -18,7 +28,11 @@ export default function BlogPreviewSection() {
     return () => el.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const displayPosts = posts?.slice(0, 6) ?? []
+  // Use API data if available, otherwise show static fallback content
+  const displayPosts = useMemo(() => {
+    const posts = apiPosts && apiPosts.length > 0 ? apiPosts : FALLBACK_POSTS;
+    return posts.slice(0, 6);
+  }, [apiPosts]);
 
   return (
     <section id="blog" className="relative py-24 md:py-32 px-6 md:px-12 overflow-hidden">
