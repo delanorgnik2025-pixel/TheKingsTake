@@ -97,7 +97,7 @@ export default function HeroSection() {
               </div>
               {/* Floating badge */}
               <div className="absolute -top-3 -right-3 bg-[#FF9500] text-[#1B2838] text-xs font-bold px-3 py-1 rounded uppercase tracking-wider">
-                Available Now
+                Pre-Order
               </div>
             </div>
           </motion.div>
@@ -146,14 +146,14 @@ export default function HeroSection() {
               transition={{ delay: 0.65, duration: 0.8, ease: [0.16, 1, 0.3, 1] }} 
               className="flex flex-wrap gap-4"
             >
-              {/* PRIMARY CTA — GET THE BOOK */}
+              {/* PRIMARY CTA — PRE-ORDER THE BOOK */}
               <button 
-                onClick={() => alert('Book purchase coming soon! Connect Stripe to enable checkout.')}
+                onClick={() => alert('Pre-orders opening soon! Reserve your copy of The African American State of the Union for $24.99.')}
                 className="inline-flex items-center justify-center gap-2 rounded-full h-14 px-10 text-base bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-['Newsreader'] tracking-[0.02em] font-medium"
                 style={{ boxShadow: '0 4px 20px rgba(255,149,0,0.35)' }}
               >
                 <BookOpen size={20} />
-                Get the Book — $24.99
+                Pre-Order — $24.99
               </button>
               
               {/* SECONDARY — CONTACT */}
