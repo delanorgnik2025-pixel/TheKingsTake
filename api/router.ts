@@ -5,6 +5,7 @@ import { bookingRouter } from "./booking-router";
 import { legalRouter } from "./legal-router";
 import { stripeRouter } from "./stripe-router";
 import { aiRouter } from "./ai-router";
+import { voiceRouter } from "./voice-router";
 import { createRouter, publicQuery } from "./middleware";
 
 export const appRouter = createRouter({
@@ -16,6 +17,7 @@ export const appRouter = createRouter({
   legal: legalRouter,
   stripe: stripeRouter,
   ai: aiRouter,
+  voice: voiceRouter,
 });
 
 export type AppRouter = typeof appRouter;
