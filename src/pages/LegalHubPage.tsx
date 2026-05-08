@@ -46,13 +46,12 @@ export default function LegalHubPage() {
           </p>
         </div>
 
-        {isLoading && (
-          <div className="flex items-center justify-center py-20">
-            <div className="w-8 h-8 border-2 border-[#FF9500] border-t-transparent rounded-full animate-spin" />
-          </div>
-        )}
-
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {(isLoading && forms.length === 0) && (
+            <div className="flex items-center justify-center py-20 col-span-full">
+              <div className="w-8 h-8 border-2 border-[#FF9500] border-t-transparent rounded-full animate-spin" />
+            </div>
+          )}
           {forms?.map((form, i) => (
             <motion.div
               key={form.id}
