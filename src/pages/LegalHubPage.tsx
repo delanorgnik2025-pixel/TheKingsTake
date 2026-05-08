@@ -15,8 +15,8 @@ const FALLBACK_FORMS = [
 ];
 
 export default function LegalHubPage() {
-  const { data: apiForms, isLoading } = trpc.legal.list.useQuery();
-  // Use API data if available, otherwise show static fallback content
+  const { data: apiForms } = trpc.legal.list.useQuery();
+  // Use API data if available, otherwise show static fallback content immediately
   const forms = useMemo(() => (apiForms && apiForms.length > 0 ? apiForms : FALLBACK_FORMS), [apiForms]);
 
   return (
@@ -47,12 +47,7 @@ export default function LegalHubPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {(isLoading && forms.length === 0) && (
-            <div className="flex items-center justify-center py-20 col-span-full">
-              <div className="w-8 h-8 border-2 border-[#FF9500] border-t-transparent rounded-full animate-spin" />
-            </div>
-          )}
-          {forms?.map((form, i) => (
+          {forms.map((form, i) => (
             <motion.div
               key={form.id}
               initial={{ opacity: 0, y: 40 }}

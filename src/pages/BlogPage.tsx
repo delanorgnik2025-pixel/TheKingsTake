@@ -39,8 +39,8 @@ const FALLBACK_POSTS = [
 ];
 
 export default function BlogPage() {
-  const { data: apiPosts, isLoading } = trpc.blog.list.useQuery({ limit: 50 });
-  // Use API data if available, otherwise show static fallback content
+  const { data: apiPosts } = trpc.blog.list.useQuery({ limit: 50 });
+  // Use API data if available, otherwise show static fallback content immediately
   const posts = useMemo(() => (apiPosts && apiPosts.length > 0 ? apiPosts : FALLBACK_POSTS), [apiPosts]);
 
   return (
@@ -68,12 +68,7 @@ export default function BlogPage() {
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {(isLoading && posts.length === 0) && (
-            <div className="flex items-center justify-center py-20 col-span-full">
-              <div className="w-8 h-8 border-2 border-[#FF9500] border-t-transparent rounded-full animate-spin" />
-            </div>
-          )}
-          {posts?.map((post, i) => (
+          {posts.map((post, i) => (
             <motion.article
               key={post.id}
               initial={{ opacity: 0, y: 40 }}
