@@ -67,13 +67,12 @@ export default function BlogPage() {
           Takes, insights, and truth from the frontlines of justice.
         </p>
 
-        {isLoading && (
-          <div className="flex items-center justify-center py-20">
-            <div className="w-8 h-8 border-2 border-[#FF9500] border-t-transparent rounded-full animate-spin" />
-          </div>
-        )}
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {(isLoading && posts.length === 0) && (
+            <div className="flex items-center justify-center py-20 col-span-full">
+              <div className="w-8 h-8 border-2 border-[#FF9500] border-t-transparent rounded-full animate-spin" />
+            </div>
+          )}
           {posts?.map((post, i) => (
             <motion.article
               key={post.id}
