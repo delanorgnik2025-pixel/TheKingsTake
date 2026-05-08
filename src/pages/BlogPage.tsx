@@ -2,9 +2,46 @@ import { trpc } from "@/providers/trpc";
 import { Link } from "react-router";
 import { motion } from "framer-motion";
 import { ArrowLeft, Calendar, Tag } from "lucide-react";
+import { useMemo } from "react";
+
+// Static fallback posts — render immediately even if database is empty
+const FALLBACK_POSTS = [
+  {
+    id: 1, slug: "upl-law-traps-black-families", title: "The UPL Law: How It Traps Black Families in the Justice System",
+    excerpt: "The Unauthorized Practice of Law was designed to protect, but it's become a weapon against our communities. Here's how it works and what you can do about it.",
+    category: "ADVOCACY", coverImage: "/images/blog-post-1.jpg", published: true, featured: true,
+    content: "", createdAt: new Date("2025-01-15"),
+  },
+  {
+    id: 2, slug: "5-criminal-motions-to-know", title: "5 Criminal Motions Every Defendant Should Know About",
+    excerpt: "Knowledge is power in the courtroom. These five motions can be the difference between conviction and dismissal.",
+    category: "LEGAL", coverImage: "/images/blog-post-2.jpg", published: true, featured: false,
+    content: "", createdAt: new Date("2025-02-01"),
+  },
+  {
+    id: 3, slug: "building-networks-protect-our-own", title: "Building Networks: Why We Must Connect to Protect Our Own",
+    excerpt: "The system works against us when we're divided. Here's why community networks are our strongest defense.",
+    category: "COMMUNITY", coverImage: "/images/blog-post-3.jpg", published: true, featured: false,
+    content: "", createdAt: new Date("2025-02-20"),
+  },
+  {
+    id: 4, slug: "from-the-loins-of-the-beast", title: "From the Loins of the Beast: My Journey to #TheKingsTake",
+    excerpt: "How writing 'The African American State of the Union' transformed my understanding of our struggle and led to the creation of this platform.",
+    category: "VOICE", coverImage: "/images/blog-post-4.jpg", published: true, featured: false,
+    content: "", createdAt: new Date("2025-03-01"),
+  },
+  {
+    id: 5, slug: "know-your-rights-police-encounters", title: "Know Your Rights: What to Do During a Police Encounter",
+    excerpt: "Your constitutional rights don't disappear when a police officer approaches you. Here's exactly what to say, what not to say, and how to protect yourself legally.",
+    category: "LEGAL", coverImage: "/images/blog-post-2.jpg", published: true, featured: true,
+    content: "", createdAt: new Date("2025-03-15"),
+  },
+];
 
 export default function BlogPage() {
-  const { data: posts, isLoading } = trpc.blog.list.useQuery({ limit: 50 });
+  const { data: apiPosts, isLoading } = trpc.blog.list.useQuery({ limit: 50 });
+  // Use API data if available, otherwise show static fallback content
+  const posts = useMemo(() => (apiPosts && apiPosts.length > 0 ? apiPosts : FALLBACK_POSTS), [apiPosts]);
 
   return (
     <div className="relative min-h-screen pt-24 pb-16 px-6 md:px-12 overflow-hidden">

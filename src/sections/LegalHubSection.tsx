@@ -4,6 +4,7 @@ import { Link } from 'react-router'
 import { trpc } from '@/providers/trpc'
 import { FileText, Download, ArrowRight } from 'lucide-react'
 import ScrollReveal from '../components/ScrollReveal'
+import { useMemo } from 'react'
 
 const cardVariants: Variants = {
   hidden: { opacity: 0, y: 40 },
@@ -13,8 +14,20 @@ const cardVariants: Variants = {
   },
 }
 
+// Static fallback forms — render immediately even if database is empty
+const FALLBACK_FORMS = [
+  { id: 1, slug: "motion-to-dismiss", title: "Motion to Dismiss", description: "Challenge the charges against you with proper legal grounds such as insufficient evidence, constitutional violations, or statute of limitations.", category: "criminal", fileUrl: null, fileSize: null, content: null, downloadCount: 0, isActive: true, createdAt: new Date() },
+  { id: 2, slug: "motion-for-bond-reduction", title: "Motion for Bond Reduction", description: "Request a lower bond amount when the current bail is excessive and beyond financial means.", category: "criminal", fileUrl: null, fileSize: null, content: null, downloadCount: 0, isActive: true, createdAt: new Date() },
+  { id: 3, slug: "motion-to-suppress-evidence", title: "Motion to Suppress Evidence", description: "Challenge evidence obtained through unconstitutional search, seizure, or coerced confession.", category: "criminal", fileUrl: null, fileSize: null, content: null, downloadCount: 0, isActive: true, createdAt: new Date() },
+  { id: 4, slug: "writ-of-habeas-corpus", title: "Writ of Habeas Corpus", description: "Challenge unlawful detention and demand the right to appear before a court.", category: "criminal", fileUrl: null, fileSize: null, content: null, downloadCount: 0, isActive: true, createdAt: new Date() },
+  { id: 5, slug: "motion-for-new-trial", title: "Motion for New Trial", description: "Request a new trial based on legal errors, newly discovered evidence, or jury misconduct.", category: "criminal", fileUrl: null, fileSize: null, content: null, downloadCount: 0, isActive: true, createdAt: new Date() },
+  { id: 6, slug: "motion-in-limine", title: "Motion In Limine", description: "Request the court to exclude certain prejudicial evidence from being presented at trial.", category: "criminal", fileUrl: null, fileSize: null, content: null, downloadCount: 0, isActive: true, createdAt: new Date() },
+];
+
 export default function LegalHubSection() {
-  const { data: legalFormsList } = trpc.legal.list.useQuery();
+  const { data: apiForms } = trpc.legal.list.useQuery();
+  // Use API data if available, otherwise show static fallback content
+  const legalFormsList = useMemo(() => (apiForms && apiForms.length > 0 ? apiForms : FALLBACK_FORMS), [apiForms]);
 
   return (
     <section id="legal-hub" className="relative py-24 md:py-32 px-6 md:px-12 overflow-hidden">
