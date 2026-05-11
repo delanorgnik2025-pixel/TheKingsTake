@@ -156,14 +156,14 @@ export default function HeroSection() {
                 Pre-Order — $24.99
               </button>
               
-              {/* SECONDARY — CONTACT */}
-              <a 
-                href="#contact" 
+              {/* SECONDARY — WORK WITH ME */}
+              <Link
+                to="/work-with-me"
                 className="inline-flex items-center justify-center gap-2 rounded-full h-14 px-8 text-sm border border-[#FF9500] text-[#FF9500] hover:bg-[rgba(255,149,0,0.1)] transition-colors font-['Newsreader'] tracking-[0.02em]"
               >
                 <Sparkles size={18} />
                 Work With Me
-              </a>
+              </Link>
             </motion.div>
 
             {/* Trust indicators */}

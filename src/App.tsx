@@ -9,6 +9,7 @@ import HomePage from './pages/Home'
 import BlogPage from './pages/BlogPage'
 import BlogPostPage from './pages/BlogPostPage'
 import ServiceDetailPage from './pages/ServiceDetailPage'
+import WorkWithMe from './pages/WorkWithMe'
 import LegalHubPage from './pages/LegalHubPage'
 import LegalFormPage from './pages/LegalFormPage'
 import AdminDashboard from './pages/AdminDashboard'
@@ -77,6 +78,7 @@ function AppRoutes() {
         <Route path="/blog" element={<BlogPage />} />
         <Route path="/blog/:slug" element={<BlogPostPage />} />
         <Route path="/services/:slug" element={<ServiceDetailPage />} />
+        <Route path="/work-with-me" element={<WorkWithMe />} />
         <Route path="/legal" element={<LegalHubPage />} />
         <Route path="/legal/:slug" element={<LegalFormPage />} />
         <Route path="/admin" element={<AdminDashboard />} />
