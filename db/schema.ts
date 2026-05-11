@@ -117,3 +117,33 @@ export const subscriptions = mysqlTable("subscriptions", {
 
 export type Subscription = typeof subscriptions.$inferSelect;
 export type InsertSubscription = typeof subscriptions.$inferInsert;
+
+// ─── Petition Signers ──────────────────────────────────────
+export const petitionSigners = mysqlTable("petition_signers", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  email: varchar("email", { length: 320 }).notNull(),
+  city: varchar("city", { length: 100 }),
+  state: varchar("state", { length: 50 }),
+  message: text("message"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type PetitionSigner = typeof petitionSigners.$inferSelect;
+export type InsertPetitionSigner = typeof petitionSigners.$inferInsert;
+
+// ─── Story Submissions ─────────────────────────────────────
+export const storySubmissions = mysqlTable("story_submissions", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  email: varchar("email", { length: 320 }).notNull(),
+  phone: varchar("phone", { length: 50 }),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description").notNull(),
+  serviceType: varchar("serviceType", { length: 100 }).notNull(),
+  status: mysqlEnum("status", ["new", "contacted", "in_progress", "completed"]).default("new").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type StorySubmission = typeof storySubmissions.$inferSelect;
+export type InsertStorySubmission = typeof storySubmissions.$inferInsert;

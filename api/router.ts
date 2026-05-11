@@ -6,6 +6,8 @@ import { legalRouter } from "./legal-router";
 import { stripeRouter } from "./stripe-router";
 import { aiRouter } from "./ai-router";
 import { voiceRouter } from "./voice-router";
+import { petitionRouter } from "./petition-router";
+import { storyRouter } from "./story-router";
 import { createRouter, publicQuery } from "./middleware";
 
 export const appRouter = createRouter({
@@ -18,6 +20,8 @@ export const appRouter = createRouter({
   stripe: stripeRouter,
   ai: aiRouter,
   voice: voiceRouter,
+  petition: petitionRouter,
+  story: storyRouter,
 });
 
 export type AppRouter = typeof appRouter;
