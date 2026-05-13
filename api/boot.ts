@@ -15,7 +15,10 @@ app.use(bodyLimit({ maxSize: 50 * 1024 * 1024 }));
 // OAuth login — redirects to Kimi auth page
 app.get("/api/auth/login", (c) => {
   const appId = env.appId;
-  const redirectUri = `${c.req.url.replace("/api/auth/login", "")}${Paths.oauthCallback}`;
+  const host = c.req.header("host") || "thekingstake.com";
+  const protocol = host.includes("localhost") ? "http" : "https";
+  const baseUrl = `${protocol}://${host}`;
+  const redirectUri = `${baseUrl}${Paths.oauthCallback}`;
   const state = btoa(redirectUri);
   const authUrl = new URL(`${env.kimiAuthUrl}/api/oauth/authorize`);
   authUrl.searchParams.set("client_id", appId);
