@@ -283,8 +283,11 @@ export default function WorkWithMe() {
             <h2 className="text-3xl font-medium text-[#F0EBE1] mb-10 text-center" style={{ fontFamily: 'Newsreader, serif' }}>
               How You Can Help Build <span className="text-[#FF9500]">#TheKingsTake</span>
             </h2>
+            <p className="text-center text-[#C9B99A]/70 mb-10 max-w-[600px] mx-auto" style={{ fontFamily: 'Newsreader, serif' }}>
+              AASOTU Media Group LLC is not just a company -- it is a movement built on the power of voice, narrative, and collective action. With nearly <strong className="text-[#FF9500]">14,000 followers</strong> on our platform, we have built a community that believes in justice, demands reform, and refuses to be silent. Here is how you become part of it:
+            </p>
             <div className="grid md:grid-cols-3 gap-6">
-              {[{ icon: Share2, title: 'Share', desc: 'Share our articles, book updates, and legal resources on your social media. Every share reaches someone who needs this.' }, { icon: MessageSquare, title: 'Engage', desc: 'Comment on blog posts. Ask questions. Start conversations. Your engagement tells platforms this content matters.' }, { icon: Megaphone, title: 'Amplify', desc: 'Repost, retweet, reshare. Tag people who need to see this. Use #TheKingsTake so we can amplify your voice too.' }].map(item => (
+              {[{ icon: Share2, title: 'Share', desc: 'Every article, every blog post, every legal resource on this site was created to reach someone who needs it. When you share our content, you are not just clicking a button -- you are extending a lifeline to someone who may be sitting in a jail cell right now, someone who has been wronged by the system and does not know where to turn, someone who has a story burning inside them but no platform to tell it. Share our book updates. Share our legal resources. Share the petition. Your share could be the reason someone finds the courage to fight back.' }, { icon: MessageSquare, title: 'Engage', desc: 'Comment on our blog posts. Ask questions. Start conversations that matter. When you engage with our content, you are telling the algorithms -- and the world -- that this message matters. That justice matters. That Black voices matter. Every comment, every question, every discussion thread builds momentum. It tells platforms to push our content further. It tells policymakers that people are watching. It tells our community that they are not alone in this fight. Engagement is not passive -- it is power.' }, { icon: Megaphone, title: 'Amplify', desc: 'Repost, retweet, reshare -- but do not just share the link. Add your voice to it. Tell people why this matters to you. Tag friends, family, community leaders, and elected officials who need to see this. Use #TheKingsTake in every post so we can find your voice and amplify it back. We are building something larger than a website -- we are building a writers agency, a publishing house, a legal literacy movement, and a community of people who refuse to be silenced. When you amplify, you are not just sharing content -- you are building a movement.' }].map(item => (
                 <div key={item.title} className="bg-white/[0.03] border border-white/[0.08] p-6">
                   <div className="w-10 h-10 border border-[#FF9500]/30 flex items-center justify-center mb-4">
                     <item.icon size={20} className="text-[#FF9500]" />
@@ -297,19 +300,53 @@ export default function WorkWithMe() {
           </div>
         </section>
 
-        {/* JOIN THE MOVEMENT FORM — REAL PETITION */}
+        {/* JOIN THE MOVEMENT — POWERFUL CALL TO ACTION */}
         <section className="py-16 px-6 lg:px-12 border-t border-white/[0.06]">
-          <div className="max-w-[640px] mx-auto">
+          <div className="max-w-[800px] mx-auto">
             <div className="text-center mb-10">
               <Users className="w-8 h-8 text-[#FF9500] mx-auto mb-4" />
               <h2 className="text-3xl font-medium text-[#F0EBE1] mb-4" style={{ fontFamily: 'Newsreader, serif' }}>
                 Join the Movement
               </h2>
-              <p className="text-[#C9B99A]/70">
-                Add your name to the growing list of people committed to justice, reparations, 
-                and the reform of a legal system that has failed our communities for too long.
+              <p className="text-[#C9B99A]/70 max-w-[600px] mx-auto">
+                This is not just a petition. This is a declaration. By adding your name, you join 
+                nearly <strong className="text-[#FF9500]">14,000 followers</strong> and a growing army of people who refuse to accept 
+                a justice system that was never designed to protect us. These are our demands:
               </p>
             </div>
+
+            {/* DEMANDS LIST — THE ARGUMENTS */}
+            <div className="mb-12 space-y-4">
+              {[
+                { icon: '1', title: 'Reform UPL Laws That Criminalize Community Advocates', desc: 'The Unauthorized Practice of Law (UPL) is used as a weapon against trained community advocates who help our people navigate courts. These laws protect lawyers\' monopoly -- not consumers. We demand UPL reform that allows certified non-attorney advocates to provide educational guidance to their communities without fear of criminal prosecution.' },
+                { icon: '2', title: 'End Racial Sentencing Disparities', desc: 'Black defendants receive sentences 20% longer than white defendants for the same crimes. This is not justice -- it is systematic punishment based on skin color. We demand mandatory sentencing guidelines that eliminate racial bias and hold judges accountable for discriminatory sentences.' },
+                { icon: '3', title: 'Fully Fund Public Defenders', desc: 'Public defenders handle 500-1,000 cases per year. They meet clients for 7 minutes before plea hearings. This is not representation -- it is a conveyor belt to incarceration. We demand that public defender offices receive funding equal to prosecutor offices, with caseload caps that allow real defense.' },
+                { icon: '4', title: 'Hold Corrupt Judges and Prosecutors Accountable', desc: 'Prosecutors who hide exculpatory evidence, judges who dismiss valid claims before hearing them, and public defenders who fail their clients operate with near-total immunity. We demand an independent oversight body with the power to investigate, discipline, and remove officials who violate their oath.' },
+                { icon: '5', title: 'Abolish Cash Bail', desc: 'Cash bail is a poverty tax that holds the poor in jail while the rich walk free. It destroys families, costs jobs, and forces innocent people to plead guilty just to go home. We demand the immediate replacement of cash bail with risk-based assessment tools that do not discriminate based on wealth.' },
+                { icon: '6', title: 'Reparations for Systemic Legal Injustice', desc: 'The United States was built on 256 years of enslaved African labor. When slavery ended, no reparations were paid. Jim Crow, mass incarceration, and the modern legal system ensured Black families remained at the bottom. We demand reparations in the form of community legal centers, education funding, and direct investment in Black neighborhoods.' },
+              ].map((demand, i) => (
+                <div key={i} className="flex gap-4 p-5 bg-white/[0.03] border border-[#FF9500]/20 hover:border-[#FF9500]/40 transition-colors">
+                  <div className="w-8 h-8 bg-[#FF9500] text-[#0C1520] flex items-center justify-center text-sm font-bold shrink-0 rounded-sm">
+                    {demand.icon}
+                  </div>
+                  <div>
+                    <h3 className="text-[#F0EBE1] font-medium mb-1" style={{ fontFamily: 'Newsreader, serif' }}>{demand.title}</h3>
+                    <p className="text-sm text-[#C9B99A]/70 leading-relaxed">{demand.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="text-center mb-10">
+              <p className="text-[#FF9500] font-medium mb-2" style={{ fontFamily: 'Newsreader, serif' }}>
+                Your signature is your voice. Your voice is your power.
+              </p>
+              <p className="text-sm text-[#C9B99A]/60">
+                Add your name below. Stand with us. Build what cannot be destroyed.
+              </p>
+            </div>
+
+            <div className="max-w-[640px] mx-auto">
 
             {joinSuccess ? (
               <div className="bg-[#FF9500]/10 border border-[#FF9500]/30 p-8 text-center">
@@ -355,6 +392,7 @@ export default function WorkWithMe() {
               </form>
             )}
           </div>
+          </div>
         </section>
 
         {/* SUBMIT YOUR STORY — SALES FUNNEL */}
@@ -386,7 +424,7 @@ export default function WorkWithMe() {
                 <CheckCircle className="w-12 h-12 text-[#FF9500] mx-auto mb-4" />
                 <h3 className="text-xl font-medium text-[#F0EBE1] mb-2" style={{ fontFamily: 'Newsreader, serif' }}>Story Received</h3>
                 <p className="text-[#C9B99A]/70">Thank you for trusting us with your story. Someone from our team will contact you within 48 hours to discuss how we can help bring your story to life.</p>
-                <Link to="/services/writing-ghostwriting" className="inline-flex items-center gap-2 mt-4 text-[#FF9500] text-sm hover:underline">
+                <Link to="/services/speechwriting-narrative" className="inline-flex items-center gap-2 mt-4 text-[#FF9500] text-sm hover:underline">
                   <BookOpen size={16} /> Explore Our Writing Services
                 </Link>
               </div>

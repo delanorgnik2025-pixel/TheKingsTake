@@ -148,12 +148,12 @@ export default function HeroSection() {
             >
               {/* PRIMARY CTA — PRE-ORDER THE BOOK */}
               <button 
-                onClick={() => alert('Pre-orders opening soon! Reserve your copy of The African American State of the Union for $24.99.')}
+                onClick={() => alert('Pre-orders opening soon! Reserve your digital copy of The African American State of the Union for $19.99.')}
                 className="inline-flex items-center justify-center gap-2 rounded-full h-14 px-10 text-base bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-['Newsreader'] tracking-[0.02em] font-medium"
                 style={{ boxShadow: '0 4px 20px rgba(255,149,0,0.35)' }}
               >
                 <BookOpen size={20} />
-                Pre-Order — $24.99
+                Order Now — $19.99
               </button>
               
               {/* SECONDARY — WORK WITH ME */}
