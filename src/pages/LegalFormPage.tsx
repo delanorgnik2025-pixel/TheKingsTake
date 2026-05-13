@@ -450,6 +450,17 @@ export default function LegalFormPage() {
     trackDownload.mutate({ id: form.id });
     if (form.fileUrl) {
       window.open(form.fileUrl, "_blank");
+    } else if (form.content) {
+      // Create and download a .txt file from the form content
+      const blob = new Blob([form.content], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${form.slug}.txt`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
     }
   };
 
@@ -501,7 +512,7 @@ export default function LegalFormPage() {
             style={{ boxShadow: "0 4px 16px rgba(255,149,0,0.25)" }}
           >
             <Download size={18} />
-            {form.fileUrl ? "Download PDF" : form.content ? "Copy Document" : "Download Coming Soon"}
+            {form.fileUrl ? "Download PDF" : form.content ? "Download as .txt" : "Download Coming Soon"}
           </button>
 
           {form.fileSize && (
