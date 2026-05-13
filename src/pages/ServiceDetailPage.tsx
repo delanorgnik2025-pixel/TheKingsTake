@@ -1,7 +1,45 @@
 import { trpc } from "@/providers/trpc";
 import { Link, useParams } from "react-router";
 import { useState, useMemo } from "react";
-import { ArrowLeft, Check, Clock, CreditCard, Sparkles, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Check, Clock, CreditCard, Sparkles, AlertTriangle, ShoppingCart } from "lucide-react";
+
+// Parse price string to cents for Stripe (e.g. "$150" → 15000, "$1,000+" → 100000)
+function parsePriceToCents(priceStr: string): number | null {
+  if (priceStr.toLowerCase().includes('custom')) return null;
+  const match = priceStr.replace(/,/g, '').match(/\$([0-9]+)/);
+  return match ? parseInt(match[1]) * 100 : null;
+}
+
+function ServiceCheckoutButton({ label, price, serviceName }: { label: string; price: string; serviceName: string }) {
+  const checkout = trpc.stripe.createCheckout.useMutation({
+    onSuccess: (data) => { if (data.url) window.location.href = data.url; },
+    onError: (err) => alert('Checkout error: ' + err.message),
+  });
+
+  const handleBuy = () => {
+    const amount = parsePriceToCents(price);
+    if (!amount) { alert('Contact us for custom pricing'); return; }
+    const successUrl = window.location.origin + '/?payment=success';
+    const cancelUrl = window.location.origin + '/?payment=cancelled';
+    checkout.mutate({
+      price: amount,
+      serviceName: `${serviceName} — ${label}`,
+      successUrl,
+      cancelUrl,
+    });
+  };
+
+  return (
+    <button
+      onClick={handleBuy}
+      disabled={checkout.isPending}
+      className="inline-flex items-center gap-1 text-xs bg-[#FF9500] text-[#0C1520] px-3 py-1.5 rounded hover:bg-[#CC6A00] transition-colors disabled:opacity-50 font-medium shrink-0"
+    >
+      <ShoppingCart size={12} />
+      {checkout.isPending ? '...' : 'Buy Now'}
+    </button>
+  );
+}
 
 // CHATGPT-UPDATED PRICING — Must match ServicesSection.tsx slugs exactly
 const FALLBACK_SERVICES: Record<string, {
@@ -188,11 +226,14 @@ export default function ServiceDetailPage() {
               <div className="space-y-3">
                 {tiers.map((tier: any, i: number) => (
                   <div key={i} className="flex items-start justify-between gap-4 p-4 bg-[rgba(42,58,74,0.5)] rounded border border-[rgba(255,149,0,0.15)] hover:border-[rgba(255,149,0,0.4)] transition-colors">
-                    <div>
+                    <div className="flex-1">
                       <p className="text-[#F0EBE1] font-medium">{tier.label}</p>
                       <p className="text-sm text-[#C9B99A]">{tier.desc}</p>
                     </div>
-                    <p className="text-[#FF9500] font-medium shrink-0">{tier.price}</p>
+                    <div className="flex items-center gap-3 shrink-0">
+                      <p className="text-[#FF9500] font-medium">{tier.price}</p>
+                      <ServiceCheckoutButton label={tier.label} price={tier.price} serviceName={service.name} />
+                    </div>
                   </div>
                 ))}
               </div>
