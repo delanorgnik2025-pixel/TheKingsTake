@@ -11,6 +11,21 @@ import { Paths } from "@contracts/constants";
 const app = new Hono<{ Bindings: HttpBindings }>();
 
 app.use(bodyLimit({ maxSize: 50 * 1024 * 1024 }));
+
+// OAuth login — redirects to Kimi auth page
+app.get("/api/auth/login", (c) => {
+  const appId = env.appId;
+  const redirectUri = `${c.req.url.replace("/api/auth/login", "")}${Paths.oauthCallback}`;
+  const state = btoa(redirectUri);
+  const authUrl = new URL(`${env.kimiAuthUrl}/api/oauth/authorize`);
+  authUrl.searchParams.set("client_id", appId);
+  authUrl.searchParams.set("redirect_uri", redirectUri);
+  authUrl.searchParams.set("response_type", "code");
+  authUrl.searchParams.set("scope", "profile");
+  authUrl.searchParams.set("state", state);
+  return c.redirect(authUrl.toString(), 302);
+});
+
 app.get(Paths.oauthCallback, createOAuthCallbackHandler());
 app.use("/api/trpc/*", async (c) => {
   return fetchRequestHandler({

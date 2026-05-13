@@ -10,7 +10,7 @@ function parsePriceToCents(priceStr: string): number | null {
   return match ? parseInt(match[1]) * 100 : null;
 }
 
-function ServiceCheckoutButton({ label, price, serviceName }: { label: string; price: string; serviceName: string }) {
+function ServiceCheckoutButton({ label, price, serviceName, serviceSlug }: { label: string; price: string; serviceName: string; serviceSlug: string }) {
   const checkout = trpc.stripe.createCheckout.useMutation({
     onSuccess: (data) => { if (data.url) window.location.href = data.url; },
     onError: (err) => alert('Checkout error: ' + err.message),
@@ -24,6 +24,7 @@ function ServiceCheckoutButton({ label, price, serviceName }: { label: string; p
     checkout.mutate({
       price: amount,
       serviceName: `${serviceName} — ${label}`,
+      serviceSlug,
       successUrl,
       cancelUrl,
     });
@@ -232,7 +233,7 @@ export default function ServiceDetailPage() {
                     </div>
                     <div className="flex items-center gap-3 shrink-0">
                       <p className="text-[#FF9500] font-medium">{tier.price}</p>
-                      <ServiceCheckoutButton label={tier.label} price={tier.price} serviceName={service.name} />
+                      <ServiceCheckoutButton label={tier.label} price={tier.price} serviceName={service.name} serviceSlug={service.slug} />
                     </div>
                   </div>
                 ))}
