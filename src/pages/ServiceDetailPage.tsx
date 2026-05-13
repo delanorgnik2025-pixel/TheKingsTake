@@ -1,11 +1,61 @@
 import { trpc } from "@/providers/trpc";
 import { Link, useParams } from "react-router";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { ArrowLeft, Check, Clock, CreditCard, Sparkles } from "lucide-react";
+
+// Static fallback services — render immediately even if API/database is empty
+const FALLBACK_SERVICES: Record<string, {
+  id: number; name: string; slug: string; shortDescription: string;
+  fullDescription: string; features: string; duration: string;
+  priceDisplay: string; type: string;
+}> = {
+  "1-on-1-consultation": {
+    id: 101, slug: "1-on-1-consultation", name: "1-on-1 Consultation",
+    duration: "60 min", priceDisplay: "$150", type: "one-time",
+    shortDescription: "Private, focused session with Ronald Lee King to discuss your legal situation, story, or project. Get honest, actionable guidance from someone who's been through the system.",
+    fullDescription: `This is a one-hour private consultation with Ronald Lee King — author, founder, and someone who has personally navigated the criminal justice system from arrest to appeal.\n\nWhether you're facing charges, helping a family member, or working on a creative project, this session gives you direct access to real experience and practical guidance.\n\nRonald does not give legal advice (he's not a lawyer). What he offers is something many lawyers can't: the perspective of someone who has actually lived through what you're going through.\n\nTopics we can cover:\n- Understanding court procedures and timelines\n- Navigating the public defender system\n- Preparing for hearings and trials\n- Building a support network\n- Documenting your case\n- Finding additional resources\n- Story development and publishing`,
+    features: JSON.stringify(["60-minute private video session","Pre-session questionnaire","Written follow-up summary","Resource recommendations","Recording available upon request","Follow-up email support (7 days)"]),
+  },
+  "writing-ghostwriting": {
+    id: 102, slug: "writing-ghostwriting", name: "Writing & Ghostwriting",
+    duration: "Project-based", priceDisplay: "From $500", type: "one-time",
+    shortDescription: "Professional writing services for your story, manuscript, or feature article. From concept to completion, we help you craft compelling narratives that resonate.",
+    fullDescription: `Everyone has a story worth telling. The question is whether you have the time, skill, and platform to tell it well.\n\nOur writing and ghostwriting service helps you transform your ideas, experiences, and expertise into polished, publishable work. Whether it's a magazine feature, a blog post, a book chapter, or a full manuscript — we bring the craft. You bring the story.\n\nRonald Lee King has written extensively on legal advocacy, community organizing, and the Black experience in America. His work combines journalistic rigor with narrative power — the kind of writing that gets shared, remembered, and acted upon.`,
+    features: JSON.stringify(["Initial story consultation","Outline and structure development","Professional drafting and editing","Up to 3 revision rounds","Final polished document","Publication guidance and referrals"]),
+  },
+  "courtroom-simulator": {
+    id: 103, slug: "courtroom-simulator", name: "AI Courtroom Simulator",
+    duration: "Session-based", priceDisplay: "From $15", type: "subscription",
+    shortDescription: "Experience realistic courtroom scenarios before you face the real thing. Train with AI-powered judges, prosecutors, and witnesses to build confidence and preparation.",
+    fullDescription: `The AI Courtroom Simulator is designed for people who have never been inside a courtroom — and for people who never want to be caught unprepared again.\n\nUsing advanced AI, the simulator creates realistic courtroom environments where you can practice procedures, test arguments, and experience the emotional pressure of a real hearing.\n\nThree tiers available:\n\n**BASIC ($15/session)** — Single scenario training with standard judge and prosecutor personalities. Perfect for first-time defendants who want to understand basic procedures.\n\n**ADVANCED ($29/session)** — Multiple scenario types, varied judge personalities (lenient, strict, by-the-book), objection handling, and detailed post-session feedback.\n\n**PROFESSIONAL ($49/session)** — Everything in Advanced plus expert witness cross-examination, jury presence simulation, closing argument practice, and a comprehensive preparation report.`,
+    features: JSON.stringify(["Realistic AI-powered courtroom environment","Multiple judge and prosecutor personalities","Pre and post-session briefings","Objection practice and feedback","Detailed performance report","Available 24/7 — practice anytime"]),
+  },
+  "media-branding": {
+    id: 104, slug: "media-branding", name: "Media & Branding",
+    duration: "Project-based", priceDisplay: "From $300", type: "one-time",
+    shortDescription: "Build your personal or organizational brand with professional media strategy, visual identity, and content planning. Stand out in a crowded space.",
+    fullDescription: `In today's media landscape, attention is currency. Whether you're an advocate, author, artist, or entrepreneur — your brand determines whether people listen.\n\nOur media and branding service helps you define, develop, and deploy a brand identity that captures who you are and what you stand for.\n\nWe combine strategic thinking with visual design and content planning to create brands that are memorable, authentic, and effective.`,
+    features: JSON.stringify(["Brand strategy consultation","Visual identity design (logo, colors, typography)","Social media strategy","Content calendar development","Brand guidelines document","30-day launch support"]),
+  },
+  "legal-research": {
+    id: 105, slug: "legal-research", name: "Legal Research Assistance",
+    duration: "Hourly", priceDisplay: "$75/hr", type: "one-time",
+    shortDescription: "Professional legal research support for your case, appeal, or advocacy work. Find the statutes, precedents, and procedures you need to build your strongest position.",
+    fullDescription: `Legal research is the foundation of every successful case. But finding the right statutes, cases, and procedures requires access to expensive databases and expertise most people don't have.\n\nOur legal research service provides professional-grade research to support your case, appeal, or advocacy work. We find the law that applies to your situation, the precedents that support your position, and the procedures you need to follow.\n\n**Important:** This is research assistance, not legal advice. We do not represent you or provide legal counsel. We equip you with information so you can work more effectively with your attorney or represent yourself more knowledgeably.`,
+    features: JSON.stringify(["Case-specific legal research","Statute and regulation analysis","Case law and precedent research","Procedure and filing guidance","Organized research memo","Source citations and references"]),
+  },
+  "community-workshop": {
+    id: 106, slug: "community-workshop", name: "Community Workshop",
+    duration: "2-3 hours", priceDisplay: "$500", type: "one-time",
+    shortDescription: "Bring Ronald Lee King to your community for an in-person workshop on legal rights, court preparation, and community organizing. Empower your group with knowledge and strategy.",
+    fullDescription: `There's nothing more powerful than a room full of people who understand their rights and know how to use them.\n\nOur community workshops bring Ronald Lee King's expertise directly to your neighborhood, church, school, or organization. These interactive sessions combine education with empowerment — giving participants practical knowledge they can use immediately.\n\nWorkshop topics include:\n- Know Your Rights during police encounters\n- Navigating the court system\n- Understanding UPL and its impact\n- Building community legal networks\n- Writing and storytelling for change\n- Starting your own advocacy initiative\n\nEach workshop is tailored to your community's specific needs and concerns.`,
+    features: JSON.stringify(["In-person community workshop (2-3 hours)","Customized content for your audience","Q&A session","Printed resource materials","Follow-up resource list","30-minute planning call beforehand"]),
+  },
+};
 
 export default function ServiceDetailPage() {
   const { slug } = useParams<{ slug: string }>();
-  const { data: service, isLoading } = trpc.service.bySlug.useQuery({ slug: slug ?? "" });
+  const { data: apiService, isLoading } = trpc.service.bySlug.useQuery({ slug: slug ?? "" });
   const [showBooking, setShowBooking] = useState(false);
   const [bookingData, setBookingData] = useState({ name: "", email: "", phone: "", message: "" });
   const [booked, setBooked] = useState(false);
@@ -14,7 +64,14 @@ export default function ServiceDetailPage() {
     onSuccess: () => setBooked(true),
   });
 
-  if (isLoading) {
+  // Use API data if available, otherwise show static fallback immediately
+  const service = useMemo(() => {
+    if (apiService) return apiService;
+    if (slug && FALLBACK_SERVICES[slug]) return FALLBACK_SERVICES[slug];
+    return null;
+  }, [apiService, slug]);
+
+  if (isLoading && !service) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#1B2838]">
         <div className="w-8 h-8 border-2 border-[#FF9500] border-t-transparent rounded-full animate-spin" />
@@ -33,7 +90,7 @@ export default function ServiceDetailPage() {
     );
   }
 
-  const features: string[] = service.features ? JSON.parse(service.features) : [];
+  const features: string[] = service.features ? (typeof service.features === 'string' ? JSON.parse(service.features) : service.features) : [];
 
   const handleBook = (e: React.FormEvent) => {
     e.preventDefault();
