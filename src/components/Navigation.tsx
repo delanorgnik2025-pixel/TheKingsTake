@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, LayoutDashboard } from 'lucide-react'
+import { Menu, X, LayoutDashboard, LogIn, LogOut, User } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 
 interface NavigationProps {
@@ -37,6 +37,18 @@ export default function Navigation({ onMenuToggle, onNavClick }: NavigationProps
             <LayoutDashboard size={14} /> Admin
           </Link>
         )}
+        {user ? (
+          <div className="flex items-center gap-3">
+            <span className="text-[#C9B99A] text-sm flex items-center gap-1"><User size={14} /> {user.name || 'User'}</span>
+            <a href="/api/auth/logout" className="text-[#C9B99A] text-sm hover:text-[#FF9500] transition-colors flex items-center gap-1">
+              <LogOut size={14} /> Sign Out
+            </a>
+          </div>
+        ) : (
+          <a href="/api/auth/login" className="text-[#FF9500] text-sm hover:text-[#FFB840] transition-colors flex items-center gap-1">
+            <LogIn size={14} /> Sign in with Kimi
+          </a>
+        )}
         <button onClick={onMenuToggle} className="text-[#F0EBE1] text-sm uppercase tracking-[0.04em] hover:text-[#FF9500] transition-colors duration-200 cursor-pointer">MENU</button>
       </div>
 
@@ -53,7 +65,12 @@ export default function Navigation({ onMenuToggle, onNavClick }: NavigationProps
             <a href="/#services" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Services</a>
             <a href="/#contact" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Contact</a>
             {isAdmin && (
-              <Link to="/admin" onClick={() => setMobileOpen(false)} className="block text-[#FF9500] text-xl py-3 hover:text-[#FFB840]">Admin Dashboard</Link>
+              <Link to="/admin" onClick={() => setMobileOpen(false)} className="block text-[#FF9500] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FFB840]">Admin Dashboard</Link>
+            )}
+            {user ? (
+              <a href="/api/auth/logout" onClick={() => setMobileOpen(false)} className="block text-[#C9B99A] text-xl py-3 hover:text-[#FF9500]">Sign Out</a>
+            ) : (
+              <a href="/api/auth/login" onClick={() => setMobileOpen(false)} className="block text-[#FF9500] text-xl py-3 hover:text-[#FFB840]">Sign in with Kimi</a>
             )}
           </motion.div>
         )}
