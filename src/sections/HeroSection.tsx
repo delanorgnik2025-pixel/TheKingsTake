@@ -2,6 +2,45 @@ import { useRef } from 'react'
 import { Link } from 'react-router'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { Globe, Cpu, Sparkles, BookOpen, ArrowRight, Lock } from 'lucide-react'
+import { trpc } from '@/providers/trpc'
+
+const BOOK_PRICE_ID = 'price_1TUuET5rzCiGdPFNiXG2ZEi6'
+
+function BookCheckoutButton({ className }: { className?: string }) {
+  const checkout = trpc.stripe.createCheckoutByPriceId.useMutation({
+    onSuccess: (data) => {
+      if (data.url) {
+        window.location.href = data.url
+      } else if (data.testMode) {
+        alert('Test mode: ' + data.message)
+      }
+    },
+    onError: (err) => {
+      alert('Checkout error: ' + err.message)
+    },
+  })
+
+  const handleCheckout = () => {
+    const successUrl = window.location.origin + '/?payment=success'
+    const cancelUrl = window.location.origin + '/?payment=cancelled'
+    checkout.mutate({
+      priceId: BOOK_PRICE_ID,
+      successUrl,
+      cancelUrl,
+    })
+  }
+
+  return (
+    <button 
+      onClick={handleCheckout}
+      disabled={checkout.isPending}
+      className={className}
+    >
+      <BookOpen size={20} />
+      {checkout.isPending ? 'Loading...' : 'Order Now — $19.99'}
+    </button>
+  )
+}
 
 export default function HeroSection() {
   const sectionRef = useRef<HTMLDivElement>(null)
@@ -146,15 +185,8 @@ export default function HeroSection() {
               transition={{ delay: 0.65, duration: 0.8, ease: [0.16, 1, 0.3, 1] }} 
               className="flex flex-wrap gap-4"
             >
-              {/* PRIMARY CTA — PRE-ORDER THE BOOK */}
-              <button 
-                onClick={() => alert('Pre-orders opening soon! Reserve your digital copy of The African American State of the Union for $19.99.')}
-                className="inline-flex items-center justify-center gap-2 rounded-full h-14 px-10 text-base bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-['Newsreader'] tracking-[0.02em] font-medium"
-                style={{ boxShadow: '0 4px 20px rgba(255,149,0,0.35)' }}
-              >
-                <BookOpen size={20} />
-                Order Now — $19.99
-              </button>
+              {/* PRIMARY CTA — ORDER THE BOOK */}
+              <BookCheckoutButton className="inline-flex items-center justify-center gap-2 rounded-full h-14 px-10 text-base bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-['Newsreader'] tracking-[0.02em] font-medium" />
               
               {/* SECONDARY — WORK WITH ME */}
               <Link
