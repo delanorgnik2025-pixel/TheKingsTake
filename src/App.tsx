@@ -17,6 +17,7 @@ import AdminBlog from './pages/AdminBlog'
 import AdminServices from './pages/AdminServices'
 import AdminLegal from './pages/AdminLegal'
 import Login from './pages/Login'
+import AdminSetup from './pages/AdminSetup'
 import NotFound from './pages/NotFound'
 
 function AppLayout({ children }: { children: React.ReactNode }) {
@@ -85,6 +86,7 @@ function AppRoutes() {
         <Route path="/admin/blog" element={<AdminBlog />} />
         <Route path="/admin/services" element={<AdminServices />} />
         <Route path="/admin/legal" element={<AdminLegal />} />
+        <Route path="/admin/setup" element={<AdminSetup />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AppLayout>

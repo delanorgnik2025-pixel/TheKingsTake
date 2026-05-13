@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { createRouter, publicQuery, adminQuery } from "./middleware";
+import { createRouter, publicQuery, authedQuery, adminQuery } from "./middleware";
 import { getDb } from "./queries/connection";
-import { posts } from "@db/schema";
+import { posts, users } from "@db/schema";
 import { eq, desc } from "drizzle-orm";
 
 export const blogRouter = createRouter({
@@ -30,6 +30,18 @@ export const blogRouter = createRouter({
       const db = getDb();
       const results = await db.select().from(posts).where(eq(posts.slug, input.slug)).limit(1);
       return results[0] ?? null;
+    }),
+
+  // Setup: promote current user to admin (one-time use)
+  makeMeAdmin: authedQuery
+    .mutation(async ({ ctx }) => {
+      const db = getDb();
+      const user = (ctx as any).user;
+      if (!user) {
+        throw new Error("You must be logged in. Sign in with Kimi first.");
+      }
+      await db.update(users).set({ role: "admin" }).where(eq(users.id, user.id));
+      return { success: true, message: "You are now an admin! Refresh the page to access the admin panel." };
     }),
 
   // Admin: create post
