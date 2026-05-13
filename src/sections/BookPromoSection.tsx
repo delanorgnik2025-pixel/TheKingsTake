@@ -1,6 +1,10 @@
 import { motion } from 'framer-motion'
 import { BookOpen, Star, Quote, ArrowRight } from 'lucide-react'
+import { trpc } from '@/providers/trpc'
 import ScrollReveal from '../components/ScrollReveal'
+
+// Stripe Price ID for the book
+const BOOK_PRICE_ID = 'price_1TUuET5rzCiGdPFNiXG2ZEi6'
 
 const testimonials = [
   {
@@ -19,6 +23,43 @@ const testimonials = [
     location: "Houston, TX"
   }
 ]
+
+function BookCheckoutButton() {
+  const checkout = trpc.stripe.createCheckoutByPriceId.useMutation({
+    onSuccess: (data) => {
+      if (data.url) {
+        window.location.href = data.url
+      } else if (data.testMode) {
+        alert('Test mode: ' + data.message)
+      }
+    },
+    onError: (err) => {
+      alert('Checkout error: ' + err.message)
+    },
+  })
+
+  const handleCheckout = () => {
+    const successUrl = window.location.origin + '/?payment=success'
+    const cancelUrl = window.location.origin + '/?payment=cancelled'
+    checkout.mutate({
+      priceId: BOOK_PRICE_ID,
+      successUrl,
+      cancelUrl,
+    })
+  }
+
+  return (
+    <button 
+      onClick={handleCheckout}
+      disabled={checkout.isPending}
+      className="w-full flex items-center justify-center gap-2 rounded-full h-12 bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-['Newsreader'] tracking-[0.02em] font-medium disabled:opacity-50"
+      style={{ boxShadow: '0 4px 16px rgba(255,149,0,0.25)' }}
+    >
+      <BookOpen size={18} />
+      {checkout.isPending ? 'Loading...' : 'Order Now — $19.99'}
+    </button>
+  )
+}
 
 export default function BookPromoSection() {
   return (
@@ -57,14 +98,7 @@ export default function BookPromoSection() {
                 </div>
                 <p className="text-xs text-[#C9B99A] mb-2">Digital Edition — Available Now</p>
                 <p className="text-[10px] text-[#C9B99A]/60 mb-4">Paperback ($24.99) &amp; Signed Edition ($49.99) coming soon</p>
-                <button 
-                  onClick={() => alert('Book purchase coming soon! Connect Stripe to enable checkout.')}
-                  className="w-full flex items-center justify-center gap-2 rounded-full h-12 bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-['Newsreader'] tracking-[0.02em] font-medium"
-                  style={{ boxShadow: '0 4px 16px rgba(255,149,0,0.25)' }}
-                >
-                  <BookOpen size={18} />
-                  Order Now — $19.99
-                </button>
+                <BookCheckoutButton />
               </div>
             </ScrollReveal>
           </div>

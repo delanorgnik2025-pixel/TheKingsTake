@@ -55,6 +55,37 @@ export const stripeRouter = createRouter({
       return { testMode: false, url: session.url, sessionId: session.id };
     }),
 
+  // Create checkout using existing Stripe Price ID (for book, products, etc.)
+  createCheckoutByPriceId: publicQuery
+    .input(z.object({
+      priceId: z.string(),
+      successUrl: z.string(),
+      cancelUrl: z.string(),
+      customerEmail: z.string().email().optional(),
+    }))
+    .mutation(async ({ input }) => {
+      const stripe = await getStripe();
+
+      if (!stripe) {
+        return {
+          testMode: true,
+          url: input.successUrl + "?test_payment=success",
+          message: "Test mode: No Stripe key configured. Add STRIPE_SECRET_KEY to .env for live payments.",
+        };
+      }
+
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        line_items: [{ price: input.priceId, quantity: 1 }],
+        mode: "payment",
+        success_url: input.successUrl,
+        cancel_url: input.cancelUrl,
+        customer_email: input.customerEmail,
+      });
+
+      return { testMode: false, url: session.url, sessionId: session.id };
+    }),
+
   // Create a subscription checkout
   createSubscription: publicQuery
     .input(z.object({
