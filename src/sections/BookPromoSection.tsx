@@ -50,19 +50,20 @@ export default function BookPromoSection() {
             <ScrollReveal delay={0.25}>
               <div className="bg-[rgba(27,40,56,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.2)] p-5">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-3xl text-[#FF9500] font-medium">$24.99</span>
+                  <span className="text-3xl text-[#FF9500] font-medium">$19.99</span>
                   <div className="flex gap-1">
                     {[1,2,3,4,5].map(i => <Star key={i} size={14} className="text-[#FF9500] fill-[#FF9500]" />)}
                   </div>
                 </div>
-                <p className="text-xs text-[#C9B99A] mb-4">Paperback + Digital Bundle</p>
+                <p className="text-xs text-[#C9B99A] mb-2">Digital Edition — Available Now</p>
+                <p className="text-[10px] text-[#C9B99A]/60 mb-4">Paperback ($24.99) &amp; Signed Edition ($49.99) coming soon</p>
                 <button 
                   onClick={() => alert('Book purchase coming soon! Connect Stripe to enable checkout.')}
                   className="w-full flex items-center justify-center gap-2 rounded-full h-12 bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-['Newsreader'] tracking-[0.02em] font-medium"
                   style={{ boxShadow: '0 4px 16px rgba(255,149,0,0.25)' }}
                 >
                   <BookOpen size={18} />
-                  Order Now
+                  Order Now — $19.99
                 </button>
               </div>
             </ScrollReveal>
