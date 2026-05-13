@@ -1,7 +1,177 @@
 import { trpc } from "@/providers/trpc";
 import { Link, useParams } from "react-router";
-import { ArrowLeft, Download, AlertTriangle, FileText } from "lucide-react";
+import { ArrowLeft, Download, AlertTriangle, FileText, Clock, BookOpen, Gavel, FileWarning } from "lucide-react";
 import { useMemo } from "react";
+
+// Filing guide data — educational content for each form
+const FILING_GUIDES: Record<string, {
+  whenToFile: string;
+  statuteOfLimitations: string;
+  filingProcess: string[];
+  importantNotes: string[];
+  relevantLaw: string[];
+}> = {
+  "motion-to-dismiss": {
+    whenToFile: "File this motion BEFORE trial, typically at arraignment or as soon as possible after charges are filed. In most jurisdictions, you have 30 days from arraignment to file pretrial motions. Do NOT wait until the last minute — early filing shows the court you are prepared and preserves your rights.",
+    statuteOfLimitations: "Criminal statute of limitations vary by state and offense severity. Generally: Misdemeanors: 1-3 years. Felonies: 3-6 years (some states have no limit for murder or sex offenses). Federal crimes: 5 years generally. Check your state specific statutes. If the prosecution filed charges after the statute expired, this is a GROUND for dismissal.",
+    filingProcess: [
+      "STEP 1: Fill out the motion template with your case information. Replace ALL bracketed placeholders with your actual information.",
+      "STEP 2: Make at least 3 copies — one for the court, one for the prosecutor, and one for your records.",
+      "STEP 3: File the original with the Clerk of Court in the court where your case is pending. Ask the clerk to stamp your copies as 'filed.'",
+      "STEP 4: Serve a copy on the prosecutor/District Attorney. This can usually be done by mail with a certificate of service or by hand delivery.",
+      "STEP 5: Request a hearing date. Some courts schedule automatically; others require you to file a separate notice of hearing.",
+      "STEP 6: Prepare to argue the motion. Bring copies of any case law, evidence, or documents that support your grounds.",
+    ],
+    importantNotes: [
+      "File EARLY — most courts require pretrial motions 30 days before trial.",
+      "Keep proof of filing — the stamped copy from the clerk is your evidence.",
+      "Serve the prosecutor — failure to serve can result in your motion being denied.",
+      "Be specific in your grounds — vague motions are often denied without hearing.",
+      "If you cannot afford filing fees, ask the clerk for a fee waiver form.",
+      "This is educational guidance only — always consult a licensed attorney for your specific case.",
+    ],
+    relevantLaw: [
+      "Federal Rule of Criminal Procedure 12(b) — Defenses and objections before trial",
+      "Fourth Amendment — Protection against unreasonable searches and seizures",
+      "Fifth Amendment — Due process and protection against self-incrimination",
+      "Sixth Amendment — Right to counsel and speedy trial",
+      "Eighth Amendment — Protection against excessive bail and cruel/unusual punishment",
+      "Brady v. Maryland (1963) — Prosecution must disclose exculpatory evidence",
+    ],
+  },
+  "motion-for-bond-reduction": {
+    whenToFile: "File this motion as soon as possible after bond is set and you are unable to post it. You can file multiple times if circumstances change — for example, if you get a job, secure housing, or complete a treatment program. Many courts will hold a bond review hearing within 5-10 days of filing.",
+    statuteOfLimitations: "There is NO statute of limitations for filing a bond reduction motion. You can file at any stage of the case — pre-trial, during trial, or even post-conviction while awaiting sentencing. However, file AS SOON AS POSSIBLE. Every day you sit in jail is a day you cannot work, care for family, or prepare your defense.",
+    filingProcess: [
+      "STEP 1: Complete the bond reduction template. Be thorough about your community ties, employment, family responsibilities, and lack of criminal history.",
+      "STEP 2: Gather supporting documents — pay stubs, lease agreements, utility bills, letters from employers, family photos, treatment completion certificates.",
+      "STEP 3: Make at least 3 copies of the motion and all supporting documents.",
+      "STEP 4: File with the Clerk of Court. Ask for a hearing date — many courts have regular bond review days.",
+      "STEP 5: Serve the prosecutor immediately after filing.",
+      "STEP 6: Prepare for the hearing. Dress appropriately. Bring any witnesses who can vouch for your character.",
+      "STEP 7: If denied, ask the judge when you can refile. Circumstances change — you can file again.",
+    ],
+    importantNotes: [
+      "Gather as much documentation of community ties as possible.",
+      "Show the court you have a stable life — job, family, residence.",
+      "If you have a public defender, ask them to file this motion for you.",
+      "Dress appropriately for court hearings — this affects the judge's perception.",
+      "If denied, ask the judge what conditions would need to be met for a reduction.",
+      "Some jurisdictions offer pretrial services that supervise defendants at no cost.",
+    ],
+    relevantLaw: [
+      "Eighth Amendment — Excessive bail is prohibited",
+      "Stack v. Boyle, 342 U.S. 1 (1951) — Bail must be reasonable to ensure appearance",
+      "United States v. Salerno, 481 U.S. 739 (1987) — Preventive detention standards",
+      "State constitutional provisions on bail (varies by state)",
+    ],
+  },
+  "motion-to-suppress-evidence": {
+    whenToFile: "File this motion BEFORE trial, typically within 30 days of arraignment. This motion challenges HOW evidence was obtained — if the search was unconstitutional, the evidence cannot be used at trial. Timing is critical — if you wait too long, the court may rule that you waived this objection.",
+    statuteOfLimitations: "The statute of limitations for challenging illegally obtained evidence is tied to your case timeline — NOT a traditional time limit. You must raise Fourth Amendment challenges before trial. Federal Rule of Criminal Procedure 12(b)(3) requires these motions before trial. Waiting until trial to object can result in the objection being waived.",
+    filingProcess: [
+      "STEP 1: Fill out the motion with specific details about the search/seizure. The more detailed, the stronger your motion.",
+      "STEP 2: Include a detailed Statement of Facts — describe everything the officers said, did, wore, and how long the encounter lasted.",
+      "STEP 3: Research relevant case law — look for cases with similar facts in your jurisdiction.",
+      "STEP 4: File with the Clerk of Court and request a suppression hearing.",
+      "STEP 5: Serve the prosecutor. They will have the opportunity to respond.",
+      "STEP 6: At the suppression hearing, be prepared to testify about what happened during the search.",
+      "STEP 7: If evidence is suppressed, the prosecution may have to dismiss charges if they cannot proceed without that evidence.",
+    ],
+    importantNotes: [
+      "DETAIL IS EVERYTHING — the more specific your description of the search, the stronger your motion.",
+      "Identify which search warrant exception the prosecution might claim and argue against it.",
+      "If officers did not have a warrant, the burden shifts to the prosecution to justify the search.",
+      "Document everything immediately after the search while memory is fresh.",
+      "If officers exceeded the scope of a warrant, evidence found beyond that scope may be suppressed.",
+      "Suppression hearings often require testimony — prepare to take the stand.",
+    ],
+    relevantLaw: [
+      "Fourth Amendment — Protection against unreasonable searches and seizures",
+      "Weeks v. United States (1914) — Exclusionary rule for federal courts",
+      "Mapp v. Ohio (1961) — Exclusionary rule applied to state courts",
+      "Miranda v. Arizona (1966) — Confessions obtained without warnings are inadmissible",
+      "Fruit of the Poisonous Tree Doctrine",
+    ],
+  },
+  "writ-of-habeas-corpus": {
+    whenToFile: "File a writ of habeas corpus when you believe you are being held unlawfully. This can be filed: (1) BEFORE charges are filed if you have been held beyond the legal time limit, (2) AFTER conviction to challenge the legality of your detention, (3) In federal court under 28 U.S.C. § 2254 after exhausting state remedies. Federal habeas corpus has a ONE-YEAR deadline from the date your conviction becomes final.",
+    statuteOfLimitations: "State habeas corpus: Generally NO strict deadline, but file as soon as possible. Federal habeas corpus (28 U.S.C. § 2254): STRICT ONE-YEAR deadline from when your conviction becomes final. This clock starts when your direct appeal is denied or the time for filing expires. If you miss the one-year federal deadline, you may lose your right to federal review forever.",
+    filingProcess: [
+      "STEP 1: Determine whether to file in state or federal court. If challenging state custody, exhaust state remedies first.",
+      "STEP 2: Complete the petition with ALL grounds for relief. Once filed, you generally cannot add new grounds.",
+      "STEP 3: Include a Verification section — this must be notarized or signed under penalty of perjury.",
+      "STEP 4: File the original petition with the Clerk of Court.",
+      "STEP 5: Serve the petition on the warden, sheriff, or person holding you in custody.",
+      "STEP 6: The court will either: grant the writ, hold a hearing, or deny the petition.",
+      "STEP 7: If denied, you have the right to appeal. Check deadlines carefully.",
+    ],
+    importantNotes: [
+      "Habeas corpus is one of the oldest and most fundamental protections in American law.",
+      "Federal habeas has a ONE-YEAR deadline — do NOT miss it.",
+      "You must exhaust state remedies before filing federal habeas (with limited exceptions).",
+      "Common grounds: ineffective assistance of counsel, prosecutorial misconduct, newly discovered evidence.",
+      "If you cannot afford a lawyer, contact the Innocence Project or regional habeas clinics.",
+    ],
+    relevantLaw: [
+      "Article I, Section 9, Clause 2 — Habeas Corpus Suspension Clause",
+      "28 U.S.C. § 2254 — Federal habeas corpus for state prisoners",
+      "28 U.S.C. § 2255 — Federal habeas corpus for federal prisoners",
+      "Strickland v. Washington (1984) — Ineffective assistance of counsel standard",
+    ],
+  },
+  "motion-for-new-trial": {
+    whenToFile: "File this motion WITHIN the time period specified by your state's rules — typically 10-30 days after the verdict is entered. This is a VERY SHORT window. Do NOT delay. If you miss the deadline, you may lose the right to a new trial forever. The motion preserves your right to appeal and can result in a completely fresh trial.",
+    statuteOfLimitations: "Most states: 10-30 days after verdict. Federal Rule of Criminal Procedure 33: 14 days after verdict (or 28 days for certain newly discovered evidence). Some states allow motions for newly discovered evidence within 1-2 years. CHECK YOUR STATE'S SPECIFIC RULE IMMEDIATELY. Missing this deadline is one of the most common and devastating mistakes in criminal defense.",
+    filingProcess: [
+      "STEP 1: File IMMEDIATELY after an unfavorable verdict. The clock starts ticking the moment the verdict is read.",
+      "STEP 2: Fill out the motion with all applicable grounds. You can include multiple grounds.",
+      "STEP 3: For newly discovered evidence: Include an affidavit explaining when and how you discovered it.",
+      "STEP 4: File with the Clerk of Court who handled your trial. Make sure it gets into YOUR case file.",
+      "STEP 5: Serve the prosecutor immediately.",
+      "STEP 6: Request a hearing. The judge may rule on the papers alone or schedule a hearing.",
+      "STEP 7: If granted, a new trial is scheduled. If denied, you can appeal both the verdict and the denial.",
+    ],
+    importantNotes: [
+      "TIME IS CRITICAL — this motion has the shortest deadline of any pretrial/post-trial motion.",
+      "Include ALL grounds — once the deadline passes, you cannot add new grounds.",
+      "Newly discovered evidence is the most common successful ground.",
+      "Juror misconduct is another strong ground — interview jurors lawfully.",
+      "Filing this motion is often a prerequisite to filing an appeal — do NOT skip this step.",
+    ],
+    relevantLaw: [
+      "Federal Rule of Criminal Procedure 33 — New trial motions",
+      "Brady v. Maryland (1963) — Withheld exculpatory evidence",
+      "Strickland v. Washington (1984) — Ineffective assistance of counsel",
+      "Giglio v. United States (1972) — Prosecutor's duty to disclose impeachment evidence",
+    ],
+  },
+  "motion-in-limine": {
+    whenToFile: "File this motion BEFORE trial begins, typically during pretrial motions practice (within 30 days of arraignment or as ordered by the court). A motion in limine asks the court to exclude prejudicial evidence BEFORE the jury hears it. This prevents the jury from being influenced by evidence that should not be admitted.",
+    statuteOfLimitations: "There is no statute of limitations for a motion in limine, but it must be filed BEFORE trial begins. Once evidence is introduced in front of the jury, the damage is done — even if the judge later excludes it, the jury cannot 'un-hear' what they heard. File this motion EARLY in the pretrial process.",
+    filingProcess: [
+      "STEP 1: Identify the specific evidence you want excluded and the legal basis for exclusion.",
+      "STEP 2: Fill out the motion with detailed arguments about why the evidence is prejudicial.",
+      "STEP 3: Research case law supporting your position — look for similar cases in your jurisdiction.",
+      "STEP 4: File with the Clerk of Court during the pretrial motions period.",
+      "STEP 5: Serve the prosecutor. They will likely argue the evidence is admissible.",
+      "STEP 6: The court will typically rule at a pretrial conference or separate hearing.",
+      "STEP 7: If the judge rules against you, make a timely objection during trial to preserve the issue for appeal.",
+    ],
+    importantNotes: [
+      "The goal is to keep prejudicial evidence away from the jury BEFORE they hear it.",
+      "Common grounds: hearsay, character evidence, prior bad acts, prejudicial photos.",
+      "Even if the judge denies the motion, filing it preserves the issue for appeal.",
+      "If prejudicial evidence comes in despite your motion, object immediately.",
+    ],
+    relevantLaw: [
+      "Federal Rules of Evidence 401-403 — Relevance and prejudicial evidence",
+      "Federal Rule of Evidence 404 — Character evidence",
+      "Federal Rule of Evidence 802 — Hearsay rule",
+      "Federal Rule of Evidence 702 — Expert testimony standards (Daubert)",
+    ],
+  },
+};
 
 // Static fallback forms keyed by slug — render immediately even if API/database is empty
 const FALLBACK_FORMS: Record<string, { id: number; title: string; slug: string; description: string; category: string; content: string | null; fileUrl: string | null; fileSize: string | null; downloadCount: number }> = {
@@ -522,6 +692,98 @@ export default function LegalFormPage() {
           {form.downloadCount ? (
             <p className="text-xs text-dimmed mt-3">Downloaded {form.downloadCount} times</p>
           ) : null}
+
+          {/* FILING GUIDE — Educational Content */}
+          {slug && FILING_GUIDES[slug] && (
+            <div className="mt-10 space-y-6">
+              <div className="w-full h-[2px] bg-[#FF9500] mb-8" />
+
+              <h2 className="text-2xl text-[#F0EBE1] tracking-[-0.02em] mb-2" style={{ fontFamily: 'Newsreader, serif' }}>
+                Filing Guide & Legal Education
+              </h2>
+              <p className="text-sm text-[#C9B99A]/70 mb-6">
+                Educational guidance for using this document. Always consult a licensed attorney for your specific case.
+              </p>
+
+              {/* When to File */}
+              <div className="bg-[rgba(255,149,0,0.08)] border border-[rgba(255,149,0,0.2)] rounded p-5">
+                <div className="flex items-center gap-2 mb-3">
+                  <Clock size={18} className="text-[#FF9500]" />
+                  <h3 className="text-lg text-[#F0EBE1] font-medium" style={{ fontFamily: 'Newsreader, serif' }}>When to File This Motion</h3>
+                </div>
+                <p className="text-sm text-[#C9B99A]/80 leading-relaxed whitespace-pre-line">
+                  {FILING_GUIDES[slug].whenToFile}
+                </p>
+              </div>
+
+              {/* Statute of Limitations */}
+              <div className="bg-[rgba(220,38,38,0.08)] border border-[rgba(220,38,38,0.2)] rounded p-5">
+                <div className="flex items-center gap-2 mb-3">
+                  <FileWarning size={18} className="text-red-400" />
+                  <h3 className="text-lg text-[#F0EBE1] font-medium" style={{ fontFamily: 'Newsreader, serif' }}>Statute of Limitations & Deadlines</h3>
+                </div>
+                <p className="text-sm text-[#C9B99A]/80 leading-relaxed whitespace-pre-line">
+                  {FILING_GUIDES[slug].statuteOfLimitations}
+                </p>
+              </div>
+
+              {/* Filing Process Steps */}
+              <div className="bg-[rgba(42,58,74,0.5)] border border-white/[0.08] rounded p-5">
+                <div className="flex items-center gap-2 mb-4">
+                  <BookOpen size={18} className="text-[#FF9500]" />
+                  <h3 className="text-lg text-[#F0EBE1] font-medium" style={{ fontFamily: 'Newsreader, serif' }}>How to File — Step by Step</h3>
+                </div>
+                <div className="space-y-3">
+                  {FILING_GUIDES[slug].filingProcess.map((step, i) => (
+                    <div key={i} className="flex gap-3 text-sm text-[#C9B99A]/80 leading-relaxed">
+                      <span className="text-[#FF9500] font-mono text-xs shrink-0 mt-0.5">{String(i + 1).padStart(2, '0')}</span>
+                      <span>{step}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Important Notes */}
+              <div className="bg-[rgba(42,58,74,0.5)] border border-[rgba(255,149,0,0.15)] rounded p-5">
+                <div className="flex items-center gap-2 mb-4">
+                  <AlertTriangle size={18} className="text-[#FF9500]" />
+                  <h3 className="text-lg text-[#F0EBE1] font-medium" style={{ fontFamily: 'Newsreader, serif' }}>Critical Notes — Read Before Filing</h3>
+                </div>
+                <ul className="space-y-2">
+                  {FILING_GUIDES[slug].importantNotes.map((note, i) => (
+                    <li key={i} className="flex gap-3 text-sm text-[#C9B99A]/80">
+                      <span className="text-[#FF9500] shrink-0">•</span>
+                      <span>{note}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Relevant Law */}
+              <div className="bg-[rgba(42,58,74,0.5)] border border-[rgba(16,185,129,0.2)] rounded p-5">
+                <div className="flex items-center gap-2 mb-4">
+                  <Gavel size={18} className="text-emerald-400" />
+                  <h3 className="text-lg text-[#F0EBE1] font-medium" style={{ fontFamily: 'Newsreader, serif' }}>Relevant Law & Precedents</h3>
+                </div>
+                <ul className="space-y-2">
+                  {FILING_GUIDES[slug].relevantLaw.map((law, i) => (
+                    <li key={i} className="flex gap-3 text-sm text-[#C9B99A]/80">
+                      <span className="text-emerald-400 shrink-0">§</span>
+                      <span>{law}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Disclaimer */}
+              <div className="flex items-start gap-3 p-4 bg-[rgba(255,149,0,0.05)] rounded border border-[rgba(255,149,0,0.1)]">
+                <AlertTriangle size={18} className="text-[#FF9500] shrink-0 mt-0.5" />
+                <p className="text-xs text-[#C9B99A]/60 leading-relaxed">
+                  <strong className="text-[#FF9500]">Educational Information Only:</strong> This filing guide is provided for educational purposes to help you understand legal procedures. AASOTU Media Group LLC is not a law firm and does not provide legal advice. Laws vary by jurisdiction and change over time. Always verify current law in your jurisdiction and consult a licensed attorney for advice specific to your case.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
