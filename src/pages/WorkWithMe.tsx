@@ -13,22 +13,112 @@ const SERVICE_OPTIONS = [
   '1-on-1 consultation'
 ]
 
-// Marquee Ticker Component
+// VICTIMS OF STATE VIOLENCE — We say their names
+const FALLEN_MARTYRS = [
+  // Civil Rights Leaders Assassinated
+  'Dr. Martin Luther King Jr. — Memphis, TN',
+  'Malcolm X — New York, NY',
+  'Fred Hampton — Chicago, IL',
+  'Mark Clark — Chicago, IL',
+  'Medgar Evers — Jackson, MS',
+  // Police Shootings — Children
+  'Tamir Rice, age 12 — Cleveland, OH',
+  'Aiyana Stanley-Jones, age 7 — Detroit, MI',
+  'Cameron Tillman, age 14 — Houma, LA',
+  'Roysel Carrion, age 13 — Miami, FL',
+  // Police Shootings — High Profile
+  'George Floyd — Minneapolis, MN',
+  'Breonna Taylor — Louisville, KY',
+  'Michael Brown, age 18 — Ferguson, MO',
+  'Eric Garner — Staten Island, NY',
+  'Philando Castile — Falcon Heights, MN',
+  'Freddie Gray — Baltimore, MD',
+  'Sandra Bland — Waller County, TX',
+  'Walter Scott — North Charleston, SC',
+  'Laquan McDonald, age 17 — Chicago, IL',
+  'Alton Sterling — Baton Rouge, LA',
+  'Botham Jean — Dallas, TX',
+  'Ahmaud Arbery — Brunswick, GA',
+  'Daunte Wright — Brooklyn Center, MN',
+  'Oscar Grant — Oakland, CA',
+  'Sean Bell — New York, NY',
+  'Atatiana Jefferson — Fort Worth, TX',
+  'Stephon Clark — Sacramento, CA',
+  'Terence Crutcher — Tulsa, OK',
+  'Samuel DuBose — Cincinnati, OH',
+  'Patrick K. Lloyd — Grand Rapids, MI',
+  'Jordan Edwards, age 15 — Balch Springs, TX',
+  // Say Her Name
+  'Korryn Gaines — Randallstown, MD',
+  'India Kager — College Park, MD',
+  'Michelle Cusseaux — Phoenix, AZ',
+  'Tanisha Anderson — Cleveland, OH',
+  'Kayla Moore — Berkeley, CA',
+  'Shelly Frey — Houston, TX',
+  'Megan Hockaday — Oxnard, CA',
+  'Mya Hall — Baltimore, MD',
+  // Movement martyrs
+  'Trayvon Martin, age 17 — Sanford, FL',
+  'Emmett Till, age 14 — Money, MS',
+]
+
+// Corrupt system message — calls out judges, lawyers, PDs, prosecutors
+const SYSTEM_MESSAGE = [
+  'CORRUPT JUDGES dismiss our evidence before we speak — ',
+  'LYING PROSECUTORS hide exculpatory evidence to protect convictions — ',
+  'OVERWORKED PUBLIC DEFENDERS meet clients for 7 minutes before a plea deal — ',
+  'WEAPONIZED UPL LAWS criminalize community advocates who try to help — ',
+  'BIASED SENTENCING gives Black defendants 20% longer sentences for the same crime — ',
+  'FIXED BAIL SYSTEM holds the poor in jail while the rich walk free — ',
+  'PROSECUTORIAL MISCONDUCT ruins lives with zero accountability — ',
+  'THE LEGAL PROFESSION protects its monopoly on justice — at our expense — ',
+  'CASH BAIL is a poverty tax that destroys families before trial — ',
+  'COURT APPOINTED ATTORNEYS with 500 cases cannot represent anyone — ',
+]
+
+// Marquee Ticker Component — honors martyrs + calls out corrupt system
 function PetitionTicker() {
   const { data: signers } = trpc.petition.list.useQuery()
-  const names = signers && signers.length > 0
-    ? signers.map(s => s.name)
-    : ['Ronald L. King', 'Maya J. Washington', 'Darnell K. Mitchell', 'Shanice R. Thompson', 'Marcus A. Cole', 'Keisha N. Brown', 'Jamal T. Harris', 'Latoya M. Davis', 'Andre P. Johnson', 'Tiffany S. Williams']
 
-  const tickerText = names.join(' \u2022 ') + ' \u2022 '
+  // Build martyrs ticker line
+  const martyrsLine = 'WE SAY THEIR NAMES \u2022 ' + FALLEN_MARTYRS.join(' \u2022 ') + ' \u2022 '
+
+  // Build system corruption ticker line
+  const systemLine = 'THE SYSTEM IS BROKEN \u2022 ' + SYSTEM_MESSAGE.join('') + ' '
+
+  // Signers line (if any real signers exist)
+  const realSigners = signers && signers.length > 0
+    ? 'PETITION SIGNERS \u2022 ' + signers.map(s => s.name).join(' \u2022 ') + ' \u2022 '
+    : ''
 
   return (
-    <div className="w-full bg-[#FF9500]/10 border-y border-[#FF9500]/30 py-3 overflow-hidden">
-      <div className="flex whitespace-nowrap animate-marquee">
-        <span className="text-sm text-[#FF9500] tracking-[0.1em] uppercase font-medium px-4">
-          {tickerText}{tickerText}
-        </span>
+    <div className="w-full overflow-hidden">
+      {/* Row 1: Martyrs — red tint for remembrance */}
+      <div className="bg-red-950/30 border-y border-red-700/30 py-2 overflow-hidden">
+        <div className="flex whitespace-nowrap animate-marquee">
+          <span className="text-xs text-red-400 tracking-[0.08em] uppercase font-medium px-4">
+            {martyrsLine}{martyrsLine}
+          </span>
+        </div>
       </div>
+      {/* Row 2: Corrupt System — orange tint for urgency */}
+      <div className="bg-[#FF9500]/10 border-b border-[#FF9500]/30 py-2 overflow-hidden">
+        <div className="flex whitespace-nowrap animate-marquee" style={{ animationDirection: 'reverse', animationDuration: '45s' }}>
+          <span className="text-xs text-[#FF9500] tracking-[0.06em] uppercase font-medium px-4">
+            {systemLine}{systemLine}
+          </span>
+        </div>
+      </div>
+      {/* Row 3: Petition signers (if any) */}
+      {realSigners && (
+        <div className="bg-emerald-950/20 border-b border-emerald-700/20 py-2 overflow-hidden">
+          <div className="flex whitespace-nowrap animate-marquee" style={{ animationDuration: '35s' }}>
+            <span className="text-xs text-emerald-400 tracking-[0.08em] uppercase font-medium px-4">
+              {realSigners}{realSigners}
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
