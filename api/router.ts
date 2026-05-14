@@ -8,13 +8,11 @@ import { aiRouter } from "./ai-router";
 import { voiceRouter } from "./voice-router";
 import { petitionRouter } from "./petition-router";
 import { storyRouter } from "./story-router";
-import { adminAuthRouter } from "./admin-auth-router";
 import { createRouter, publicQuery } from "./middleware";
 
 export const appRouter = createRouter({
   ping: publicQuery.query(() => ({ ok: true, ts: Date.now() })),
   auth: authRouter,
-  adminAuth: adminAuthRouter,
   blog: blogRouter,
   service: serviceRouter,
   booking: bookingRouter,

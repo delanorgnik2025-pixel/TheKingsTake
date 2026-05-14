@@ -1,7 +1,11 @@
 import * as cookie from "cookie";
+import { z } from "zod";
 import { Session } from "@contracts/constants";
 import { getSessionCookieOptions } from "./lib/cookies";
-import { createRouter, authedQuery } from "./middleware";
+import { createRouter, publicQuery, authedQuery } from "./middleware";
+
+// Admin password — use environment variable or default
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "AASOTU2025!";
 
 export const authRouter = createRouter({
   me: authedQuery.query((opts) => opts.ctx.user),
@@ -19,4 +23,16 @@ export const authRouter = createRouter({
     );
     return { success: true };
   }),
+  // Admin password login (bypasses OAuth)
+  adminLogin: publicQuery
+    .input(z.object({
+      password: z.string(),
+    }))
+    .mutation(async ({ input }) => {
+      if (input.password !== ADMIN_PASSWORD) {
+        throw new Error("Invalid admin password");
+      }
+      const token = "admin_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2);
+      return { success: true, token };
+    }),
 });
