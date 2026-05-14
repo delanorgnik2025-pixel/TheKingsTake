@@ -27,14 +27,21 @@ function requireRole(role: string) {
   return t.middleware(async (opts) => {
     const { ctx, next } = opts;
 
-    if (!ctx.user || ctx.user.role !== role) {
-      throw new TRPCError({
-        code: "FORBIDDEN",
-        message: ErrorMessages.insufficientRole,
-      });
+    // Check if user has the role in database (OAuth login)
+    if (ctx.user && ctx.user.role === role) {
+      return next({ ctx: { ...ctx, user: ctx.user } });
     }
 
-    return next({ ctx: { ...ctx, user: ctx.user } });
+    // Check if admin token is provided in header (password login)
+    const adminToken = (ctx.req as any)?.headers?.get?.("x-admin-token");
+    if (adminToken && adminToken.startsWith("admin_")) {
+      return next({ ctx: { ...ctx, user: { id: 0, name: "Admin", email: "admin@aasotu.com", role: "admin" } as any } });
+    }
+
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: ErrorMessages.insufficientRole,
+    });
   });
 }
 
