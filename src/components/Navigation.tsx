@@ -45,9 +45,9 @@ export default function Navigation({ onMenuToggle, onNavClick }: NavigationProps
             </a>
           </div>
         ) : (
-          <a href="https://thekingstake.com/api/auth/login" className="text-[#FF9500] text-sm hover:text-[#FFB840] transition-colors flex items-center gap-1">
+          <Link to="/admin/login" className="text-[#FF9500] text-sm hover:text-[#FFB840] transition-colors flex items-center gap-1">
             <LogIn size={14} /> Admin Log In
-          </a>
+          </Link>
         )}
         <button onClick={onMenuToggle} className="text-[#F0EBE1] text-sm uppercase tracking-[0.04em] hover:text-[#FF9500] transition-colors duration-200 cursor-pointer">MENU</button>
       </div>
@@ -70,7 +70,7 @@ export default function Navigation({ onMenuToggle, onNavClick }: NavigationProps
             {user ? (
               <a href="/api/auth/logout" onClick={() => setMobileOpen(false)} className="block text-[#C9B99A] text-xl py-3 hover:text-[#FF9500]">Sign Out</a>
             ) : (
-              <a href="https://thekingstake.com/api/auth/login" onClick={() => setMobileOpen(false)} className="block text-[#FF9500] text-xl py-3 hover:text-[#FFB840]">Admin Log In</a>
+              <Link to="/admin/login" onClick={() => setMobileOpen(false)} className="block text-[#FF9500] text-xl py-3 hover:text-[#FFB840]">Admin Log In</Link>
             )}
           </motion.div>
         )}
