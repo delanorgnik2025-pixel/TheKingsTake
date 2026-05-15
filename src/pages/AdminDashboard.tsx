@@ -43,7 +43,7 @@ function BlogModule() {
       slug: form.slug || form.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
       excerpt: form.excerpt || form.content.slice(0, 200) + '...',
       content: form.content,
-      coverImage: form.coverImage || null,
+      coverImage: form.coverImage || "",
       category: form.category,
       published: form.published,
     })
@@ -54,7 +54,7 @@ function BlogModule() {
     updateMut.mutate({
       id: editPost.id, title: form.title, slug: form.slug,
       excerpt: form.excerpt, content: form.content,
-      coverImage: form.coverImage || null, published: form.published,
+      coverImage: form.coverImage || "", published: form.published,
     })
   }
 

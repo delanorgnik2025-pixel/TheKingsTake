@@ -64,7 +64,7 @@ export const blogRouter = createRouter({
         content: input.content,
         excerpt: input.excerpt ?? null,
         category: input.category,
-        coverImage: input.coverImage ?? null,
+        coverImage: input.coverImage || "",
         featured: input.featured,
         published: input.published,
       }).$returningId();
