@@ -84,11 +84,11 @@ function AppRoutes() {
         <Route path="/work-with-me" element={<WorkWithMe />} />
         <Route path="/legal" element={<LegalHubPage />} />
         <Route path="/legal/:slug" element={<LegalFormPage />} />
-        <Route path="/admin" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
-        <Route path="/admin/blog" element={<ProtectedAdminRoute><AdminBlog /></ProtectedAdminRoute>} />
-        <Route path="/admin/services" element={<ProtectedAdminRoute><AdminServices /></ProtectedAdminRoute>} />
-        <Route path="/admin/legal" element={<ProtectedAdminRoute><AdminLegal /></ProtectedAdminRoute>} />
-        <Route path="/admin/setup" element={<ProtectedAdminRoute><AdminSetup /></ProtectedAdminRoute>} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/blog" element={<AdminDashboard />} />
+        <Route path="/admin/services" element={<AdminDashboard />} />
+        <Route path="/admin/legal" element={<AdminDashboard />} />
+        <Route path="/admin/setup" element={<AdminDashboard />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

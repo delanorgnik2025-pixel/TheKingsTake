@@ -33,7 +33,7 @@ function requireRole(role: string) {
     }
 
     // Check if admin token is provided in header (password login)
-    const adminToken = (ctx.req as any)?.headers?.get?.("x-admin-token");
+    const adminToken = ctx.req.headers.get("x-admin-token");
     if (adminToken && adminToken.startsWith("admin_")) {
       return next({ ctx: { ...ctx, user: { id: 0, name: "Admin", email: "admin@aasotu.com", role: "admin" } as any } });
     }
@@ -46,4 +46,5 @@ function requireRole(role: string) {
 }
 
 export const authedQuery = t.procedure.use(requireAuth);
-export const adminQuery = authedQuery.use(requireRole("admin"));
+// Admin query: checks OAuth admin OR password token. Does NOT require OAuth first.
+export const adminQuery = publicQuery.use(requireRole("admin"));

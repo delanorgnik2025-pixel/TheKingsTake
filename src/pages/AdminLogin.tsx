@@ -13,8 +13,7 @@ export default function AdminLogin() {
     onSuccess: (data) => {
       if (data.success) {
         localStorage.setItem('adminToken', data.token)
-        navigate('/admin/blog')
-        window.location.reload()
+        navigate('/admin')
       }
     },
     onError: (err) => {

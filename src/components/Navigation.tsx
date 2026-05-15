@@ -33,7 +33,7 @@ export default function Navigation({ onMenuToggle, onNavClick }: NavigationProps
         <a href="/#services" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200 cursor-pointer">Services</a>
         <a href="/#contact" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200 cursor-pointer">Contact</a>
         {isAdmin ? (
-          <Link to="/admin/blog" className="flex items-center gap-1 text-[#FF9500] text-sm hover:text-[#FFB840] transition-colors">
+          <Link to="/admin" className="flex items-center gap-1 text-[#FF9500] text-sm hover:text-[#FFB840] transition-colors">
             <LayoutDashboard size={14} /> Admin
           </Link>
         ) : (
@@ -57,7 +57,7 @@ export default function Navigation({ onMenuToggle, onNavClick }: NavigationProps
             <a href="/#services" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Services</a>
             <a href="/#contact" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Contact</a>
             {isAdmin ? (
-              <Link to="/admin/blog" onClick={() => setMobileOpen(false)} className="block text-[#FF9500] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FFB840]">Admin Dashboard</Link>
+              <Link to="/admin" onClick={() => setMobileOpen(false)} className="block text-[#FF9500] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FFB840]">Admin Dashboard</Link>
             ) : (
               <Link to="/admin/login" onClick={() => setMobileOpen(false)} className="block text-[#FF9500] text-xl py-3 hover:text-[#FFB840]">Admin Log In</Link>
             )}
