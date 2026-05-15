@@ -19,6 +19,7 @@ import AdminLegal from './pages/AdminLegal'
 import Login from './pages/Login'
 import AdminSetup from './pages/AdminSetup'
 import AdminLogin from './pages/AdminLogin'
+import ProtectedAdminRoute from './components/ProtectedAdminRoute'
 import NotFound from './pages/NotFound'
 
 function AppLayout({ children }: { children: React.ReactNode }) {
@@ -83,11 +84,11 @@ function AppRoutes() {
         <Route path="/work-with-me" element={<WorkWithMe />} />
         <Route path="/legal" element={<LegalHubPage />} />
         <Route path="/legal/:slug" element={<LegalFormPage />} />
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/blog" element={<AdminBlog />} />
-        <Route path="/admin/services" element={<AdminServices />} />
-        <Route path="/admin/legal" element={<AdminLegal />} />
-        <Route path="/admin/setup" element={<AdminSetup />} />
+        <Route path="/admin" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
+        <Route path="/admin/blog" element={<ProtectedAdminRoute><AdminBlog /></ProtectedAdminRoute>} />
+        <Route path="/admin/services" element={<ProtectedAdminRoute><AdminServices /></ProtectedAdminRoute>} />
+        <Route path="/admin/legal" element={<ProtectedAdminRoute><AdminLegal /></ProtectedAdminRoute>} />
+        <Route path="/admin/setup" element={<ProtectedAdminRoute><AdminSetup /></ProtectedAdminRoute>} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
