@@ -27,14 +27,14 @@ const NAV_ITEMS = [
 function BlogModule() {
   const [mode, setMode] = useState<'list' | 'create' | 'edit'>('list')
   const [editPost, setEditPost] = useState<any>(null)
-  const [form, setForm] = useState({ title: '', slug: '', excerpt: '', content: '', coverImage: '', published: true })
+  const [form, setForm] = useState({ title: '', slug: '', excerpt: '', content: '', coverImage: '', category: 'general', published: true })
   const utils = trpc.useUtils()
   const postsQuery = trpc.blog.list.useQuery()
   const createMut = trpc.blog.create.useMutation({ onSuccess: () => { utils.blog.list.invalidate(); setMode('list'); resetForm() } })
   const updateMut = trpc.blog.update.useMutation({ onSuccess: () => { utils.blog.list.invalidate(); setMode('list'); setEditPost(null); resetForm() } })
   const deleteMut = trpc.blog.delete.useMutation({ onSuccess: () => utils.blog.list.invalidate() })
 
-  function resetForm() { setForm({ title: '', slug: '', excerpt: '', content: '', coverImage: '', published: true }) }
+  function resetForm() { setForm({ title: '', slug: '', excerpt: '', content: '', coverImage: '', category: 'general', published: true }) }
 
   function handleCreate() {
     if (!form.title || !form.content) return
@@ -44,6 +44,7 @@ function BlogModule() {
       excerpt: form.excerpt || form.content.slice(0, 200) + '...',
       content: form.content,
       coverImage: form.coverImage || undefined,
+      category: form.category,
       published: form.published,
     })
   }
@@ -80,6 +81,10 @@ function BlogModule() {
           <div>
             <label className="block text-xs tracking-[0.15em] text-[#C9B99A]/60 uppercase mb-1">Slug (URL)</label>
             <input type="text" value={form.slug} onChange={e => setForm({ ...form, slug: e.target.value })} className="w-full h-11 bg-white/[0.03] border border-white/[0.08] text-[#F0EBE1] px-3 text-sm rounded focus:border-[#FF9500]/50 focus:outline-none" placeholder="auto-generated-from-title" />
+          </div>
+          <div>
+            <label className="block text-xs tracking-[0.15em] text-[#C9B99A]/60 uppercase mb-1">Category *</label>
+            <input type="text" value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} className="w-full h-11 bg-white/[0.03] border border-white/[0.08] text-[#F0EBE1] px-3 text-sm rounded focus:border-[#FF9500]/50 focus:outline-none" placeholder="e.g. news, legal, opinion" />
           </div>
           <div>
             <label className="block text-xs tracking-[0.15em] text-[#C9B99A]/60 uppercase mb-1">Excerpt</label>
