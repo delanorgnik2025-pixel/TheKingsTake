@@ -32,18 +32,10 @@ export default function Navigation({ onMenuToggle, onNavClick }: NavigationProps
         <Link to="/legal" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200">Legal Hub</Link>
         <a href="/#services" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200 cursor-pointer">Services</a>
         <a href="/#contact" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200 cursor-pointer">Contact</a>
-        {isAdmin && (
-          <Link to="/admin" className="flex items-center gap-1 text-[#FF9500] text-sm hover:text-[#FFB840] transition-colors">
+        {isAdmin ? (
+          <Link to="/admin/blog" className="flex items-center gap-1 text-[#FF9500] text-sm hover:text-[#FFB840] transition-colors">
             <LayoutDashboard size={14} /> Admin
           </Link>
-        )}
-        {user ? (
-          <div className="flex items-center gap-3">
-            <span className="text-[#C9B99A] text-sm flex items-center gap-1"><User size={14} /> {user.name || 'User'}</span>
-            <a href="/api/auth/logout" className="text-[#C9B99A] text-sm hover:text-[#FF9500] transition-colors flex items-center gap-1">
-              <LogOut size={14} /> Sign Out
-            </a>
-          </div>
         ) : (
           <Link to="/admin/login" className="text-[#FF9500] text-sm hover:text-[#FFB840] transition-colors flex items-center gap-1">
             <LogIn size={14} /> Admin Log In
@@ -64,11 +56,8 @@ export default function Navigation({ onMenuToggle, onNavClick }: NavigationProps
             <Link to="/legal" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Legal Hub</Link>
             <a href="/#services" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Services</a>
             <a href="/#contact" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Contact</a>
-            {isAdmin && (
-              <Link to="/admin" onClick={() => setMobileOpen(false)} className="block text-[#FF9500] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FFB840]">Admin Dashboard</Link>
-            )}
-            {user ? (
-              <a href="/api/auth/logout" onClick={() => setMobileOpen(false)} className="block text-[#C9B99A] text-xl py-3 hover:text-[#FF9500]">Sign Out</a>
+            {isAdmin ? (
+              <Link to="/admin/blog" onClick={() => setMobileOpen(false)} className="block text-[#FF9500] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FFB840]">Admin Dashboard</Link>
             ) : (
               <Link to="/admin/login" onClick={() => setMobileOpen(false)} className="block text-[#FF9500] text-xl py-3 hover:text-[#FFB840]">Admin Log In</Link>
             )}

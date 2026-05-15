@@ -1,28 +1,34 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { trpc } from '@/providers/trpc'
 
 export default function ProtectedAdminRoute({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate()
 
-  // Check OAuth admin
-  const { data: user, isLoading: oauthLoading } = trpc.auth.me.useQuery(undefined, {
-    staleTime: 1000 * 60 * 5,
-    retry: false,
-  })
-
-  // Check password admin token
+  // Check password admin token FIRST — instant, no API call needed
   const adminToken = typeof window !== 'undefined' ? localStorage.getItem('adminToken') : null
 
-  const isAdmin = user?.role === 'admin' || !!adminToken
-  const isLoading = oauthLoading
+  // Only check OAuth if no password token (avoids spinner for password users)
+  const { data: user, isLoading } = trpc.auth.me.useQuery(undefined, {
+    staleTime: 1000 * 60 * 5,
+    retry: false,
+    enabled: !adminToken, // Skip OAuth check if password token exists
+  })
+
+  const isAdmin = !!adminToken || user?.role === 'admin'
 
   useEffect(() => {
-    if (!isLoading && !isAdmin) {
+    if (!isAdmin && !isLoading) {
       navigate('/admin/login')
     }
-  }, [isLoading, isAdmin, navigate])
+  }, [isAdmin, isLoading, navigate])
 
+  // Password users: no spinner, render immediately
+  if (adminToken) {
+    return <>{children}</>
+  }
+
+  // OAuth users: show spinner while checking
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#0C1520] flex items-center justify-center">
