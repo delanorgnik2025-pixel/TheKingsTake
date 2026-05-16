@@ -28,7 +28,7 @@ export default function Navigation({ onMenuToggle, onNavClick }: NavigationProps
       </div>
 
       <div className="hidden md:flex items-center gap-8">
-        <a href="https://delanorgnik2025-asupk.wordpress.com" target="_blank" rel="noopener noreferrer" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200">Blog</a>
+        <Link to="/blog" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200">Blog</Link>
         <Link to="/legal" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200">Legal Hub</Link>
         <a href="/#services" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200 cursor-pointer">Services</a>
         <a href="/#contact" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200 cursor-pointer">Contact</a>
@@ -52,7 +52,7 @@ export default function Navigation({ onMenuToggle, onNavClick }: NavigationProps
         {mobileOpen && (
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
             className="absolute top-16 left-0 right-0 bg-[#1B2838]/95 backdrop-blur-xl p-6 md:hidden" style={{ borderTop: '1px solid rgba(255,149,0,0.15)' }}>
-            <a href="https://delanorgnik2025-asupk.wordpress.com" target="_blank" rel="noopener noreferrer" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Blog</a>
+            <Link to="/blog" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Blog</Link>
             <Link to="/legal" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Legal Hub</Link>
             <a href="/#services" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Services</a>
             <a href="/#contact" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Contact</a>
