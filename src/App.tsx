@@ -20,6 +20,7 @@ import Login from './pages/Login'
 import AdminSetup from './pages/AdminSetup'
 import AdminLogin from './pages/AdminLogin'
 import ProtectedAdminRoute from './components/ProtectedAdminRoute'
+import SitePasswordGate from './components/SitePasswordGate'
 import NotFound from './pages/NotFound'
 
 function AppLayout({ children }: { children: React.ReactNode }) {
@@ -97,7 +98,11 @@ function AppRoutes() {
 }
 
 function App() {
-  return <AppRoutes />
+  return (
+    <SitePasswordGate>
+      <AppRoutes />
+    </SitePasswordGate>
+  )
 }
 
 export default App
