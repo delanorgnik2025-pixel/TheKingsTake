@@ -30,7 +30,8 @@ export default function MenuOverlay({ isOpen, onClose, onNavClick }: MenuOverlay
             {[
               { label: 'HOME', action: () => { onNavClick('hero'); onClose(); } },
               { label: 'BLOG', action: () => { window.location.href = '/blog'; } },
-              { label: 'LEGAL HUB', action: () => { window.location.href = '/legal'; } },
+              { label: 'WRITING SERVICES', action: () => { window.location.href = '/writing-services'; } },
+              { label: 'CIVICS', action: () => { window.location.href = '/civics'; } },
               { label: 'SERVICES', action: () => { onNavClick('services'); onClose(); } },
               { label: 'CONTACT', action: () => { onNavClick('contact'); onClose(); } },
             ].map((link, i) => (

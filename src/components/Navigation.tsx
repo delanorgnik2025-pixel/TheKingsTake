@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, LayoutDashboard, LogIn, LogOut, User } from 'lucide-react'
+import { Menu, X, LayoutDashboard, LogIn, ChevronDown } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 
 interface NavigationProps {
@@ -11,12 +11,35 @@ interface NavigationProps {
 
 export default function Navigation({ onMenuToggle, onNavClick }: NavigationProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [writingDropdownOpen, setWritingDropdownOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
   const { user, isAdmin } = useAuth()
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setWritingDropdownOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   const handleNav = (id: string) => {
     onNavClick(id)
     setMobileOpen(false)
   }
+
+  const writingDropdownItems = [
+    { label: 'Writing Services', href: '/writing-services', desc: 'All writing offerings' },
+    { label: 'Speechwriting', href: '/services/speechwriting-narrative', desc: 'Speeches & narratives' },
+    { label: 'Book & Publishing', href: '/services/book-publishing', desc: 'Manuscript to published' },
+    { label: 'Legacy Interview', href: '/services/legacy-interview', desc: 'Preserve your story' },
+    { label: 'Ghostwriting', href: '/services/ghostwriting', desc: 'Your voice, my craft' },
+    { label: 'Content Writing', href: '/services/content-writing', desc: 'Copy that converts' },
+    { label: 'AI-Assisted Creative', href: '/services/ai-assisted-creative', desc: 'Human + AI power' },
+  ]
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-[100] h-16 flex items-center justify-between px-6 md:px-12" style={{ background: 'rgba(27,40,56,0.85)', backdropFilter: 'blur(12px)' }}>
@@ -27,9 +50,43 @@ export default function Navigation({ onMenuToggle, onNavClick }: NavigationProps
         <Link to="/" className="text-[#F0EBE1] text-sm uppercase tracking-[0.08em] hover:text-[#FF9500] transition-colors duration-300">#TheKingsTake</Link>
       </div>
 
-      <div className="hidden md:flex items-center gap-8">
+      <div className="hidden md:flex items-center gap-6">
         <Link to="/blog" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200">Blog</Link>
-        <Link to="/legal" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200">Legal Hub</Link>
+
+        {/* Writing Services Dropdown */}
+        <div className="relative" ref={dropdownRef}>
+          <button
+            onClick={() => setWritingDropdownOpen(!writingDropdownOpen)}
+            className="flex items-center gap-1 text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200"
+          >
+            Writing Services <ChevronDown size={14} className={`transition-transform duration-200 ${writingDropdownOpen ? 'rotate-180' : ''}`} />
+          </button>
+          <AnimatePresence>
+            {writingDropdownOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+                className="absolute top-full left-0 mt-2 w-64 bg-[#1B2838]/95 backdrop-blur-xl rounded border border-[rgba(255,149,0,0.2)] overflow-hidden"
+                style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}
+              >
+                {writingDropdownItems.map((item, i) => (
+                  <Link
+                    key={i}
+                    to={item.href}
+                    onClick={() => setWritingDropdownOpen(false)}
+                    className="block px-4 py-2.5 border-b border-[rgba(240,235,225,0.05)] hover:bg-[rgba(255,149,0,0.08)] transition-colors group"
+                  >
+                    <p className="text-sm text-[#F0EBE1] group-hover:text-[#FF9500] transition-colors">{item.label}</p>
+                    <p className="text-[10px] text-[#C9B99A]/50">{item.desc}</p>
+                  </Link>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
         <a href="/#services" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200 cursor-pointer">Services</a>
         <a href="/#contact" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200 cursor-pointer">Contact</a>
         {isAdmin ? (
@@ -53,7 +110,18 @@ export default function Navigation({ onMenuToggle, onNavClick }: NavigationProps
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
             className="absolute top-16 left-0 right-0 bg-[#1B2838]/95 backdrop-blur-xl p-6 md:hidden" style={{ borderTop: '1px solid rgba(255,149,0,0.15)' }}>
             <Link to="/blog" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Blog</Link>
-            <Link to="/legal" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Legal Hub</Link>
+
+            {/* Writing Services Mobile */}
+            <Link to="/writing-services" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Writing Services</Link>
+            <div className="pl-4">
+              <Link to="/services/speechwriting-narrative" onClick={() => setMobileOpen(false)} className="block text-[#C9B99A] text-base py-2 border-b border-[rgba(240,235,225,0.04)] hover:text-[#FF9500]">Speechwriting</Link>
+              <Link to="/services/book-publishing" onClick={() => setMobileOpen(false)} className="block text-[#C9B99A] text-base py-2 border-b border-[rgba(240,235,225,0.04)] hover:text-[#FF9500]">Book & Publishing</Link>
+              <Link to="/services/legacy-interview" onClick={() => setMobileOpen(false)} className="block text-[#C9B99A] text-base py-2 border-b border-[rgba(240,235,225,0.04)] hover:text-[#FF9500]">Legacy Interview</Link>
+              <Link to="/services/ghostwriting" onClick={() => setMobileOpen(false)} className="block text-[#C9B99A] text-base py-2 border-b border-[rgba(240,235,225,0.04)] hover:text-[#FF9500]">Ghostwriting</Link>
+              <Link to="/services/content-writing" onClick={() => setMobileOpen(false)} className="block text-[#C9B99A] text-base py-2 border-b border-[rgba(240,235,225,0.04)] hover:text-[#FF9500]">Content Writing</Link>
+              <Link to="/services/ai-assisted-creative" onClick={() => setMobileOpen(false)} className="block text-[#C9B99A] text-base py-2 border-b border-[rgba(240,235,225,0.04)] hover:text-[#FF9500]">AI-Assisted Creative</Link>
+            </div>
+
             <a href="/#services" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Services</a>
             <a href="/#contact" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Contact</a>
             {isAdmin ? (
