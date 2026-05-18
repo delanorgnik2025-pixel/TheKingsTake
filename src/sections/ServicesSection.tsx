@@ -2,12 +2,12 @@ import { motion } from 'framer-motion'
 import type { Variants } from 'framer-motion'
 import { Link } from 'react-router'
 import { trpc } from '@/providers/trpc'
-import { PenTool, Globe, Gavel, BookOpen, Megaphone, Code, Crown, ArrowRight, FileText } from 'lucide-react'
+import { PenTool, Globe, Gavel, BookOpen, Megaphone, Code, Crown, ArrowRight, FileText, Feather, Type } from 'lucide-react'
 import ScrollReveal from '../components/ScrollReveal'
 import { useMemo } from 'react'
 
 const iconMap: Record<string, React.ElementType> = {
-  PenTool, Globe, Gavel, BookOpen, Megaphone, Code, Crown,
+  PenTool, Globe, Gavel, BookOpen, Megaphone, Code, Crown, Feather, Type,
 };
 
 const cardVariants: Variants = {
@@ -82,6 +82,24 @@ const FALLBACK_SERVICES = [
     type: "package" as const, icon: "Crown",
     features: JSON.stringify(["60-90 minute professional interview ($500)", "Written feature article ($500)", "Book chapter ($750)", "Podcast script ($600)", "Documentary narration ($1,000)", "Split payment: 50% deposit + 50% on delivery"]),
     order: 7, isActive: true,
+  },
+  {
+    id: 8, name: "Ghostwriting Services", slug: "ghostwriting",
+    shortDescription: "Your name. My words. Professional ghostwriting for leaders, creators, and visionaries. From $1,500.",
+    fullDescription: "When you have a message but not the time or craft to write it — I become your voice. Books, articles, speeches, and social content that sounds exactly like you.",
+    price: 1500, priceDisplay: "From $1,500", duration: "Per project",
+    type: "one_time" as const, icon: "Feather",
+    features: JSON.stringify(["Articles & blog posts ($500+)", "Social media content series ($750+)", "Op-eds & commentary ($1,000+)", "Book ghostwriting ($5,000+)", "Speech series & campaign messaging ($2,500+)", "Complete voice & brand development"]),
+    order: 8, isActive: true,
+  },
+  {
+    id: 9, name: "Content Writing & Copywriting", slug: "content-writing",
+    shortDescription: "Website copy, blog posts, marketing content — words that convert and connect. From $75.",
+    fullDescription: "Every piece of content is strategically crafted to engage your audience, communicate your value, and drive action. SEO-informed, brand-aligned, and built for results.",
+    price: 75, priceDisplay: "From $75", duration: "Per project",
+    type: "one_time" as const, icon: "Type",
+    features: JSON.stringify(["Blog posts & articles ($75+)", "Website copy & landing pages ($300+)", "Email sequences & newsletters ($500+)", "Marketing & sales copy ($250+)", "Press releases & media kits ($350+)", "Monthly content retainers ($500+/mo)"]),
+    order: 9, isActive: true,
   },
 ];
 

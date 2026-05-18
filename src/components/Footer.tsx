@@ -1,16 +1,9 @@
+import { Link } from 'react-router'
 import { Facebook, Instagram, Youtube, Twitter } from 'lucide-react'
 
 interface FooterProps {
   onNavClick: (id: string) => void
 }
-
-const navLinks = [
-  { label: 'About', id: 'about' },
-  { label: 'Services', id: 'services' },
-  { label: 'Legal Hub', id: 'legal-hub' },
-  { label: 'Blog', id: 'blog' },
-  { label: 'Contact', id: 'contact' },
-]
 
 const socialLinks = [
   { icon: Facebook, href: 'https://www.facebook.com/thekingstake', label: 'Facebook' },
@@ -31,15 +24,12 @@ export default function Footer({ onNavClick }: FooterProps) {
 
         {/* Navigation */}
         <div className="flex flex-wrap gap-6 mb-10">
-          {navLinks.map(link => (
-            <button
-              key={link.id}
-              onClick={() => onNavClick(link.id)}
-              className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200 cursor-pointer"
-            >
-              {link.label}
-            </button>
-          ))}
+          <Link to="/" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">Home</Link>
+          <Link to="/writing-services" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">Writing Services</Link>
+          <Link to="/civics" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">Civics</Link>
+          <button onClick={() => onNavClick('services')} className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200 cursor-pointer">Services</button>
+          <Link to="/blog" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">Blog</Link>
+          <button onClick={() => onNavClick('contact')} className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200 cursor-pointer">Contact</button>
         </div>
 
         {/* Social */}

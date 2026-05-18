@@ -10,14 +10,9 @@ import BlogPage from './pages/BlogPage'
 import BlogPostPage from './pages/BlogPostPage'
 import ServiceDetailPage from './pages/ServiceDetailPage'
 import WorkWithMe from './pages/WorkWithMe'
-import LegalHubPage from './pages/LegalHubPage'
-import LegalFormPage from './pages/LegalFormPage'
+import CivicsPage from './pages/CivicsPage'
+import WritingServicesPage from './pages/WritingServicesPage'
 import AdminDashboard from './pages/AdminDashboard'
-import AdminBlog from './pages/AdminBlog'
-import AdminServices from './pages/AdminServices'
-import AdminLegal from './pages/AdminLegal'
-import Login from './pages/Login'
-import AdminSetup from './pages/AdminSetup'
 import AdminLogin from './pages/AdminLogin'
 import ProtectedAdminRoute from './components/ProtectedAdminRoute'
 import SitePasswordGate from './components/SitePasswordGate'
@@ -83,8 +78,8 @@ function AppRoutes() {
         <Route path="/blog/:slug" element={<BlogPostPage />} />
         <Route path="/services/:slug" element={<ServiceDetailPage />} />
         <Route path="/work-with-me" element={<WorkWithMe />} />
-        <Route path="/legal" element={<LegalHubPage />} />
-        <Route path="/legal/:slug" element={<LegalFormPage />} />
+        <Route path="/civics" element={<CivicsPage />} />
+        <Route path="/writing-services" element={<WritingServicesPage />} />
         <Route path="/admin" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
         <Route path="/admin/blog" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
         <Route path="/admin/services" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
