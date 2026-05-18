@@ -12,6 +12,7 @@ import ServiceDetailPage from './pages/ServiceDetailPage'
 import WorkWithMe from './pages/WorkWithMe'
 import CivicsPage from './pages/CivicsPage'
 import WritingServicesPage from './pages/WritingServicesPage'
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage'
 import AdminDashboard from './pages/AdminDashboard'
 import AdminLogin from './pages/AdminLogin'
 import ProtectedAdminRoute from './components/ProtectedAdminRoute'
@@ -60,15 +61,6 @@ function AppLayout({ children }: { children: React.ReactNode }) {
 
 function AppRoutes() {
   const location = useLocation()
-  const isLoginPage = location.pathname === '/login'
-
-  if (isLoginPage) {
-    return (
-      <Routes>
-        <Route path="/login" element={<Login />} />
-      </Routes>
-    )
-  }
 
   return (
     <AppLayout>
@@ -80,6 +72,7 @@ function AppRoutes() {
         <Route path="/work-with-me" element={<WorkWithMe />} />
         <Route path="/civics" element={<CivicsPage />} />
         <Route path="/writing-services" element={<WritingServicesPage />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
         <Route path="/admin" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
         <Route path="/admin/blog" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
         <Route path="/admin/services" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />

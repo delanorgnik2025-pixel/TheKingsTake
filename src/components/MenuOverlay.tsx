@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router'
-import { X, Facebook, Instagram, Youtube, Twitter, LayoutDashboard } from 'lucide-react'
+import { X, Facebook, Instagram, LayoutDashboard } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 
 interface MenuOverlayProps {
@@ -61,9 +61,7 @@ export default function MenuOverlay({ isOpen, onClose, onNavClick }: MenuOverlay
             className="absolute bottom-16 left-8 md:left-16 flex gap-6 items-center">
             {[
               { icon: Facebook, href: 'https://www.facebook.com/thekingstake', label: 'Facebook' },
-              { icon: Instagram, href: '#', label: 'Instagram' },
-              { icon: Youtube, href: '#', label: 'YouTube' },
-              { icon: Twitter, href: '#', label: 'Twitter/X' },
+              { icon: Instagram, href: 'https://www.instagram.com/thekingstake/', label: 'Instagram' },
             ].map(social => (
               <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer"
                 className="text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200" aria-label={social.label}>

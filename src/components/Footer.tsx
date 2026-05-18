@@ -1,5 +1,5 @@
 import { Link } from 'react-router'
-import { Facebook, Instagram, Youtube, Twitter } from 'lucide-react'
+import { Facebook, Instagram } from 'lucide-react'
 
 interface FooterProps {
   onNavClick: (id: string) => void
@@ -7,9 +7,7 @@ interface FooterProps {
 
 const socialLinks = [
   { icon: Facebook, href: 'https://www.facebook.com/thekingstake', label: 'Facebook' },
-  { icon: Instagram, href: '#', label: 'Instagram' },
-  { icon: Youtube, href: '#', label: 'YouTube' },
-  { icon: Twitter, href: '#', label: 'Twitter/X' },
+  { icon: Instagram, href: 'https://www.instagram.com/thekingstake/', label: 'Instagram' },
 ]
 
 export default function Footer({ onNavClick }: FooterProps) {
@@ -30,6 +28,7 @@ export default function Footer({ onNavClick }: FooterProps) {
           <button onClick={() => onNavClick('services')} className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200 cursor-pointer">Services</button>
           <Link to="/blog" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">Blog</Link>
           <button onClick={() => onNavClick('contact')} className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200 cursor-pointer">Contact</button>
+          <Link to="/privacy-policy" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">Privacy Policy</Link>
         </div>
 
         {/* Social */}
