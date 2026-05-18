@@ -58,11 +58,11 @@ const FALLBACK_SERVICES = [
   },
   {
     id: 5, name: "Consulting & Strategy", slug: "consulting-strategy",
-    shortDescription: "1-on-1 strategy sessions for content, branding, advocacy, legal literacy, and platform growth. $150/hour.",
-    fullDescription: "Strategic consulting for content creators, advocates, community builders, and entrepreneurs.",
-    price: 150, priceDisplay: "$150/hour", duration: "Per hour",
+    shortDescription: "1-on-1 creative strategy & educational guidance. Story development, platform building, advocacy planning. $100/hour.",
+    fullDescription: "Creative strategy and educational consulting — NOT legal advice. Help with storytelling, platform building, content strategy, and community advocacy planning.",
+    price: 100, priceDisplay: "$100/hour", duration: "Per hour",
     type: "one_time" as const, icon: "Megaphone",
-    features: JSON.stringify(["Strategy sessions ($150/hr)", "Narrative strategy packages ($500+)", "Brand & platform development", "Advocacy planning", "Ongoing retainer options"]),
+    features: JSON.stringify(["Story development sessions ($100/hr)", "Platform & branding strategy", "Content planning & messaging", "Advocacy organization guidance", "Educational court navigation info", "UPL awareness & community legal literacy"]),
     order: 5, isActive: true,
   },
   {
@@ -73,6 +73,15 @@ const FALLBACK_SERVICES = [
     type: "one_time" as const, icon: "Code",
     features: JSON.stringify(["AI-assisted content ($75+)", "AI + human enhanced packages ($250+)", "Research & optimization", "Draft generation & editing", "Content strategy integration"]),
     order: 6, isActive: true,
+  },
+  {
+    id: 7, name: "Legacy Interview", slug: "legacy-interview",
+    shortDescription: "Your story. Your voice. Your legacy. Professional interview + written feature. From $500.",
+    fullDescription: "I sit down with you and capture your story — then transform it into a professional written piece that preserves your legacy for generations.",
+    price: 500, priceDisplay: "From $500", duration: "Full package",
+    type: "package" as const, icon: "Crown",
+    features: JSON.stringify(["60-90 minute professional interview ($500)", "Written feature article ($500)", "Book chapter ($750)", "Podcast script ($600)", "Documentary narration ($1,000)", "Split payment: 50% deposit + 50% on delivery"]),
+    order: 7, isActive: true,
   },
 ];
 
@@ -120,7 +129,11 @@ export default function ServicesSection() {
                 <div className="w-8 h-[2px] bg-[#FF9500] my-4" />
                 <div className="mb-4"><Icon size={32} className="text-[#FF9500]" strokeWidth={1.5} /></div>
                 <p className="text-sm text-[#C9B99A] leading-relaxed mb-4">{service.shortDescription}</p>
-                <p className="text-lg text-[#FF9500] font-medium mb-4">{service.priceDisplay}</p>
+                <p className="text-lg text-[#FF9500] font-medium">{service.priceDisplay}</p>
+                {service.price >= 50 && (
+                  <p className="text-[11px] text-[#FF9500]/70 mb-1">or 4 interest-free payments with Klarna</p>
+                )}
+                <p className="text-[10px] text-[#C9B99A]/40 mb-4">Payment plans available</p>
                 <Link to={`/services/${service.slug}`} className="inline-flex items-center gap-1 text-xs text-[#FF9500] uppercase tracking-[0.04em] cursor-pointer hover:underline transition-all">
                   Learn More <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
                 </Link>

@@ -125,6 +125,31 @@ const FALLBACK_SERVICES: Record<string, {
       { label: "Enterprise Content System", price: "Custom", desc: "Ongoing AI-assisted content production at scale" },
     ],
   },
+  "consulting-strategy": {
+    id: 5, slug: "consulting-strategy", name: "Consulting & Strategy",
+    duration: "Per hour", priceDisplay: "$100/hour", type: "one-time",
+    shortDescription: "Creative strategy & educational guidance. Story development, platform building, advocacy planning. NOT legal advice.",
+    fullDescription: `Creative strategy and educational consulting for storytellers, advocates, and community builders.\n\nThis is NOT legal advice or legal representation. I am not a licensed attorney.\n\nWhat I offer:\n- Story development & narrative structure\n- Platform building & digital presence\n- Content planning & messaging strategy\n- Advocacy organization guidance\n- Educational court navigation information\n- UPL awareness & community legal literacy\n\nIf you need legal advice, please consult a licensed attorney in your jurisdiction.`,
+    features: JSON.stringify(["Story development sessions ($100/hr)","Platform & branding strategy","Content planning & messaging","Advocacy organization guidance","Educational court navigation info","UPL awareness & community legal literacy"]),
+    tiers: [
+      { label: "Single Session", price: "$100/hr", desc: "One focused hour of creative strategy or educational guidance" },
+      { label: "Strategy Package", price: "$400", desc: "5-hour package: deep-dive into your story, brand, and platform" },
+      { label: "Ongoing Partnership", price: "Custom", desc: "Monthly retainer for continued guidance and support" },
+    ],
+  },
+  "legacy-interview": {
+    id: 7, slug: "legacy-interview", name: "Legacy Interview",
+    duration: "Full package", priceDisplay: "From $500", type: "package",
+    shortDescription: "Your story. Your voice. Your legacy. Professional interview + written feature. From $500.",
+    fullDescription: `I sit down with you and capture your story — then transform it into a professional written piece that preserves your legacy for generations.\n\nPart 1: The Interview (60-90 minutes)\nI ask guided questions while you tell your story in your own words. We record the session (audio/video).\n\nPart 2: The Writing\nI transcribe and craft your story into polished prose. You review the draft and I revise based on your feedback.\n\nPart 3: Delivery\nFinal document delivered as PDF/Word. You own all rights to your story.\n\nPayment: 50% deposit to start, 50% balance on delivery.`,
+    features: JSON.stringify(["60-90 minute professional interview","Full transcription","Polished written feature","2 revision rounds included","All rights belong to you","Split payment: 50/50"]),
+    tiers: [
+      { label: "Written Feature Article", price: "$500", desc: "2,000-3,000 word magazine-style story" },
+      { label: "Book Chapter", price: "$750", desc: "Professional chapter for your manuscript" },
+      { label: "Podcast Script", price: "$600", desc: "Episode script with your story" },
+      { label: "Documentary Narration", price: "$1,000", desc: "Script for short film or video" },
+    ],
+  },
 };
 
 export default function ServiceDetailPage() {
@@ -255,12 +280,41 @@ export default function ServiceDetailPage() {
             </div>
           )}
 
-          {/* Payment Plan Info */}
-          <div className="mb-8 p-4 bg-[rgba(42,58,74,0.4)] rounded border border-[rgba(255,149,0,0.15)]">
-            <p className="text-sm text-[#C9B99A]">
-              <strong className="text-[#FF9500]">Payment Plans Available:</strong> Large projects can be split into installments. Typical structure: 50% upfront, 50% before delivery. Contact us to discuss a payment plan that works for your budget.
-            </p>
-          </div>
+          {/* Payment Options */}
+          {service.price >= 50 && (
+            <div className="mb-4 p-4 bg-[rgba(42,58,74,0.4)] rounded border border-[rgba(255,149,0,0.15)]">
+              <p className="text-sm text-[#C9B99A] mb-2">
+                <strong className="text-[#FF9500]">Pay in full</strong> — or <strong className="text-[#FF9500]">4 interest-free payments</strong> with Klarna, Afterpay, or Affirm.
+              </p>
+              <p className="text-[11px] text-[#C9B99A]/60">
+                Subject to eligibility. AASOTU Media Group LLC receives full payment upfront.
+              </p>
+            </div>
+          )}
+
+          {/* Split Payment for Legacy Interview */}
+          {service.slug === "legacy-interview" && (
+            <div className="mb-4 p-4 bg-[rgba(255,149,0,0.08)] rounded border border-[rgba(255,149,0,0.2)]">
+              <p className="text-sm text-[#C9B99A] mb-2">
+                <strong className="text-[#FF9500]">50/50 Split Payment:</strong> 50% deposit to start work, 50% balance before delivery.
+              </p>
+              <div className="flex gap-4 text-xs text-[#C9B99A]/70">
+                <span className="flex items-center gap-1"><span className="w-2 h-2 bg-emerald-400 rounded-full" /> Deposit triggers start</span>
+                <span className="flex items-center gap-1"><span className="w-2 h-2 bg-[#FF9500] rounded-full" /> Balance unlocks delivery</span>
+              </div>
+            </div>
+          )}
+
+          {/* Consultation Disclaimer */}
+          {service.slug === "consulting-strategy" && (
+            <div className="mb-4 p-4 bg-[rgba(220,38,38,0.08)] rounded border border-[rgba(220,38,38,0.2)] flex gap-3">
+              <AlertTriangle size={18} className="text-red-400 shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm text-red-400 font-medium mb-1">Educational Services Only</p>
+                <p className="text-xs text-[#C9B99A]/70">These consultations provide creative strategy and educational guidance — NOT legal advice. I am not a licensed attorney. For legal matters, consult a licensed attorney in your jurisdiction.</p>
+              </div>
+            </div>
+          )}
 
           {/* Book Button */}
           {!showBooking && !booked && (
