@@ -124,43 +124,17 @@ export default function BookPromoSection() {
             <ScrollReveal delay={0.4}>
               <div className="space-y-4 text-[#C9B99A] leading-relaxed mb-8">
                 <p>
-                  <strong className="text-[#F0EBE1]">The African American State of the Union: From the Loins of the Beast</strong> is not just a book — it's a mirror. A blueprint. A call to action for Black America to rise above the stereotypes, dismantle the false narratives, and claim our seat at the table of the new Industrial Revolution.
+                  <strong className="text-[#F0EBE1]">The African American State of the Union: From the Loins of the Beast</strong> is more than a book — it is an unfiltered, high-octane call to action.
                 </p>
                 <p>
-                  Inside these pages, you'll confront the <span className="text-[#FF9500]">acute stereotypes</span> that have shaped how the world sees us — and how we too often see ourselves. You'll challenge the widely held false beliefs about the justice system that keep our communities shackled to fear instead of empowered by knowledge. And you'll discover what it truly means to build generational wealth, community power, and self-determination in modern America.
+                  Written in the fires of the pandemic and landing at a moment when the world feels on the brink of another, this is a raw, no-holds-barred diagnostic of the modern Black experience in America. There are no chapters here. No breaks. No pauses to catch your breath. It is a straight read-through designed to deliver hard truths with absolutely no chaser.
                 </p>
                 <p>
-                  This is the foundation of #TheKingsTake. The book that started the movement. The starting point for every Black man and woman ready to stop surviving and start building — for themselves, their families, and their communities.
+                  This unbiased manifesto challenges both the upcoming generation and the elders to wake up, analyze the global landscape, and seize the unprecedented opportunities of a rising collective consciousness. It tackles the massive, systemic forces holding communities back — from the devastating psychological conditioning that institutionalizes men inside county jails and state prisons, to the structural realities of modern police departments.
                 </p>
-              </div>
-            </ScrollReveal>
-
-            {/* What's Inside */}
-            <ScrollReveal delay={0.5}>
-              <h3 className="text-lg text-[#F0EBE1] uppercase tracking-[0.04em] mb-4">What's Inside</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
-                {[
-                  "The Stereotypes That Shackle Us",
-                  "The Truth About the Justice System",
-                  "The Exploitation of Fear",
-                  "The New Industrial Revolution",
-                  "Building Black Economic Power",
-                  "Breaking the Cycle of Despair",
-                  "Community Networks That Work",
-                  "The Blueprint for What's Next"
-                ].map((item, i) => (
-                  <motion.div 
-                    key={item}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.5 + i * 0.05 }}
-                    className="flex items-center gap-3 text-sm text-[#C9B99A]"
-                  >
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#FF9500] shrink-0" />
-                    {item}
-                  </motion.div>
-                ))}
+                <p>
+                  But diagnosis is nothing without a cure. The book lays out a bold blueprint for an economic and industrial revolution, issuing a fierce rallying cry for African Americans to <span className="text-[#FF9500]">own the means of production</span>, build self-sustaining enterprises, and permanently sever dependence on systems designed only for survival. Featuring direct, uncompromising messages for Black women, white people, and the world at large, this book demands that you stop watching history happen — and finally step into the arena to change it.
+                </p>
               </div>
             </ScrollReveal>
 
