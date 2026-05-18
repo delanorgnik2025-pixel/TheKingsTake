@@ -5,7 +5,7 @@ import CTAButton from '../components/CTAButton'
 const credentials = [
   { label: 'Author', text: 'The African American State of the Union' },
   { label: 'Founder', text: 'AASOTU Media Group LLC' },
-  { label: 'Advocate', text: 'Community Justice & Legal Empowerment' },
+  { label: 'Advocate', text: 'Black Economic Empowerment & Community Building' },
   { label: 'Voice', text: '12,000+ Followers on Facebook' },
 ]
 
@@ -38,7 +38,7 @@ export default function AboutSection() {
 
             <ScrollReveal delay={0.25}>
               <p className="text-base text-[#C9B99A] leading-relaxed max-w-[520px] mb-8">
-                I am Ronald Lee King, author of <em>The African American State of the Union: From the Loins of the Beast</em> and founder of AASOTU Media Group LLC. I am the People's voice — advocating for Black communities exploited by a system that keeps legal help out of reach. Through #TheKingsTake, I fight to expose the truth, empower our people with knowledge, and build networks that serve the community first.
+                I am Ronald Lee King, author of <em>The African American State of the Union: From the Loins of the Beast</em> and founder of AASOTU Media Group LLC. I am the People's voice — challenging the stereotypes and false narratives that hold our communities back. Through #TheKingsTake, I fight to expose the truth, empower our people with knowledge, and build the networks that will power a new Industrial Revolution for Black America.
               </p>
             </ScrollReveal>
 

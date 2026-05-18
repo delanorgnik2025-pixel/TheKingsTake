@@ -13,13 +13,13 @@ const testimonials = [
     location: "Atlanta, GA"
   },
   {
-    text: "I finally understand why the system is designed the way it is. Knowledge is the first weapon.",
+    text: "I finally see through the stereotypes they feed us. This book changed how I view our place in America.",
     author: "Book Club Member",
     location: "Chicago, IL"
   },
   {
-    text: "From the Loins of the Beast breaks down the UPL law and the exploitation loop in plain English. Required reading.",
-    author: "Legal Advocate",
+    text: "From the Loins of the Beast dismantles every lie we've been told about who we are and what we can become. Required reading.",
+    author: "Community Advocate",
     location: "Houston, TX"
   }
 ]
@@ -115,7 +115,7 @@ export default function BookPromoSection() {
               <div className="bg-[rgba(27,40,56,0.8)] backdrop-blur-lg rounded border-l-2 border-[#FF9500] p-6 mb-8">
                 <Quote size={20} className="text-[#FF9500] mb-3" />
                 <p className="text-lg text-[#F0EBE1] italic leading-relaxed">
-                  "I didn't set out to become the voice of a movement. I set out to write a book that told the truth about what I saw happening in our communities — the legal traps, the systemic exploitation, the ways the system is designed to keep us struggling while others profit."
+                  "I didn't set out to become the voice of a movement. I set out to write a book that confronted the stereotypes we've been force-fed, challenged the lies about our place in this country, and charted a path toward a new Industrial Revolution built by and for Black people in America."
                 </p>
                 <p className="text-sm text-[#FF9500] mt-3">— Ronald Lee King</p>
               </div>
@@ -124,13 +124,13 @@ export default function BookPromoSection() {
             <ScrollReveal delay={0.4}>
               <div className="space-y-4 text-[#C9B99A] leading-relaxed mb-8">
                 <p>
-                  <strong className="text-[#F0EBE1]">The African American State of the Union: From the Loins of the Beast</strong> is not just a book — it's a weapon. A blueprint. A survival guide for navigating a legal system that was never designed to protect us.
+                  <strong className="text-[#F0EBE1]">The African American State of the Union: From the Loins of the Beast</strong> is not just a book — it's a mirror. A blueprint. A call to action for Black America to rise above the stereotypes, dismantle the false narratives, and claim our seat at the table of the new Industrial Revolution.
                 </p>
                 <p>
-                  Inside these pages, you'll find the unfiltered truth about the <span className="text-[#FF9500]">Unauthorized Practice of Law (UPL)</span> loophole that keeps Black families from accessing affordable legal help. You'll understand how public defenders operate in a system that profits from your struggle. And you'll learn what motions, forms, and tools you need to fight back.
+                  Inside these pages, you'll confront the <span className="text-[#FF9500]">acute stereotypes</span> that have shaped how the world sees us — and how we too often see ourselves. You'll challenge the widely held false beliefs about the justice system that keep our communities shackled to fear instead of empowered by knowledge. And you'll discover what it truly means to build generational wealth, community power, and self-determination in modern America.
                 </p>
                 <p>
-                  This is the foundation of #TheKingsTake. The book that started the movement. The starting point for every community member who refuses to walk into a courtroom defenseless.
+                  This is the foundation of #TheKingsTake. The book that started the movement. The starting point for every Black man and woman ready to stop surviving and start building — for themselves, their families, and their communities.
                 </p>
               </div>
             </ScrollReveal>
@@ -140,14 +140,14 @@ export default function BookPromoSection() {
               <h3 className="text-lg text-[#F0EBE1] uppercase tracking-[0.04em] mb-4">What's Inside</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
                 {[
-                  "The UPL Law Explained",
-                  "How Public Defenders Profit",
-                  "The Exploitation Loop",
-                  "5 Critical Motions to Know",
-                  "How to Write Your Own Motions",
-                  "Building Community Networks",
-                  "Understanding Your Rights",
-                  "The Path to Justice"
+                  "The Stereotypes That Shackle Us",
+                  "The Truth About the Justice System",
+                  "The Exploitation of Fear",
+                  "The New Industrial Revolution",
+                  "Building Black Economic Power",
+                  "Breaking the Cycle of Despair",
+                  "Community Networks That Work",
+                  "The Blueprint for What's Next"
                 ].map((item, i) => (
                   <motion.div 
                     key={item}

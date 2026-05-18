@@ -174,7 +174,7 @@ export default function HeroSection() {
               transition={{ delay: 0.55, duration: 0.8, ease: [0.16, 1, 0.3, 1] }} 
               className="text-base text-[#C9B99A] leading-relaxed mb-6 max-w-lg"
             >
-              A raw, unfiltered examination of the legal traps, systemic exploitation, and institutional barriers facing Black communities. The book that started the movement. The foundation of #TheKingsTake.
+              A raw, unfiltered confrontation with the stereotypes, false beliefs, and systemic barriers holding Black communities back — and a blueprint for the new Industrial Revolution built by us, for us. The book that started the movement. The foundation of #TheKingsTake.
             </motion.p>
 
             <motion.div 
