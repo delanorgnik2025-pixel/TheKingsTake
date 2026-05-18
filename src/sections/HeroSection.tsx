@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { Link } from 'react-router'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import { Globe, Cpu, Sparkles, BookOpen, ArrowRight, Lock } from 'lucide-react'
+import { Globe, PenTool, Sparkles, BookOpen, ArrowRight, TrendingUp } from 'lucide-react'
 import { trpc } from '@/providers/trpc'
 
 const BOOK_PRICE_ID = 'price_1TUuET5rzCiGdPFNiXG2ZEi6'
@@ -70,7 +70,7 @@ export default function HeroSection() {
           <div className="mt-2 font-mono-hud text-[10px]">
             <div className="flex justify-between text-[#C9B99A]"><span>Book</span><span className="text-[#FF9500] font-bold">AVAILABLE</span></div>
             <div className="flex justify-between text-[#C9B99A]"><span>Community</span><span className="text-[#FF9500]">12,000+</span></div>
-            <div className="flex justify-between text-[#C9B99A]"><span>Simulator</span><span className="text-[#FFB840]">COMING</span></div>
+            <div className="flex justify-between text-[#C9B99A]"><span>Writing</span><span className="text-[#FF9500]">LIVE</span></div>
           </div>
         </div>
       </motion.div>
@@ -81,8 +81,8 @@ export default function HeroSection() {
           <span className="text-[9px] uppercase tracking-[0.06em] text-[#C9B99A]">THE BOOK</span>
         </div>
         <div className="bg-[rgba(27,40,56,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.3)] p-3 flex flex-col items-center gap-1" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
-          <Lock size={22} className="text-[#FFB840]" strokeWidth={1.5} />
-          <span className="text-[9px] uppercase tracking-[0.06em] text-[#C9B99A]">SIMULATOR</span>
+          <PenTool size={22} className="text-[#FFB840]" strokeWidth={1.5} />
+          <span className="text-[9px] uppercase tracking-[0.06em] text-[#C9B99A]">WRITING</span>
         </div>
       </motion.div>
 
@@ -93,12 +93,10 @@ export default function HeroSection() {
             <span className="text-[10px] uppercase tracking-[0.08em] text-[#F0EBE1]">platform assets</span>
           </div>
           <div className="font-mono-hud text-[10px] space-y-1">
-            {['Book', 'Blog', 'Legal Hub', 'Simulator'].map(name => (
+            {['Book', 'Blog', 'Writing', 'Civics'].map(name => (
               <div key={name} className="flex justify-between gap-8 text-[#C9B99A]">
                 <span>{name}</span>
-                <span className={name === 'Simulator' ? 'text-[#FFB840]' : 'text-[#FF9500]'}>
-                  {name === 'Simulator' ? 'LOCKED' : 'LIVE'}
-                </span>
+                <span className={'text-[#FF9500]'}>LIVE</span>
               </div>
             ))}
           </div>
@@ -206,8 +204,8 @@ export default function HeroSection() {
               className="flex items-center gap-6 mt-6 text-xs text-[#C9B99A]"
             >
               <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[#FF9500]"></span> 12,000+ Community Members</span>
-              <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[#FF9500]"></span> Legal Resources Hub</span>
-              <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[#FFB840]"></span> Court Simulator Coming</span>
+              <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[#FF9500]"></span> Writing Services Hub</span>
+              <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-[#FFB840]"></span> Civics Resources Live</span>
             </motion.div>
           </div>
         </div>
