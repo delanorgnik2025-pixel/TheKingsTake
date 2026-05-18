@@ -2,12 +2,12 @@ import { motion } from 'framer-motion'
 import type { Variants } from 'framer-motion'
 import { Link } from 'react-router'
 import { trpc } from '@/providers/trpc'
-import { PenTool, Globe, Gavel, BookOpen, Megaphone, Code, Crown, ArrowRight, FileText, Feather, Type } from 'lucide-react'
+import { PenTool, Globe, BookOpen, Megaphone, Code, Crown, ArrowRight, FileText, Feather, Type } from 'lucide-react'
 import ScrollReveal from '../components/ScrollReveal'
 import { useMemo } from 'react'
 
 const iconMap: Record<string, React.ElementType> = {
-  PenTool, Globe, Gavel, BookOpen, Megaphone, Code, Crown, Feather, Type,
+  PenTool, Globe, BookOpen, Megaphone, Code, Crown, Feather, Type,
 };
 
 const cardVariants: Variants = {
@@ -46,15 +46,6 @@ const FALLBACK_SERVICES = [
     type: "package" as const, icon: "BookOpen",
     features: JSON.stringify(["Author launch consultation ($499)", "Publishing support package ($750)", "Premium author development ($1,500+)", "Manuscript editing & formatting", "Launch strategy & distribution"]),
     order: 3, isActive: true,
-  },
-  {
-    id: 4, name: "Legal Document Support", slug: "legal-document-support",
-    shortDescription: "Educational document formatting and organizational support for pro se litigants. Informational purposes only — not legal advice.",
-    fullDescription: "Legal document formatting, proofreading, and organizational support. Educational assistance only — not legal representation.",
-    price: 150, priceDisplay: "From $150", duration: "Per document",
-    type: "one_time" as const, icon: "Gavel",
-    features: JSON.stringify(["Formatting & proofreading ($150+)", "Filing organization packages ($350+)", "Advanced procedural assistance (custom)", "Document literacy support", "Educational guidance only"]),
-    order: 4, isActive: true,
   },
   {
     id: 5, name: "Consulting & Strategy", slug: "consulting-strategy",

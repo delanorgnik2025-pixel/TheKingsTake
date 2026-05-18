@@ -89,18 +89,6 @@ const FALLBACK_SERVICES: Record<string, {
       { label: "Premium Author Development", price: "$1,500+", desc: "Full-service: editing, design, launch, marketing, ongoing support" },
     ],
   },
-  "legal-document-support": {
-    id: 4, slug: "legal-document-support", name: "Legal Document Support",
-    duration: "Per document", priceDisplay: "From $150", type: "one-time",
-    shortDescription: "Educational document formatting and organizational support for pro se litigants. Informational purposes only — not legal advice.",
-    fullDescription: `Legal document formatting, proofreading, and organizational support. This is educational assistance — not legal representation.\n\n**IMPORTANT LEGAL DISCLAIMER:** AASOTU Media Group LLC and #TheKingsTake provide educational and informational support only. We are not a law firm. We do not provide legal advice, legal representation, or legal document preparation services. The information we provide is for educational purposes to help you better understand and navigate systems. Always consult with a licensed attorney for legal advice specific to your situation.\n\nWe help you organize, format, and understand your documents. We do not draft motions, file court documents, or provide legal strategy.`,
-    features: JSON.stringify(["Document formatting & organization","Proofreading & clarity review","Educational procedural guidance","Filing system setup","UPL-compliant support only"]),
-    tiers: [
-      { label: "Formatting & Proofreading", price: "$150", desc: "Single document: formatting, proofreading, clarity review" },
-      { label: "Filing Organization Package", price: "$350", desc: "Multiple documents: organization, indexing, procedural guidance" },
-      { label: "Advanced Procedural Assistance", price: "Custom", desc: "Complex cases: custom pricing based on scope" },
-    ],
-  },
   "ai-assisted-creative": {
     id: 6, slug: "ai-assisted-creative", name: "AI-Assisted Creative Services",
     duration: "Per project", priceDisplay: "From $75", type: "one-time",
@@ -246,16 +234,6 @@ export default function ServiceDetailPage() {
           </div>
 
           <div className="w-full h-[2px] bg-[#FF9500] mb-8" />
-
-          {/* UPL Disclaimer for Legal Document Support */}
-          {service.slug === "legal-document-support" && (
-            <div className="mb-6 bg-[rgba(255,149,0,0.08)] border border-[rgba(255,149,0,0.3)] rounded p-4 flex gap-3">
-              <AlertTriangle size={20} className="text-[#FF9500] shrink-0 mt-0.5" />
-              <p className="text-sm text-[#C9B99A]">
-                <strong className="text-[#FF9500]">Educational Support Only:</strong> AASOTU Media Group LLC provides informational and educational document support services only. We are not a law firm. We do not provide legal advice, legal representation, or legal document preparation services. Always consult with a licensed attorney for legal advice specific to your situation.
-              </p>
-            </div>
-          )}
 
           <p className="text-lg text-[#C9B99A] leading-relaxed mb-8">{service.shortDescription}</p>
 
