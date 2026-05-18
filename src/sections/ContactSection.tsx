@@ -1,12 +1,10 @@
-import { Facebook, Instagram, Youtube, Twitter, ArrowRight } from 'lucide-react'
+import { Facebook, Instagram, ArrowRight } from 'lucide-react'
 import ScrollReveal from '../components/ScrollReveal'
 import CTAButton from '../components/CTAButton'
 
 const socialLinks = [
   { icon: Facebook, label: 'Facebook', followers: '12,000+ Followers', href: 'https://www.facebook.com/thekingstake' },
-  { icon: Instagram, label: 'Instagram', followers: 'Coming Soon', href: '#' },
-  { icon: Youtube, label: 'YouTube', followers: 'Coming Soon', href: '#' },
-  { icon: Twitter, label: 'Twitter/X', followers: 'Coming Soon', href: '#' },
+  { icon: Instagram, label: 'Instagram', followers: 'Follow Now', href: 'https://www.instagram.com/thekingstake/' },
 ]
 
 export default function ContactSection() {
