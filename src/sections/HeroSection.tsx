@@ -134,7 +134,7 @@ export default function HeroSection() {
               </div>
               {/* Floating badge */}
               <div className="absolute -top-3 -right-3 bg-[#FF9500] text-[#1B2838] text-xs font-bold px-3 py-1 rounded uppercase tracking-wider">
-                AVAILABLE NOW
+                Pre-Order
               </div>
             </div>
           </motion.div>
