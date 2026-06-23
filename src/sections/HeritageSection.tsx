@@ -393,7 +393,6 @@ function HeritageMap() {
       mapRef.current = map
 
       map.on('load', () => {
-        // Add atmosphere for cinematic look
         map.setFog({
           color: 'rgb(12, 21, 32)',
           'high-color': 'rgb(27, 40, 56)',
@@ -401,30 +400,24 @@ function HeritageMap() {
           'space-color': 'rgb(12, 21, 32)',
           'star-intensity': 0.3,
         })
-        // Darken the map to match site aesthetic
         map.setPaintProperty('satellite', 'raster-opacity', 0.7)
 
-        // Add click handler for state selection
+        // Click map to select state via reverse geocoding
         map.on('click', (e: any) => {
-          // Reverse geocode the click to find state name
-          fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${e.lngLat.lng},${e.lngLat.lat}.json?types=region&access_token=${token}`)
+          const lng = e.lngLat.lng
+          const lat = e.lngLat.lat
+          fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?types=region&access_token=${token}`)
             .then(r => r.json())
             .then(data => {
-              if (data.features && data.features.length > 0) {
+              if (data.features?.length > 0) {
                 const placeName = data.features[0].place_name
-                // Extract state name from "State, Country" format
-                const stateMatch = Object.keys(STATE_DATA).find(state =>
-                  placeName.includes(state)
-                )
-                if (stateMatch) {
-                  setSelectedState(stateMatch)
-                }
+                const stateMatch = Object.keys(STATE_DATA).find(s => placeName.includes(s))
+                if (stateMatch) setSelectedState(stateMatch)
               }
             })
             .catch(() => {})
         })
 
-        // Change cursor on hover
         map.on('mouseenter', () => { map.getCanvas().style.cursor = 'pointer' })
         map.on('mouseleave', () => { map.getCanvas().style.cursor = '' })
       })
@@ -432,11 +425,15 @@ function HeritageMap() {
     return () => { cancelled = true }
   }, [])
 
-  // Fly to selected state
+  // Fly to selected state and scroll to info panel
   useEffect(() => {
     if (selectedState && mapRef.current && STATE_COORDS[selectedState]) {
       const [lng, lat, zoom] = STATE_COORDS[selectedState]
       mapRef.current.flyTo({ center: [lng, lat], zoom, duration: 2000 })
+      // Auto-scroll to info panel after short delay
+      setTimeout(() => {
+        document.getElementById('heritage-info')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 600)
     }
   }, [selectedState])
 
@@ -501,10 +498,20 @@ function HeritageMap() {
         </div>
       </div>
 
+      {/* No state selected prompt */}
+      {!selectedState && (
+        <div id="heritage-info" className="bg-[rgba(27,40,56,0.5)] rounded border border-[rgba(255,149,0,0.15)] border-dashed p-6 text-center">
+          <Dna size={32} className="text-[#FF9500] mx-auto mb-3" />
+          <p className="text-sm text-[#F0EBE1] mb-1">Select a State Above</p>
+          <p className="text-xs text-[#C9B99A]">Click any state button or click directly on the map to see Indigenous nations, laws, treaties, and vital records for that region.</p>
+        </div>
+      )}
+
       {/* Selected State Detail Panel */}
       <AnimatePresence>
         {stateData && selectedState && (
           <motion.div
+            id="heritage-info"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
@@ -660,15 +667,15 @@ export default function HeritageSection() {
 
         <ScrollReveal delay={0.3}>
           <div className="flex flex-wrap gap-4 mb-12">
-            <div className="flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.08)] border border-[rgba(255,149,0,0.2)] rounded px-3 py-1.5">
+            <button onClick={() => document.getElementById('heritage-info')?.scrollIntoView({ behavior: 'smooth' })} className="flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.08)] border border-[rgba(255,149,0,0.2)] rounded px-3 py-1.5 hover:bg-[rgba(255,149,0,0.15)] transition-colors cursor-pointer">
               <Dna size={12} /> 574 Sovereign Nations
-            </div>
-            <div className="flex items-center gap-2 text-xs text-[#C9B99A] bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.15)] rounded px-3 py-1.5">
+            </button>
+            <button onClick={() => document.getElementById('heritage-info')?.scrollIntoView({ behavior: 'smooth' })} className="flex items-center gap-2 text-xs text-[#C9B99A] bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.15)] rounded px-3 py-1.5 hover:bg-[rgba(201,185,154,0.1)] transition-colors cursor-pointer">
               <FileText size={12} /> Vital Records Access
-            </div>
-            <div className="flex items-center gap-2 text-xs text-[#C9B99A] bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.15)] rounded px-3 py-1.5">
+            </button>
+            <button onClick={() => document.getElementById('heritage-info')?.scrollIntoView({ behavior: 'smooth' })} className="flex items-center gap-2 text-xs text-[#C9B99A] bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.15)] rounded px-3 py-1.5 hover:bg-[rgba(201,185,154,0.1)] transition-colors cursor-pointer">
               <Landmark size={12} /> Laws & Treaties
-            </div>
+            </button>
           </div>
         </ScrollReveal>
 
