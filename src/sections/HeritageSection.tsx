@@ -387,6 +387,8 @@ function HeritageMap() {
         zoom: 3.5,
         interactive: true,
         attributionControl: false,
+        cooperativeGestures: true,
+        scrollZoom: { around: 'center' },
       })
       mapRef.current = map
 
@@ -401,28 +403,31 @@ function HeritageMap() {
         })
         // Darken the map to match site aesthetic
         map.setPaintProperty('satellite', 'raster-opacity', 0.7)
-      })
 
-      // Fly to selected state
-      const stateCoordinates: Record<string, [number, number]> = {
-        'Alabama': [-86.7, 32.8], 'Alaska': [-152, 64], 'Arizona': [-111.5, 34.2],
-        'Arkansas': [-92.3, 34.9], 'California': [-119.4, 37.2], 'Colorado': [-105.5, 39.0],
-        'Connecticut': [-72.7, 41.6], 'Delaware': [-75.5, 39.0], 'Florida': [-81.5, 27.8],
-        'Georgia': [-83.2, 32.6], 'Idaho': [-114.0, 44.2], 'Illinois': [-89.2, 40.0],
-        'Indiana': [-86.3, 39.9], 'Iowa': [-93.2, 42.0], 'Kansas': [-98.4, 38.5],
-        'Kentucky': [-84.9, 37.5], 'Louisiana': [-91.9, 30.9], 'Maine': [-69.2, 45.3],
-        'Maryland': [-76.8, 39.0], 'Massachusetts': [-71.8, 42.3], 'Michigan': [-84.6, 43.3],
-        'Minnesota': [-94.6, 46.4], 'Mississippi': [-89.6, 32.7], 'Missouri': [-92.5, 38.3],
-        'Montana': [-109.6, 47.0], 'Nebraska': [-99.8, 41.5], 'Nevada': [-117.0, 39.3],
-        'New Hampshire': [-71.5, 43.9], 'New Jersey': [-74.4, 40.1], 'New Mexico': [-106.1, 34.4],
-        'New York': [-75.5, 43.0], 'North Carolina': [-79.0, 35.5], 'North Dakota': [-100.3, 47.5],
-        'Ohio': [-82.6, 40.3], 'Oklahoma': [-96.9, 35.6], 'Oregon': [-120.6, 43.9],
-        'Pennsylvania': [-77.6, 40.9], 'Rhode Island': [-71.5, 41.7], 'South Carolina': [-80.9, 33.8],
-        'South Dakota': [-100.2, 44.4], 'Tennessee': [-86.3, 35.9], 'Texas': [-99.3, 31.0],
-        'Utah': [-111.7, 39.3], 'Vermont': [-72.7, 44.0], 'Virginia': [-78.7, 37.5],
-        'Washington': [-120.4, 47.4], 'West Virginia': [-80.6, 38.6], 'Wisconsin': [-89.5, 44.6],
-        'Wyoming': [-107.3, 43.0],
-      }
+        // Add click handler for state selection
+        map.on('click', (e: any) => {
+          // Reverse geocode the click to find state name
+          fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${e.lngLat.lng},${e.lngLat.lat}.json?types=region&access_token=${token}`)
+            .then(r => r.json())
+            .then(data => {
+              if (data.features && data.features.length > 0) {
+                const placeName = data.features[0].place_name
+                // Extract state name from "State, Country" format
+                const stateMatch = Object.keys(STATE_DATA).find(state =>
+                  placeName.includes(state)
+                )
+                if (stateMatch) {
+                  setSelectedState(stateMatch)
+                }
+              }
+            })
+            .catch(() => {})
+        })
+
+        // Change cursor on hover
+        map.on('mouseenter', () => { map.getCanvas().style.cursor = 'pointer' })
+        map.on('mouseleave', () => { map.getCanvas().style.cursor = '' })
+      })
     }).catch(() => setMapError('Failed to load Mapbox.'))
     return () => { cancelled = true }
   }, [])
