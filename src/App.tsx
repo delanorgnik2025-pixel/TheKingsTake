@@ -18,7 +18,6 @@ import IndigenousHeritagePage from './pages/IndigenousHeritagePage'
 import AdminDashboard from './pages/AdminDashboard'
 import AdminLogin from './pages/AdminLogin'
 import ProtectedAdminRoute from './components/ProtectedAdminRoute'
-import SitePasswordGate from './components/SitePasswordGate'
 import NotFound from './pages/NotFound'
 
 function AppLayout({ children }: { children: React.ReactNode }) {
@@ -93,11 +92,7 @@ function AppRoutes() {
 }
 
 function App() {
-  return (
-    <SitePasswordGate>
-      <AppRoutes />
-    </SitePasswordGate>
-  )
+  return <AppRoutes />
 }
 
 export default App
