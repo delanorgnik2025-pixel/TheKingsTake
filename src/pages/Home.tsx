@@ -1,5 +1,6 @@
 import HeroSection from '../sections/HeroSection'
 import BookPromoSection from '../sections/BookPromoSection'
+import HeritageSection from '../sections/HeritageSection'
 import AboutSection from '../sections/AboutSection'
 import ServicesSection from '../sections/ServicesSection'
 import WritingMarketSection from '../sections/WritingMarketSection'
@@ -12,6 +13,8 @@ export default function HomePage() {
     <main>
       <HeroSection />
       <BookPromoSection />
+      <MarqueeDivider text="#TheKingsTake — Who Was Here Before You — Discover Your Roots — 574 Sovereign Nations — The Land Remembers" />
+      <HeritageSection />
       <AboutSection />
       <ServicesSection />
       <WritingMarketSection />
