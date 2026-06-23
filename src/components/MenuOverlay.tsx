@@ -32,6 +32,7 @@ export default function MenuOverlay({ isOpen, onClose, onNavClick }: MenuOverlay
               { label: 'BLOG', action: () => { window.location.href = '/blog'; } },
               { label: 'WRITING SERVICES', action: () => { window.location.href = '/writing-services'; } },
               { label: 'CIVICS', action: () => { window.location.href = '/civics'; } },
+              { label: 'INDIGENOUS HERITAGE', action: () => { window.location.href = '/indigenous-heritage'; } },
               { label: 'SERVICES', action: () => { onNavClick('services'); onClose(); } },
               { label: 'CONTACT', action: () => { onNavClick('contact'); onClose(); } },
             ].map((link, i) => (

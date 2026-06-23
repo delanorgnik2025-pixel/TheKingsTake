@@ -25,6 +25,7 @@ export default function Footer({ onNavClick }: FooterProps) {
           <Link to="/" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">Home</Link>
           <Link to="/writing-services" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">Writing Services</Link>
           <Link to="/civics" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">Civics</Link>
+          <Link to="/indigenous-heritage" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">Heritage</Link>
           <button onClick={() => onNavClick('services')} className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200 cursor-pointer">Services</button>
           <Link to="/blog" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">Blog</Link>
           <button onClick={() => onNavClick('contact')} className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200 cursor-pointer">Contact</button>

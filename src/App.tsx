@@ -1,6 +1,7 @@
 import { Routes, Route, useLocation } from 'react-router'
 import { useEffect, useRef, useCallback, useState } from 'react'
 import Lenis from 'lenis'
+import { trackConversion } from './lib/conversions'
 import Navigation from './components/Navigation'
 import MenuOverlay from './components/MenuOverlay'
 import Footer from './components/Footer'
@@ -13,6 +14,7 @@ import WorkWithMe from './pages/WorkWithMe'
 import CivicsPage from './pages/CivicsPage'
 import WritingServicesPage from './pages/WritingServicesPage'
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage'
+import IndigenousHeritagePage from './pages/IndigenousHeritagePage'
 import AdminDashboard from './pages/AdminDashboard'
 import AdminLogin from './pages/AdminLogin'
 import ProtectedAdminRoute from './components/ProtectedAdminRoute'
@@ -62,6 +64,10 @@ function AppLayout({ children }: { children: React.ReactNode }) {
 function AppRoutes() {
   const location = useLocation()
 
+  useEffect(() => {
+    trackConversion('PageView')
+  }, [location.pathname])
+
   return (
     <AppLayout>
       <Routes>
@@ -73,6 +79,7 @@ function AppRoutes() {
         <Route path="/civics" element={<CivicsPage />} />
         <Route path="/writing-services" element={<WritingServicesPage />} />
         <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+        <Route path="/indigenous-heritage" element={<IndigenousHeritagePage />} />
         <Route path="/admin" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
         <Route path="/admin/blog" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
         <Route path="/admin/services" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
