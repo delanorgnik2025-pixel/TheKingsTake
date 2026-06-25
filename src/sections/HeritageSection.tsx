@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Map, ChevronUp, ChevronDown, ExternalLink, Phone, Globe, FileText, Landmark, Dna, Scroll, BookOpen, Users, MapPin, AlertTriangle } from 'lucide-react'
+import { Map, ChevronUp, ChevronDown, ExternalLink, Phone, Globe, FileText, Landmark, Dna, Scroll, BookOpen, Users, MapPin, AlertTriangle, X } from 'lucide-react'
 import ScrollReveal from '../components/ScrollReveal'
 import { STATE_DATA, POPULAR_STATES, STATE_COORDS, TRIBE_DB, TREATY_DB } from '../data/heritageData'
 import type { TribeDetail } from '../data/heritageData'
@@ -150,13 +150,157 @@ function TreatyExpand({ stateKey, treatyIndex }: { stateKey: string; treatyIndex
 }
 
 // ============================================
+// STATE DETAIL POPUP MODAL
+// ============================================
+function StateDetailModal({ stateKey, onClose }: { stateKey: string; onClose: () => void }) {
+  const [selectedTribe, setSelectedTribe] = useState<string | null>(null)
+  const stateData = STATE_DATA[stateKey]
+  if (!stateData) return null
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      transition={{ duration: 0.25 }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      onClick={onClose}
+    >
+      {/* Backdrop */}
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+
+      {/* Modal Card */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.92, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.92, y: 20 }}
+        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-xl border border-[rgba(255,149,0,0.25)] bg-[#15202B] shadow-2xl"
+        style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,149,0,0.3) transparent' }}
+      >
+        {/* Header */}
+        <div className="sticky top-0 z-10 bg-[#15202B]/95 backdrop-blur-md border-b border-[rgba(255,149,0,0.15)] p-4 md:p-5 flex items-center justify-between" style={{ borderLeft: '4px solid #FF9500' }}>
+          <div>
+            <h3 className="text-xl md:text-2xl text-[#F0EBE1] font-medium">{stateKey}</h3>
+            <p className="text-sm text-[#C9B99A] mt-0.5">{stateData.tribes.length} Indigenous Nations Documented</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="flex items-center justify-center w-9 h-9 rounded-full bg-[rgba(255,149,0,0.1)] border border-[rgba(255,149,0,0.2)] text-[#C9B99A] hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.2)] transition-all shrink-0 ml-3"
+          >
+            <X size={18} />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="p-4 md:p-5 space-y-4">
+          {/* Tribes */}
+          <div className="bg-[rgba(27,40,56,0.5)] rounded-lg border border-[rgba(255,149,0,0.12)] p-4">
+            <h4 className="text-xs text-[#FF9500] uppercase tracking-[0.04em] mb-3 flex items-center gap-2">
+              <Dna size={14} /> Indigenous Nations — Tap to Explore
+            </h4>
+            <div className="flex flex-wrap gap-2">
+              {stateData.tribes.map((tribe) => (
+                <button key={tribe} onClick={() => setSelectedTribe(selectedTribe === tribe ? null : tribe)}
+                  className={`text-xs rounded-lg px-3 py-1.5 border transition-all ${selectedTribe === tribe ? 'bg-[rgba(255,149,0,0.25)] border-[rgba(255,149,0,0.5)] text-[#FF9500]' : 'bg-[rgba(255,149,0,0.06)] border-[rgba(255,149,0,0.15)] text-[#F0EBE1] hover:bg-[rgba(255,149,0,0.12)]'}`}>
+                  {tribe}
+                </button>
+              ))}
+            </div>
+            <AnimatePresence>
+              {selectedTribe && (
+                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.3 }} className="mt-4 overflow-hidden">
+                  <TribeDetailPanel tribeName={selectedTribe} onClose={() => setSelectedTribe(null)} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Laws */}
+          {stateData.laws.length > 0 && (
+            <div className="bg-[rgba(27,40,56,0.5)] rounded-lg border border-[rgba(255,149,0,0.12)] p-4">
+              <h4 className="text-xs text-[#FF9500] uppercase tracking-[0.04em] mb-3 flex items-center gap-2">
+                <Landmark size={14} /> Laws & Policies
+              </h4>
+              <div className="space-y-3">
+                {stateData.laws.map((law, i) => (
+                  <div key={i} className="border-l-2 border-[rgba(255,149,0,0.25)] pl-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-[#FF9500] font-medium">{law.year}</span>
+                      <span className="text-sm text-[#F0EBE1]">{law.name}</span>
+                    </div>
+                    <p className="text-xs text-[#C9B99A] mt-1 leading-relaxed">{law.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Treaties */}
+          {stateData.treaties.length > 0 && (
+            <div className="bg-[rgba(27,40,56,0.5)] rounded-lg border border-[rgba(255,149,0,0.12)] p-4">
+              <h4 className="text-xs text-[#FF9500] uppercase tracking-[0.04em] mb-3 flex items-center gap-2">
+                <Scroll size={14} /> Treaties & Agreements — Tap Each to Expand
+              </h4>
+              <div className="space-y-3">
+                {stateData.treaties.map((_, i) => (
+                  <TreatyExpand key={i} stateKey={stateKey} treatyIndex={i} />
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Vital Records */}
+          <div className="bg-[rgba(27,40,56,0.5)] rounded-lg border border-[rgba(255,149,0,0.12)] p-4">
+            <h4 className="text-xs text-[#FF9500] uppercase tracking-[0.04em] mb-3 flex items-center gap-2">
+              <FileText size={14} /> Vital Records & Genealogy Resources
+            </h4>
+            <div className="space-y-2 text-sm">
+              <div className="flex items-start gap-2">
+                <Landmark size={14} className="text-[#C9B99A] shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-[#F0EBE1]">{stateData.vitalRecords.office}</p>
+                  <p className="text-xs text-[#C9B99A]">{stateData.vitalRecords.address}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Phone size={14} className="text-[#C9B99A] shrink-0" />
+                <span className="text-[#C9B99A]">{stateData.vitalRecords.phone}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Globe size={14} className="text-[#C9B99A] shrink-0" />
+                <a href={stateData.vitalRecords.website} target="_blank" rel="noopener noreferrer" className="text-xs text-[#FF9500] hover:underline">
+                  Vital Records Website <ExternalLink size={10} className="inline" />
+                </a>
+              </div>
+              <div className="border-t border-[rgba(255,149,0,0.1)] pt-2 mt-2">
+                <p className="text-xs text-[#FF9500] uppercase mb-1">Death Certificates</p>
+                <p className="text-xs text-[#C9B99A]">{stateData.vitalRecords.deathCertProcess}</p>
+              </div>
+              <div>
+                <p className="text-xs text-[#FF9500] uppercase mb-1">Birth Certificates</p>
+                <p className="text-xs text-[#C9B99A]">{stateData.vitalRecords.birthCertProcess}</p>
+              </div>
+              {stateData.vitalRecords.indianAffairs && (
+                <div className="border-t border-[rgba(255,149,0,0.1)] pt-2">
+                  <p className="text-xs text-[#FF9500] uppercase mb-1">Indian Affairs Contact</p>
+                  <p className="text-xs text-[#C9B99A]">{stateData.vitalRecords.indianAffairs}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  )
+}
+
+// ============================================
 // MAP + STATE SELECTOR
 // ============================================
 function HeritageMap() {
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<any>(null)
   const [selectedState, setSelectedState] = useState<string | null>(null)
-  const [selectedTribe, setSelectedTribe] = useState<string | null>(null)
   const [mapError, setMapError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -200,7 +344,7 @@ function HeritageMap() {
               if (data.features?.length > 0) {
                 const placeName = data.features[0].place_name
                 const stateMatch = Object.keys(STATE_DATA).find(s => placeName.includes(s))
-                if (stateMatch) { setSelectedState(stateMatch); setSelectedTribe(null) }
+                if (stateMatch) { setSelectedState(stateMatch) }
               }
             })
             .catch(() => {})
@@ -217,21 +361,17 @@ function HeritageMap() {
     if (selectedState && mapRef.current && STATE_COORDS[selectedState]) {
       const [lng, lat, zoom] = STATE_COORDS[selectedState]
       mapRef.current.flyTo({ center: [lng, lat], zoom, duration: 2000 })
-      setTimeout(() => {
-        document.getElementById('heritage-info')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      }, 600)
     }
   }, [selectedState])
 
-  const stateData = selectedState ? STATE_DATA[selectedState] : null
   const allStates = Object.keys(STATE_DATA).sort()
 
   return (
     <div className="space-y-6">
       {/* Map */}
-      <div className="relative rounded border border-[rgba(255,149,0,0.2)] overflow-hidden" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
+      <div className="relative rounded-xl border border-[rgba(255,149,0,0.2)] overflow-hidden" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
         {mapError ? (
-          <div className="bg-[#1B2838] h-[300px] md:h-[400px] flex items-center justify-center p-6 text-center rounded">
+          <div className="bg-[#1B2838] h-[300px] md:h-[450px] flex items-center justify-center p-6 text-center rounded-xl">
             <div>
               <Map size={48} className="text-[#FF9500] mx-auto mb-4" />
               <p className="text-lg text-[#F0EBE1] mb-2">Tribal Land Map</p>
@@ -240,7 +380,7 @@ function HeritageMap() {
             </div>
           </div>
         ) : (
-          <div ref={mapContainerRef} className="h-[300px] md:h-[400px] w-full" />
+          <div ref={mapContainerRef} className="h-[350px] md:h-[450px] w-full" />
         )}
       </div>
 
@@ -249,7 +389,7 @@ function HeritageMap() {
         <p className="text-xs uppercase tracking-[0.08em] text-[#FF9500] mb-3">Most Searched States</p>
         <div className="flex flex-wrap gap-2">
           {POPULAR_STATES.filter(s => STATE_DATA[s]).map((state) => (
-            <button key={state} onClick={() => { setSelectedState(state); setSelectedTribe(null) }}
+            <button key={state} onClick={() => setSelectedState(state)}
               className={`text-xs py-2 px-4 rounded-full border transition-all ${selectedState === state ? 'bg-[rgba(255,149,0,0.2)] border-[rgba(255,149,0,0.5)] text-[#FF9500]' : 'bg-[rgba(27,40,56,0.6)] border-[rgba(255,149,0,0.15)] text-[#C9B99A] hover:border-[rgba(255,149,0,0.3)]'}`}>
               {state}
             </button>
@@ -262,137 +402,29 @@ function HeritageMap() {
         <p className="text-xs uppercase tracking-[0.08em] text-[#C9B99A] mb-3">All {allStates.length} States</p>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
           {allStates.map((state) => (
-            <button key={state} onClick={() => { setSelectedState(state); setSelectedTribe(null) }}
-              className={`text-xs py-2 px-3 rounded border transition-all text-left ${selectedState === state ? 'bg-[rgba(255,149,0,0.2)] border-[rgba(255,149,0,0.5)] text-[#FF9500]' : 'bg-[rgba(27,40,56,0.5)] border-[rgba(255,149,0,0.1)] text-[#C9B99A] hover:border-[rgba(255,149,0,0.3)]'}`}>
+            <button key={state} onClick={() => setSelectedState(state)}
+              className={`text-xs py-2 px-3 rounded-lg border transition-all text-left ${selectedState === state ? 'bg-[rgba(255,149,0,0.2)] border-[rgba(255,149,0,0.5)] text-[#FF9500]' : 'bg-[rgba(27,40,56,0.5)] border-[rgba(255,149,0,0.1)] text-[#C9B99A] hover:border-[rgba(255,149,0,0.3)]'}`}>
               {state}
             </button>
           ))}
         </div>
       </div>
 
-      {/* State Detail Panel */}
+      {/* State Detail Popup Modal */}
       <AnimatePresence>
-        {stateData && selectedState && (
-          <motion.div id="heritage-info"
-            initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.4 }} className="space-y-4">
-
-            {/* Header */}
-            <div className="bg-[rgba(27,40,56,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.3)] p-5" style={{ borderLeft: '3px solid #FF9500' }}>
-              <div className="flex items-center justify-between mb-1">
-                <h3 className="text-xl md:text-2xl text-[#F0EBE1]">{selectedState}</h3>
-                <button onClick={() => { setSelectedState(null); setSelectedTribe(null) }} className="text-[#C9B99A] hover:text-[#FF9500]"><ChevronUp size={20} /></button>
-              </div>
-              <p className="text-sm text-[#C9B99A]">{stateData.tribes.length} Indigenous Nations Documented</p>
-            </div>
-
-            {/* Clickable Tribes */}
-            <div className="bg-[rgba(27,40,56,0.7)] rounded border border-[rgba(255,149,0,0.15)] p-4">
-              <h4 className="text-xs text-[#FF9500] uppercase tracking-[0.04em] mb-3 flex items-center gap-2">
-                <Dna size={14} /> Indigenous Nations — Click to Explore
-              </h4>
-              <div className="flex flex-wrap gap-2">
-                {stateData.tribes.map((tribe) => (
-                  <button key={tribe} onClick={() => setSelectedTribe(selectedTribe === tribe ? null : tribe)}
-                    className={`text-xs rounded px-3 py-1.5 border transition-all ${selectedTribe === tribe ? 'bg-[rgba(255,149,0,0.25)] border-[rgba(255,149,0,0.5)] text-[#FF9500]' : 'bg-[rgba(255,149,0,0.08)] border-[rgba(255,149,0,0.2)] text-[#F0EBE1] hover:bg-[rgba(255,149,0,0.15)]'}`}>
-                    {tribe}
-                  </button>
-                ))}
-              </div>
-              <AnimatePresence>
-                {selectedTribe && (
-                  <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }} className="mt-4">
-                    <TribeDetailPanel tribeName={selectedTribe} onClose={() => setSelectedTribe(null)} />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
-            {/* Laws */}
-            {stateData.laws.length > 0 && (
-              <div className="bg-[rgba(27,40,56,0.7)] rounded border border-[rgba(255,149,0,0.15)] p-4">
-                <h4 className="text-xs text-[#FF9500] uppercase tracking-[0.04em] mb-3 flex items-center gap-2">
-                  <Landmark size={14} /> Laws & Policies
-                </h4>
-                <div className="space-y-3">
-                  {stateData.laws.map((law, i) => (
-                    <div key={i} className="border-l-2 border-[rgba(255,149,0,0.3)] pl-3">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-[#FF9500] font-medium">{law.year}</span>
-                        <span className="text-sm text-[#F0EBE1]">{law.name}</span>
-                      </div>
-                      <p className="text-xs text-[#C9B99A] mt-1 leading-relaxed">{law.desc}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Treaties — Expandable */}
-            {stateData.treaties.length > 0 && (
-              <div className="bg-[rgba(27,40,56,0.7)] rounded border border-[rgba(255,149,0,0.15)] p-4">
-                <h4 className="text-xs text-[#FF9500] uppercase tracking-[0.04em] mb-3 flex items-center gap-2">
-                  <Scroll size={14} /> Treaties & Agreements — Click to Read Full Text
-                </h4>
-                <div className="space-y-3">
-                  {stateData.treaties.map((_, i) => (
-                    <TreatyExpand key={i} stateKey={selectedState} treatyIndex={i} />
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Vital Records */}
-            <div className="bg-[rgba(27,40,56,0.7)] rounded border border-[rgba(255,149,0,0.15)] p-4">
-              <h4 className="text-xs text-[#FF9500] uppercase tracking-[0.04em] mb-3 flex items-center gap-2">
-                <FileText size={14} /> Vital Records & Genealogy Resources
-              </h4>
-              <div className="space-y-2 text-sm">
-                <div className="flex items-start gap-2">
-                  <Landmark size={14} className="text-[#C9B99A] shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-[#F0EBE1]">{stateData.vitalRecords.office}</p>
-                    <p className="text-xs text-[#C9B99A]">{stateData.vitalRecords.address}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Phone size={14} className="text-[#C9B99A] shrink-0" />
-                  <span className="text-[#C9B99A]">{stateData.vitalRecords.phone}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Globe size={14} className="text-[#C9B99A] shrink-0" />
-                  <a href={stateData.vitalRecords.website} target="_blank" rel="noopener noreferrer" className="text-xs text-[#FF9500] hover:underline">
-                    Vital Records Website <ExternalLink size={10} className="inline" />
-                  </a>
-                </div>
-                <div className="border-t border-[rgba(255,149,0,0.1)] pt-2 mt-2">
-                  <p className="text-xs text-[#FF9500] uppercase mb-1">Death Certificates</p>
-                  <p className="text-xs text-[#C9B99A]">{stateData.vitalRecords.deathCertProcess}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-[#FF9500] uppercase mb-1">Birth Certificates</p>
-                  <p className="text-xs text-[#C9B99A]">{stateData.vitalRecords.birthCertProcess}</p>
-                </div>
-                {stateData.vitalRecords.indianAffairs && (
-                  <div className="border-t border-[rgba(255,149,0,0.1)] pt-2">
-                    <p className="text-xs text-[#FF9500] uppercase mb-1">Indian Affairs Contact</p>
-                    <p className="text-xs text-[#C9B99A]">{stateData.vitalRecords.indianAffairs}</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </motion.div>
+        {selectedState && (
+          <StateDetailModal
+            stateKey={selectedState}
+            onClose={() => setSelectedState(null)}
+          />
         )}
       </AnimatePresence>
 
-      {/* No state selected */}
-      {!selectedState && (
-        <div id="heritage-info" className="bg-[rgba(27,40,56,0.5)] rounded border border-[rgba(255,149,0,0.15)] border-dashed p-6 text-center">
-          <Dna size={32} className="text-[#FF9500] mx-auto mb-3" />
-          <p className="text-sm text-[#F0EBE1] mb-1">Select a State Above</p>
-          <p className="text-xs text-[#C9B99A]">Click any state button or click directly on the map to see Indigenous nations, laws, treaties with full text, and vital records.</p>
-        </div>
-      )}
+      {/* Hint when no state selected */}
+      <div className="bg-[rgba(27,40,56,0.3)] rounded-lg border border-[rgba(255,149,0,0.1)] border-dashed p-5 text-center">
+        <MapPin size={24} className="text-[#FF9500]/60 mx-auto mb-2" />
+        <p className="text-sm text-[#C9B99A]/70">Tap any state on the map or a button above to explore tribal nations</p>
+      </div>
     </div>
   )
 }
