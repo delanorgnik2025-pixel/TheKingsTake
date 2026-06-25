@@ -1,4 +1,5 @@
 import HeroSection from '../sections/HeroSection'
+import HeroPortraitSection from '../sections/HeroPortraitSection'
 import BookPromoSection from '../sections/BookPromoSection'
 import HeritageSection from '../sections/HeritageSection'
 import AboutSection from '../sections/AboutSection'
@@ -11,10 +12,18 @@ import ContactSection from '../sections/ContactSection'
 export default function HomePage() {
   return (
     <main>
+      {/* 1. Ronald's Cosmic Portrait — Indigenous Aboriginal Royal American */}
+      <HeroPortraitSection />
+
+      {/* 2. Indigenous Soul Tribe Map — Cosmic aesthetic continues */}
       <HeritageSection />
-      <MarqueeDivider text="#TheKingsTake — Who Was Here Before You — Discover Your Roots — 574 Sovereign Nations — The Land Remembers" />
+
+      {/* 3. Book Upsell — The African American State of the Union */}
+      <MarqueeDivider text="#TheKingsTake — We Were Here Before Anybody — Discover Your Roots — 225+ Nations Documented — The Land Remembers" />
       <HeroSection />
       <BookPromoSection />
+
+      {/* 4. GTA-Style Platform Sections */}
       <AboutSection />
       <ServicesSection />
       <WritingMarketSection />

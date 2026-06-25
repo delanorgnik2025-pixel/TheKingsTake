@@ -1,0 +1,26 @@
+import { motion } from 'framer-motion'
+import { ChevronDown } from 'lucide-react'
+
+export default function HeroPortraitSection() {
+  return (
+    <section className="relative w-full min-h-[80vh] md:min-h-screen flex items-end overflow-hidden">
+      {/* Full-bleed cosmic portrait background */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: 'url(/images/ronald-cosmic-portrait.jpg)' }}
+      />
+      {/* Bottom gradient fade into next section */}
+      <div className="absolute inset-x-0 bottom-0 h-[200px] md:h-[300px] bg-gradient-to-t from-[#0a0f1a] via-[#0a0f1a]/80 to-transparent" />
+
+      {/* Scroll indicator */}
+      <motion.div
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2"
+        animate={{ y: [0, 8, 0] }}
+        transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+      >
+        <span className="text-[10px] uppercase tracking-[0.15em] text-[#C9B99A]/60">Explore the Map</span>
+        <ChevronDown size={20} className="text-[#FF9500]/70" />
+      </motion.div>
+    </section>
+  )
+}
