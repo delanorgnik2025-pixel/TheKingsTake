@@ -426,7 +426,7 @@ export default function HeritageSection() {
         </ScrollReveal>
 
         <ScrollReveal delay={0.25}>
-          <div className="flex flex-wrap gap-3 mb-8">
+          <div className="flex flex-wrap gap-3 mb-12">
             <span className="flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.08)] border border-[rgba(255,149,0,0.2)] rounded-full px-4 py-2">
               <Dna size={12} /> 225+ Nations Documented
             </span>
@@ -439,20 +439,6 @@ export default function HeritageSection() {
             <span className="flex items-center gap-2 text-xs text-[#C9B99A] bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.15)] rounded-full px-4 py-2">
               <Map size={12} /> 51 States & Territories
             </span>
-          </div>
-        </ScrollReveal>
-
-        <ScrollReveal delay={0.3}>
-          <div className="flex flex-wrap gap-4 mb-12">
-            <button onClick={() => document.getElementById('heritage-info')?.scrollIntoView({ behavior: 'smooth' })} className="flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.08)] border border-[rgba(255,149,0,0.2)] rounded px-3 py-1.5 hover:bg-[rgba(255,149,0,0.15)] transition-colors cursor-pointer">
-              <Dna size={12} /> 574 Sovereign Nations
-            </button>
-            <button onClick={() => document.getElementById('heritage-info')?.scrollIntoView({ behavior: 'smooth' })} className="flex items-center gap-2 text-xs text-[#C9B99A] bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.15)] rounded px-3 py-1.5 hover:bg-[rgba(201,185,154,0.1)] transition-colors cursor-pointer">
-              <FileText size={12} /> Vital Records Access
-            </button>
-            <button onClick={() => document.getElementById('heritage-info')?.scrollIntoView({ behavior: 'smooth' })} className="flex items-center gap-2 text-xs text-[#C9B99A] bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.15)] rounded px-3 py-1.5 hover:bg-[rgba(201,185,154,0.1)] transition-colors cursor-pointer">
-              <Landmark size={12} /> Laws & Treaties
-            </button>
           </div>
         </ScrollReveal>
 
