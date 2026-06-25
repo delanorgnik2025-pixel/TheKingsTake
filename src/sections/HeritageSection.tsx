@@ -403,30 +403,35 @@ export default function HeritageSection() {
       <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/bg-services.jpg)' }} />
       <div className="absolute inset-0 bg-[#1B2838]/90" />
 
+      {/* Branded top bar */}
       <div className="relative z-10 max-w-7xl mx-auto">
         <ScrollReveal>
-          <div className="flex items-center gap-3 mb-6">
+          <div className="flex items-center justify-between mb-8 pb-4 border-b border-[rgba(255,149,0,0.15)]">
+            <div className="flex items-center gap-3">
+              <span className="text-[10px] md:text-xs uppercase tracking-[0.15em] text-[#FF9500] font-medium">#TheKingsTake</span>
+              <span className="text-[10px] md:text-xs text-[#C9B99A]/40">|</span>
+              <span className="text-[10px] md:text-xs uppercase tracking-[0.1em] text-[#C9B99A]/60">AASOTU Media Group LLC</span>
+            </div>
             <div className="flex gap-1">
               {[0, 1, 2].map(i => <div key={i} className="w-[3px] h-[3px] rounded-full bg-[#FF9500]" />)}
             </div>
-            <p className="text-xs uppercase tracking-[0.08em] text-[#FF9500]">AASOTU Media Group Presents — Indigenous Soul Tribe Map</p>
           </div>
         </ScrollReveal>
 
-        <ScrollReveal delay={0.15}>
-          <h2 className="text-4xl md:text-5xl lg:text-[56px] text-[#F0EBE1] tracking-[-0.02em] leading-[1.08] mb-4 text-shadow-hero">
-            Who Was Here Before You
-          </h2>
+        <ScrollReveal delay={0.1}>
+          <div className="mb-8 md:mb-12">
+            <p className="text-xs uppercase tracking-[0.12em] text-[#FF9500] mb-3">Indigenous Soul Tribe Map</p>
+            <h2 className="text-5xl md:text-6xl lg:text-[72px] text-[#F0EBE1] tracking-[-0.03em] leading-[1.05] mb-5 text-shadow-hero">
+              Who Was Here<br className="hidden md:block" /> Before You
+            </h2>
+            <p className="text-lg md:text-xl text-[#C9B99A] max-w-2xl leading-relaxed">
+              Discover the truth they never taught you. Click any state to explore Indigenous nations, treaties, laws, and vital records — 225+ nations fully documented.
+            </p>
+          </div>
         </ScrollReveal>
 
         <ScrollReveal delay={0.2}>
-          <p className="text-lg md:text-xl text-[#C9B99A] max-w-3xl mb-4 leading-relaxed">
-            Discover the truth they never taught you. Click any of the 51 states to explore the Indigenous nations, their treaties, their laws, and their stories — 225 nations documented with full historical records.
-          </p>
-        </ScrollReveal>
-
-        <ScrollReveal delay={0.25}>
-          <div className="flex flex-wrap gap-3 mb-12">
+          <div className="flex flex-wrap gap-3 mb-12 md:mb-16">
             <span className="flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.08)] border border-[rgba(255,149,0,0.2)] rounded-full px-4 py-2">
               <Dna size={12} /> 225+ Nations Documented
             </span>
