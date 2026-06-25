@@ -368,8 +368,8 @@ function HeritageMap() {
 
   return (
     <div className="space-y-6">
-      {/* Map */}
-      <div className="relative rounded-xl border border-[rgba(255,149,0,0.2)] overflow-hidden" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
+      {/* Map — Full Width Edge to Edge */}
+      <div className="relative -mx-6 md:-mx-12 rounded-none border-y border-[rgba(255,149,0,0.2)] overflow-hidden" style={{ boxShadow: '0 4px 30px rgba(0,0,0,0.6)' }}>
         {mapError ? (
           <div className="bg-[#1B2838] h-[300px] md:h-[450px] flex items-center justify-center p-6 text-center rounded-xl">
             <div>
@@ -435,8 +435,8 @@ function HeritageMap() {
 export default function HeritageSection() {
   return (
     <section id="heritage" className="relative py-24 md:py-32 px-6 md:px-12 overflow-hidden">
-      <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/bg-services.jpg)' }} />
-      <div className="absolute inset-0 bg-[#1B2838]/90" />
+      <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/cosmic-bg.jpg)' }} />
+      <div className="absolute inset-0 bg-[#0a0f1a]/75" />
 
       {/* Branded top bar */}
       <div className="relative z-10 max-w-7xl mx-auto">
@@ -455,12 +455,12 @@ export default function HeritageSection() {
 
         <ScrollReveal delay={0.1}>
           <div className="mb-8 md:mb-12">
-            <p className="text-xs uppercase tracking-[0.12em] text-[#FF9500] mb-3">Indigenous Soul Tribe Map</p>
+            <p className="text-xs uppercase tracking-[0.12em] text-[#FF9500] mb-3">Indigenous Aboriginal Royal Americans</p>
             <h2 className="text-5xl md:text-6xl lg:text-[72px] text-[#F0EBE1] tracking-[-0.03em] leading-[1.05] mb-5 text-shadow-hero">
-              Who Was Here<br className="hidden md:block" /> Before You
+              We Were Here<br className="hidden md:block" /> Before Anybody
             </h2>
             <p className="text-lg md:text-xl text-[#C9B99A] max-w-2xl leading-relaxed">
-              Discover the truth they never taught you. Click any state to explore Indigenous nations, treaties, laws, and vital records — 225+ nations fully documented.
+              Discover the truth they never taught you. Tap any state to explore Indigenous nations, treaties, laws, and vital records — 225+ nations fully documented.
             </p>
           </div>
         </ScrollReveal>
