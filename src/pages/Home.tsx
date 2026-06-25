@@ -11,10 +11,10 @@ import ContactSection from '../sections/ContactSection'
 export default function HomePage() {
   return (
     <main>
+      <HeritageSection />
+      <MarqueeDivider text="#TheKingsTake — Who Was Here Before You — Discover Your Roots — 574 Sovereign Nations — The Land Remembers" />
       <HeroSection />
       <BookPromoSection />
-      <MarqueeDivider text="#TheKingsTake — Who Was Here Before You — Discover Your Roots — 574 Sovereign Nations — The Land Remembers" />
-      <HeritageSection />
       <AboutSection />
       <ServicesSection />
       <WritingMarketSection />

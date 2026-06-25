@@ -405,11 +405,11 @@ export default function HeritageSection() {
 
       <div className="relative z-10 max-w-7xl mx-auto">
         <ScrollReveal>
-          <div className="flex items-center gap-3 mb-4">
+          <div className="flex items-center gap-3 mb-6">
             <div className="flex gap-1">
               {[0, 1, 2].map(i => <div key={i} className="w-[3px] h-[3px] rounded-full bg-[#FF9500]" />)}
             </div>
-            <p className="text-xs uppercase tracking-[0.08em] text-[#FF9500]">AASOTU Media Group Presents</p>
+            <p className="text-xs uppercase tracking-[0.08em] text-[#FF9500]">AASOTU Media Group Presents — Indigenous Soul Tribe Map</p>
           </div>
         </ScrollReveal>
 
@@ -419,10 +419,27 @@ export default function HeritageSection() {
           </h2>
         </ScrollReveal>
 
-        <ScrollReveal delay={0.25}>
-          <p className="text-lg text-[#C9B99A] max-w-3xl mb-4 leading-relaxed">
-            Click any of the 51 states and territories to discover the Indigenous nations who called that land home. Then click each nation to explore their full history. Expand treaties to read the complete text.
+        <ScrollReveal delay={0.2}>
+          <p className="text-lg md:text-xl text-[#C9B99A] max-w-3xl mb-4 leading-relaxed">
+            Discover the truth they never taught you. Click any of the 51 states to explore the Indigenous nations, their treaties, their laws, and their stories — 225 nations documented with full historical records.
           </p>
+        </ScrollReveal>
+
+        <ScrollReveal delay={0.25}>
+          <div className="flex flex-wrap gap-3 mb-8">
+            <span className="flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.08)] border border-[rgba(255,149,0,0.2)] rounded-full px-4 py-2">
+              <Dna size={12} /> 225+ Nations Documented
+            </span>
+            <span className="flex items-center gap-2 text-xs text-[#C9B99A] bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.15)] rounded-full px-4 py-2">
+              <FileText size={12} /> Vital Records Access
+            </span>
+            <span className="flex items-center gap-2 text-xs text-[#C9B99A] bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.15)] rounded-full px-4 py-2">
+              <Landmark size={12} /> Laws & Treaties
+            </span>
+            <span className="flex items-center gap-2 text-xs text-[#C9B99A] bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.15)] rounded-full px-4 py-2">
+              <Map size={12} /> 51 States & Territories
+            </span>
+          </div>
         </ScrollReveal>
 
         <ScrollReveal delay={0.3}>
