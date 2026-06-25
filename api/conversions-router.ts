@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { publicQuery } from './middleware'
+import { createRouter, publicQuery } from './middleware'
 
 const PIXEL_ID = '1531431398593102'
 const FB_API_VERSION = 'v18.0'
@@ -70,7 +70,7 @@ async function sendToFacebook(
   return json
 }
 
-export const conversionsRouter = publicQuery.router({
+export const conversionsRouter = createRouter({
   sendEvent: publicQuery
     .input(conversionInput)
     .mutation(async ({ input }) => {
