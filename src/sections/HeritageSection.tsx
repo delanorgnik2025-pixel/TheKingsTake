@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Map, ChevronUp, ChevronDown, ExternalLink, Phone, Globe, FileText, Landmark, Dna, Scroll, BookOpen, Users, MapPin, AlertTriangle, X } from 'lucide-react'
+import { Map, ChevronUp, ChevronDown, ExternalLink, Phone, Globe, FileText, Landmark, Dna, Scroll, BookOpen, Users, MapPin, AlertTriangle, X, Plus, Minus, Maximize2, MousePointerClick } from 'lucide-react'
 import ScrollReveal from '../components/ScrollReveal'
 import { STATE_DATA, POPULAR_STATES, STATE_COORDS, TRIBE_DB, TREATY_DB } from '../data/heritageData'
 import type { TribeDetail } from '../data/heritageData'
@@ -357,6 +357,24 @@ function HeritageMap() {
     return () => { cancelled = true }
   }, [])
 
+  const resetMapView = () => {
+    if (mapRef.current) {
+      mapRef.current.flyTo({ center: [-95, 38], zoom: 3.5, duration: 1500 })
+    }
+  }
+
+  const zoomIn = () => {
+    if (mapRef.current) {
+      mapRef.current.zoomIn({ duration: 300 })
+    }
+  }
+
+  const zoomOut = () => {
+    if (mapRef.current) {
+      mapRef.current.zoomOut({ duration: 300 })
+    }
+  }
+
   useEffect(() => {
     if (selectedState && mapRef.current && STATE_COORDS[selectedState]) {
       const [lng, lat, zoom] = STATE_COORDS[selectedState]
@@ -380,7 +398,52 @@ function HeritageMap() {
             </div>
           </div>
         ) : (
-          <div ref={mapContainerRef} className="h-[350px] md:h-[450px] w-full" />
+          <>
+            <div ref={mapContainerRef} className="h-[350px] md:h-[450px] w-full" />
+
+            {/* Floating Map Controls */}
+            <div className="absolute top-3 right-3 flex flex-col gap-1.5 z-10">
+              <button onClick={zoomIn} title="Zoom In" className="w-9 h-9 flex items-center justify-center rounded-lg bg-[#15202B]/90 backdrop-blur border border-[rgba(255,149,0,0.25)] text-[#C9B99A] hover:text-[#FF9500] hover:border-[rgba(255,149,0,0.5)] transition-all">
+                <Plus size={16} />
+              </button>
+              <button onClick={zoomOut} title="Zoom Out" className="w-9 h-9 flex items-center justify-center rounded-lg bg-[#15202B]/90 backdrop-blur border border-[rgba(255,149,0,0.25)] text-[#C9B99A] hover:text-[#FF9500] hover:border-[rgba(255,149,0,0.5)] transition-all">
+                <Minus size={16} />
+              </button>
+              <button onClick={resetMapView} title="Reset to Full View" className="w-9 h-9 flex items-center justify-center rounded-lg bg-[#15202B]/90 backdrop-blur border border-[rgba(255,149,0,0.25)] text-[#C9B99A] hover:text-[#FF9500] hover:border-[rgba(255,149,0,0.5)] transition-all">
+                <Maximize2 size={14} />
+              </button>
+            </div>
+
+            {/* Map Instructions Bar */}
+            <div className="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-[#0a0f1a] via-[#0a0f1a]/90 to-transparent pt-8 pb-3 px-4">
+              <div className="flex items-center justify-center gap-4 md:gap-6 flex-wrap">
+                <div className="flex items-center gap-1.5 text-[10px] md:text-xs text-[#C9B99A]/70">
+                  <MousePointerClick size={12} className="text-[#FF9500]/60" />
+                  <span>Click a state to explore</span>
+                </div>
+                <span className="hidden md:inline text-[#C9B99A]/20">|</span>
+                <div className="hidden md:flex items-center gap-1.5 text-[10px] md:text-xs text-[#C9B99A]/70">
+                  <span className="text-[#FF9500]/60">Scroll</span>
+                  <span>to zoom</span>
+                </div>
+                <span className="hidden md:inline text-[#C9B99A]/20">|</span>
+                <div className="hidden md:flex items-center gap-1.5 text-[10px] md:text-xs text-[#C9B99A]/70">
+                  <span className="text-[#FF9500]/60">Drag</span>
+                  <span>to pan</span>
+                </div>
+                <span className="hidden md:inline text-[#C9B99A]/20">|</span>
+                <div className="flex md:hidden items-center gap-1.5 text-[10px] text-[#C9B99A]/70">
+                  <span className="text-[#FF9500]/60">Pinch</span>
+                  <span>to zoom</span>
+                </div>
+                <span className="flex md:hidden text-[#C9B99A]/20">|</span>
+                <div className="flex md:hidden items-center gap-1.5 text-[10px] text-[#C9B99A]/70">
+                  <span className="text-[#FF9500]/60">Two fingers</span>
+                  <span>to pan</span>
+                </div>
+              </div>
+            </div>
+          </>
         )}
       </div>
 
