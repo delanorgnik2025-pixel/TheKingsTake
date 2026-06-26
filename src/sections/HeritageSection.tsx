@@ -529,7 +529,7 @@ export default function HeritageSection() {
         </ScrollReveal>
 
         <ScrollReveal delay={0.2}>
-          <div className="flex flex-wrap gap-3 mb-12 md:mb-16">
+          <div className="flex flex-wrap gap-3 mb-6">
             <span className="flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.08)] border border-[rgba(255,149,0,0.2)] rounded-full px-4 py-2">
               <Dna size={12} /> 225+ Nations Documented
             </span>
@@ -542,6 +542,36 @@ export default function HeritageSection() {
             <span className="flex items-center gap-2 text-xs text-[#C9B99A] bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.15)] rounded-full px-4 py-2">
               <Map size={12} /> 51 States & Territories
             </span>
+          </div>
+        </ScrollReveal>
+
+        {/* How It Works — 3 Step Guide */}
+        <ScrollReveal delay={0.25}>
+          <div className="bg-[rgba(27,40,56,0.4)] rounded-xl border border-[rgba(255,149,0,0.12)] p-4 md:p-5 mb-10 md:mb-14">
+            <p className="text-[10px] uppercase tracking-[0.12em] text-[#FF9500] mb-3">How It Works</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="flex items-start gap-3 bg-[rgba(21,32,43,0.5)] rounded-lg p-3">
+                <span className="flex items-center justify-center w-7 h-7 rounded-full bg-[rgba(255,149,0,0.15)] border border-[rgba(255,149,0,0.25)] text-xs text-[#FF9500] font-bold shrink-0">1</span>
+                <div>
+                  <p className="text-sm text-[#F0EBE1] font-medium">Choose a State</p>
+                  <p className="text-[11px] text-[#C9B99A]/70 mt-0.5">Click any state on the map or tap a state button below</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 bg-[rgba(21,32,43,0.5)] rounded-lg p-3">
+                <span className="flex items-center justify-center w-7 h-7 rounded-full bg-[rgba(255,149,0,0.15)] border border-[rgba(255,149,0,0.25)] text-xs text-[#FF9500] font-bold shrink-0">2</span>
+                <div>
+                  <p className="text-sm text-[#F0EBE1] font-medium">Explore the Popup</p>
+                  <p className="text-[11px] text-[#C9B99A]/70 mt-0.5">A window appears with tribes, laws, treaties & vital records</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 bg-[rgba(21,32,43,0.5)] rounded-lg p-3">
+                <span className="flex items-center justify-center w-7 h-7 rounded-full bg-[rgba(255,149,0,0.15)] border border-[rgba(255,149,0,0.25)] text-xs text-[#FF9500] font-bold shrink-0">3</span>
+                <div>
+                  <p className="text-sm text-[#F0EBE1] font-medium">Tap Any Tribe</p>
+                  <p className="text-[11px] text-[#C9B99A]/70 mt-0.5">Click a nation name to see its full history, language & status</p>
+                </div>
+              </div>
+            </div>
           </div>
         </ScrollReveal>
 
