@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Map, ChevronUp, ChevronDown, ExternalLink, Phone, Globe, FileText, Landmark, Dna, Scroll, BookOpen, Users, MapPin, AlertTriangle, X, Plus, Minus, Maximize2, MousePointerClick } from 'lucide-react'
+import { Map, ChevronUp, ChevronDown, ExternalLink, Phone, Globe, FileText, Landmark, Dna, Scroll, BookOpen, Users, MapPin, AlertTriangle, X, Plus, Minus, Maximize2, MousePointerClick, Database } from 'lucide-react'
 import ScrollReveal from '../components/ScrollReveal'
 import { STATE_DATA, POPULAR_STATES, STATE_COORDS, TRIBE_DB, TREATY_DB } from '../data/heritageData'
 import type { TribeDetail } from '../data/heritageData'
@@ -287,6 +287,27 @@ function StateDetailModal({ stateKey, onClose }: { stateKey: string; onClose: ()
                 </div>
               )}
             </div>
+          </div>
+
+          {/* Bridge to Ancestry/Receipts */}
+          <div className="bg-[rgba(255,149,0,0.08)] rounded-lg border border-[rgba(255,149,0,0.2)] p-4">
+            <h4 className="text-xs text-[#FF9500] uppercase tracking-[0.04em] mb-2 flex items-center gap-2">
+              <Database size={14} /> Ancestry / Receipts
+            </h4>
+            <p className="text-xs text-[#C9B99A]/70 mb-3 leading-relaxed">
+              Search tribal rolls, reclassification laws, treaties, and genealogy databases related to {stateKey}.
+            </p>
+            <a
+              href={`/#ancestry?state=${encodeURIComponent(stateKey)}`}
+              onClick={(e) => {
+                e.preventDefault()
+                onClose()
+                window.location.hash = `/ancestry?state=${encodeURIComponent(stateKey)}`
+              }}
+              className="inline-flex items-center gap-2 text-xs bg-[rgba(255,149,0,0.15)] text-[#FF9500] rounded-lg px-4 py-2 border border-[rgba(255,149,0,0.3)] hover:bg-[rgba(255,149,0,0.25)] transition-colors font-medium"
+            >
+              <Scroll size={12} /> View Related Rolls & Records
+            </a>
           </div>
         </div>
       </motion.div>
