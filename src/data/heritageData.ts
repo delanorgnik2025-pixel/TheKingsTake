@@ -145,7 +145,7 @@ export const TRIBE_DB: Record<string, TribeDetail> = {
     status: 'State-recognized; seeking full federal recognition since 1885',
     population: 'Approximately 55,000 enrolled members — largest tribe east of the Mississippi',
     language: 'English historically; original language lost due to early contact',
-    history: 'The Lumbee are the largest Native American tribe east of the Mississippi River. Their origins trace back to the indigenous peoples of the Carolina coastal plain who intermarried with European settlers and free people of color. They have been fighting for federal recognition since 1885. The Lumbee Act of 1956 recognized them as Indian but denied full benefits.',
+    history: 'The Lumbee are the largest Native American tribe east of the Mississippi River. Their origins trace back to the Indigenous peoples of the Carolina coastal plain who maintained their communities alongside European settlers. Many Lumbee ancestors were reclassified as "free people of color" or "mulatto" on census records under racial integrity laws, erasing their Indigenous identity from official documentation. They have been fighting for federal recognition since 1885. The Lumbee Act of 1956 recognized them as Indian but denied full benefits.',
     currentStatus: 'The Lumbee Tribe continues its fight for full federal recognition. They have their own tribal government, educational programs, and cultural preservation efforts. The Lumbee Tribe Heritage Center is located in Pembroke, NC.',
     resources: [
       { label: 'Official Website', url: 'https://www.lumbeetribe.com' },
@@ -158,7 +158,7 @@ export const TRIBE_DB: Record<string, TribeDetail> = {
     status: 'Federally Recognized',
     population: 'Approximately 4,000 enrolled members',
     language: 'Mikasuki (also called Hitchiti-Mikasuki) and Creek (Mvskoke)',
-    history: 'The Seminole formed in Florida during the 18th century from a mixture of Creek refugees, free African Americans, and Indigenous peoples of Florida. They fought three wars against the United States (1817-1858) and never surrendered. The Seminole Tribe of Florida gained federal recognition in 1957 through a corporate charter.',
+    history: 'The Seminole formed in Florida during the 18th century from Creek refugees and Indigenous peoples of Florida, including those who had been reclassified as "free African Americans" under Spanish and later American racial classification systems. They fought three wars against the United States (1817-1858) and never surrendered. The Seminole Tribe of Florida gained federal recognition in 1957 through a corporate charter.',
     currentStatus: 'Headquartered in Hollywood, Florida. Operates the Hard Rock International brand globally. One of the most economically successful tribes in the United States.',
     resources: [
       { label: 'Official Website', url: 'https://www.seminoletribe.com' },
@@ -379,7 +379,7 @@ export const TRIBE_DB: Record<string, TribeDetail> = {
     status: 'State-recognized by South Carolina',
     population: 'Approximately 500 enrolled members',
     language: 'Siouan — extinct',
-    history: 'The Pee Dee are a Siouan-speaking people who inhabited the Pee Dee River Valley in present-day South Carolina and North Carolina. They were known as agriculturalists and traders. After the Yamasee War of 1715, many Pee Dee people migrated north to merge with the Catawba, while others remained in their ancestral lands and gradually intermarried with European settlers and free people of color.',
+    history: 'The Pee Dee are a Siouan-speaking people who inhabited the Pee Dee River Valley in present-day South Carolina and North Carolina. They were known as agriculturalists and traders. After the Yamasee War of 1715, many Pee Dee people migrated north to merge with the Catawba, while others remained in their ancestral lands. Many Pee Dee families were later reclassified as "free people of color" on census records under racial integrity laws, erasing their Indigenous identity from official documentation.',
     currentStatus: 'The Pee Dee Indian Tribe of South Carolina received state recognition and continues to work toward federal recognition. They maintain their traditional cultural practices and advocate for the preservation of Pee Dee heritage sites.',
     resources: [
       { label: 'Pee Dee Indian Tribe of SC', url: 'https://peedeeindiantribe.org' },
@@ -470,7 +470,7 @@ export const TRIBE_DB: Record<string, TribeDetail> = {
     status: 'Federally Recognized (2018)',
     population: 'Approximately 400 enrolled members',
     language: 'Algonquian — extinct',
-    history: 'The Nansemond are an Algonquian-speaking people who inhabited the Nansemond River area in southeastern Virginia. They were part of the Powhatan Confederacy. The Nansemond people intermarried with English colonists and maintained their identity despite enormous pressure to assimilate. They received federal recognition in 2018.',
+    history: 'The Nansemond are an Algonquian-speaking people who inhabited the Nansemond River area in southeastern Virginia. They were part of the Powhatan Confederacy. The Nansemond people maintained their identity despite enormous pressure to assimilate and were among the tribes specifically targeted by Virginia\'s Racial Integrity Act of 1924, which ordered their reclassification as "colored." They received federal recognition in 2018 after decades of fighting for acknowledgment.',
     currentStatus: 'The Nansemond Indian Nation received federal recognition in 2018. They maintain their Mattanock Town cultural center and are active in preserving Nansemond heritage and traditions.',
     resources: [
       { label: 'Nansemond Indian Nation', url: 'https://www.nansemond.org' },
@@ -561,7 +561,7 @@ export const TRIBE_DB: Record<string, TribeDetail> = {
     status: 'State-recognized by New Jersey',
     population: '~5,000 enrolled',
     language: 'Munsee Delaware — critically endangered',
-    history: 'The Ramapough Lenape are descendants of Lenape, Munsee, and other Indigenous peoples who remained in the Ramapo Mountains after most Lenape were removed westward. They intermarried with free African Americans and Dutch settlers, forming a distinct mountain community.',
+    history: 'The Ramapough Lenape are descendants of Lenape, Munsee, and other Indigenous peoples who remained in the Ramapo Mountains after most Lenape were removed westward. Their community included Indigenous peoples who had been reclassified as "free persons of color" under New Jersey\'s racial classification laws, as well as Dutch settlers. The Ramapough people maintained their Indigenous identity despite decades of being classified as "colored" on official records — a pattern of reclassification that erased Native identity across the Eastern Seaboard.',
     currentStatus: 'They operate the Split Rock Sweetwater Prayer Camp and are active in environmental justice efforts. They continue to seek federal recognition and maintain their cultural traditions.',
     resources: [
       { label: 'Official Website', url: 'https://www.ramapoughlenapenation.org' },
