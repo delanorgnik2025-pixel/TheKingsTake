@@ -2,6 +2,7 @@ import HeroSection from '../sections/HeroSection'
 import HeroPortraitSection from '../sections/HeroPortraitSection'
 import BookPromoSection from '../sections/BookPromoSection'
 import HeritageSection from '../sections/HeritageSection'
+import AncestryResearchSection from '../sections/AncestryResearchSection'
 import AboutSection from '../sections/AboutSection'
 import ServicesSection from '../sections/ServicesSection'
 import WritingMarketSection from '../sections/WritingMarketSection'
@@ -18,7 +19,11 @@ export default function HomePage() {
       {/* 2. Indigenous Soul Tribe Map — Cosmic aesthetic continues */}
       <HeritageSection />
 
-      {/* 3. Book Upsell — The African American State of the Union */}
+      {/* 3. Ancestry Research & Dawes Rolls — Reclaim Your Heritage */}
+      <MarqueeDivider text="#TheKingsTake — They Hid Our Identity in the Records — Search the Dawes Rolls — Reclaim What Was Taken — Your Ancestors Are Waiting" />
+      <AncestryResearchSection />
+
+      {/* 4. Book Upsell — The African American State of the Union */}
       <MarqueeDivider text="#TheKingsTake — We Were Here Before Anybody — Discover Your Roots — 225+ Nations Documented — The Land Remembers" />
       <HeroSection />
       <BookPromoSection />
