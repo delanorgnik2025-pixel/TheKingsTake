@@ -6,6 +6,7 @@ import Navigation from './components/Navigation'
 import MenuOverlay from './components/MenuOverlay'
 import Footer from './components/Footer'
 import CustomCursor from './components/CustomCursor'
+import AudioExperience from './components/AudioExperience'
 import HomePage from './pages/Home'
 import BlogPage from './pages/BlogPage'
 import BlogPostPage from './pages/BlogPostPage'
@@ -52,6 +53,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <CustomCursor />
+      <AudioExperience />
       <Navigation onMenuToggle={() => setMenuOpen(true)} onNavClick={scrollToSection} />
       <MenuOverlay isOpen={menuOpen} onClose={() => setMenuOpen(false)} onNavClick={scrollToSection} />
       {children}
