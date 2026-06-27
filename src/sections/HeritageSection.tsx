@@ -581,8 +581,8 @@ export default function HeritageSection() {
               <div className="flex items-start gap-3 bg-[rgba(21,32,43,0.5)] rounded-lg p-3">
                 <span className="flex items-center justify-center w-7 h-7 rounded-full bg-[rgba(255,149,0,0.15)] border border-[rgba(255,149,0,0.25)] text-xs text-[#FF9500] font-bold shrink-0">2</span>
                 <div>
-                  <p className="text-sm text-[#F0EBE1] font-medium">Explore the Popup</p>
-                  <p className="text-[11px] text-[#C9B99A]/70 mt-0.5">A window appears with tribes, laws, treaties & vital records</p>
+                  <p className="text-sm text-[#F0EBE1] font-medium">Become the Researcher</p>
+                  <p className="text-[11px] text-[#C9B99A]/70 mt-0.5">A window opens with tribes, laws, treaties & vital records — your evidence starts here</p>
                 </div>
               </div>
               <div className="flex items-start gap-3 bg-[rgba(21,32,43,0.5)] rounded-lg p-3">
