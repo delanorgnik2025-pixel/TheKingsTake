@@ -9,6 +9,7 @@ import { voiceRouter } from "./voice-router";
 import { petitionRouter } from "./petition-router";
 import { storyRouter } from "./story-router";
 import { conversionsRouter } from "./conversions-router";
+import { genealogyRouter } from "./routers/genealogy";
 import { createRouter, publicQuery } from "./middleware";
 
 export const appRouter = createRouter({
@@ -24,6 +25,7 @@ export const appRouter = createRouter({
   petition: petitionRouter,
   story: storyRouter,
   conversions: conversionsRouter,
+  genealogy: genealogyRouter,
 });
 
 export type AppRouter = typeof appRouter;
