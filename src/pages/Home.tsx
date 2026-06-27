@@ -9,6 +9,7 @@ import WritingMarketSection from '../sections/WritingMarketSection'
 import MarqueeDivider from '../components/MarqueeDivider'
 import BlogPreviewSection from '../sections/BlogPreviewSection'
 import ContactSection from '../sections/ContactSection'
+import GenealogySection from '../sections/GenealogySection'
 
 export default function HomePage() {
   return (
@@ -16,19 +17,23 @@ export default function HomePage() {
       {/* 1. Ronald's Cosmic Portrait — Indigenous Aboriginal Royal American */}
       <HeroPortraitSection />
 
-      {/* 2. Indigenous Soul Tribe Map — Cosmic aesthetic continues */}
-      <HeritageSection />
-
-      {/* 3. Ancestry Research & Dawes Rolls — Reclaim Your Heritage */}
-      <MarqueeDivider text="#TheKingsTake — They Hid Our Identity in the Records — Search the Dawes Rolls — Reclaim What Was Taken — Your Ancestors Are Waiting" />
-      <AncestryResearchSection />
-
-      {/* 4. Book Upsell — The African American State of the Union */}
-      <MarqueeDivider text="#TheKingsTake — We Were Here Before Anybody — Discover Your Roots — 225+ Nations Documented — The Land Remembers" />
+      {/* 2. Book Promo — The African American State of the Union */}
+      <MarqueeDivider text="#TheKingsTake — From the Loins of the Beast — The African American State of the Union — Available Now" />
       <HeroSection />
       <BookPromoSection />
 
-      {/* 4. GTA-Style Platform Sections */}
+      {/* 3. Indigenous Soul Tribe Map — Cosmic aesthetic continues */}
+      <MarqueeDivider text="#TheKingsTake — We Were Here Before Anybody — Discover Your Roots — 225+ Nations Documented — The Land Remembers" />
+      <HeritageSection />
+
+      {/* 4. Trace Your Roots — Interactive Genealogy Workstation */}
+      <GenealogySection />
+
+      {/* 5. Ancestry Research & Dawes Rolls — Reclaim Your Heritage */}
+      <MarqueeDivider text="#TheKingsTake — They Hid Our Identity in the Records — Search the Dawes Rolls — Reclaim What Was Taken — Your Ancestors Are Waiting" />
+      <AncestryResearchSection />
+
+      {/* 6. GTA-Style Platform Sections */}
       <AboutSection />
       <ServicesSection />
       <WritingMarketSection />
