@@ -1,7 +1,13 @@
 import { useState, useCallback, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { TreePine, Plus, X, ChevronDown, ChevronUp, CheckCircle2, Circle, Search, Scroll, Users, Star, Crown, Sparkles, Share2, Lock, Zap, AlertTriangle, ArrowRight, UserPlus, Trash2, Save, BookOpen } from 'lucide-react'
+import {
+  TreePine, Plus, X, ChevronDown, ChevronUp, CheckCircle2, Circle, Search, Scroll,
+  Users, Star, Crown, Sparkles, Share2, Lock, Zap, AlertTriangle, ArrowRight,
+  UserPlus, Trash2, Save, BookOpen, RotateCcw
+} from 'lucide-react'
 import ScrollReveal from '../components/ScrollReveal'
+import GenealogyOnboarding, { type GenealogyProfile } from '../components/GenealogyOnboarding'
+import TreeArtDisplay from '../components/TreeArtDisplay'
 
 // ============================================
 // TYPES
@@ -19,6 +25,8 @@ interface Ancestor {
   deathDate?: string
   deathPlace?: string
   spouseName?: string
+  marriageDate?: string
+  marriagePlace?: string
   occupation?: string
   militaryService?: string
   church?: string
@@ -79,6 +87,115 @@ const RECORD_TYPES = [
 ]
 
 // ============================================
+// HELPERS: Build tree from profile
+// ============================================
+function buildTreeFromProfile(profile: GenealogyProfile): FamilyTree {
+  const { rootPerson, coreFamily } = profile
+  const rootLastName = rootPerson.lastName
+
+  const root: Ancestor = {
+    id: Date.now(),
+    firstName: rootPerson.firstName,
+    lastName: rootPerson.lastName,
+    birthDate: rootPerson.birthDate,
+    birthPlace: rootPerson.birthPlace,
+    birthState: rootPerson.birthState,
+    generation: 0,
+    position: '0',
+    status: 'confirmed',
+    recordsChecked: {},
+    tribalAffiliation: rootPerson.tribalAffiliation,
+  }
+
+  const people: Ancestor[] = [root]
+
+  // Father (Gen 1, pos 0-0)
+  if (coreFamily.fatherFirstName) {
+    people.push({
+      id: Date.now() + 1,
+      firstName: coreFamily.fatherFirstName,
+      lastName: coreFamily.fatherLastName || rootLastName,
+      generation: 1,
+      position: '0-0',
+      status: 'confirmed',
+      recordsChecked: {},
+    })
+  }
+
+  // Mother (Gen 1, pos 0-1)
+  if (coreFamily.motherFirstName) {
+    people.push({
+      id: Date.now() + 2,
+      firstName: coreFamily.motherFirstName,
+      lastName: coreFamily.motherMaidenName || '',
+      generation: 1,
+      position: '0-1',
+      status: 'confirmed',
+      recordsChecked: {},
+    })
+  }
+
+  // Paternal Grandfather (Gen 2, pos 0-0-0)
+  if (coreFamily.patGrandfatherFirst) {
+    people.push({
+      id: Date.now() + 3,
+      firstName: coreFamily.patGrandfatherFirst,
+      lastName: coreFamily.fatherLastName || rootLastName,
+      generation: 2,
+      position: '0-0-0',
+      status: 'confirmed',
+      recordsChecked: {},
+    })
+  }
+
+  // Paternal Grandmother (Gen 2, pos 0-0-1)
+  if (coreFamily.patGrandmotherFirst) {
+    people.push({
+      id: Date.now() + 4,
+      firstName: coreFamily.patGrandmotherFirst,
+      lastName: coreFamily.patGrandmotherMaiden || '',
+      generation: 2,
+      position: '0-0-1',
+      status: 'confirmed',
+      recordsChecked: {},
+    })
+  }
+
+  // Maternal Grandfather (Gen 2, pos 0-1-0)
+  if (coreFamily.matGrandfatherFirst) {
+    people.push({
+      id: Date.now() + 5,
+      firstName: coreFamily.matGrandfatherFirst,
+      lastName: coreFamily.matGrandfatherLast || '',
+      generation: 2,
+      position: '0-1-0',
+      status: 'confirmed',
+      recordsChecked: {},
+    })
+  }
+
+  // Maternal Grandmother (Gen 2, pos 0-1-1)
+  if (coreFamily.matGrandmotherFirst) {
+    people.push({
+      id: Date.now() + 6,
+      firstName: coreFamily.matGrandmotherFirst,
+      lastName: coreFamily.matGrandmotherMaiden || '',
+      generation: 2,
+      position: '0-1-1',
+      status: 'confirmed',
+      recordsChecked: {},
+    })
+  }
+
+  return {
+    id: Date.now(),
+    treeName: `${rootPerson.firstName} ${rootPerson.lastName} Family Tree`,
+    people,
+    totalPeople: people.length,
+  }
+}
+
+// ============================================
 // ANCESTOR NODE (Tree visualization)
 // ============================================
 function AncestorNode({ ancestor, onClick, isRoot }: { ancestor: Ancestor; onClick: () => void; isRoot?: boolean }) {
@@ -89,7 +206,6 @@ function AncestorNode({ ancestor, onClick, isRoot }: { ancestor: Ancestor; onCli
       whileTap={{ scale: 0.95 }}
       className="relative flex flex-col items-center group"
     >
-      {/* Glow ring for status */}
       <div
         className="w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center border-2 transition-all group-hover:shadow-lg"
         style={{
@@ -100,13 +216,11 @@ function AncestorNode({ ancestor, onClick, isRoot }: { ancestor: Ancestor; onCli
       >
         {isRoot ? <Star size={18} style={{ color: STATUS_COLORS[ancestor.status] }} /> : <Users size={16} style={{ color: STATUS_COLORS[ancestor.status] }} />}
       </div>
-      {/* Name label */}
       <div className="mt-1.5 text-center max-w-[80px]">
         <p className="text-[10px] md:text-xs text-[#F0EBE1] font-medium truncate leading-tight">{ancestor.firstName}</p>
         <p className="text-[10px] md:text-xs text-[#F0EBE1] font-medium truncate leading-tight">{ancestor.lastName}</p>
         <p className="text-[9px] text-[#C9B99A]/50 mt-0.5">{STATUS_LABELS[ancestor.status]}</p>
       </div>
-      {/* Generation badge */}
       {ancestor.generation > 0 && (
         <span className="absolute -top-1 -right-1 text-[8px] bg-[rgba(255,149,0,0.2)] text-[#FF9500] rounded-full w-4 h-4 flex items-center justify-center border border-[rgba(255,149,0,0.3)]">
           G{ancestor.generation}
@@ -139,7 +253,6 @@ function FamilyGroupSheet({ ancestor, onClose, onSave }: { ancestor: Ancestor; o
         onClick={(e) => e.stopPropagation()} className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-xl border border-[rgba(255,149,0,0.25)] bg-[#15202B] shadow-2xl"
         style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,149,0,0.3) transparent' }}>
 
-        {/* Header */}
         <div className="sticky top-0 z-10 bg-[#15202B]/95 backdrop-blur-md border-b border-[rgba(255,149,0,0.15)] p-4 md:p-5 flex items-center justify-between" style={{ borderLeft: '4px solid ' + STATUS_COLORS[ancestor.status] }}>
           <div>
             <h3 className="text-lg text-[#F0EBE1] font-medium">{form.firstName} {form.middleName} {form.lastName}</h3>
@@ -160,7 +273,6 @@ function FamilyGroupSheet({ ancestor, onClose, onSave }: { ancestor: Ancestor; o
           <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full bg-[rgba(255,149,0,0.1)] border border-[rgba(255,149,0,0.2)] text-[#C9B99A] hover:text-[#FF9500]"><X size={16} /></button>
         </div>
 
-        {/* Tabs */}
         <div className="flex border-b border-[rgba(255,149,0,0.1)] px-4">
           {[{ id: 'info', label: 'Family Group Sheet', icon: Users }, { id: 'records', label: `Record Checklist (${Object.values(form.recordsChecked).filter(Boolean).length}/${RECORD_TYPES.length})`, icon: CheckCircle2 }].map(tab => (
             <button key={tab.id} onClick={() => setActiveTab(tab.id as any)}
@@ -173,7 +285,6 @@ function FamilyGroupSheet({ ancestor, onClose, onSave }: { ancestor: Ancestor; o
         <div className="p-4 md:p-5 space-y-4">
           {activeTab === 'info' ? (
             <>
-              {/* Personal Info */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Field label="First Name" value={form.firstName} onChange={v => setForm({ ...form, firstName: v })} />
                 <Field label="Last Name" value={form.lastName} onChange={v => setForm({ ...form, lastName: v })} />
@@ -181,7 +292,6 @@ function FamilyGroupSheet({ ancestor, onClose, onSave }: { ancestor: Ancestor; o
                 <Field label="Nicknames / Variants" value={form.nicknames || ''} onChange={v => setForm({ ...form, nicknames: v })} />
               </div>
 
-              {/* Birth */}
               <div className="bg-[rgba(27,40,56,0.4)] rounded-lg p-3 border border-[rgba(255,149,0,0.08)]">
                 <p className="text-[10px] text-[#FF9500] uppercase tracking-wider mb-2">Birth</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -192,7 +302,6 @@ function FamilyGroupSheet({ ancestor, onClose, onSave }: { ancestor: Ancestor; o
                 </div>
               </div>
 
-              {/* Death */}
               <div className="bg-[rgba(27,40,56,0.4)] rounded-lg p-3 border border-[rgba(255,149,0,0.08)]">
                 <p className="text-[10px] text-[#FF9500] uppercase tracking-wider mb-2">Death</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -201,7 +310,6 @@ function FamilyGroupSheet({ ancestor, onClose, onSave }: { ancestor: Ancestor; o
                 </div>
               </div>
 
-              {/* Marriage */}
               <div className="bg-[rgba(27,40,56,0.4)] rounded-lg p-3 border border-[rgba(255,149,0,0.08)]">
                 <p className="text-[10px] text-[#FF9500] uppercase tracking-wider mb-2">Marriage</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -211,7 +319,6 @@ function FamilyGroupSheet({ ancestor, onClose, onSave }: { ancestor: Ancestor; o
                 </div>
               </div>
 
-              {/* Identity */}
               <div className="bg-[rgba(255,149,0,0.05)] rounded-lg p-3 border border-[rgba(255,149,0,0.12)]">
                 <p className="text-[10px] text-[#FF9500] uppercase tracking-wider mb-2">Identity & Affiliation</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -221,7 +328,6 @@ function FamilyGroupSheet({ ancestor, onClose, onSave }: { ancestor: Ancestor; o
                 </div>
               </div>
 
-              {/* Other */}
               <div className="bg-[rgba(27,40,56,0.4)] rounded-lg p-3 border border-[rgba(255,149,0,0.08)]">
                 <p className="text-[10px] text-[#FF9500] uppercase tracking-wider mb-2">Other Details</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -232,7 +338,6 @@ function FamilyGroupSheet({ ancestor, onClose, onSave }: { ancestor: Ancestor; o
                 </div>
               </div>
 
-              {/* Notes */}
               <div>
                 <p className="text-[10px] text-[#FF9500] uppercase tracking-wider mb-1">Research Notes</p>
                 <textarea
@@ -243,7 +348,6 @@ function FamilyGroupSheet({ ancestor, onClose, onSave }: { ancestor: Ancestor; o
                 />
               </div>
 
-              {/* Oral History */}
               <div>
                 <p className="text-[10px] text-[#FF9500] uppercase tracking-wider mb-1">Oral History / Family Stories</p>
                 <textarea
@@ -255,9 +359,8 @@ function FamilyGroupSheet({ ancestor, onClose, onSave }: { ancestor: Ancestor; o
               </div>
             </>
           ) : (
-            /* RECORD CHECKLIST TAB */
             <div className="space-y-2">
-              <p className="text-xs text-[#C9B99A] mb-3">Check off each record type as you search. Click a checked item to add source links.</p>
+              <p className="text-xs text-[#C9B99A] mb-3">Check off each record type as you search. This tracks what you have found for this ancestor.</p>
               {RECORD_TYPES.map(record => (
                 <button
                   key={record.key}
@@ -280,7 +383,6 @@ function FamilyGroupSheet({ ancestor, onClose, onSave }: { ancestor: Ancestor; o
           )}
         </div>
 
-        {/* Footer Save */}
         <div className="sticky bottom-0 bg-[#15202B]/95 backdrop-blur-md border-t border-[rgba(255,149,0,0.15)] p-4 flex justify-end">
           <button onClick={handleSave} className="flex items-center gap-2 bg-[rgba(255,149,0,0.15)] border border-[rgba(255,149,0,0.3)] text-[#FF9500] rounded-lg px-5 py-2.5 hover:bg-[rgba(255,149,0,0.25)] transition-all text-sm font-medium">
             <Save size={14} /> Save Ancestor
@@ -291,9 +393,6 @@ function FamilyGroupSheet({ ancestor, onClose, onSave }: { ancestor: Ancestor; o
   )
 }
 
-// ============================================
-// FIELD COMPONENT
-// ============================================
 function Field({ label, value, onChange, span2 }: { label: string; value: string; onChange: (v: string) => void; span2?: boolean }) {
   return (
     <div className={span2 ? 'sm:col-span-2' : ''}>
@@ -308,70 +407,43 @@ function Field({ label, value, onChange, span2 }: { label: string; value: string
 }
 
 // ============================================
-// TREE CREATION FORM
-// ============================================
-function TreeCreationForm({ onCreate }: { onCreate: (tree: FamilyTree) => void }) {
-  const [name, setName] = useState('')
-  const [treeName, setTreeName] = useState('')
-  const [birthDate, setBirthDate] = useState('')
-  const [birthPlace, setBirthPlace] = useState('')
-  const [birthState, setBirthState] = useState('')
-
-  const handleSubmit = () => {
-    if (!name.trim() || !treeName.trim()) return
-    const [firstName, ...rest] = name.trim().split(' ')
-    const lastName = rest.pop() || ''
-    const rootPerson: Ancestor = {
-      id: Date.now(),
-      firstName,
-      lastName,
-      birthDate,
-      birthPlace,
-      birthState,
-      generation: 0,
-      position: '0',
-      status: 'confirmed',
-      recordsChecked: {},
-    }
-    const tree: FamilyTree = {
-      id: Date.now(),
-      treeName,
-      people: [rootPerson],
-      totalPeople: 1,
-    }
-    onCreate(tree)
-  }
-
-  return (
-    <div className="bg-[rgba(27,40,56,0.4)] rounded-xl border border-[rgba(255,149,0,0.15)] p-5 md:p-6 max-w-lg mx-auto">
-      <div className="flex items-center gap-3 mb-5">
-        <TreePine size={20} className="text-[#FF9500]" />
-        <h3 className="text-lg text-[#F0EBE1] font-medium">Start Your Family Tree</h3>
-      </div>
-      <div className="space-y-3">
-        <Field label="Tree Name" value={treeName} onChange={setTreeName} />
-        <Field label="Your Full Name" value={name} onChange={setName} />
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <Field label="Birth Date" value={birthDate} onChange={setBirthDate} />
-          <Field label="Birth Place" value={birthPlace} onChange={setBirthPlace} />
-        </div>
-        <Field label="Birth State" value={birthState} onChange={setBirthState} />
-        <button onClick={handleSubmit}
-          className="w-full flex items-center justify-center gap-2 bg-[rgba(255,149,0,0.15)] border border-[rgba(255,149,0,0.3)] text-[#FF9500] rounded-lg px-5 py-3 hover:bg-[rgba(255,149,0,0.25)] transition-all text-sm font-medium mt-2">
-          <TreePine size={14} /> Plant Your Tree
-        </button>
-      </div>
-    </div>
-  )
-}
-
-// ============================================
 // MAIN GENEALOGY SECTION
 // ============================================
 export default function GenealogySection() {
+  const [profile, setProfile] = useState<GenealogyProfile | null>(null)
   const [tree, setTree] = useState<FamilyTree | null>(null)
   const [selectedPerson, setSelectedPerson] = useState<Ancestor | null>(null)
   const [showPremium, setShowPremium] = useState(false)
+
+  // Load profile from localStorage on mount
+  useEffect(() => {
+    const savedProfile = localStorage.getItem('thekingstake-genealogy-profile')
+    if (savedProfile) {
+      try {
+        const parsed = JSON.parse(savedProfile) as GenealogyProfile
+        setProfile(parsed)
+        const builtTree = buildTreeFromProfile(parsed)
+        setTree(builtTree)
+      } catch { /* ignore */ }
+    }
+  }, [])
+
+  // Handle onboarding complete
+  const handleOnboardingComplete = useCallback((newProfile: GenealogyProfile) => {
+    setProfile(newProfile)
+    localStorage.setItem('thekingstake-genealogy-profile', JSON.stringify(newProfile))
+    const builtTree = buildTreeFromProfile(newProfile)
+    setTree(builtTree)
+    localStorage.setItem('thekingstake-genealogy-tree', JSON.stringify(builtTree))
+  }, [])
+
+  // Reset everything
+  const handleReset = useCallback(() => {
+    setProfile(null)
+    setTree(null)
+    localStorage.removeItem('thekingstake-genealogy-profile')
+    localStorage.removeItem('thekingstake-genealogy-tree')
+  }, [])
 
   // Stats
   const stats = {
@@ -380,13 +452,6 @@ export default function GenealogySection() {
     researching: tree?.people.filter(p => p.status === 'researching').length || 0,
     recordsFound: tree?.people.reduce((acc, p) => acc + Object.values(p.recordsChecked).filter(Boolean).length, 0) || 0,
   }
-
-  // Create tree
-  const handleCreateTree = useCallback((newTree: FamilyTree) => {
-    setTree(newTree)
-    // Save to localStorage for persistence
-    localStorage.setItem('thekingstake-genealogy-tree', JSON.stringify(newTree))
-  }, [])
 
   // Save person
   const handleSavePerson = useCallback((updated: Ancestor) => {
@@ -421,14 +486,6 @@ export default function GenealogySection() {
     localStorage.setItem('thekingstake-genealogy-tree', JSON.stringify(newTree))
   }, [tree])
 
-  // Load from localStorage on mount
-  useEffect(() => {
-    const saved = localStorage.getItem('thekingstake-genealogy-tree')
-    if (saved) {
-      try { setTree(JSON.parse(saved)) } catch { /* ignore */ }
-    }
-  }, [])
-
   // Group people by generation
   const peopleByGen = tree ? tree.people.reduce((acc, p) => {
     if (!acc[p.generation]) acc[p.generation] = []
@@ -441,7 +498,7 @@ export default function GenealogySection() {
       <div className="absolute inset-0 bg-cover bg-center opacity-10" style={{ backgroundImage: 'url(/images/cosmic-bg.jpg)' }} />
       <div className="absolute inset-0 bg-[#0a0f1a]/90" />
 
-      <div className="relative z-10 max-w-7xl mx-auto space-y-10 md:space-y-14">
+      <div className="relative z-10 max-w-5xl mx-auto space-y-10 md:space-y-14">
 
         {/* Header */}
         <ScrollReveal>
@@ -453,60 +510,32 @@ export default function GenealogySection() {
 
         <ScrollReveal delay={0.1}>
           <h2 className="text-4xl md:text-5xl lg:text-[64px] text-[#F0EBE1] tracking-[-0.02em] leading-[1.08] mb-4 text-shadow-hero">
-            Build Your Ancestral<br className="hidden md:block" /> Constellation
+            {profile ? `${profile.rootPerson.firstName}'s Ancestral` : 'Build Your Ancestral'}<br className="hidden md:block" /> Constellation
           </h2>
           <p className="text-lg md:text-xl text-[#C9B99A] max-w-3xl leading-relaxed">
-            Plant your family tree and watch it grow. Add ancestors, track your research, check off records, and document the lineage they tried to erase.
+            {profile
+              ? 'Your family tree is growing. Add ancestors, track your research, check off records, and document the lineage they tried to erase.'
+              : 'Plant your family tree and watch it grow. Add ancestors, track your research, check off records, and document the lineage they tried to erase.'}
           </p>
         </ScrollReveal>
 
-        {/* No Tree Yet — Show Creation Form */}
-        {!tree && (
+        {/* ─── NO PROFILE → Show Onboarding Wizard ─── */}
+        {!profile && (
           <ScrollReveal delay={0.15}>
-            <TreeCreationForm onCreate={handleCreateTree} />
-
-            {/* Tier Info */}
-            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
-              {/* Free */}
-              <div className="bg-[rgba(27,40,56,0.4)] rounded-xl border border-[rgba(255,149,0,0.15)] p-5">
-                <div className="flex items-center gap-2 mb-3">
-                  <Sparkles size={16} className="text-[#FF9500]" />
-                  <h4 className="text-sm text-[#F0EBE1] font-medium">Free — Start Today</h4>
-                </div>
-                <ul className="space-y-2 text-xs text-[#C9B99A]">
-                  <li className="flex items-center gap-2"><CheckCircle2 size={11} className="text-green-400" /> 4-generation pedigree tree</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={11} className="text-green-400" /> Family Group Sheet per ancestor</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={11} className="text-green-400" /> 15-record research checklist</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={11} className="text-green-400" /> Ancestry dashboard & stats</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 size={11} className="text-green-400" /> Saved locally on your device</li>
-                </ul>
-              </div>
-
-              {/* Premium */}
-              <div className="bg-[rgba(255,149,0,0.06)] rounded-xl border border-[rgba(255,149,0,0.2)] p-5">
-                <div className="flex items-center gap-2 mb-3">
-                  <Crown size={16} className="text-[#FF9500]" />
-                  <h4 className="text-sm text-[#F0EBE1] font-medium">Premium — $9.99/month</h4>
-                </div>
-                <ul className="space-y-2 text-xs text-[#C9B99A]">
-                  <li className="flex items-center gap-2"><Zap size={11} className="text-[#FF9500]" /> 8-generation deep tree</li>
-                  <li className="flex items-center gap-2"><Zap size={11} className="text-[#FF9500]" /> Unlimited ancestors</li>
-                  <li className="flex items-center gap-2"><Zap size={11} className="text-[#FF9500]" /> Shareable tree link</li>
-                  <li className="flex items-center gap-2"><Zap size={11} className="text-[#FF9500]" /> Cloud sync across devices</li>
-                  <li className="flex items-center gap-2"><Zap size={11} className="text-[#FF9500]" /> AI research suggestions</li>
-                  <li className="flex items-center gap-2"><Zap size={11} className="text-[#FF9500]" /> Export GEDCOM & PDF</li>
-                  <li className="flex items-center gap-2"><Zap size={11} className="text-[#FF9500]" /> Priority support</li>
-                </ul>
-              </div>
-            </div>
+            <GenealogyOnboarding onComplete={handleOnboardingComplete} />
           </ScrollReveal>
         )}
 
-        {/* Tree Active — Show Dashboard + Pedigree */}
-        {tree && (
+        {/* ─── PROFILE EXISTS → Show Tree Art + Pedigree ─── */}
+        {profile && tree && (
           <>
-            {/* Dashboard */}
+            {/* Tree Art Display */}
             <ScrollReveal delay={0.1}>
+              <TreeArtDisplay profile={profile} onReset={handleReset} />
+            </ScrollReveal>
+
+            {/* Dashboard */}
+            <ScrollReveal delay={0.15}>
               <div className="bg-[rgba(27,40,56,0.4)] rounded-xl border border-[rgba(255,149,0,0.15)] p-4 md:p-5">
                 <div className="flex flex-wrap items-center gap-4 md:gap-8">
                   <div className="flex items-center gap-3">
@@ -545,18 +574,12 @@ export default function GenealogySection() {
                       <p className="text-[10px] text-[#C9B99A]/60 uppercase tracking-wider">Records Found</p>
                     </div>
                   </div>
-                  <div className="ml-auto">
-                    <button onClick={() => setTree(null)}
-                      className="text-xs text-[#C9B99A]/40 hover:text-[#FF9500] transition-colors">
-                      Start New Tree
-                    </button>
-                  </div>
                 </div>
               </div>
             </ScrollReveal>
 
             {/* Pedigree Constellation */}
-            <ScrollReveal delay={0.15}>
+            <ScrollReveal delay={0.2}>
               <div className="bg-[rgba(27,40,56,0.3)] rounded-xl border border-[rgba(255,149,0,0.1)] p-4 md:p-6 overflow-x-auto">
                 <div className="flex flex-col items-center gap-6 md:gap-8" style={{ minWidth: '600px' }}>
 
@@ -568,8 +591,6 @@ export default function GenealogySection() {
                       ))}
                     </div>
                   )}
-
-                  {/* Connecting lines */}
                   {peopleByGen[3] && peopleByGen[3].length > 0 && (
                     <div className="w-px h-4 bg-[rgba(255,149,0,0.2)]" />
                   )}
@@ -590,8 +611,6 @@ export default function GenealogySection() {
                       ))}
                     </div>
                   )}
-
-                  {/* Connecting lines */}
                   {peopleByGen[2] && peopleByGen[2].length > 0 && (
                     <div className="w-px h-4 bg-[rgba(255,149,0,0.2)]" />
                   )}
@@ -612,8 +631,6 @@ export default function GenealogySection() {
                       ))}
                     </div>
                   )}
-
-                  {/* Connecting lines */}
                   {peopleByGen[1] && peopleByGen[1].length > 0 && (
                     <div className="w-px h-4 bg-[rgba(255,149,0,0.2)]" />
                   )}
