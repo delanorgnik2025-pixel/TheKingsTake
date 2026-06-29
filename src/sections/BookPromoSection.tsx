@@ -78,11 +78,11 @@ export default function BookPromoSection() {
           <div className="lg:w-[40%] flex-shrink-0">
             <ScrollReveal delay={0.15}>
               <div className="relative mb-8">
-                <div className="rounded-lg overflow-hidden" style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(255,149,0,0.15)' }}>
+                <div className="p-1" style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(255,149,0,0.15)' }}>
                   <img 
                     src="/images/book-cover.jpg" 
                     alt="The African American State of the Union: From the Loins of the Beast"
-                    className="w-full h-auto object-cover"
+                    className="w-full h-auto object-cover rounded-lg"
                   />
                 </div>
               </div>

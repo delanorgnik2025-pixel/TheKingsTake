@@ -3,11 +3,11 @@ import { ChevronDown } from 'lucide-react'
 
 export default function HeroPortraitSection() {
   return (
-    <section className="relative w-full min-h-[80vh] md:min-h-screen flex items-end overflow-hidden">
-      {/* Background image offset below the 64px fixed navbar so hero text is fully visible */}
+    <section className="relative w-full min-h-[80vh] md:min-h-[calc(100vh-64px)] flex items-end overflow-hidden mt-16">
+      {/* Full-bleed cosmic portrait background — section is pushed down by mt-16 so image is fully visible */}
       <div
-        className="absolute left-0 right-0 bottom-0 bg-cover bg-no-repeat"
-        style={{ backgroundImage: 'url(/images/ronald-cosmic-portrait.jpg)', top: '64px', backgroundPosition: 'center top' }}
+        className="absolute inset-0 bg-cover bg-no-repeat"
+        style={{ backgroundImage: 'url(/images/ronald-cosmic-portrait.jpg)', backgroundPosition: 'center top' }}
       />
       {/* Bottom gradient fade into next section */}
       <div className="absolute inset-x-0 bottom-0 h-[200px] md:h-[300px] bg-gradient-to-t from-[#0a0f1a] via-[#0a0f1a]/80 to-transparent" />
