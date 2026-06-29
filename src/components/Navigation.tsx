@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, LayoutDashboard, LogIn, ChevronDown } from 'lucide-react'
+import { Menu, X, LayoutDashboard, LogIn, ChevronDown, TreePine } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 
 interface NavigationProps {
@@ -90,6 +90,7 @@ export default function Navigation({ onMenuToggle, onNavClick }: NavigationProps
         <Link to="/civics" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200">Civics</Link>
         <a href="/#heritage" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200 cursor-pointer">Heritage</a>
         <a href="/#ancestry" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200 cursor-pointer">Ancestry</a>
+        <Link to="/ancestor-realm" className="text-[#C9B99A] text-sm hover:text-[#FF9500] transition-colors duration-200 flex items-center gap-1"><TreePine size={13} /> Realm</Link>
         <a href="/#services" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200 cursor-pointer">Services</a>
         <a href="/#contact" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200 cursor-pointer">Contact</a>
         {isAdmin ? (
@@ -128,6 +129,7 @@ export default function Navigation({ onMenuToggle, onNavClick }: NavigationProps
             <Link to="/civics" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Civics</Link>
             <a href="/#heritage" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Heritage</a>
             <a href="/#ancestry" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Ancestry</a>
+            <Link to="/ancestor-realm" onClick={() => setMobileOpen(false)} className="block text-[#FF9500] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FFB840]">The Ancestor Realm</Link>
             <a href="/#services" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Services</a>
             <a href="/#contact" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Contact</a>
             {isAdmin ? (

@@ -20,6 +20,7 @@ import AdminDashboard from './pages/AdminDashboard'
 import AdminLogin from './pages/AdminLogin'
 import ProtectedAdminRoute from './components/ProtectedAdminRoute'
 import NotFound from './pages/NotFound'
+import AncestorRealmPage from './pages/AncestorRealmPage'
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -87,6 +88,7 @@ function AppRoutes() {
         <Route path="/admin/legal" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
         <Route path="/admin/setup" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
         <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/ancestor-realm" element={<AncestorRealmPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AppLayout>
