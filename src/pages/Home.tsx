@@ -10,6 +10,7 @@ import MarqueeDivider from '../components/MarqueeDivider'
 import BlogPreviewSection from '../sections/BlogPreviewSection'
 import ContactSection from '../sections/ContactSection'
 import GenealogySection from '../sections/GenealogySection'
+import AncestorRealmTeaser from '../sections/AncestorRealmTeaser'
 
 export default function HomePage() {
   return (
@@ -29,6 +30,10 @@ export default function HomePage() {
 
       {/* 4. Trace Your Roots — Interactive Genealogy Workstation */}
       <GenealogySection />
+
+      {/* 4.5 Ancestor Realm Teaser — Enter the Sacred Garden */}
+      <MarqueeDivider text="#TheKingsTake — Walk Among the Ancestors — Enter the Sacred Garden — Their Wisdom Lives On" />
+      <AncestorRealmTeaser />
 
       {/* 5. Ancestry Research & Dawes Rolls — Reclaim Your Heritage */}
       <MarqueeDivider text="#TheKingsTake — They Hid Our Identity in the Records — Search the Dawes Rolls — Reclaim What Was Taken — Your Ancestors Are Waiting" />
