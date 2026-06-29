@@ -1,56 +1,69 @@
-import { Suspense } from 'react'
+import { Suspense, useState, useEffect } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { useWorld } from './WorldManager'
+
+// Core scene components
 import CinematicCamera from './CinematicCamera'
 import PostProcessingStack from './PostProcessingStack'
 import CinematicLighting from '../lighting/CinematicLighting'
+
+// World
 import SacredTree from '../world/SacredTree'
-import AncientBaobab from '../world/AncientBaobab'
 import HeroBaobab from '../world/HeroBaobab'
+
+// Environment
 import AfricanGround from '../environment/AfricanGround'
-import SacredWater from '../environment/SacredWater'
-import ImprovedWater from '../environment/ImprovedWater'
 import AnimatedGrass from '../environment/AnimatedGrass'
 import TerrainDetail from '../environment/TerrainDetail'
-import SacredRiver from '../environment/SacredRiver'
+import SacredWater from '../environment/SacredWater'
 import StonePathway from '../environment/StonePathway'
-import HDRSky from '../environment/HDRSky'
-import { EnvironmentProvider } from '../environment/EnvironmentManager'
+
+// Effects
 import Fireflies from '../effects/Fireflies'
-import FloatingPollen from '../effects/FloatingPollen'
-import SunlightShafts from '../effects/SunlightShafts'
 import GroundFog from '../effects/GroundFog'
 import CirclingBirds from '../effects/CirclingBirds'
-import VolumetricGodRays from '../effects/VolumetricGodRays'
-import AnimatedClouds from '../effects/AnimatedClouds'
 import Butterflies from '../effects/Butterflies'
-import FallingLeaves from '../effects/FallingLeaves'
 import SacredRoots from '../effects/SacredRoots'
-import Waterfall from '../effects/Waterfall'
-import Dragonflies from '../effects/Dragonflies'
-import RainSystem from '../effects/RainSystem'
 
+/* ─── Simple Sky (no drei dependency) ─── */
+function SimpleSky() {
+  return (
+    <>
+      <color attach="background" args={['#1a2744']} />
+      <fog attach="fog" args={['#2a3a5c', 20, 90]} />
+    </>
+  )
+}
+
+/* ─── Fallback while 3D loads ─── */
+function CanvasFallback() {
+  return (
+    <mesh>
+      <boxGeometry args={[1, 1, 1]} />
+      <meshBasicMaterial color="#FF9500" wireframe />
+    </mesh>
+  )
+}
+
+/* ─── All scene contents ─── */
 function SceneContents() {
   const { quality } = useWorld()
 
   return (
     <>
-      <HDRSky />
+      <SimpleSky />
       <CinematicCamera />
       <CinematicLighting />
-      <PostProcessingStack />
+      {quality.postProcessing && <PostProcessingStack />}
 
       {/* Ground */}
       <AfricanGround />
       <AnimatedGrass />
       <TerrainDetail />
+      <StonePathway />
 
       {/* Water */}
       <SacredWater />
-      <ImprovedWater />
-      <SacredRiver />
-      <StonePathway />
-      <Waterfall />
 
       {/* Trees */}
       <SacredTree />
@@ -58,41 +71,59 @@ function SceneContents() {
 
       {/* Effects */}
       <Fireflies />
-      <FloatingPollen />
-      <SunlightShafts />
-      <VolumetricGodRays />
-      <GroundFog />
-      <CirclingBirds />
-      <AnimatedClouds />
-      <Butterflies />
-      <FallingLeaves />
       <SacredRoots />
-      <Dragonflies />
-
-      {/* Rain only on higher quality */}
-      {quality.tier !== 'low' && <RainSystem />}
+      <GroundFog />
+      {quality.tier !== 'low' && <Butterflies />}
+      {quality.tier !== 'low' && <CirclingBirds />}
     </>
   )
 }
 
+/* ─── Main Garden Canvas ─── */
 export default function GardenScene() {
   const { quality, setLoaded } = useWorld()
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoaded(true), 4000)
+    return () => clearTimeout(timer)
+  }, [setLoaded])
+
+  if (error) {
+    return (
+      <div className="absolute inset-0 z-20 flex items-center justify-center bg-[#060a12]">
+        <div className="text-center px-6">
+          <p className="text-[#FF9500] text-sm mb-2">The garden needs a moment</p>
+          <p className="text-[#C9B99A] text-xs">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-4 text-xs text-[#FF9500] border border-[rgba(255,149,0,0.3)] rounded px-4 py-2"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <EnvironmentProvider>
-      <div className="absolute inset-0">
-        <Canvas
-          shadows={quality.shadows}
-          dpr={quality.pixelRatio}
-          camera={{ fov: 60, near: 0.1, far: 500, position: [0, 15, 40] }}
-          gl={{ antialias: quality.tier !== 'low', alpha: false, powerPreference: 'high-performance' }}
-          onCreated={() => setTimeout(() => setLoaded(true), 2000)}
-        >
-          <Suspense fallback={null}>
-            <SceneContents />
-          </Suspense>
-        </Canvas>
-      </div>
-    </EnvironmentProvider>
+    <div className="absolute inset-0">
+      <Canvas
+        shadows={quality.shadows}
+        dpr={Math.min(quality.pixelRatio, 1.5)}
+        camera={{ fov: 60, near: 0.1, far: 200, position: [0, 10, 30] }}
+        gl={{
+          antialias: quality.tier === 'high' || quality.tier === 'ultra',
+          alpha: false,
+          powerPreference: 'default',
+        }}
+        onError={(e) => setError(String(e))}
+        style={{ touchAction: 'none' }}
+      >
+        <Suspense fallback={<CanvasFallback />}>
+          <SceneContents />
+        </Suspense>
+      </Canvas>
+    </div>
   )
 }
