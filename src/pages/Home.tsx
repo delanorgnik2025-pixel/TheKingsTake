@@ -20,6 +20,7 @@ export default function HomePage() {
       {/* 2. Book Promo — The African American State of the Union */}
       <MarqueeDivider text="#TheKingsTake — From the Loins of the Beast — The African American State of the Union — Available Now" />
       <HeroSection />
+      <div className="h-4" />
       <BookPromoSection />
 
       {/* 3. Indigenous Soul Tribe Map — Cosmic aesthetic continues */}
