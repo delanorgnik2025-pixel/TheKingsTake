@@ -31,7 +31,26 @@ export default function AncestorRealmTeaser() {
         </ScrollReveal>
 
         <ScrollReveal delay={0.2}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+          {/* Desktop: horizontal minimal items */}
+          <div className="hidden md:flex items-center justify-start gap-8 lg:gap-10 mb-10">
+            {[
+              { icon: TreePine, title: 'Sacred Garden', desc: '3D interactive Ancestral Eden' },
+              { icon: Sparkles, title: 'Ancestor Chat', desc: 'Speak with the elders' },
+              { icon: TreePine, title: 'Family Trees', desc: 'Grow your lineage digitally' },
+              { icon: Sparkles, title: 'Story Keeper', desc: 'Oral tradition keeper' },
+            ].map((feat) => (
+              <div key={feat.title} className="flex flex-col items-center text-center group cursor-default">
+                <div className="w-9 h-9 rounded-full border border-[rgba(255,149,0,0.2)] bg-[rgba(10,15,26,0.3)] flex items-center justify-center mb-2 group-hover:border-[rgba(255,149,0,0.5)] transition-all duration-300">
+                  <feat.icon size={15} className="text-[#FF9500]" />
+                </div>
+                <p className="text-[11px] text-[#F0EBE1] font-medium tracking-wide">{feat.title}</p>
+                <p className="text-[9px] text-[#C9B99A]/50 mt-0.5">{feat.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Mobile: vertical minimal list */}
+          <div className="md:hidden w-full max-w-[260px] mb-8">
             {[
               { icon: TreePine, title: 'Sacred Garden', desc: '3D interactive Ancestral Eden' },
               { icon: Sparkles, title: 'Ancestor Chat', desc: 'Speak with the elders' },
@@ -40,12 +59,20 @@ export default function AncestorRealmTeaser() {
             ].map((feat, i) => (
               <motion.div
                 key={feat.title}
-                whileHover={{ scale: 1.02 }}
-                className="bg-[rgba(27,40,56,0.5)] border border-[rgba(255,149,0,0.1)] rounded-xl p-4"
+                initial={{ opacity: 0, x: -10 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, delay: i * 0.1 }}
+                viewport={{ once: true }}
+                className="flex items-center gap-3 py-2.5 border-b border-[rgba(255,149,0,0.06)] last:border-b-0"
               >
-                <feat.icon size={18} className="text-[#FF9500] mb-2" />
-                <p className="text-sm text-[#F0EBE1] font-medium">{feat.title}</p>
-                <p className="text-[10px] text-[#C9B99A]/60 mt-1">{feat.desc}</p>
+                <div className="w-7 h-7 rounded-full border border-[rgba(255,149,0,0.2)] flex items-center justify-center shrink-0">
+                  <feat.icon size={12} className="text-[#FF9500]" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[11px] text-[#F0EBE1] font-medium">{feat.title}</p>
+                  <p className="text-[9px] text-[#C9B99A]/50">{feat.desc}</p>
+                </div>
+                <ArrowRight size={11} className="text-[#C9B99A]/25 shrink-0" />
               </motion.div>
             ))}
           </div>
