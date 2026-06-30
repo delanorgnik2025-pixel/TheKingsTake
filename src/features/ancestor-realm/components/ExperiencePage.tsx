@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router'
 import { ArrowLeft, type LucideIcon } from 'lucide-react'
@@ -10,32 +10,45 @@ interface ExperienceData {
   description: string
   features: string[]
   closing: string
-  accentColor?: string
 }
 
-function SacredBackground({ children }: { children: React.ReactNode }) {
+/**
+ * Shared experience page template.
+ * Every page uses the same sacred garden background so they all feel
+ * like different chambers within the same continuous ancestral world.
+ */
+function SacredBackground({ children }: { children: ReactNode }) {
   const [loaded, setLoaded] = useState(false)
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-[#060a12]">
       <div className="absolute inset-0">
-        <img src="/images/ancestor-realm-bg.jpg" alt="" className={`w-full h-full object-cover transition-opacity duration-1000 ${loaded ? 'opacity-100' : 'opacity-0'}`} onLoad={() => setLoaded(true)} />
+        <img
+          src="/images/ancestor-realm-bg.jpg"
+          alt=""
+          className={`w-full h-full object-cover transition-opacity duration-1000 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+          onLoad={() => setLoaded(true)}
+        />
         {!loaded && <div className="absolute inset-0 bg-[#0a0f1a]" />}
       </div>
       {/* Top gradient */}
-      <div className="absolute inset-x-0 top-0 h-40 md:h-52 pointer-events-none"
+      <div className="absolute inset-x-0 top-0 h-44 md:h-56 pointer-events-none"
         style={{ background: 'linear-gradient(to bottom, rgba(6,10,18,0.88) 0%, rgba(6,10,18,0.5) 50%, transparent 100%)' }} />
       {/* Bottom gradient */}
       <div className="absolute inset-x-0 bottom-0 h-52 md:h-72 pointer-events-none"
         style={{ background: 'linear-gradient(to top, rgba(6,10,18,0.92) 0%, rgba(6,10,18,0.55) 45%, transparent 100%)' }} />
-      {/* Left gradient for text */}
+      {/* Left gradient for text readability over dark trunk */}
       <div className="absolute inset-y-0 left-0 w-[70%] md:w-[60%] pointer-events-none"
-        style={{ background: 'linear-gradient(to right, rgba(6,10,18,0.75) 0%, rgba(6,10,18,0.4) 60%, transparent 100%)' }} />
+        style={{ background: 'linear-gradient(to right, rgba(6,10,18,0.78) 0%, rgba(6,10,18,0.4) 60%, transparent 100%)' }} />
+      {/* Right edge */}
+      <div className="absolute inset-y-0 right-0 w-[20%] pointer-events-none"
+        style={{ background: 'linear-gradient(to left, rgba(6,10,18,0.45) 0%, transparent 100%)' }} />
       {/* Vignette */}
       <div className="absolute inset-0 pointer-events-none"
-        style={{ boxShadow: 'inset 0 0 120px 50px rgba(6,10,18,0.5)' }} />
+        style={{ boxShadow: 'inset 0 0 120px 50px rgba(6,10,18,0.45)' }} />
       {/* Center softening */}
       <div className="absolute inset-0 pointer-events-none"
         style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(6,10,18,0.2) 0%, transparent 50%)' }} />
+
       <div className="relative z-10">{children}</div>
     </div>
   )
@@ -54,10 +67,10 @@ export default function ExperiencePage({ data }: { data: ExperienceData }) {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
           onClick={() => navigate('/ancestor-realm')}
-          className="flex items-center gap-2 text-[#C9B99A]/60 hover:text-[#FF9500] transition-colors mb-8 md:mb-12 w-fit"
+          className="flex items-center gap-2 text-[#C9B99A]/50 hover:text-[#FF9500] transition-colors mb-8 md:mb-10 w-fit text-xs tracking-wider uppercase"
         >
-          <ArrowLeft size={16} />
-          <span className="text-xs tracking-wider uppercase">Back to the Realm</span>
+          <ArrowLeft size={14} />
+          Back to the Realm
         </motion.button>
 
         <div className="max-w-xl">
@@ -66,7 +79,7 @@ export default function ExperiencePage({ data }: { data: ExperienceData }) {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="w-12 h-12 rounded-full border border-[rgba(255,149,0,0.25)] bg-[rgba(10,15,26,0.4)] flex items-center justify-center mb-5"
+            className="w-12 h-12 rounded-full border border-[rgba(255,149,0,0.2)] bg-[rgba(10,15,26,0.35)] backdrop-blur-sm flex items-center justify-center mb-5 shadow-[0_0_12px_rgba(255,149,0,0.06)]"
           >
             <Icon size={20} className="text-[#FF9500]" />
           </motion.div>
@@ -76,7 +89,7 @@ export default function ExperiencePage({ data }: { data: ExperienceData }) {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="text-3xl md:text-4xl lg:text-5xl text-[#F0EBE1] font-medium tracking-wide mb-3 text-left"
+            className="text-3xl md:text-4xl lg:text-5xl text-[#F0EBE1] font-medium tracking-[0.02em] mb-3 text-left"
             style={{ textShadow: '0 2px 30px rgba(0,0,0,0.8)' }}
           >
             {data.title}
@@ -125,7 +138,7 @@ export default function ExperiencePage({ data }: { data: ExperienceData }) {
             ))}
           </motion.div>
 
-          {/* Closing statement */}
+          {/* Closing */}
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -143,7 +156,7 @@ export default function ExperiencePage({ data }: { data: ExperienceData }) {
           >
             <button
               onClick={() => navigate('/ancestor-realm')}
-              className="flex items-center gap-2 px-8 py-3 rounded-lg border border-[rgba(255,149,0,0.3)] bg-[rgba(255,149,0,0.08)] hover:bg-[rgba(255,149,0,0.18)] transition-all text-sm text-[#FF9500] tracking-wider uppercase font-medium"
+              className="flex items-center gap-2 px-8 py-3 rounded-lg border border-[rgba(255,149,0,0.3)] bg-[rgba(255,149,0,0.08)] hover:bg-[rgba(255,149,0,0.18)] transition-all text-sm text-[#FF9500] tracking-wider uppercase font-medium backdrop-blur-sm"
             >
               <ArrowLeft size={14} />
               Return to the Realm
@@ -152,8 +165,9 @@ export default function ExperiencePage({ data }: { data: ExperienceData }) {
         </div>
 
         {/* Bottom branding */}
-        <div className="mt-auto pt-8 flex flex-col items-center gap-0.5">
+        <div className="mt-auto pt-10 flex flex-col items-center gap-0.5">
           <p className="text-[8px] text-[#C9B99A]/20 tracking-[0.2em] uppercase">#TheKingsTake</p>
+          <p className="text-[7px] text-[#C9B99A]/15 tracking-[0.15em]">AASOTU Media Group LLC</p>
         </div>
       </div>
     </SacredBackground>

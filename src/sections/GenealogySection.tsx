@@ -8,6 +8,7 @@ import {
 import ScrollReveal from '../components/ScrollReveal'
 import GenealogyOnboarding, { type GenealogyProfile } from '../components/GenealogyOnboarding'
 import TreeArtDisplay from '../components/TreeArtDisplay'
+import SacredRealmBackground from '../features/ancestor-realm/components/SacredRealmBackground'
 
 // ============================================
 // TYPES
@@ -494,25 +495,9 @@ export default function GenealogySection() {
   }, {} as Record<number, Ancestor[]>) : {}
 
   return (
-    <section id="genealogy" className="relative py-20 md:py-28 px-6 md:px-12 overflow-hidden min-h-screen">
-      {/* Sacred garden background — same as Ancestor Realm landing */}
-      <div className="absolute inset-0">
-        <img src="/images/ancestor-realm-bg.jpg" alt="" className="w-full h-full object-cover" />
-      </div>
-      {/* Top gradient */}
-      <div className="absolute inset-x-0 top-0 h-36 md:h-44 pointer-events-none"
-        style={{ background: 'linear-gradient(to bottom, rgba(6,10,18,0.85) 0%, rgba(6,10,18,0.5) 50%, transparent 100%)' }} />
-      {/* Bottom gradient */}
-      <div className="absolute inset-x-0 bottom-0 h-52 md:h-64 pointer-events-none"
-        style={{ background: 'linear-gradient(to top, rgba(6,10,18,0.9) 0%, rgba(6,10,18,0.5) 45%, transparent 100%)' }} />
-      {/* Vignette */}
-      <div className="absolute inset-0 pointer-events-none"
-        style={{ boxShadow: 'inset 0 0 120px 50px rgba(6,10,18,0.5)' }} />
-      {/* Center softening for form readability */}
-      <div className="absolute inset-0 pointer-events-none"
-        style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(6,10,18,0.3) 0%, transparent 55%)' }} />
-
-      <div className="relative z-10 max-w-5xl mx-auto space-y-10 md:space-y-14">
+    <SacredRealmBackground centerContent={false}>
+      <div id="genealogy" className="py-20 md:py-28 px-6 md:px-12 min-h-screen">
+        <div className="max-w-5xl mx-auto space-y-10 md:space-y-14">
 
         {/* Header */}
         <ScrollReveal>
@@ -550,7 +535,7 @@ export default function GenealogySection() {
 
             {/* Dashboard */}
             <ScrollReveal delay={0.15}>
-              <div className="bg-[rgba(27,40,56,0.4)] rounded-xl border border-[rgba(255,149,0,0.15)] p-4 md:p-5">
+              <div className="bg-[rgba(6,10,18,0.45)] backdrop-blur-xl rounded-xl border border-[rgba(255,149,0,0.15)] p-4 md:p-5 shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
                 <div className="flex flex-wrap items-center gap-4 md:gap-8">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-[rgba(255,149,0,0.1)] border border-[rgba(255,149,0,0.2)] flex items-center justify-center">
@@ -594,7 +579,7 @@ export default function GenealogySection() {
 
             {/* Pedigree Constellation */}
             <ScrollReveal delay={0.2}>
-              <div className="bg-[rgba(27,40,56,0.3)] rounded-xl border border-[rgba(255,149,0,0.1)] p-4 md:p-6 overflow-x-auto">
+              <div className="bg-[rgba(6,10,18,0.4)] backdrop-blur-xl rounded-xl border border-[rgba(255,149,0,0.12)] p-4 md:p-6 overflow-x-auto shadow-[0_8px_32px_rgba(0,0,0,0.25)]">
                 <div className="flex flex-col items-center gap-6 md:gap-8" style={{ minWidth: '600px' }}>
 
                   {/* Great-Grandparents (Gen 3) */}
@@ -733,6 +718,7 @@ export default function GenealogySection() {
           </motion.div>
         )}
       </AnimatePresence>
-    </section>
+      </div>
+    </SacredRealmBackground>
   )
 }
