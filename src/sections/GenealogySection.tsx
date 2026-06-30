@@ -494,9 +494,23 @@ export default function GenealogySection() {
   }, {} as Record<number, Ancestor[]>) : {}
 
   return (
-    <section id="genealogy" className="relative py-20 md:py-28 px-6 md:px-12 overflow-hidden">
-      <div className="absolute inset-0 bg-cover bg-center opacity-10" style={{ backgroundImage: 'url(/images/cosmic-bg.jpg)' }} />
-      <div className="absolute inset-0 bg-[#0a0f1a]/90" />
+    <section id="genealogy" className="relative py-20 md:py-28 px-6 md:px-12 overflow-hidden min-h-screen">
+      {/* Sacred garden background — same as Ancestor Realm landing */}
+      <div className="absolute inset-0">
+        <img src="/images/ancestor-realm-bg.jpg" alt="" className="w-full h-full object-cover" />
+      </div>
+      {/* Top gradient */}
+      <div className="absolute inset-x-0 top-0 h-36 md:h-44 pointer-events-none"
+        style={{ background: 'linear-gradient(to bottom, rgba(6,10,18,0.85) 0%, rgba(6,10,18,0.5) 50%, transparent 100%)' }} />
+      {/* Bottom gradient */}
+      <div className="absolute inset-x-0 bottom-0 h-52 md:h-64 pointer-events-none"
+        style={{ background: 'linear-gradient(to top, rgba(6,10,18,0.9) 0%, rgba(6,10,18,0.5) 45%, transparent 100%)' }} />
+      {/* Vignette */}
+      <div className="absolute inset-0 pointer-events-none"
+        style={{ boxShadow: 'inset 0 0 120px 50px rgba(6,10,18,0.5)' }} />
+      {/* Center softening for form readability */}
+      <div className="absolute inset-0 pointer-events-none"
+        style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(6,10,18,0.3) 0%, transparent 55%)' }} />
 
       <div className="relative z-10 max-w-5xl mx-auto space-y-10 md:space-y-14">
 

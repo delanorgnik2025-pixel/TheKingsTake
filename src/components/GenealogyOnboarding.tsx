@@ -54,7 +54,7 @@ function Input({ label, value, onChange, placeholder, type = 'text' }: {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full bg-[rgba(27,40,56,0.6)] border border-[rgba(255,149,0,0.1)] rounded-lg px-3 py-2.5 text-sm text-[#F0EBE1] placeholder-[#C9B99A]/30 focus:outline-none focus:border-[rgba(255,149,0,0.4)] mt-1 transition-colors"
+        className="w-full bg-[rgba(6,10,18,0.5)] backdrop-blur-sm border border-[rgba(255,149,0,0.15)] rounded-lg px-3 py-2.5 text-sm text-[#F0EBE1] placeholder-[#C9B99A]/40 focus:outline-none focus:border-[rgba(255,149,0,0.5)] focus:bg-[rgba(6,10,18,0.65)] mt-1 transition-colors"
       />
     </div>
   )
@@ -152,7 +152,7 @@ function StepCoreFamily({ data, onChange }: { data: GenealogyProfile['coreFamily
       </div>
 
       {/* Father */}
-      <div className="bg-[rgba(27,40,56,0.4)] rounded-xl border border-[rgba(255,149,0,0.1)] p-4">
+      <div className="bg-[rgba(6,10,18,0.4)] backdrop-blur-md rounded-xl border border-[rgba(255,149,0,0.12)] p-4">
         <p className="text-[10px] text-[#FF9500] uppercase tracking-wider mb-2 flex items-center gap-1.5">
           <Crown size={11} /> Father's Branch
         </p>
@@ -163,7 +163,7 @@ function StepCoreFamily({ data, onChange }: { data: GenealogyProfile['coreFamily
       </div>
 
       {/* Mother */}
-      <div className="bg-[rgba(27,40,56,0.4)] rounded-xl border border-[rgba(255,149,0,0.1)] p-4">
+      <div className="bg-[rgba(6,10,18,0.4)] backdrop-blur-md rounded-xl border border-[rgba(255,149,0,0.12)] p-4">
         <p className="text-[10px] text-[#FF9500] uppercase tracking-wider mb-2 flex items-center gap-1.5">
           <Heart size={11} /> Mother's Branch
         </p>
@@ -174,7 +174,7 @@ function StepCoreFamily({ data, onChange }: { data: GenealogyProfile['coreFamily
       </div>
 
       {/* Paternal Grandparents */}
-      <div className="bg-[rgba(255,149,0,0.05)] rounded-xl border border-[rgba(255,149,0,0.12)] p-4">
+      <div className="bg-[rgba(255,149,0,0.06)] backdrop-blur-md rounded-xl border border-[rgba(255,149,0,0.18)] p-4">
         <p className="text-[10px] text-[#FF9500] uppercase tracking-wider mb-2">Paternal Grandparents (Father's Side)</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <Input label="Grandfather's First Name" value={data.patGrandfatherFirst} onChange={(v) => set('patGrandfatherFirst', v)} placeholder="e.g. William" />
@@ -184,7 +184,7 @@ function StepCoreFamily({ data, onChange }: { data: GenealogyProfile['coreFamily
       </div>
 
       {/* Maternal Grandparents */}
-      <div className="bg-[rgba(255,149,0,0.05)] rounded-xl border border-[rgba(255,149,0,0.12)] p-4">
+      <div className="bg-[rgba(255,149,0,0.06)] backdrop-blur-md rounded-xl border border-[rgba(255,149,0,0.18)] p-4">
         <p className="text-[10px] text-[#FF9500] uppercase tracking-wider mb-2">Maternal Grandparents (Mother's Side)</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <Input label="Grandfather's First Name" value={data.matGrandfatherFirst} onChange={(v) => set('matGrandfatherFirst', v)} placeholder="e.g. Robert" />
@@ -261,7 +261,7 @@ export default function GenealogyOnboarding({ onComplete }: Props) {
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -20 }}
         transition={{ duration: 0.3 }}
-        className="bg-[rgba(27,40,56,0.3)] rounded-xl border border-[rgba(255,149,0,0.1)] p-5 md:p-6"
+        className="bg-[rgba(6,10,18,0.55)] backdrop-blur-xl rounded-xl border border-[rgba(255,149,0,0.2)] p-5 md:p-6 shadow-2xl"
       >
         {step === 1 && <StepProfile data={profile} onChange={setProfile} />}
         {step === 2 && <StepTreeGallery selectedId={selectedTree} onSelect={setSelectedTree} />}
