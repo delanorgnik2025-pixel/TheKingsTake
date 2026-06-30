@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useNavigate, Link } from 'react-router'
+import { Link } from 'react-router'
 import {
-  MessageCircle, Upload, Crown, Sparkles, ArrowRight, ChevronLeft,
-  TreePine, Lock,
+  MessageCircle, Upload, Crown, Sparkles, ArrowRight,
+  Lock,
 } from 'lucide-react'
+import SacredRealmBackground from '../features/ancestor-realm/components/SacredRealmBackground'
 import { WorldProvider } from '../features/ancestor-realm/scene/WorldManager'
 import LoadingScreen from '../features/ancestor-realm/scene/LoadingScreen'
 import GardenScene from '../features/ancestor-realm/scene/GardenScene'
@@ -35,42 +36,13 @@ function PortalIcon() {
   )
 }
 
-/* ═══ Sacred Background ═══ */
-function SacredBackground({ children }: { children: React.ReactNode }) {
-  const [loaded, setLoaded] = useState(false)
-  return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-[#060a12]">
-      <div className="absolute inset-0">
-        <img src="/images/ancestor-realm-bg.jpg" alt="" className={`w-full h-full object-cover transition-opacity duration-1000 ${loaded ? 'opacity-100' : 'opacity-0'}`} onLoad={() => setLoaded(true)} />
-        {!loaded && <div className="absolute inset-0 bg-[#0a0f1a]" />}
-      </div>
-      {/* Top gradient */}
-      <div className="absolute inset-x-0 top-0 h-36 md:h-44 pointer-events-none"
-        style={{ background: 'linear-gradient(to bottom, rgba(6,10,18,0.85) 0%, rgba(6,10,18,0.4) 50%, transparent 100%)' }} />
-      {/* Bottom gradient */}
-      <div className="absolute inset-x-0 bottom-0 h-52 md:h-64 pointer-events-none"
-        style={{ background: 'linear-gradient(to top, rgba(6,10,18,0.9) 0%, rgba(6,10,18,0.5) 45%, transparent 100%)' }} />
-      {/* LEFT gradient — darkens tree trunk for text readability */}
-      <div className="absolute inset-y-0 left-0 w-[65%] md:w-[55%] pointer-events-none"
-        style={{ background: 'linear-gradient(to right, rgba(6,10,18,0.7) 0%, rgba(6,10,18,0.35) 60%, transparent 100%)' }} />
-      {/* RIGHT edge gradient */}
-      <div className="absolute inset-y-0 right-0 w-[20%] pointer-events-none"
-        style={{ background: 'linear-gradient(to left, rgba(6,10,18,0.5) 0%, transparent 100%)' }} />
-      {/* Vignette */}
-      <div className="absolute inset-0 pointer-events-none"
-        style={{ boxShadow: 'inset 0 0 120px 50px rgba(6,10,18,0.4)' }} />
-      <div className="relative z-10">{children}</div>
-    </div>
-  )
-}
-
 /* ═══ PHASE 1 — Cinematic Landing ═══ */
 function CinematicLanding({ onEnter }: { onEnter: () => void }) {
   const navigate = useNavigate()
   const [pressed, setPressed] = useState(false)
 
   return (
-    <SacredBackground>
+    <SacredRealmBackground centerContent={false}>
       <div className="flex flex-col justify-center min-h-screen px-6 md:px-12 lg:px-20 pt-20 pb-10">
         <div className="max-w-lg">
           {/* Portal icon */}
@@ -166,7 +138,7 @@ function CinematicLanding({ onEnter }: { onEnter: () => void }) {
         onClick={() => navigate('/')} className="absolute top-20 left-4 z-20 md:hidden w-10 h-10 flex items-center justify-center rounded-full bg-[rgba(10,15,26,0.45)] backdrop-blur-sm border border-[rgba(255,149,0,0.12)] text-[#C9B99A]">
         <ChevronLeft size={18} />
       </motion.button>
-    </SacredBackground>
+    </SacredRealmBackground>
   )
 }
 
