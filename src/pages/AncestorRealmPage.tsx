@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate, Link } from 'react-router'
 import {
   MessageCircle, Upload, Crown, Sparkles, ArrowRight, ChevronLeft,
-  TreePine,
+  TreePine, Lock,
 } from 'lucide-react'
 import { WorldProvider } from '../features/ancestor-realm/scene/WorldManager'
 import LoadingScreen from '../features/ancestor-realm/scene/LoadingScreen'
@@ -131,28 +131,25 @@ function CinematicLanding({ onEnter }: { onEnter: () => void }) {
             ))}
           </motion.div>
 
-          {/* ENTER button */}
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 1.2 }}>
-            <motion.button
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.96 }}
-              onClick={() => { setPressed(true); setTimeout(onEnter, 500) }}
-              className="relative group"
-            >
-              <div className={`absolute inset-0 rounded-lg blur-xl transition-opacity duration-500 ${pressed ? 'opacity-60' : 'opacity-25 group-hover:opacity-45'}`}
-                style={{ background: 'rgba(255,149,0,0.45)' }} />
-              <div className="relative flex items-center gap-2 px-9 py-3 rounded-lg border transition-all duration-300"
-                style={{
-                  borderColor: pressed ? 'rgba(255,149,0,0.7)' : 'rgba(255,149,0,0.3)',
-                  background: pressed ? 'rgba(255,149,0,0.22)' : 'rgba(255,149,0,0.07)',
-                  boxShadow: pressed ? '0 0 30px rgba(255,149,0,0.35)' : '0 0 10px rgba(255,149,0,0.08)',
-                }}>
-                <span className="text-sm text-[#FF9500] tracking-[0.18em] uppercase font-medium">
-                  {pressed ? 'Entering...' : 'Enter the Garden'}
-                </span>
-                <ArrowRight size={15} className="text-[#FF9500]" />
-              </div>
-            </motion.button>
+          {/* ENTER button — LOCKED Coming Soon */}
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 1.2 }}
+            className="flex flex-col items-start">
+            <div className="relative flex items-center gap-2.5 px-8 py-3 rounded-lg border border-[rgba(201,185,154,0.2)] bg-[rgba(10,15,26,0.5)] text-[#C9B99A]/50 cursor-not-allowed">
+              <Lock size={13} />
+              <span className="text-sm tracking-[0.15em] uppercase font-medium">
+                Enter the Garden
+              </span>
+            </div>
+            <div className="mt-2.5 flex items-center gap-2">
+              <div className="w-1 h-1 rounded-full bg-[#FF9500] animate-pulse" />
+              <span className="text-[10px] text-[#FF9500]/70 tracking-[0.15em] uppercase">
+                Coming Soon
+              </span>
+              <div className="w-1 h-1 rounded-full bg-[#FF9500] animate-pulse" style={{ animationDelay: '0.5s' }} />
+            </div>
+            <p className="text-[9px] text-[#C9B99A]/30 tracking-wider mt-1.5">
+              The sacred garden is being prepared for your arrival
+            </p>
           </motion.div>
         </div>
 
