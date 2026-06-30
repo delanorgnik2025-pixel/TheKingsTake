@@ -67,8 +67,8 @@ export default function AncestorRealmPage() {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.2 }}
-          className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-[#F0EBE1] font-medium tracking-[0.06em] uppercase mb-4"
-          style={{ textShadow: '0 2px 50px rgba(0,0,0,0.9), 0 0 100px rgba(6,10,18,0.6)' }}
+          className="text-6xl sm:text-7xl md:text-8xl lg:text-[120px] text-[#F0EBE1] font-medium tracking-[0.06em] uppercase mb-5"
+          style={{ textShadow: '0 4px 60px rgba(0,0,0,0.95), 0 0 120px rgba(6,10,18,0.8), 0 2px 8px rgba(0,0,0,0.9)' }}
         >
           The Ancestor Realm
         </motion.h1>
@@ -78,8 +78,8 @@ export default function AncestorRealmPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-sm md:text-base text-[#FF9500] tracking-[0.35em] uppercase mb-5 font-medium"
-          style={{ textShadow: '0 1px 20px rgba(0,0,0,0.7)' }}
+          className="text-lg md:text-xl lg:text-2xl text-[#FF9500] tracking-[0.4em] uppercase mb-6 font-medium"
+          style={{ textShadow: '0 3px 30px rgba(0,0,0,0.9), 0 2px 10px rgba(0,0,0,0.8)' }}
         >
           Coming Soon
         </motion.p>
@@ -89,7 +89,7 @@ export default function AncestorRealmPage() {
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
           transition={{ duration: 0.8, delay: 0.55 }}
-          className="w-16 h-px bg-[rgba(255,149,0,0.3)] mb-5"
+          className="w-20 h-px bg-[rgba(255,149,0,0.4)] mb-6"
         />
 
         {/* ═══ Small copy ═══ */}
@@ -97,8 +97,8 @@ export default function AncestorRealmPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="text-xs md:text-sm text-[#C9B99A]/60 tracking-wider mb-10 max-w-sm leading-relaxed"
-          style={{ textShadow: '0 1px 15px rgba(0,0,0,0.8)' }}
+          className="text-sm md:text-base lg:text-lg text-[#C9B99A]/70 tracking-wider mb-12 max-w-md leading-relaxed"
+          style={{ textShadow: '0 3px 25px rgba(0,0,0,0.9), 0 2px 8px rgba(0,0,0,0.8)' }}
         >
           The realm is being prepared.
           <br />
@@ -123,7 +123,7 @@ export default function AncestorRealmPage() {
               <div className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-[rgba(255,149,0,0.15)] bg-[rgba(10,15,26,0.3)] backdrop-blur-sm flex items-center justify-center shadow-[0_0_10px_rgba(255,149,0,0.04)]">
                 <feat.icon size={16} className="text-[#FF9500]/60 md:text-[#FF9500]/70" />
               </div>
-              <p className="text-[9px] md:text-[10px] text-[#C9B99A]/35 tracking-wider">
+              <p className="text-[11px] md:text-xs text-[#C9B99A]/50 tracking-wider" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.8)' }}>
                 {feat.label}
               </p>
             </motion.div>
