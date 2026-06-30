@@ -2,9 +2,8 @@ import { useState, useCallback, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   TreePine, Plus, X, ChevronDown, ChevronUp, CheckCircle2, Circle, Search, Scroll,
-  Users, User, Star, Crown, Sparkles, Share2, Lock, Zap, AlertTriangle, ArrowRight,
-  UserPlus, Trash2, Save, BookOpen, RotateCcw, Sprout, Heart, GitBranch, Feather,
-  Flame, ChevronRight
+  Users, Star, Crown, Sparkles, Share2, Zap, AlertTriangle, ArrowRight,
+  UserPlus, Trash2, Save, BookOpen, RotateCcw
 } from 'lucide-react'
 import ScrollReveal from '../components/ScrollReveal'
 import GenealogyOnboarding from '../components/GenealogyOnboarding'
@@ -89,12 +88,7 @@ const RECORD_TYPES = [
   { key: 'newspaper_record', label: 'Newspaper Records', icon: Scroll },
 ]
 
-const ROOTS_STEPS = [
-  { id: 1, label: 'Start Your Tree', desc: 'Add yourself as the beginning of your legacy.', icon: User, unlocked: true },
-  { id: 2, label: 'Add Ancestors', desc: 'Build upward. Add parents, grandparents, and beyond.', icon: Lock, unlocked: false },
-  { id: 3, label: 'Connect Generations', desc: 'Link family branches and preserve your heritage.', icon: Lock, unlocked: false },
-  { id: 4, label: 'Leave a Legacy', desc: 'Document stories, records, and memories for future generations.', icon: Lock, unlocked: false },
-]
+
 
 // ============================================
 // HELPERS: Build tree from profile
@@ -197,49 +191,6 @@ function buildTreeFromProfile(profile: GenealogyProfile): FamilyTree {
     people,
     totalPeople: people.length,
   }
-}
-
-// ============================================
-// FLOATING PARTICLES
-// ============================================
-function FloatingParticles() {
-  const particles = Array.from({ length: 20 }, (_, i) => ({
-    id: i,
-    size: Math.random() * 3 + 1,
-    left: Math.random() * 100,
-    delay: Math.random() * 8,
-    duration: Math.random() * 6 + 6,
-    opacity: Math.random() * 0.4 + 0.1,
-  }))
-
-  return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden">
-      {particles.map((p) => (
-        <motion.div
-          key={p.id}
-          className="absolute rounded-full"
-          style={{
-            width: p.size,
-            height: p.size,
-            left: `${p.left}%`,
-            background: 'radial-gradient(circle, rgba(255,200,100,0.8) 0%, rgba(255,149,0,0) 70%)',
-            boxShadow: `0 0 ${p.size * 3}px rgba(255,200,100,0.4)`,
-          }}
-          initial={{ bottom: '-5%', opacity: 0 }}
-          animate={{
-            bottom: '105%',
-            opacity: [0, p.opacity, p.opacity, 0],
-          }}
-          transition={{
-            duration: p.duration,
-            delay: p.delay,
-            repeat: Infinity,
-            ease: 'linear',
-          }}
-        />
-      ))}
-    </div>
-  )
 }
 
 // ============================================
@@ -647,7 +598,7 @@ export default function GenealogySection() {
   if (viewState === 'landing') {
     return (
       <section id="genealogy" className="relative min-h-screen w-full overflow-hidden">
-        {/* Background Image — The Cover */}
+        {/* Background Image */}
         <div className="absolute inset-0">
           <img
             src="/images/roots-registry-bg.jpg"
@@ -658,152 +609,79 @@ export default function GenealogySection() {
           {!bgLoaded && <div className="absolute inset-0 bg-[#060a12]" />}
         </div>
 
-        {/* Atmospheric Overlays */}
-        <div className="absolute inset-x-0 top-0 h-40 md:h-56 pointer-events-none"
-          style={{ background: 'linear-gradient(to bottom, rgba(6,10,18,0.9) 0%, rgba(6,10,18,0.5) 50%, transparent 100%)' }} />
-        <div className="absolute inset-x-0 bottom-0 h-64 md:h-[50vh] pointer-events-none"
-          style={{ background: 'linear-gradient(to top, rgba(6,10,18,0.97) 0%, rgba(6,10,18,0.75) 40%, transparent 100%)' }} />
-        <div className="absolute inset-y-0 left-0 w-[55%] md:w-[42%] pointer-events-none"
-          style={{ background: 'linear-gradient(to right, rgba(6,10,18,0.82) 0%, rgba(6,10,18,0.4) 60%, transparent 100%)' }} />
+        {/* Vignette Overlay — subtle, for readability only */}
         <div className="absolute inset-0 pointer-events-none"
-          style={{ boxShadow: 'inset 0 0 180px 70px rgba(6,10,18,0.55)' }} />
+          style={{ boxShadow: 'inset 0 0 200px 100px rgba(6,10,18,0.6)' }} />
+        <div className="absolute inset-y-0 left-0 w-[50%] md:w-[35%] pointer-events-none"
+          style={{ background: 'linear-gradient(to right, rgba(6,10,18,0.5) 0%, transparent 100%)' }} />
 
-        {/* Floating Particles */}
-        <FloatingParticles />
+        {/* Content — Left zone only. Right zone is open for the artwork. */}
+        <div className="relative z-10 min-h-screen flex items-center px-6 md:px-12 lg:px-20 py-24">
+          <div className="max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
 
-        {/* Content — Matches reference layout */}
-        <div className="relative z-10 min-h-screen flex flex-col px-6 md:px-12 lg:px-20 py-24 md:py-32">
-          <div className="max-w-7xl mx-auto w-full flex-1 flex flex-col">
-
-            {/* Top area — pushes content down from nav */}
-            <div className="h-8 md:h-16" />
-
-            {/* Left Column — Text & Steps (over the dark gradient) */}
+            {/* LEFT — Text and CTA only */}
             <div className="max-w-md">
-              {/* Label */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-                className="flex items-center gap-3 mb-6"
-              >
-                <div className="flex gap-1">
-                  {[0, 1, 2].map(i => <div key={i} className="w-[3px] h-[3px] rounded-full bg-[#FF9500]" />)}
-                </div>
-                <p className="text-xs uppercase tracking-[0.15em] text-[#FF9500]">Trace Your Roots</p>
-              </motion.div>
-
-              {/* Headline */}
-              <motion.h2
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: 0.1 }}
-                className="text-5xl sm:text-6xl md:text-7xl lg:text-[76px] text-[#F0EBE1] tracking-[-0.02em] leading-[1.05] mb-5"
-                style={{
-                  fontFamily: "'Playfair Display', 'Georgia', 'Times New Roman', serif",
-                  textShadow: '0 4px 50px rgba(0,0,0,0.95), 0 2px 14px rgba(0,0,0,0.85), 0 0 90px rgba(6,10,18,0.8)',
-                }}
-              >
-                Roots<br />Registry
-              </motion.h2>
-
-              {/* Subtitle — matches reference */}
+              {/* Eyebrow */}
               <motion.p
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-[15px] md:text-base text-[#C9B99A] max-w-sm leading-relaxed mb-8"
-                style={{ textShadow: '0 2px 24px rgba(0,0,0,0.9), 0 1px 6px rgba(0,0,0,0.8)' }}
+                transition={{ duration: 0.5 }}
+                className="text-[11px] uppercase tracking-[0.2em] text-[#FF9500] mb-5"
               >
-                Record your lineage and connect your story to generations that came before you. Every root holds a story.
+                Trace Your Roots
               </motion.p>
 
-              {/* 4 Steps — matches reference with User + Lock icons */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
+              {/* Heading */}
+              <motion.h2
+                initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.35 }}
-                className="space-y-2.5"
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="text-4xl sm:text-5xl md:text-[56px] lg:text-[64px] text-[#F0EBE1] tracking-[-0.01em] leading-[1.08] mb-6"
+                style={{
+                  fontFamily: "'Playfair Display', 'Georgia', 'Times New Roman', serif",
+                  textShadow: '0 4px 30px rgba(0,0,0,0.85), 0 1px 4px rgba(0,0,0,0.6)',
+                }}
               >
-                {ROOTS_STEPS.map((step, i) => {
-                  const Icon = step.icon
-                  return (
-                    <motion.div
-                      key={step.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.4, delay: 0.4 + i * 0.1 }}
-                      className="flex items-start gap-3.5 group"
-                    >
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5 transition-all ${
-                        step.unlocked
-                          ? 'bg-[rgba(255,149,0,0.12)] border border-[rgba(255,149,0,0.25)]'
-                          : 'bg-[rgba(201,185,154,0.06)] border border-[rgba(201,185,154,0.12)]'
-                      }`}>
-                        <Icon size={14} className={step.unlocked ? 'text-[#FF9500]' : 'text-[#C9B99A]/40'} />
-                      </div>
-                      <div>
-                        <p className="text-[13px] text-[#F0EBE1] font-medium leading-tight">{i + 1}. {step.label}</p>
-                        <p className="text-[11px] text-[#C9B99A]/45 leading-relaxed mt-0.5 max-w-[220px]">{step.desc}</p>
-                      </div>
-                    </motion.div>
-                  )
-                })}
+                Roots Registry
+              </motion.h2>
+
+              {/* Supporting Copy */}
+              <motion.p
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="text-[15px] md:text-base text-[#C9B99A] leading-[1.7] mb-10"
+                style={{ textShadow: '0 2px 12px rgba(0,0,0,0.75)' }}
+              >
+                Record your lineage.<br />
+                Preserve your family history.<br />
+                Build a living legacy for future generations.
+              </motion.p>
+
+              {/* CTA Button */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.35 }}
+              >
+                <motion.button
+                  onClick={() => setViewState('onboarding')}
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="inline-flex items-center gap-2.5 bg-[rgba(255,149,0,0.15)] backdrop-blur-sm border border-[rgba(255,149,0,0.35)] text-[#FF9500] rounded-lg px-6 py-3 text-sm font-medium tracking-wide hover:bg-[rgba(255,149,0,0.25)] hover:border-[rgba(255,149,0,0.5)] transition-all duration-300"
+                >
+                  Begin Your Roots Registry
+                  <ArrowRight size={14} />
+                </motion.button>
               </motion.div>
             </div>
 
-            {/* Spacer pushes bottom CTA down */}
-            <div className="flex-1 min-h-[80px]" />
-
-            {/* Bottom Center — Begin Your Legacy CTA (matches reference) */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: 0.5 }}
-              className="flex flex-col items-center text-center pb-8"
-            >
-              {/* Tree Sprout Icon */}
-              <motion.div
-                animate={{ scale: [1, 1.05, 1] }}
-                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                className="w-12 h-12 rounded-full bg-[rgba(255,149,0,0.1)] border border-[rgba(255,149,0,0.2)] flex items-center justify-center mb-4"
-              >
-                <Sprout size={20} className="text-[#FF9500]" />
-              </motion.div>
-
-              {/* Headline */}
-              <h3
-                className="text-xl md:text-2xl text-[#F0EBE1] font-medium mb-2"
-                style={{ textShadow: '0 3px 30px rgba(0,0,0,0.9), 0 1px 8px rgba(0,0,0,0.8)' }}
-              >
-                Begin Your Legacy
-              </h3>
-
-              {/* Subtext */}
-              <p
-                className="text-sm text-[#C9B99A]/70 mb-6 max-w-sm"
-                style={{ textShadow: '0 2px 16px rgba(0,0,0,0.85)' }}
-              >
-                Start building your family tree and honor your ancestors.
-              </p>
-
-              {/* CTA Button */}
-              <motion.button
-                onClick={() => setViewState('onboarding')}
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.96 }}
-                className="group relative inline-flex items-center gap-3 bg-[rgba(255,149,0,0.16)] backdrop-blur-sm border border-[rgba(255,149,0,0.35)] text-[#FF9500] rounded-xl px-7 py-3.5 text-sm font-medium tracking-wide hover:bg-[rgba(255,149,0,0.26)] hover:border-[rgba(255,149,0,0.55)] transition-all duration-300 shadow-[0_0_25px_rgba(255,149,0,0.08)] hover:shadow-[0_0_35px_rgba(255,149,0,0.18)]"
-              >
-                Begin Your Tree
-                <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
-              </motion.button>
-            </motion.div>
+            {/* RIGHT — Empty. The artwork stays visible. */}
+            <div className="hidden md:block" />
           </div>
         </div>
       </section>
