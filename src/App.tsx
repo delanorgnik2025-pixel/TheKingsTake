@@ -21,6 +21,10 @@ import AdminLogin from './pages/AdminLogin'
 import ProtectedAdminRoute from './components/ProtectedAdminRoute'
 import NotFound from './pages/NotFound'
 import AncestorRealmPage from './pages/AncestorRealmPage'
+import AncestorChatPage from './pages/AncestorChatPage'
+import SacredGalleryPage from './pages/SacredGalleryPage'
+import StoryKeeperPage from './pages/StoryKeeperPage'
+import AncestorPassPage from './pages/AncestorPassPage'
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -89,6 +93,10 @@ function AppRoutes() {
         <Route path="/admin/setup" element={<ProtectedAdminRoute><AdminDashboard /></ProtectedAdminRoute>} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/ancestor-realm" element={<AncestorRealmPage />} />
+        <Route path="/ancestor-chat" element={<AncestorChatPage />} />
+        <Route path="/sacred-gallery" element={<SacredGalleryPage />} />
+        <Route path="/story-keeper" element={<StoryKeeperPage />} />
+        <Route path="/ancestor-pass" element={<AncestorPassPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AppLayout>
