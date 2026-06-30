@@ -9,7 +9,6 @@ import WritingMarketSection from '../sections/WritingMarketSection'
 import MarqueeDivider from '../components/MarqueeDivider'
 import BlogPreviewSection from '../sections/BlogPreviewSection'
 import ContactSection from '../sections/ContactSection'
-import GenealogySection from '../sections/GenealogySection'
 import AncestorRealmTeaser from '../sections/AncestorRealmTeaser'
 
 export default function HomePage() {
@@ -28,10 +27,7 @@ export default function HomePage() {
       <MarqueeDivider text="#TheKingsTake — We Were Here Before Anybody — Discover Your Roots — 225+ Nations Documented — The Land Remembers" />
       <HeritageSection />
 
-      {/* 4. Trace Your Roots — Interactive Genealogy Workstation */}
-      <GenealogySection />
-
-      {/* 4.5 Ancestor Realm Teaser — Enter the Sacred Garden */}
+      {/* 4. Ancestor Realm Teaser — Enter the Sacred Garden */}
       <MarqueeDivider text="#TheKingsTake — Walk Among the Ancestors — Enter the Sacred Garden — Their Wisdom Lives On" />
       <AncestorRealmTeaser />
 
