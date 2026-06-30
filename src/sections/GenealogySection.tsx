@@ -597,91 +597,56 @@ export default function GenealogySection() {
   // ─── LANDING VIEW ───
   if (viewState === 'landing') {
     return (
-      <section id="genealogy" className="relative min-h-screen w-full overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0">
+      <section id="genealogy" className="relative min-h-[100dvh] w-full overflow-hidden isolate">
+        {/* Background Image — the ONLY background */}
+        <div className="absolute inset-0 -z-10">
           <img
             src="/images/roots-registry-bg.jpg"
             alt=""
             className={`w-full h-full object-cover object-center transition-opacity duration-1000 ${bgLoaded ? 'opacity-100' : 'opacity-0'}`}
             onLoad={() => setBgLoaded(true)}
           />
-          {!bgLoaded && <div className="absolute inset-0 bg-[#060a12]" />}
+          {!bgLoaded && <div className="absolute inset-0 bg-[#05080e]" />}
         </div>
 
-        {/* Vignette Overlay — subtle, for readability only */}
-        <div className="absolute inset-0 pointer-events-none"
-          style={{ boxShadow: 'inset 0 0 200px 100px rgba(6,10,18,0.6)' }} />
-        <div className="absolute inset-y-0 left-0 w-[50%] md:w-[35%] pointer-events-none"
-          style={{ background: 'linear-gradient(to right, rgba(6,10,18,0.5) 0%, transparent 100%)' }} />
+        {/* Single cinematic overlay */}
+        <div className="absolute inset-0 -z-10 pointer-events-none"
+          style={{ background: 'rgba(5,8,14,0.45)' }} />
 
-        {/* Content — Left zone only. Right zone is open for the artwork. */}
-        <div className="relative z-10 min-h-screen flex items-center px-6 md:px-12 lg:px-20 py-24">
-          <div className="max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        {/* Content — vertically centered, left aligned, max 620px */}
+        <div className="relative z-10 flex items-center min-h-[100dvh] px-[8%] py-[120px]">
+          <div className="max-w-[620px] w-full">
 
-            {/* LEFT — Text and CTA only */}
-            <div className="max-w-md">
-              {/* Eyebrow */}
-              <motion.p
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5 }}
-                className="text-[11px] uppercase tracking-[0.2em] text-[#FF9500] mb-5"
-              >
-                Trace Your Roots
-              </motion.p>
+            {/* Eyebrow */}
+            <p className="text-[11px] uppercase tracking-[0.2em] text-[#FF9500] mb-5">
+              Trace Your Roots
+            </p>
 
-              {/* Heading */}
-              <motion.h2
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-                className="text-4xl sm:text-5xl md:text-[56px] lg:text-[64px] text-[#F0EBE1] tracking-[-0.01em] leading-[1.08] mb-6"
-                style={{
-                  fontFamily: "'Playfair Display', 'Georgia', 'Times New Roman', serif",
-                  textShadow: '0 4px 30px rgba(0,0,0,0.85), 0 1px 4px rgba(0,0,0,0.6)',
-                }}
-              >
-                Roots Registry
-              </motion.h2>
+            {/* Heading */}
+            <h2
+              className="text-4xl sm:text-5xl md:text-[56px] text-[#F0EBE1] tracking-[-0.01em] leading-[1.08] mb-6"
+              style={{
+                fontFamily: "'Playfair Display', 'Georgia', 'Times New Roman', serif",
+              }}
+            >
+              Roots Registry
+            </h2>
 
-              {/* Supporting Copy */}
-              <motion.p
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="text-[15px] md:text-base text-[#C9B99A] leading-[1.7] mb-10"
-                style={{ textShadow: '0 2px 12px rgba(0,0,0,0.75)' }}
-              >
-                Record your lineage.<br />
-                Preserve your family history.<br />
-                Build a living legacy for future generations.
-              </motion.p>
+            {/* Three-line description */}
+            <p className="text-[15px] md:text-base text-[#C9B99A] leading-[1.7] mb-10">
+              Record your lineage.<br />
+              Preserve your family history.<br />
+              Build a living legacy for future generations.
+            </p>
 
-              {/* CTA Button */}
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.35 }}
-              >
-                <motion.button
-                  onClick={() => setViewState('onboarding')}
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="inline-flex items-center gap-2.5 bg-[rgba(255,149,0,0.15)] backdrop-blur-sm border border-[rgba(255,149,0,0.35)] text-[#FF9500] rounded-lg px-6 py-3 text-sm font-medium tracking-wide hover:bg-[rgba(255,149,0,0.25)] hover:border-[rgba(255,149,0,0.5)] transition-all duration-300"
-                >
-                  Begin Your Roots Registry
-                  <ArrowRight size={14} />
-                </motion.button>
-              </motion.div>
-            </div>
-
-            {/* RIGHT — Empty. The artwork stays visible. */}
-            <div className="hidden md:block" />
+            {/* CTA */}
+            <button
+              onClick={() => setViewState('onboarding')}
+              className="inline-flex items-center gap-2.5 bg-[rgba(255,149,0,0.15)] backdrop-blur-sm border border-[rgba(255,149,0,0.35)] text-[#FF9500] rounded-lg px-6 py-3 text-sm font-medium tracking-wide hover:bg-[rgba(255,149,0,0.25)] hover:border-[rgba(255,149,0,0.5)] transition-all duration-300"
+            >
+              Begin Your Roots Registry
+              <ArrowRight size={14} />
+            </button>
           </div>
         </div>
       </section>
