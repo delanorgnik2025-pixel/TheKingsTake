@@ -33,10 +33,10 @@ export default function AncestorRealmTeaser() {
         <ScrollReveal delay={0.2}>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-10">
             {[
-              { icon: TreePine, title: 'Sacred Garden', desc: '3D cinematic African Eden' },
-              { icon: Sparkles, title: 'Ancestor Chat', desc: 'Speak with elder spirits' },
+              { icon: TreePine, title: 'Sacred Garden', desc: '3D interactive Ancestral Eden' },
+              { icon: Sparkles, title: 'Ancestor Chat', desc: 'Speak with the elders' },
               { icon: TreePine, title: 'Family Trees', desc: 'Grow your lineage digitally' },
-              { icon: Sparkles, title: 'Story Weaver', desc: 'AI-powered narratives' },
+              { icon: Sparkles, title: 'Story Keeper', desc: 'Oral tradition keeper' },
             ].map((feat, i) => (
               <motion.div
                 key={feat.title}
