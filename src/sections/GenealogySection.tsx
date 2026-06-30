@@ -1,15 +1,17 @@
 import { useState, useCallback, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 import {
-  TreePine, Plus, X, ChevronDown, ChevronUp, CheckCircle2, Circle, Search, Scroll,
-  Users, Star, Crown, Sparkles, Share2, Zap, AlertTriangle, ArrowRight,
-  UserPlus, Trash2, Save, BookOpen, RotateCcw
+  Plus, X, CheckCircle2, Circle, Search, Scroll,
+  Users, Star, Crown, Sparkles, ArrowRight,
+  UserPlus, Save,
 } from 'lucide-react'
 import ScrollReveal from '../components/ScrollReveal'
 import GenealogyOnboarding from '../components/GenealogyOnboarding'
 import type { GenealogyProfile } from '../components/GenealogyOnboarding'
 import TreeArtDisplay from '../components/TreeArtDisplay'
 import SacredRealmBackground from '../features/ancestor-realm/components/SacredRealmBackground'
+import RootsRegistryHero from './RootsRegistryHero'
+import RootsRegistryTimeline from './RootsRegistryTimeline'
 
 // ============================================
 // TYPES
@@ -76,19 +78,17 @@ const RECORD_TYPES = [
   { key: 'baker_roll', label: 'Baker Roll (EBCI)', icon: Scroll },
   { key: 'federal_census', label: 'Federal Census Records', icon: Search },
   { key: 'state_census', label: 'State Census Records', icon: Search },
-  { key: 'birth_record', label: 'Birth Certificate', icon: BookOpen },
-  { key: 'death_record', label: 'Death Certificate', icon: BookOpen },
-  { key: 'marriage_record', label: 'Marriage Records', icon: BookOpen },
+  { key: 'birth_record', label: 'Birth Certificate', icon: Scroll },
+  { key: 'death_record', label: 'Death Certificate', icon: Scroll },
+  { key: 'marriage_record', label: 'Marriage Records', icon: Scroll },
   { key: 'military_record', label: 'Military Service Records', icon: Scroll },
   { key: 'land_record', label: 'Land Allotment Records', icon: Scroll },
   { key: 'freedmen_record', label: 'Freedmen Records', icon: Scroll },
-  { key: 'church_record', label: 'Church Records', icon: BookOpen },
-  { key: 'cemetery_record', label: 'Cemetery Records', icon: BookOpen },
+  { key: 'church_record', label: 'Church Records', icon: Scroll },
+  { key: 'cemetery_record', label: 'Cemetery Records', icon: Scroll },
   { key: 'probate_record', label: 'Probate Records', icon: Scroll },
   { key: 'newspaper_record', label: 'Newspaper Records', icon: Scroll },
 ]
-
-
 
 // ============================================
 // HELPERS: Build tree from profile
@@ -194,112 +194,13 @@ function buildTreeFromProfile(profile: GenealogyProfile): FamilyTree {
 }
 
 // ============================================
-// CONSTELLATION TREE SVG (Landing decoration)
-// ============================================
-function ConstellationTreeDecorative() {
-  const nodes = [
-    // Root
-    { cx: 200, cy: 380, r: 6, delay: 0 },
-    // Parents
-    { cx: 120, cy: 280, r: 5, delay: 0.3 },
-    { cx: 280, cy: 280, r: 5, delay: 0.4 },
-    // Grandparents
-    { cx: 70, cy: 170, r: 4, delay: 0.6 },
-    { cx: 160, cy: 170, r: 4, delay: 0.7 },
-    { cx: 240, cy: 170, r: 4, delay: 0.8 },
-    { cx: 330, cy: 170, r: 4, delay: 0.9 },
-    // Great-grandparents (smaller, more distant)
-    { cx: 35, cy: 80, r: 3, delay: 1.1 },
-    { cx: 95, cy: 80, r: 3, delay: 1.2 },
-    { cx: 135, cy: 80, r: 3, delay: 1.25 },
-    { cx: 195, cy: 80, r: 2.5, delay: 1.3 },
-    { cx: 205, cy: 80, r: 2.5, delay: 1.3 },
-    { cx: 265, cy: 80, r: 3, delay: 1.35 },
-    { cx: 305, cy: 80, r: 3, delay: 1.4 },
-    { cx: 365, cy: 80, r: 3, delay: 1.5 },
-  ]
-
-  const connections = [
-    [200, 380, 120, 280], [200, 380, 280, 280],
-    [120, 280, 70, 170], [120, 280, 160, 170],
-    [280, 280, 240, 170], [280, 280, 330, 170],
-    [70, 170, 35, 80], [70, 170, 95, 80],
-    [160, 170, 135, 80], [160, 170, 195, 80],
-    [240, 170, 205, 80], [240, 170, 265, 80],
-    [330, 170, 305, 80], [330, 170, 365, 80],
-  ]
-
-  return (
-    <svg viewBox="0 0 400 420" className="w-full h-full opacity-60" preserveAspectRatio="xMidYMid meet">
-      <defs>
-        <filter id="glow">
-          <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
-          <feMerge>
-            <feMergeNode in="coloredBlur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-        <radialGradient id="nodeGlow" cx="50%" cy="50%">
-          <stop offset="0%" stopColor="#FFD700" stopOpacity="1" />
-          <stop offset="40%" stopColor="#FF9500" stopOpacity="0.6" />
-          <stop offset="100%" stopColor="#FF9500" stopOpacity="0" />
-        </radialGradient>
-      </defs>
-
-      {/* Branch connections */}
-      {connections.map(([x1, y1, x2, y2], i) => (
-        <motion.line
-          key={`conn-${i}`}
-          x1={x1} y1={y1} x2={x2} y2={y2}
-          stroke="url(#nodeGlow)"
-          strokeWidth="0.8"
-          filter="url(#glow)"
-          initial={{ pathLength: 0, opacity: 0 }}
-          animate={{ pathLength: 1, opacity: 0.35 }}
-          transition={{ duration: 1.5, delay: 0.2 + i * 0.08, ease: 'easeInOut' }}
-        />
-      ))}
-
-      {/* Nodes */}
-      {nodes.map((node, i) => (
-        <motion.circle
-          key={`node-${i}`}
-          cx={node.cx} cy={node.cy} r={node.r}
-          fill="#FFD700"
-          filter="url(#glow)"
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: [0.4, 0.9, 0.6, 0.9, 0.5] }}
-          transition={{
-            duration: 3,
-            delay: node.delay,
-            repeat: Infinity,
-            repeatDelay: Math.random() * 2 + 1,
-          }}
-        />
-      ))}
-
-      {/* Subtle pulse rings on root */}
-      <motion.circle
-        cx={200} cy={380} r={12}
-        fill="none" stroke="#FF9500" strokeWidth="0.5"
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 2, opacity: [0, 0.3, 0] }}
-        transition={{ duration: 3, repeat: Infinity, ease: 'easeOut' }}
-      />
-    </svg>
-  )
-}
-
-// ============================================
 // ANCESTOR NODE (Tree visualization)
 // ============================================
 function AncestorNode({ ancestor, onClick, isRoot }: { ancestor: Ancestor; onClick: () => void; isRoot?: boolean }) {
   return (
-    <motion.button
+    <button
       onClick={onClick}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      className="relative flex flex-col items-center group"
+      className="relative flex flex-col items-center group transition-transform duration-200 hover:scale-105 active:scale-95"
     >
       <div
         className="w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center border-2 transition-all group-hover:shadow-lg"
@@ -321,7 +222,7 @@ function AncestorNode({ ancestor, onClick, isRoot }: { ancestor: Ancestor; onCli
           G{ancestor.generation}
         </span>
       )}
-    </motion.button>
+    </button>
   )
 }
 
@@ -342,12 +243,13 @@ function FamilyGroupSheet({ ancestor, onClose, onSave }: { ancestor: Ancestor; o
   }
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-      <motion.div initial={{ opacity: 0, scale: 0.92, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.92, y: 20 }} transition={{ duration: 0.3 }}
-        onClick={(e) => e.stopPropagation()} className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-xl border border-[rgba(255,149,0,0.25)] bg-[#15202B] shadow-2xl"
-        style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,149,0,0.3) transparent' }}>
-
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-xl border border-[rgba(255,149,0,0.25)] bg-[#15202B] shadow-2xl"
+        style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,149,0,0.3) transparent' }}
+      >
         <div className="sticky top-0 z-10 bg-[#15202B]/95 backdrop-blur-md border-b border-[rgba(255,149,0,0.15)] p-4 md:p-5 flex items-center justify-between" style={{ borderLeft: '4px solid ' + STATUS_COLORS[ancestor.status] }}>
           <div>
             <h3 className="text-lg text-[#F0EBE1] font-medium">{form.firstName} {form.middleName} {form.lastName}</h3>
@@ -483,8 +385,8 @@ function FamilyGroupSheet({ ancestor, onClose, onSave }: { ancestor: Ancestor; o
             <Save size={14} /> Save Ancestor
           </button>
         </div>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   )
 }
 
@@ -502,7 +404,7 @@ function Field({ label, value, onChange, span2 }: { label: string; value: string
 }
 
 // ============================================
-// MAIN GENEALOGY SECTION — ROOTS REGISTRY
+// MAIN GENEALOGY SECTION
 // ============================================
 type ViewState = 'landing' | 'onboarding' | 'active'
 
@@ -512,7 +414,6 @@ export default function GenealogySection() {
   const [tree, setTree] = useState<FamilyTree | null>(null)
   const [selectedPerson, setSelectedPerson] = useState<Ancestor | null>(null)
   const [showPremium, setShowPremium] = useState(false)
-  const [bgLoaded, setBgLoaded] = useState(false)
 
   // Load profile from localStorage on mount
   useEffect(() => {
@@ -594,66 +495,17 @@ export default function GenealogySection() {
     return acc
   }, {} as Record<number, Ancestor[]>) : {}
 
-  // ─── LANDING VIEW ───
+  // ─── LANDING: Hero + Timeline stacked ───
   if (viewState === 'landing') {
     return (
-      <section id="genealogy" className="relative min-h-[100dvh] w-full overflow-hidden isolate">
-        {/* Background Image — the ONLY background */}
-        <div className="absolute inset-0 -z-10">
-          <img
-            src="/images/roots-registry-bg.jpg"
-            alt=""
-            className={`w-full h-full object-cover object-center transition-opacity duration-1000 ${bgLoaded ? 'opacity-100' : 'opacity-0'}`}
-            onLoad={() => setBgLoaded(true)}
-          />
-          {!bgLoaded && <div className="absolute inset-0 bg-[#05080e]" />}
-        </div>
-
-        {/* Single cinematic overlay */}
-        <div className="absolute inset-0 -z-10 pointer-events-none"
-          style={{ background: 'rgba(5,8,14,0.45)' }} />
-
-        {/* Content — vertically centered, left aligned, max 620px */}
-        <div className="relative z-10 flex items-center min-h-[100dvh] px-[8%] py-[120px]">
-          <div className="max-w-[620px] w-full">
-
-            {/* Eyebrow */}
-            <p className="text-[11px] uppercase tracking-[0.2em] text-[#FF9500] mb-5">
-              Trace Your Roots
-            </p>
-
-            {/* Heading */}
-            <h2
-              className="text-4xl sm:text-5xl md:text-[56px] text-[#F0EBE1] tracking-[-0.01em] leading-[1.08] mb-6"
-              style={{
-                fontFamily: "'Playfair Display', 'Georgia', 'Times New Roman', serif",
-              }}
-            >
-              Roots Registry
-            </h2>
-
-            {/* Three-line description */}
-            <p className="text-[15px] md:text-base text-[#C9B99A] leading-[1.7] mb-10">
-              Record your lineage.<br />
-              Preserve your family history.<br />
-              Build a living legacy for future generations.
-            </p>
-
-            {/* CTA */}
-            <button
-              onClick={() => setViewState('onboarding')}
-              className="inline-flex items-center gap-2.5 bg-[rgba(255,149,0,0.15)] backdrop-blur-sm border border-[rgba(255,149,0,0.35)] text-[#FF9500] rounded-lg px-6 py-3 text-sm font-medium tracking-wide hover:bg-[rgba(255,149,0,0.25)] hover:border-[rgba(255,149,0,0.5)] transition-all duration-300"
-            >
-              Begin Your Roots Registry
-              <ArrowRight size={14} />
-            </button>
-          </div>
-        </div>
-      </section>
+      <>
+        <RootsRegistryHero onBegin={() => setViewState('onboarding')} />
+        <RootsRegistryTimeline />
+      </>
     )
   }
 
-  // ─── ONBOARDING VIEW ───
+  // ─── ONBOARDING: Guided wizard ───
   if (viewState === 'onboarding') {
     return (
       <GenealogyOnboarding
@@ -663,7 +515,7 @@ export default function GenealogySection() {
     )
   }
 
-  // ─── ACTIVE VIEW (Tree + Dashboard) ───
+  // ─── ACTIVE: Tree dashboard ───
   return (
     <SacredRealmBackground centerContent={false}>
       <div className="py-20 md:py-28 px-6 md:px-12 min-h-screen">
@@ -855,9 +707,9 @@ export default function GenealogySection() {
         {/* Premium Upsell Modal */}
         <AnimatePresence>
           {showPremium && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setShowPremium(false)}>
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setShowPremium(false)}>
               <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-              <motion.div initial={{ scale: 0.92, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.92, y: 20 }} onClick={(e) => e.stopPropagation()}
+              <div onClick={(e) => e.stopPropagation()}
                 className="relative bg-[#15202B] rounded-xl border border-[rgba(255,149,0,0.25)] p-6 max-w-sm w-full shadow-2xl">
                 <button onClick={() => setShowPremium(false)} className="absolute top-4 right-4 text-[#C9B99A] hover:text-[#F0EBE1]"><X size={18} /></button>
                 <div className="flex items-center gap-2 mb-3">
@@ -865,7 +717,7 @@ export default function GenealogySection() {
                   <h3 className="text-lg text-[#F0EBE1] font-medium">Upgrade to Premium</h3>
                 </div>
                 <p className="text-sm text-[#C9B99A] mb-4 leading-relaxed">
-                  You've reached the <strong className="text-[#FF9500]">15-person limit</strong> on the free plan. Upgrade to Premium for unlimited ancestors and up to 8 generations.
+                  You&apos;ve reached the <strong className="text-[#FF9500]">15-person limit</strong> on the free plan. Upgrade to Premium for unlimited ancestors and up to 8 generations.
                 </p>
                 <div className="bg-[rgba(255,149,0,0.06)] rounded-lg p-3 mb-4 border border-[rgba(255,149,0,0.1)]">
                   <p className="text-xs text-[#FF9500] mb-1 font-medium">Premium includes:</p>
@@ -884,13 +736,11 @@ export default function GenealogySection() {
                     Maybe Later
                   </button>
                 </div>
-              </motion.div>
-            </motion.div>
+              </div>
+            </div>
           )}
         </AnimatePresence>
       </div>
     </SacredRealmBackground>
   )
 }
-
-
