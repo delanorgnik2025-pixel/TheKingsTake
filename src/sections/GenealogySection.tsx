@@ -2,11 +2,13 @@ import { useState, useCallback, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   TreePine, Plus, X, ChevronDown, ChevronUp, CheckCircle2, Circle, Search, Scroll,
-  Users, Star, Crown, Sparkles, Share2, Lock, Zap, AlertTriangle, ArrowRight,
-  UserPlus, Trash2, Save, BookOpen, RotateCcw
+  Users, User, Star, Crown, Sparkles, Share2, Lock, Zap, AlertTriangle, ArrowRight,
+  UserPlus, Trash2, Save, BookOpen, RotateCcw, Sprout, Heart, GitBranch, Feather,
+  Flame, ChevronRight
 } from 'lucide-react'
 import ScrollReveal from '../components/ScrollReveal'
-import GenealogyOnboarding, { type GenealogyProfile } from '../components/GenealogyOnboarding'
+import GenealogyOnboarding from '../components/GenealogyOnboarding'
+import type { GenealogyProfile } from '../components/GenealogyOnboarding'
 import TreeArtDisplay from '../components/TreeArtDisplay'
 import SacredRealmBackground from '../features/ancestor-realm/components/SacredRealmBackground'
 
@@ -87,6 +89,13 @@ const RECORD_TYPES = [
   { key: 'newspaper_record', label: 'Newspaper Records', icon: Scroll },
 ]
 
+const ROOTS_STEPS = [
+  { id: 1, label: 'Start Your Tree', desc: 'Add yourself as the beginning of your legacy.', icon: User, unlocked: true },
+  { id: 2, label: 'Add Ancestors', desc: 'Build upward. Add parents, grandparents, and beyond.', icon: Lock, unlocked: false },
+  { id: 3, label: 'Connect Generations', desc: 'Link family branches and preserve your heritage.', icon: Lock, unlocked: false },
+  { id: 4, label: 'Leave a Legacy', desc: 'Document stories, records, and memories for future generations.', icon: Lock, unlocked: false },
+]
+
 // ============================================
 // HELPERS: Build tree from profile
 // ============================================
@@ -110,7 +119,6 @@ function buildTreeFromProfile(profile: GenealogyProfile): FamilyTree {
 
   const people: Ancestor[] = [root]
 
-  // Father (Gen 1, pos 0-0)
   if (coreFamily.fatherFirstName) {
     people.push({
       id: Date.now() + 1,
@@ -123,7 +131,6 @@ function buildTreeFromProfile(profile: GenealogyProfile): FamilyTree {
     })
   }
 
-  // Mother (Gen 1, pos 0-1)
   if (coreFamily.motherFirstName) {
     people.push({
       id: Date.now() + 2,
@@ -136,7 +143,6 @@ function buildTreeFromProfile(profile: GenealogyProfile): FamilyTree {
     })
   }
 
-  // Paternal Grandfather (Gen 2, pos 0-0-0)
   if (coreFamily.patGrandfatherFirst) {
     people.push({
       id: Date.now() + 3,
@@ -149,7 +155,6 @@ function buildTreeFromProfile(profile: GenealogyProfile): FamilyTree {
     })
   }
 
-  // Paternal Grandmother (Gen 2, pos 0-0-1)
   if (coreFamily.patGrandmotherFirst) {
     people.push({
       id: Date.now() + 4,
@@ -162,7 +167,6 @@ function buildTreeFromProfile(profile: GenealogyProfile): FamilyTree {
     })
   }
 
-  // Maternal Grandfather (Gen 2, pos 0-1-0)
   if (coreFamily.matGrandfatherFirst) {
     people.push({
       id: Date.now() + 5,
@@ -175,7 +179,6 @@ function buildTreeFromProfile(profile: GenealogyProfile): FamilyTree {
     })
   }
 
-  // Maternal Grandmother (Gen 2, pos 0-1-1)
   if (coreFamily.matGrandmotherFirst) {
     people.push({
       id: Date.now() + 6,
@@ -194,6 +197,146 @@ function buildTreeFromProfile(profile: GenealogyProfile): FamilyTree {
     people,
     totalPeople: people.length,
   }
+}
+
+// ============================================
+// FLOATING PARTICLES
+// ============================================
+function FloatingParticles() {
+  const particles = Array.from({ length: 20 }, (_, i) => ({
+    id: i,
+    size: Math.random() * 3 + 1,
+    left: Math.random() * 100,
+    delay: Math.random() * 8,
+    duration: Math.random() * 6 + 6,
+    opacity: Math.random() * 0.4 + 0.1,
+  }))
+
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      {particles.map((p) => (
+        <motion.div
+          key={p.id}
+          className="absolute rounded-full"
+          style={{
+            width: p.size,
+            height: p.size,
+            left: `${p.left}%`,
+            background: 'radial-gradient(circle, rgba(255,200,100,0.8) 0%, rgba(255,149,0,0) 70%)',
+            boxShadow: `0 0 ${p.size * 3}px rgba(255,200,100,0.4)`,
+          }}
+          initial={{ bottom: '-5%', opacity: 0 }}
+          animate={{
+            bottom: '105%',
+            opacity: [0, p.opacity, p.opacity, 0],
+          }}
+          transition={{
+            duration: p.duration,
+            delay: p.delay,
+            repeat: Infinity,
+            ease: 'linear',
+          }}
+        />
+      ))}
+    </div>
+  )
+}
+
+// ============================================
+// CONSTELLATION TREE SVG (Landing decoration)
+// ============================================
+function ConstellationTreeDecorative() {
+  const nodes = [
+    // Root
+    { cx: 200, cy: 380, r: 6, delay: 0 },
+    // Parents
+    { cx: 120, cy: 280, r: 5, delay: 0.3 },
+    { cx: 280, cy: 280, r: 5, delay: 0.4 },
+    // Grandparents
+    { cx: 70, cy: 170, r: 4, delay: 0.6 },
+    { cx: 160, cy: 170, r: 4, delay: 0.7 },
+    { cx: 240, cy: 170, r: 4, delay: 0.8 },
+    { cx: 330, cy: 170, r: 4, delay: 0.9 },
+    // Great-grandparents (smaller, more distant)
+    { cx: 35, cy: 80, r: 3, delay: 1.1 },
+    { cx: 95, cy: 80, r: 3, delay: 1.2 },
+    { cx: 135, cy: 80, r: 3, delay: 1.25 },
+    { cx: 195, cy: 80, r: 2.5, delay: 1.3 },
+    { cx: 205, cy: 80, r: 2.5, delay: 1.3 },
+    { cx: 265, cy: 80, r: 3, delay: 1.35 },
+    { cx: 305, cy: 80, r: 3, delay: 1.4 },
+    { cx: 365, cy: 80, r: 3, delay: 1.5 },
+  ]
+
+  const connections = [
+    [200, 380, 120, 280], [200, 380, 280, 280],
+    [120, 280, 70, 170], [120, 280, 160, 170],
+    [280, 280, 240, 170], [280, 280, 330, 170],
+    [70, 170, 35, 80], [70, 170, 95, 80],
+    [160, 170, 135, 80], [160, 170, 195, 80],
+    [240, 170, 205, 80], [240, 170, 265, 80],
+    [330, 170, 305, 80], [330, 170, 365, 80],
+  ]
+
+  return (
+    <svg viewBox="0 0 400 420" className="w-full h-full opacity-60" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="2.5" result="coloredBlur" />
+          <feMerge>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+        <radialGradient id="nodeGlow" cx="50%" cy="50%">
+          <stop offset="0%" stopColor="#FFD700" stopOpacity="1" />
+          <stop offset="40%" stopColor="#FF9500" stopOpacity="0.6" />
+          <stop offset="100%" stopColor="#FF9500" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+
+      {/* Branch connections */}
+      {connections.map(([x1, y1, x2, y2], i) => (
+        <motion.line
+          key={`conn-${i}`}
+          x1={x1} y1={y1} x2={x2} y2={y2}
+          stroke="url(#nodeGlow)"
+          strokeWidth="0.8"
+          filter="url(#glow)"
+          initial={{ pathLength: 0, opacity: 0 }}
+          animate={{ pathLength: 1, opacity: 0.35 }}
+          transition={{ duration: 1.5, delay: 0.2 + i * 0.08, ease: 'easeInOut' }}
+        />
+      ))}
+
+      {/* Nodes */}
+      {nodes.map((node, i) => (
+        <motion.circle
+          key={`node-${i}`}
+          cx={node.cx} cy={node.cy} r={node.r}
+          fill="#FFD700"
+          filter="url(#glow)"
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: [0.4, 0.9, 0.6, 0.9, 0.5] }}
+          transition={{
+            duration: 3,
+            delay: node.delay,
+            repeat: Infinity,
+            repeatDelay: Math.random() * 2 + 1,
+          }}
+        />
+      ))}
+
+      {/* Subtle pulse rings on root */}
+      <motion.circle
+        cx={200} cy={380} r={12}
+        fill="none" stroke="#FF9500" strokeWidth="0.5"
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 2, opacity: [0, 0.3, 0] }}
+        transition={{ duration: 3, repeat: Infinity, ease: 'easeOut' }}
+      />
+    </svg>
+  )
 }
 
 // ============================================
@@ -408,13 +551,17 @@ function Field({ label, value, onChange, span2 }: { label: string; value: string
 }
 
 // ============================================
-// MAIN GENEALOGY SECTION
+// MAIN GENEALOGY SECTION — ROOTS REGISTRY
 // ============================================
+type ViewState = 'landing' | 'onboarding' | 'active'
+
 export default function GenealogySection() {
+  const [viewState, setViewState] = useState<ViewState>('landing')
   const [profile, setProfile] = useState<GenealogyProfile | null>(null)
   const [tree, setTree] = useState<FamilyTree | null>(null)
   const [selectedPerson, setSelectedPerson] = useState<Ancestor | null>(null)
   const [showPremium, setShowPremium] = useState(false)
+  const [bgLoaded, setBgLoaded] = useState(false)
 
   // Load profile from localStorage on mount
   useEffect(() => {
@@ -425,6 +572,7 @@ export default function GenealogySection() {
         setProfile(parsed)
         const builtTree = buildTreeFromProfile(parsed)
         setTree(builtTree)
+        setViewState('active')
       } catch { /* ignore */ }
     }
   }, [])
@@ -436,6 +584,7 @@ export default function GenealogySection() {
     const builtTree = buildTreeFromProfile(newProfile)
     setTree(builtTree)
     localStorage.setItem('thekingstake-genealogy-tree', JSON.stringify(builtTree))
+    setViewState('active')
   }, [])
 
   // Reset everything
@@ -444,6 +593,7 @@ export default function GenealogySection() {
     setTree(null)
     localStorage.removeItem('thekingstake-genealogy-profile')
     localStorage.removeItem('thekingstake-genealogy-tree')
+    setViewState('landing')
   }, [])
 
   // Stats
@@ -477,7 +627,6 @@ export default function GenealogySection() {
       lastName: '',
       generation,
       position,
-      parentPosition: parentPosition,
       status: 'unknown',
       recordsChecked: {},
     }
@@ -494,46 +643,221 @@ export default function GenealogySection() {
     return acc
   }, {} as Record<number, Ancestor[]>) : {}
 
+  // ─── LANDING VIEW ───
+  if (viewState === 'landing') {
+    return (
+      <section id="genealogy" className="relative min-h-screen w-full overflow-hidden">
+        {/* Background Image — The Cover */}
+        <div className="absolute inset-0">
+          <img
+            src="/images/roots-registry-bg.jpg"
+            alt=""
+            className={`w-full h-full object-cover object-center transition-opacity duration-1000 ${bgLoaded ? 'opacity-100' : 'opacity-0'}`}
+            onLoad={() => setBgLoaded(true)}
+          />
+          {!bgLoaded && <div className="absolute inset-0 bg-[#060a12]" />}
+        </div>
+
+        {/* Atmospheric Overlays */}
+        <div className="absolute inset-x-0 top-0 h-40 md:h-56 pointer-events-none"
+          style={{ background: 'linear-gradient(to bottom, rgba(6,10,18,0.9) 0%, rgba(6,10,18,0.5) 50%, transparent 100%)' }} />
+        <div className="absolute inset-x-0 bottom-0 h-64 md:h-[50vh] pointer-events-none"
+          style={{ background: 'linear-gradient(to top, rgba(6,10,18,0.97) 0%, rgba(6,10,18,0.75) 40%, transparent 100%)' }} />
+        <div className="absolute inset-y-0 left-0 w-[55%] md:w-[42%] pointer-events-none"
+          style={{ background: 'linear-gradient(to right, rgba(6,10,18,0.82) 0%, rgba(6,10,18,0.4) 60%, transparent 100%)' }} />
+        <div className="absolute inset-0 pointer-events-none"
+          style={{ boxShadow: 'inset 0 0 180px 70px rgba(6,10,18,0.55)' }} />
+
+        {/* Floating Particles */}
+        <FloatingParticles />
+
+        {/* Content — Matches reference layout */}
+        <div className="relative z-10 min-h-screen flex flex-col px-6 md:px-12 lg:px-20 py-24 md:py-32">
+          <div className="max-w-7xl mx-auto w-full flex-1 flex flex-col">
+
+            {/* Top area — pushes content down from nav */}
+            <div className="h-8 md:h-16" />
+
+            {/* Left Column — Text & Steps (over the dark gradient) */}
+            <div className="max-w-md">
+              {/* Label */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="flex items-center gap-3 mb-6"
+              >
+                <div className="flex gap-1">
+                  {[0, 1, 2].map(i => <div key={i} className="w-[3px] h-[3px] rounded-full bg-[#FF9500]" />)}
+                </div>
+                <p className="text-xs uppercase tracking-[0.15em] text-[#FF9500]">Trace Your Roots</p>
+              </motion.div>
+
+              {/* Headline */}
+              <motion.h2
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7, delay: 0.1 }}
+                className="text-5xl sm:text-6xl md:text-7xl lg:text-[76px] text-[#F0EBE1] tracking-[-0.02em] leading-[1.05] mb-5"
+                style={{
+                  fontFamily: "'Playfair Display', 'Georgia', 'Times New Roman', serif",
+                  textShadow: '0 4px 50px rgba(0,0,0,0.95), 0 2px 14px rgba(0,0,0,0.85), 0 0 90px rgba(6,10,18,0.8)',
+                }}
+              >
+                Roots<br />Registry
+              </motion.h2>
+
+              {/* Subtitle — matches reference */}
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="text-[15px] md:text-base text-[#C9B99A] max-w-sm leading-relaxed mb-8"
+                style={{ textShadow: '0 2px 24px rgba(0,0,0,0.9), 0 1px 6px rgba(0,0,0,0.8)' }}
+              >
+                Record your lineage and connect your story to generations that came before you. Every root holds a story.
+              </motion.p>
+
+              {/* 4 Steps — matches reference with User + Lock icons */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.35 }}
+                className="space-y-2.5"
+              >
+                {ROOTS_STEPS.map((step, i) => {
+                  const Icon = step.icon
+                  return (
+                    <motion.div
+                      key={step.id}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.4, delay: 0.4 + i * 0.1 }}
+                      className="flex items-start gap-3.5 group"
+                    >
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5 transition-all ${
+                        step.unlocked
+                          ? 'bg-[rgba(255,149,0,0.12)] border border-[rgba(255,149,0,0.25)]'
+                          : 'bg-[rgba(201,185,154,0.06)] border border-[rgba(201,185,154,0.12)]'
+                      }`}>
+                        <Icon size={14} className={step.unlocked ? 'text-[#FF9500]' : 'text-[#C9B99A]/40'} />
+                      </div>
+                      <div>
+                        <p className="text-[13px] text-[#F0EBE1] font-medium leading-tight">{i + 1}. {step.label}</p>
+                        <p className="text-[11px] text-[#C9B99A]/45 leading-relaxed mt-0.5 max-w-[220px]">{step.desc}</p>
+                      </div>
+                    </motion.div>
+                  )
+                })}
+              </motion.div>
+            </div>
+
+            {/* Spacer pushes bottom CTA down */}
+            <div className="flex-1 min-h-[80px]" />
+
+            {/* Bottom Center — Begin Your Legacy CTA (matches reference) */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.5 }}
+              className="flex flex-col items-center text-center pb-8"
+            >
+              {/* Tree Sprout Icon */}
+              <motion.div
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                className="w-12 h-12 rounded-full bg-[rgba(255,149,0,0.1)] border border-[rgba(255,149,0,0.2)] flex items-center justify-center mb-4"
+              >
+                <Sprout size={20} className="text-[#FF9500]" />
+              </motion.div>
+
+              {/* Headline */}
+              <h3
+                className="text-xl md:text-2xl text-[#F0EBE1] font-medium mb-2"
+                style={{ textShadow: '0 3px 30px rgba(0,0,0,0.9), 0 1px 8px rgba(0,0,0,0.8)' }}
+              >
+                Begin Your Legacy
+              </h3>
+
+              {/* Subtext */}
+              <p
+                className="text-sm text-[#C9B99A]/70 mb-6 max-w-sm"
+                style={{ textShadow: '0 2px 16px rgba(0,0,0,0.85)' }}
+              >
+                Start building your family tree and honor your ancestors.
+              </p>
+
+              {/* CTA Button */}
+              <motion.button
+                onClick={() => setViewState('onboarding')}
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96 }}
+                className="group relative inline-flex items-center gap-3 bg-[rgba(255,149,0,0.16)] backdrop-blur-sm border border-[rgba(255,149,0,0.35)] text-[#FF9500] rounded-xl px-7 py-3.5 text-sm font-medium tracking-wide hover:bg-[rgba(255,149,0,0.26)] hover:border-[rgba(255,149,0,0.55)] transition-all duration-300 shadow-[0_0_25px_rgba(255,149,0,0.08)] hover:shadow-[0_0_35px_rgba(255,149,0,0.18)]"
+              >
+                Begin Your Tree
+                <ArrowRight size={15} className="group-hover:translate-x-1 transition-transform" />
+              </motion.button>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  // ─── ONBOARDING VIEW ───
+  if (viewState === 'onboarding') {
+    return (
+      <GenealogyOnboarding
+        onComplete={handleOnboardingComplete}
+        onCancel={() => setViewState('landing')}
+      />
+    )
+  }
+
+  // ─── ACTIVE VIEW (Tree + Dashboard) ───
   return (
     <SacredRealmBackground centerContent={false}>
-      <div id="genealogy" className="py-20 md:py-28 px-6 md:px-12 min-h-screen">
+      <div className="py-20 md:py-28 px-6 md:px-12 min-h-screen">
         <div className="max-w-5xl mx-auto space-y-10 md:space-y-14">
 
-        {/* Header */}
-        <ScrollReveal>
-          <div className="flex items-center gap-3 mb-4">
-            <div className="flex gap-1">{[0,1,2].map(i => <div key={i} className="w-[3px] h-[3px] rounded-full bg-[#FF9500]" />)}</div>
-            <p className="text-xs uppercase tracking-[0.08em] text-[#FF9500]">Trace Your Roots</p>
-          </div>
-        </ScrollReveal>
-
-        <ScrollReveal delay={0.1}>
-          <h2 className="text-4xl md:text-5xl lg:text-[64px] text-[#F0EBE1] tracking-[-0.02em] leading-[1.08] mb-4 text-shadow-hero">
-            {profile ? `${profile.rootPerson.firstName}'s Ancestral` : 'Build Your Ancestral'}<br className="hidden md:block" /> Constellation
-          </h2>
-          <p className="text-lg md:text-xl text-[#C9B99A] max-w-3xl leading-relaxed">
-            {profile
-              ? 'Your family tree is growing. Add ancestors, track your research, check off records, and document the lineage they tried to erase.'
-              : 'Plant your family tree and watch it grow. Add ancestors, track your research, check off records, and document the lineage they tried to erase.'}
-          </p>
-        </ScrollReveal>
-
-        {/* ─── NO PROFILE → Show Onboarding Wizard ─── */}
-        {!profile && (
-          <ScrollReveal delay={0.15}>
-            <GenealogyOnboarding onComplete={handleOnboardingComplete} />
+          {/* Header */}
+          <ScrollReveal>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="flex gap-1">{[0, 1, 2].map(i => <div key={i} className="w-[3px] h-[3px] rounded-full bg-[#FF9500]" />)}</div>
+              <p className="text-xs uppercase tracking-[0.08em] text-[#FF9500]">Trace Your Roots</p>
+            </div>
           </ScrollReveal>
-        )}
 
-        {/* ─── PROFILE EXISTS → Show Tree Art + Pedigree ─── */}
-        {profile && tree && (
-          <>
-            {/* Tree Art Display */}
+          <ScrollReveal delay={0.1}>
+            <h2 className="text-4xl md:text-5xl lg:text-[64px] text-[#F0EBE1] tracking-[-0.02em] leading-[1.08] mb-4"
+              style={{
+                fontFamily: "'Playfair Display', 'Georgia', 'Times New Roman', serif",
+                textShadow: '0 3px 30px rgba(0,0,0,0.8), 0 1px 6px rgba(0,0,0,0.6)',
+              }}>
+              {profile ? `${profile.rootPerson.firstName}'s Ancestral` : 'Your Ancestral'}<br className="hidden md:block" /> Constellation
+            </h2>
+            <p className="text-lg md:text-xl text-[#C9B99A] max-w-3xl leading-relaxed">
+              {profile
+                ? 'Your family tree is growing. Add ancestors, track your research, check off records, and document the lineage they tried to erase.'
+                : 'Plant your family tree and watch it grow. Add ancestors, track your research, check off records, and document the lineage they tried to erase.'}
+            </p>
+          </ScrollReveal>
+
+          {/* Tree Art Display */}
+          {profile && (
             <ScrollReveal delay={0.1}>
               <TreeArtDisplay profile={profile} onReset={handleReset} />
             </ScrollReveal>
+          )}
 
-            {/* Dashboard */}
+          {/* Dashboard */}
+          {tree && (
             <ScrollReveal delay={0.15}>
               <div className="bg-[rgba(6,10,18,0.45)] backdrop-blur-xl rounded-xl border border-[rgba(255,149,0,0.15)] p-4 md:p-5 shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
                 <div className="flex flex-wrap items-center gap-4 md:gap-8">
@@ -576,8 +900,10 @@ export default function GenealogySection() {
                 </div>
               </div>
             </ScrollReveal>
+          )}
 
-            {/* Pedigree Constellation */}
+          {/* Pedigree Constellation */}
+          {tree && (
             <ScrollReveal delay={0.2}>
               <div className="bg-[rgba(6,10,18,0.4)] backdrop-blur-xl rounded-xl border border-[rgba(255,149,0,0.12)] p-4 md:p-6 overflow-x-auto shadow-[0_8px_32px_rgba(0,0,0,0.25)]">
                 <div className="flex flex-col items-center gap-6 md:gap-8" style={{ minWidth: '600px' }}>
@@ -657,8 +983,10 @@ export default function GenealogySection() {
                 </div>
               </div>
             </ScrollReveal>
+          )}
 
-            {/* Legend */}
+          {/* Legend */}
+          {tree && (
             <div className="flex flex-wrap justify-center gap-4 text-[10px] text-[#C9B99A]/60">
               {Object.entries(STATUS_LABELS).map(([key, label]) => (
                 <div key={key} className="flex items-center gap-1.5">
@@ -667,58 +995,59 @@ export default function GenealogySection() {
                 </div>
               ))}
             </div>
-          </>
-        )}
-      </div>
+          )}
+        </div>
 
-      {/* Family Group Sheet Modal */}
-      <AnimatePresence>
-        {selectedPerson && (
-          <FamilyGroupSheet
-            ancestor={selectedPerson}
-            onClose={() => setSelectedPerson(null)}
-            onSave={handleSavePerson}
-          />
-        )}
-      </AnimatePresence>
+        {/* Family Group Sheet Modal */}
+        <AnimatePresence>
+          {selectedPerson && (
+            <FamilyGroupSheet
+              ancestor={selectedPerson}
+              onClose={() => setSelectedPerson(null)}
+              onSave={handleSavePerson}
+            />
+          )}
+        </AnimatePresence>
 
-      {/* Premium Upsell Modal */}
-      <AnimatePresence>
-        {showPremium && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setShowPremium(false)}>
-            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-            <motion.div initial={{ scale: 0.92, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.92, y: 20 }} onClick={(e) => e.stopPropagation()}
-              className="relative bg-[#15202B] rounded-xl border border-[rgba(255,149,0,0.25)] p-6 max-w-sm w-full shadow-2xl">
-              <button onClick={() => setShowPremium(false)} className="absolute top-4 right-4 text-[#C9B99A] hover:text-[#F0EBE1]"><X size={18} /></button>
-              <div className="flex items-center gap-2 mb-3">
-                <Crown size={20} className="text-[#FF9500]" />
-                <h3 className="text-lg text-[#F0EBE1] font-medium">Upgrade to Premium</h3>
-              </div>
-              <p className="text-sm text-[#C9B99A] mb-4 leading-relaxed">
-                You've reached the <strong className="text-[#FF9500]">15-person limit</strong> on the free plan. Upgrade to Premium for unlimited ancestors and up to 8 generations.
-              </p>
-              <div className="bg-[rgba(255,149,0,0.06)] rounded-lg p-3 mb-4 border border-[rgba(255,149,0,0.1)]">
-                <p className="text-xs text-[#FF9500] mb-1 font-medium">Premium includes:</p>
-                <ul className="text-xs text-[#C9B99A] space-y-1">
-                  <li>• Unlimited ancestors</li>
-                  <li>• 8 generations deep</li>
-                  <li>• Shareable tree link</li>
-                  <li>• Cloud sync & export</li>
-                </ul>
-              </div>
-              <div className="flex gap-2">
-                <button className="flex-1 bg-[rgba(255,149,0,0.15)] border border-[rgba(255,149,0,0.3)] text-[#FF9500] rounded-lg py-2.5 text-sm font-medium hover:bg-[rgba(255,149,0,0.25)] transition-colors">
-                  Upgrade $9.99/mo
-                </button>
-                <button onClick={() => setShowPremium(false)} className="text-xs text-[#C9B99A]/60 hover:text-[#C9B99A] px-3 transition-colors">
-                  Maybe Later
-                </button>
-              </div>
+        {/* Premium Upsell Modal */}
+        <AnimatePresence>
+          {showPremium && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setShowPremium(false)}>
+              <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+              <motion.div initial={{ scale: 0.92, y: 20 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.92, y: 20 }} onClick={(e) => e.stopPropagation()}
+                className="relative bg-[#15202B] rounded-xl border border-[rgba(255,149,0,0.25)] p-6 max-w-sm w-full shadow-2xl">
+                <button onClick={() => setShowPremium(false)} className="absolute top-4 right-4 text-[#C9B99A] hover:text-[#F0EBE1]"><X size={18} /></button>
+                <div className="flex items-center gap-2 mb-3">
+                  <Crown size={20} className="text-[#FF9500]" />
+                  <h3 className="text-lg text-[#F0EBE1] font-medium">Upgrade to Premium</h3>
+                </div>
+                <p className="text-sm text-[#C9B99A] mb-4 leading-relaxed">
+                  You've reached the <strong className="text-[#FF9500]">15-person limit</strong> on the free plan. Upgrade to Premium for unlimited ancestors and up to 8 generations.
+                </p>
+                <div className="bg-[rgba(255,149,0,0.06)] rounded-lg p-3 mb-4 border border-[rgba(255,149,0,0.1)]">
+                  <p className="text-xs text-[#FF9500] mb-1 font-medium">Premium includes:</p>
+                  <ul className="text-xs text-[#C9B99A] space-y-1">
+                    <li>• Unlimited ancestors</li>
+                    <li>• 8 generations deep</li>
+                    <li>• Shareable tree link</li>
+                    <li>• Cloud sync & export</li>
+                  </ul>
+                </div>
+                <div className="flex gap-2">
+                  <button className="flex-1 bg-[rgba(255,149,0,0.15)] border border-[rgba(255,149,0,0.3)] text-[#FF9500] rounded-lg py-2.5 text-sm font-medium hover:bg-[rgba(255,149,0,0.25)] transition-colors">
+                    Upgrade $9.99/mo
+                  </button>
+                  <button onClick={() => setShowPremium(false)} className="text-xs text-[#C9B99A]/60 hover:text-[#C9B99A] px-3 transition-colors">
+                    Maybe Later
+                  </button>
+                </div>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>
       </div>
     </SacredRealmBackground>
   )
 }
+
+

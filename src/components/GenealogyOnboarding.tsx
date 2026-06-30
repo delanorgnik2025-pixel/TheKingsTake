@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
-  User, TreePine, Users, ChevronRight, ChevronLeft,
-  Heart, Crown, Sparkles,
+  TreePine, Users, ChevronRight, ChevronLeft,
+  Heart, Crown, Sparkles, Sprout, Feather, Flame,
+  ArrowRight, ArrowLeft, User, X
 } from 'lucide-react'
-import { TREE_TEMPLATES } from '../data/familyTreeTemplates'
 
 // ─── Types ───────────────────────────────────────────
 export interface GenealogyProfile {
@@ -34,268 +34,436 @@ export interface GenealogyProfile {
 
 interface Props {
   onComplete: (profile: GenealogyProfile) => void
+  onCancel: () => void
 }
 
-const STEPS = [
-  { id: 1, label: 'Your Roots', icon: User },
-  { id: 2, label: 'Choose Tree', icon: TreePine },
-  { id: 3, label: 'Core Seven', icon: Users },
+// ─── Question Definition ─────────────────────────────
+interface Question {
+  id: string
+  field: string
+  label: string
+  placeholder: string
+  type?: string
+  required?: boolean
+  section: 'root' | 'father' | 'mother' | 'patGrand' | 'matGrand'
+  setValue: (profile: GenealogyProfile, val: string) => GenealogyProfile
+}
+
+const QUESTIONS: Question[] = [
+  // Root person
+  { id: 'rp-first', field: 'firstName', label: 'What is your first name?', placeholder: 'Your first name', required: true, section: 'root',
+    setValue: (p, v) => ({ ...p, rootPerson: { ...p.rootPerson, firstName: v } }) },
+  { id: 'rp-last', field: 'lastName', label: 'What is your last name?', placeholder: 'Your family name', required: true, section: 'root',
+    setValue: (p, v) => ({ ...p, rootPerson: { ...p.rootPerson, lastName: v } }) },
+  { id: 'rp-birth', field: 'birthDate', label: 'When were you born?', placeholder: '', type: 'date', section: 'root',
+    setValue: (p, v) => ({ ...p, rootPerson: { ...p.rootPerson, birthDate: v } }) },
+  { id: 'rp-place', field: 'birthPlace', label: 'Where were you born?', placeholder: 'City / Town', section: 'root',
+    setValue: (p, v) => ({ ...p, rootPerson: { ...p.rootPerson, birthPlace: v } }) },
+  { id: 'rp-state', field: 'birthState', label: 'What state were you born in?', placeholder: 'e.g. North Carolina', section: 'root',
+    setValue: (p, v) => ({ ...p, rootPerson: { ...p.rootPerson, birthState: v } }) },
+  { id: 'rp-tribal', field: 'tribalAffiliation', label: 'Any tribal affiliation?', placeholder: 'e.g. Lumbee, Waccamaw Siouan (optional)', section: 'root',
+    setValue: (p, v) => ({ ...p, rootPerson: { ...p.rootPerson, tribalAffiliation: v } }) },
+
+  // Father
+  { id: 'cf-father-first', field: 'fatherFirstName', label: "What is your father's first name?", placeholder: "e.g. James", required: true, section: 'father',
+    setValue: (p, v) => ({ ...p, coreFamily: { ...p.coreFamily, fatherFirstName: v } }) },
+  { id: 'cf-father-last', field: 'fatherLastName', label: "What is your father's last name?", placeholder: "Family name", section: 'father',
+    setValue: (p, v) => ({ ...p, coreFamily: { ...p.coreFamily, fatherLastName: v } }) },
+
+  // Mother
+  { id: 'cf-mother-first', field: 'motherFirstName', label: "What is your mother's first name?", placeholder: "e.g. Sarah", required: true, section: 'mother',
+    setValue: (p, v) => ({ ...p, coreFamily: { ...p.coreFamily, motherFirstName: v } }) },
+  { id: 'cf-mother-maiden', field: 'motherMaidenName', label: "What is your mother's maiden name?", placeholder: "Her birth family name", section: 'mother',
+    setValue: (p, v) => ({ ...p, coreFamily: { ...p.coreFamily, motherMaidenName: v } }) },
+
+  // Paternal Grandparents
+  { id: 'cf-pgf', field: 'patGrandfatherFirst', label: "What is your paternal grandfather's name?", placeholder: "e.g. William", section: 'patGrand',
+    setValue: (p, v) => ({ ...p, coreFamily: { ...p.coreFamily, patGrandfatherFirst: v } }) },
+  { id: 'cf-pgm', field: 'patGrandmotherFirst', label: "What is your paternal grandmother's name?", placeholder: "e.g. Annie", section: 'patGrand',
+    setValue: (p, v) => ({ ...p, coreFamily: { ...p.coreFamily, patGrandmotherFirst: v } }) },
+  { id: 'cf-pgm-maiden', field: 'patGrandmotherMaiden', label: "What was her maiden name?", placeholder: "Her birth family name", section: 'patGrand',
+    setValue: (p, v) => ({ ...p, coreFamily: { ...p.coreFamily, patGrandmotherMaiden: v } }) },
+
+  // Maternal Grandparents
+  { id: 'cf-mgf', field: 'matGrandfatherFirst', label: "What is your maternal grandfather's name?", placeholder: "e.g. Robert", section: 'matGrand',
+    setValue: (p, v) => ({ ...p, coreFamily: { ...p.coreFamily, matGrandfatherFirst: v } }) },
+  { id: 'cf-mgf-last', field: 'matGrandfatherLast', label: "What was his last name?", placeholder: "His family name", section: 'matGrand',
+    setValue: (p, v) => ({ ...p, coreFamily: { ...p.coreFamily, matGrandfatherLast: v } }) },
+  { id: 'cf-mgm', field: 'matGrandmotherFirst', label: "What is your maternal grandmother's name?", placeholder: "e.g. Mary", section: 'matGrand',
+    setValue: (p, v) => ({ ...p, coreFamily: { ...p.coreFamily, matGrandmotherFirst: v } }) },
+  { id: 'cf-mgm-maiden', field: 'matGrandmotherMaiden', label: "What was her maiden name?", placeholder: "Her birth family name", section: 'matGrand',
+    setValue: (p, v) => ({ ...p, coreFamily: { ...p.coreFamily, matGrandmotherMaiden: v } }) },
 ]
 
-// ─── Floating Glass Input ────────────────────────────
-function GlassInput({ label, value, onChange, placeholder, type = 'text' }: {
-  label: string; value: string; onChange: (v: string) => void; placeholder?: string; type?: string
-}) {
+// ─── Constellation Tree SVG (Interactive) ────────────
+function ConstellationTreeSVG({ progress }: { progress: number }) {
+  // progress: 0-1 based on how many questions answered
+  const totalNodes = 7 // root + 2 parents + 4 grandparents
+  const litNodes = Math.floor(progress * totalNodes) + 1
+
+  const allNodes = [
+    // Root (index 0)
+    { cx: 150, cy: 340, r: 8, label: 'You', idx: 0 },
+    // Parents
+    { cx: 80, cy: 240, r: 6, label: 'Father', idx: 1 },
+    { cx: 220, cy: 240, r: 6, label: 'Mother', idx: 2 },
+    // Paternal Grandparents
+    { cx: 40, cy: 140, r: 5, label: 'P. Grandpa', idx: 3 },
+    { cx: 110, cy: 140, r: 5, label: 'P. Grandma', idx: 4 },
+    // Maternal Grandparents
+    { cx: 190, cy: 140, r: 5, label: 'M. Grandpa', idx: 5 },
+    { cx: 260, cy: 140, r: 5, label: 'M. Grandma', idx: 6 },
+  ]
+
+  const connections = [
+    [150, 340, 80, 240],   // root -> father
+    [150, 340, 220, 240],  // root -> mother
+    [80, 240, 40, 140],    // father -> pat grandpa
+    [80, 240, 110, 140],   // father -> pat grandma
+    [220, 240, 190, 140],  // mother -> mat grandpa
+    [220, 240, 260, 140],  // mother -> mat grandma
+  ]
+
   return (
-    <div className="bg-[rgba(6,10,18,0.4)] backdrop-blur-xl border border-[rgba(255,149,0,0.12)] rounded-xl px-4 py-3 hover:border-[rgba(255,149,0,0.25)] focus-within:border-[rgba(255,149,0,0.4)] transition-all duration-300 shadow-[0_4px_20px_rgba(0,0,0,0.2)]">
-      <label className="text-[10px] text-[#C9B99A]/50 uppercase tracking-[0.12em] mb-1 block">{label}</label>
-      <input
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        className="w-full bg-transparent text-sm text-[#F0EBE1] placeholder-[#C9B99A]/25 focus:outline-none"
-      />
-    </div>
-  )
-}
+    <svg viewBox="0 0 300 380" className="w-full h-full" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <filter id="nodeGlowOn">
+          <feGaussianBlur stdDeviation="3" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+        <radialGradient id="goldGlow" cx="50%" cy="50%">
+          <stop offset="0%" stopColor="#FFD700" stopOpacity="1" />
+          <stop offset="50%" stopColor="#FF9500" stopOpacity="0.7" />
+          <stop offset="100%" stopColor="#FF9500" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id="dimGlow" cx="50%" cy="50%">
+          <stop offset="0%" stopColor="#C9B99A" stopOpacity="0.3" />
+          <stop offset="100%" stopColor="#C9B99A" stopOpacity="0" />
+        </radialGradient>
+      </defs>
 
-// ─── Step 1: Your Roots ────────────────────────────
-function StepProfile({ data, onChange }: { data: GenealogyProfile['rootPerson']; onChange: (d: GenealogyProfile['rootPerson']) => void }) {
-  const set = (field: string, val: string) => onChange({ ...data, [field]: val })
-  return (
-    <div className="space-y-3 max-w-md mx-auto">
-      <div className="text-center mb-6">
-        <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} className="w-12 h-12 rounded-full border border-[rgba(255,149,0,0.2)] bg-[rgba(10,15,26,0.3)] flex items-center justify-center mx-auto mb-3">
-          <Heart size={18} className="text-[#FF9500]" />
-        </motion.div>
-        <h3 className="text-xl text-[#F0EBE1] font-medium tracking-wide">Plant Your Roots</h3>
-        <p className="text-[11px] text-[#C9B99A]/50 mt-1">Tell us your name so the ancestors know who walks among them.</p>
-      </div>
+      {/* Connection lines */}
+      {connections.map(([x1, y1, x2, y2], i) => {
+        const isLit = litNodes > Math.floor(i / 2) + 1
+        return (
+          <motion.line
+            key={`c-${i}`}
+            x1={x1} y1={y1} x2={x2} y2={y2}
+            stroke={isLit ? 'url(#goldGlow)' : 'rgba(201,185,154,0.12)'}
+            strokeWidth={isLit ? 1.5 : 0.8}
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 0.8, delay: i * 0.1 }}
+            filter={isLit ? 'url(#nodeGlowOn)' : undefined}
+          />
+        )
+      })}
 
-      <div className="grid grid-cols-2 gap-3">
-        <GlassInput label="First Name *" value={data.firstName} onChange={(v) => set('firstName', v)} placeholder="Your first name" />
-        <GlassInput label="Last Name *" value={data.lastName} onChange={(v) => set('lastName', v)} placeholder="Your family name" />
-      </div>
-      <GlassInput label="Birth Date" value={data.birthDate} onChange={(v) => set('birthDate', v)} type="date" />
-      <div className="grid grid-cols-2 gap-3">
-        <GlassInput label="Birth Place" value={data.birthPlace} onChange={(v) => set('birthPlace', v)} placeholder="City / Town" />
-        <GlassInput label="Birth State" value={data.birthState} onChange={(v) => set('birthState', v)} placeholder="e.g. North Carolina" />
-      </div>
-      <GlassInput label="Tribal Affiliation" value={data.tribalAffiliation} onChange={(v) => set('tribalAffiliation', v)} placeholder="e.g. Lumbee, Waccamaw Siouan" />
-
-      {data.tribalAffiliation && (
-        <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }}
-          className="bg-[rgba(255,149,0,0.06)] backdrop-blur-sm rounded-xl border border-[rgba(255,149,0,0.1)] px-4 py-3">
-          <p className="text-[10px] text-[#FF9500] uppercase tracking-wider mb-1">Identity Recorded</p>
-          <p className="text-xs text-[#C9B99A]/60">Your tribal affiliation will be etched into your tree trunk, honoring the lineage they tried to erase.</p>
-        </motion.div>
-      )}
-    </div>
-  )
-}
-
-// ─── Step 2: Tree Gallery ────────────────────────────
-function StepTreeGallery({ selectedId, onSelect }: { selectedId: number; onSelect: (id: number) => void }) {
-  return (
-    <div className="space-y-4">
-      <div className="text-center mb-4">
-        <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} className="w-12 h-12 rounded-full border border-[rgba(255,149,0,0.2)] bg-[rgba(10,15,26,0.3)] flex items-center justify-center mx-auto mb-3">
-          <TreePine size={18} className="text-[#FF9500]" />
-        </motion.div>
-        <h3 className="text-xl text-[#F0EBE1] font-medium tracking-wide">Choose Your Tree</h3>
-        <p className="text-[11px] text-[#C9B99A]/50 mt-1">Select the aesthetic that resonates with your ancestral spirit.</p>
-      </div>
-
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
-        {TREE_TEMPLATES.map((tree) => (
-          <motion.button
-            key={tree.id}
-            onClick={() => onSelect(tree.id)}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            className={`relative rounded-xl overflow-hidden border-2 transition-all ${
-              selectedId === tree.id
-                ? 'border-[#FF9500] shadow-[0_0_15px_rgba(255,149,0,0.3)]'
-                : 'border-transparent hover:border-[rgba(255,149,0,0.3)]'
-            }`}
-          >
-            <img src={tree.image} alt={tree.name} className="w-full aspect-[2/3] object-cover" loading="lazy" />
-            {selectedId === tree.id && (
-              <div className="absolute inset-0 bg-[rgba(255,149,0,0.15)] flex items-center justify-center">
-                <div className="w-7 h-7 rounded-full bg-[#FF9500] flex items-center justify-center">
-                  <Sparkles size={14} className="text-black" />
-                </div>
-              </div>
+      {/* Nodes */}
+      {allNodes.map((node, i) => {
+        const isLit = i < litNodes
+        return (
+          <g key={`n-${i}`}>
+            {/* Glow ring */}
+            {isLit && (
+              <motion.circle
+                cx={node.cx} cy={node.cy} r={node.r * 2}
+                fill="none" stroke="#FF9500" strokeWidth="0.5"
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1.8, opacity: [0, 0.3, 0] }}
+                transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 1 }}
+              />
             )}
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-2 pt-8">
-              <p className="text-[10px] text-[#F0EBE1] font-medium leading-tight">{tree.name}</p>
-              <p className="text-[8px] text-[#C9B99A]/70 mt-0.5">{tree.mood}</p>
-            </div>
-          </motion.button>
-        ))}
-      </div>
-    </div>
+            {/* Core node */}
+            <motion.circle
+              cx={node.cx} cy={node.cy} r={node.r}
+              fill={isLit ? '#FFD700' : 'rgba(201,185,154,0.15)'}
+              filter={isLit ? 'url(#nodeGlowOn)' : undefined}
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 20, delay: i * 0.15 }}
+            />
+            {/* Label */}
+            <text
+              x={node.cx} y={node.cy + node.r + 12}
+              textAnchor="middle"
+              fill={isLit ? '#F0EBE1' : 'rgba(201,185,154,0.3)'}
+              fontSize="7"
+              fontFamily="sans-serif"
+            >
+              {node.label}
+            </text>
+          </g>
+        )
+      })}
+
+      {/* Ambient particles */}
+      {[...Array(5)].map((_, i) => (
+        <motion.circle
+          key={`p-${i}`}
+          cx={50 + i * 50} cy={100 + i * 40}
+          r={1.5}
+          fill="#FF9500"
+          initial={{ opacity: 0 }}
+          animate={{
+            opacity: [0, 0.5, 0],
+            cy: [100 + i * 40, 80 + i * 35],
+          }}
+          transition={{
+            duration: 3 + i,
+            repeat: Infinity,
+            delay: i * 0.7,
+          }}
+        />
+      ))}
+    </svg>
   )
 }
 
-// ─── Step 3: Core Seven ────────────────────────────
-function StepCoreFamily({ data, onChange }: { data: GenealogyProfile['coreFamily']; onChange: (d: GenealogyProfile['coreFamily']) => void }) {
-  const set = (field: string, val: string) => onChange({ ...data, [field]: val })
-  return (
-    <div className="space-y-4 max-w-md mx-auto">
-      <div className="text-center mb-5">
-        <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} className="w-12 h-12 rounded-full border border-[rgba(255,149,0,0.2)] bg-[rgba(10,15,26,0.3)] flex items-center justify-center mx-auto mb-3">
-          <Users size={18} className="text-[#FF9500]" />
-        </motion.div>
-        <h3 className="text-xl text-[#F0EBE1] font-medium tracking-wide">Your First Seven</h3>
-        <p className="text-[11px] text-[#C9B99A]/50 mt-1">Enter your parents and four grandparents to activate your tree.</p>
-      </div>
-
-      {/* Father */}
-      <div className="bg-[rgba(6,10,18,0.35)] backdrop-blur-xl rounded-xl border border-[rgba(255,149,0,0.1)] p-4">
-        <p className="text-[10px] text-[#FF9500] uppercase tracking-wider mb-2 flex items-center gap-1.5">
-          <Crown size={11} /> Father's Branch
-        </p>
-        <div className="grid grid-cols-2 gap-2">
-          <GlassInput label="Father's First Name" value={data.fatherFirstName} onChange={(v) => set('fatherFirstName', v)} placeholder="e.g. James" />
-          <GlassInput label="Father's Last Name" value={data.fatherLastName} onChange={(v) => set('fatherLastName', v)} placeholder="Family name" />
-        </div>
-      </div>
-
-      {/* Mother */}
-      <div className="bg-[rgba(6,10,18,0.35)] backdrop-blur-xl rounded-xl border border-[rgba(255,149,0,0.1)] p-4">
-        <p className="text-[10px] text-[#FF9500] uppercase tracking-wider mb-2 flex items-center gap-1.5">
-          <Heart size={11} /> Mother's Branch
-        </p>
-        <div className="grid grid-cols-2 gap-2">
-          <GlassInput label="Mother's First Name" value={data.motherFirstName} onChange={(v) => set('motherFirstName', v)} placeholder="e.g. Sarah" />
-          <GlassInput label="Mother's Maiden Name" value={data.motherMaidenName} onChange={(v) => set('motherMaidenName', v)} placeholder="Her birth family name" />
-        </div>
-      </div>
-
-      {/* Paternal Grandparents */}
-      <div className="bg-[rgba(255,149,0,0.04)] backdrop-blur-xl rounded-xl border border-[rgba(255,149,0,0.12)] p-4">
-        <p className="text-[10px] text-[#FF9500] uppercase tracking-wider mb-2">Paternal Grandparents</p>
-        <div className="grid grid-cols-2 gap-2">
-          <GlassInput label="Grandfather's Name" value={data.patGrandfatherFirst} onChange={(v) => set('patGrandfatherFirst', v)} placeholder="e.g. William" />
-          <GlassInput label="Grandmother's Name" value={data.patGrandmotherFirst} onChange={(v) => set('patGrandmotherFirst', v)} placeholder="e.g. Annie" />
-        </div>
-        <div className="mt-2">
-          <GlassInput label="Grandmother's Maiden Name" value={data.patGrandmotherMaiden} onChange={(v) => set('patGrandmotherMaiden', v)} placeholder="Her birth family name" />
-        </div>
-      </div>
-
-      {/* Maternal Grandparents */}
-      <div className="bg-[rgba(255,149,0,0.04)] backdrop-blur-xl rounded-xl border border-[rgba(255,149,0,0.12)] p-4">
-        <p className="text-[10px] text-[#FF9500] uppercase tracking-wider mb-2">Maternal Grandparents</p>
-        <div className="grid grid-cols-2 gap-2">
-          <GlassInput label="Grandfather's Name" value={data.matGrandfatherFirst} onChange={(v) => set('matGrandfatherFirst', v)} placeholder="e.g. Robert" />
-          <GlassInput label="Grandfather's Last Name" value={data.matGrandfatherLast} onChange={(v) => set('matGrandfatherLast', v)} placeholder="His family name" />
-        </div>
-        <div className="grid grid-cols-2 gap-2 mt-2">
-          <GlassInput label="Grandmother's Name" value={data.matGrandmotherFirst} onChange={(v) => set('matGrandmotherFirst', v)} placeholder="e.g. Mary" />
-          <GlassInput label="Grandmother's Maiden Name" value={data.matGrandmotherMaiden} onChange={(v) => set('matGrandmotherMaiden', v)} placeholder="Her birth family name" />
-        </div>
-      </div>
-    </div>
-  )
+// ─── Section Icon Map ────────────────────────────────
+const SECTION_META: Record<string, { icon: typeof Sprout; label: string; color: string }> = {
+  root: { icon: User, label: 'Your Roots', color: '#FF9500' },
+  father: { icon: Crown, label: "Father's Branch", color: '#4ECDC4' },
+  mother: { icon: Heart, label: "Mother's Branch", color: '#FF6B9D' },
+  patGrand: { icon: Feather, label: 'Paternal Grandparents', color: '#A78BFA' },
+  matGrand: { icon: Sprout, label: 'Maternal Grandparents', color: '#48BB78' },
 }
 
-// ─── Main Wizard ───────────────────────────────────
-export default function GenealogyOnboarding({ onComplete }: Props) {
-  const [step, setStep] = useState(1)
-  const [profile, setProfile] = useState<GenealogyProfile['rootPerson']>({
-    firstName: '', lastName: '', birthDate: '', birthPlace: '', birthState: '', tribalAffiliation: '',
+// ─── Main Guided Onboarding ──────────────────────────
+export default function GenealogyOnboarding({ onComplete, onCancel }: Props) {
+  const [stepIndex, setStepIndex] = useState(0)
+  const [profile, setProfile] = useState<GenealogyProfile>({
+    rootPerson: { firstName: '', lastName: '', birthDate: '', birthPlace: '', birthState: '', tribalAffiliation: '' },
+    selectedTreeId: 1,
+    coreFamily: {
+      fatherFirstName: '', fatherLastName: '', motherFirstName: '', motherMaidenName: '',
+      patGrandfatherFirst: '', patGrandmotherFirst: '', patGrandmotherMaiden: '',
+      matGrandfatherFirst: '', matGrandfatherLast: '', matGrandmotherFirst: '', matGrandmotherMaiden: '',
+    },
   })
-  const [selectedTree, setSelectedTree] = useState(1)
-  const [coreFamily, setCoreFamily] = useState<GenealogyProfile['coreFamily']>({
-    fatherFirstName: '', fatherLastName: '', motherFirstName: '', motherMaidenName: '',
-    patGrandfatherFirst: '', patGrandmotherFirst: '', patGrandmotherMaiden: '',
-    matGrandfatherFirst: '', matGrandfatherLast: '', matGrandmotherFirst: '', matGrandmotherMaiden: '',
-  })
+  const [direction, setDirection] = useState(1)
+  const [isComplete, setIsComplete] = useState(false)
 
-  const canProceed = () => {
-    if (step === 1) return profile.firstName.trim() && profile.lastName.trim()
-    if (step === 2) return selectedTree > 0
+  const currentQ = QUESTIONS[stepIndex]
+  const progress = stepIndex / QUESTIONS.length
+  const currentValue = getFieldValue(profile, currentQ)
+  const SectionIcon = SECTION_META[currentQ.section].icon
+  const sectionColor = SECTION_META[currentQ.section].color
+
+  function getFieldValue(p: GenealogyProfile, q: Question): string {
+    if (q.section === 'root') return p.rootPerson[q.field as keyof typeof p.rootPerson] || ''
+    return p.coreFamily[q.field as keyof typeof p.coreFamily] || ''
+  }
+
+  function updateValue(val: string) {
+    setProfile(prev => currentQ.setValue(prev, val))
+  }
+
+  function goNext() {
+    if (stepIndex < QUESTIONS.length - 1) {
+      setDirection(1)
+      setStepIndex(stepIndex + 1)
+    } else {
+      setIsComplete(true)
+      setTimeout(() => onComplete(profile), 1800)
+    }
+  }
+
+  function goBack() {
+    if (stepIndex > 0) {
+      setDirection(-1)
+      setStepIndex(stepIndex - 1)
+    }
+  }
+
+  function canProceed() {
+    if (currentQ.required) return currentValue.trim().length > 0
     return true
   }
 
-  const handleNext = () => {
-    if (step < 3) setStep(step + 1)
-    else onComplete({ rootPerson: profile, selectedTreeId: selectedTree, coreFamily })
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === 'Enter' && canProceed()) goNext()
   }
 
-  const handleBack = () => { if (step > 1) setStep(step - 1) }
+  const isLastStep = stepIndex === QUESTIONS.length - 1
 
   return (
-    <div className="max-w-2xl mx-auto">
-      {/* Step Indicator — sacred dots */}
-      <div className="flex items-center justify-center gap-3 mb-8">
-        {STEPS.map((s, i) => {
-          const Icon = s.icon
-          const isActive = step === s.id
-          const isDone = step > s.id
-          return (
-            <div key={s.id} className="flex items-center gap-2">
-              <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-medium transition-all border ${
-                isActive ? 'bg-[rgba(255,149,0,0.15)] text-[#FF9500] border-[rgba(255,149,0,0.3)]' :
-                isDone ? 'bg-[rgba(72,187,120,0.1)] text-green-400 border-[rgba(72,187,120,0.2)]' :
-                'bg-[rgba(6,10,18,0.4)] text-[#C9B99A]/40 border-[rgba(255,149,0,0.06)]'
-              } backdrop-blur-sm`}>
-                <Icon size={11} />
-                <span className="hidden sm:inline">{s.label}</span>
-              </div>
-              {i < STEPS.length - 1 && (
-                <ChevronRight size={10} className={`${isDone ? 'text-green-400/40' : 'text-[#C9B99A]/15'}`} />
-              )}
-            </div>
-          )
-        })}
+    <div className="relative min-h-screen w-full overflow-hidden bg-[#060a12]">
+      {/* Background */}
+      <div className="absolute inset-0">
+        <img src="/images/roots-registry-bg.jpg" alt="" className="w-full h-full object-cover opacity-40" />
       </div>
+      <div className="absolute inset-0 bg-[rgba(6,10,18,0.7)] backdrop-blur-sm" />
+      <div className="absolute inset-0"
+        style={{ boxShadow: 'inset 0 0 200px 80px rgba(6,10,18,0.6)' }} />
 
-      {/* Step Content — floating, no heavy box */}
-      <motion.div
-        key={step}
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -20 }}
-        transition={{ duration: 0.3 }}
-      >
-        {step === 1 && <StepProfile data={profile} onChange={setProfile} />}
-        {step === 2 && <StepTreeGallery selectedId={selectedTree} onSelect={setSelectedTree} />}
-        {step === 3 && <StepCoreFamily data={coreFamily} onChange={setCoreFamily} />}
-      </motion.div>
+      {/* Content */}
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-4 py-12">
+        <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
 
-      {/* Navigation */}
-      <div className="flex items-center justify-between mt-8">
-        <button
-          onClick={handleBack}
-          disabled={step === 1}
-          className={`flex items-center gap-1.5 text-xs px-4 py-2.5 rounded-lg border transition-all backdrop-blur-sm ${
-            step === 1
-              ? 'text-[#C9B99A]/20 border-[rgba(255,149,0,0.05)] cursor-not-allowed'
-              : 'text-[#C9B99A] border-[rgba(255,149,0,0.15)] hover:border-[rgba(255,149,0,0.3)] hover:text-[#F0EBE1]'
-          }`}
-        >
-          <ChevronLeft size={14} /> Back
-        </button>
+          {/* Left: Constellation Tree */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8 }}
+            className="hidden md:flex items-center justify-center"
+          >
+            <div className="w-full max-w-[280px] aspect-[300/380]">
+              <ConstellationTreeSVG progress={progress} />
+            </div>
+          </motion.div>
 
-        <div className="text-[10px] text-[#C9B99A]/40 tracking-wider">
-          Step {step} of {STEPS.length}
+          {/* Right: Question Dialog */}
+          <div className="flex flex-col">
+            {/* Close button */}
+            <div className="flex justify-end mb-4">
+              <button
+                onClick={onCancel}
+                className="w-8 h-8 rounded-full bg-[rgba(255,149,0,0.08)] border border-[rgba(255,149,0,0.15)] flex items-center justify-center text-[#C9B99A]/60 hover:text-[#FF9500] hover:border-[rgba(255,149,0,0.3)] transition-all"
+              >
+                <X size={14} />
+              </button>
+            </div>
+
+            {/* Progress bar */}
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <SectionIcon size={13} style={{ color: sectionColor }} />
+                  <span className="text-[10px] uppercase tracking-[0.12em]" style={{ color: sectionColor }}>
+                    {SECTION_META[currentQ.section].label}
+                  </span>
+                </div>
+                <span className="text-[10px] text-[#C9B99A]/40">
+                  {stepIndex + 1} / {QUESTIONS.length}
+                </span>
+              </div>
+              <div className="h-[2px] bg-[rgba(255,149,0,0.08)] rounded-full overflow-hidden">
+                <motion.div
+                  className="h-full rounded-full"
+                  style={{ backgroundColor: sectionColor }}
+                  initial={{ width: `${(stepIndex / QUESTIONS.length) * 100}%` }}
+                  animate={{ width: `${((stepIndex + 1) / QUESTIONS.length) * 100}%` }}
+                  transition={{ duration: 0.4 }}
+                />
+              </div>
+            </div>
+
+            {/* Question Card */}
+            <AnimatePresence mode="wait" custom={direction}>
+              {isComplete ? (
+                <motion.div
+                  key="complete"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="text-center py-12"
+                >
+                  <motion.div
+                    animate={{ rotate: [0, 10, -10, 0] }}
+                    transition={{ duration: 1, delay: 0.3 }}
+                    className="w-16 h-16 rounded-full bg-[rgba(255,149,0,0.15)] border border-[rgba(255,149,0,0.3)] flex items-center justify-center mx-auto mb-4"
+                  >
+                    <Sparkles size={28} className="text-[#FF9500]" />
+                  </motion.div>
+                  <h3 className="text-2xl text-[#F0EBE1] font-medium mb-2">Your Tree is Growing</h3>
+                  <p className="text-sm text-[#C9B99A]">The ancestors welcome you, {profile.rootPerson.firstName}.</p>
+                  <motion.div
+                    className="mt-4 flex justify-center gap-1"
+                    animate={{ opacity: [0.3, 1, 0.3] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  >
+                    {[0, 1, 2].map(i => <div key={i} className="w-1.5 h-1.5 rounded-full bg-[#FF9500]" />)}
+                  </motion.div>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key={currentQ.id}
+                  custom={direction}
+                  initial={{ opacity: 0, x: direction * 40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: direction * -40 }}
+                  transition={{ duration: 0.35, ease: 'easeInOut' }}
+                  className="bg-[rgba(6,10,18,0.5)] backdrop-blur-xl rounded-2xl border border-[rgba(255,149,0,0.15)] p-6 md:p-8 shadow-[0_8px_40px_rgba(0,0,0,0.35)]"
+                >
+                  {/* Question */}
+                  <h3 className="text-xl md:text-2xl text-[#F0EBE1] font-medium mb-6 leading-snug">
+                    {currentQ.label}
+                  </h3>
+
+                  {/* Input */}
+                  <div className="relative">
+                    {currentQ.type === 'date' ? (
+                      <input
+                        type="date"
+                        value={currentValue}
+                        onChange={(e) => updateValue(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        className="w-full bg-[rgba(27,40,56,0.5)] border border-[rgba(255,149,0,0.15)] rounded-xl px-4 py-3.5 text-[#F0EBE1] focus:outline-none focus:border-[rgba(255,149,0,0.4)] transition-colors placeholder-[#C9B99A]/30"
+                      />
+                    ) : (
+                      <input
+                        type="text"
+                        value={currentValue}
+                        onChange={(e) => updateValue(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        placeholder={currentQ.placeholder}
+                        autoFocus
+                        className="w-full bg-[rgba(27,40,56,0.5)] border border-[rgba(255,149,0,0.15)] rounded-xl px-4 py-3.5 text-[#F0EBE1] placeholder-[#C9B99A]/30 focus:outline-none focus:border-[rgba(255,149,0,0.4)] transition-colors text-base"
+                      />
+                    )}
+                  </div>
+
+                  {/* Hint text */}
+                  {currentQ.required && (
+                    <p className="text-[10px] text-[#FF9500]/50 mt-2 ml-1">Required to continue</p>
+                  )}
+
+                  {/* Navigation */}
+                  <div className="flex items-center justify-between mt-8">
+                    <button
+                      onClick={goBack}
+                      disabled={stepIndex === 0}
+                      className={`flex items-center gap-1.5 text-xs px-4 py-2.5 rounded-lg border transition-all ${
+                        stepIndex === 0
+                          ? 'text-[#C9B99A]/15 border-[rgba(255,149,0,0.05)] cursor-not-allowed'
+                          : 'text-[#C9B99A] border-[rgba(255,149,0,0.15)] hover:border-[rgba(255,149,0,0.3)] hover:text-[#F0EBE1]'
+                      }`}
+                    >
+                      <ArrowLeft size={13} /> Back
+                    </button>
+
+                    <button
+                      onClick={goNext}
+                      disabled={!canProceed()}
+                      className={`flex items-center gap-2 text-xs px-6 py-2.5 rounded-lg border transition-all font-medium ${
+                        canProceed()
+                          ? 'bg-[rgba(255,149,0,0.18)] text-[#FF9500] border-[rgba(255,149,0,0.35)] hover:bg-[rgba(255,149,0,0.28)] hover:shadow-[0_0_20px_rgba(255,149,0,0.15)]'
+                          : 'text-[#C9B99A]/20 border-[rgba(255,149,0,0.05)] cursor-not-allowed'
+                      }`}
+                    >
+                      {isLastStep ? (
+                        <><Sparkles size={13} /> Grow My Tree</>
+                      ) : (
+                        <>Next <ArrowRight size={13} /></>
+                      )}
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Mobile tree hint */}
+            <div className="md:hidden mt-6 flex justify-center">
+              <div className="w-32 h-24 opacity-40">
+                <ConstellationTreeSVG progress={progress} />
+              </div>
+            </div>
+          </div>
         </div>
-
-        <button
-          onClick={handleNext}
-          disabled={!canProceed()}
-          className={`flex items-center gap-1.5 text-xs px-5 py-2.5 rounded-lg border transition-all font-medium backdrop-blur-sm ${
-            canProceed()
-              ? 'bg-[rgba(255,149,0,0.15)] text-[#FF9500] border-[rgba(255,149,0,0.3)] hover:bg-[rgba(255,149,0,0.25)]'
-              : 'text-[#C9B99A]/20 border-[rgba(255,149,0,0.05)] cursor-not-allowed'
-          }`}
-        >
-          {step === 3 ? 'Grow My Tree' : 'Next'} <ChevronRight size={14} />
-        </button>
       </div>
     </div>
   )
