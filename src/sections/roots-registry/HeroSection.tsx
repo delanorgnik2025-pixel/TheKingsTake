@@ -2,7 +2,11 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Play, ArrowRight } from 'lucide-react'
 
-export default function HeroSection() {
+interface Props {
+  onBegin: () => void
+}
+
+export default function HeroSection({ onBegin }: Props) {
   const [loaded, setLoaded] = useState(false)
 
   return (
@@ -71,7 +75,10 @@ export default function HeroSection() {
 
             {/* CTAs — stacked full-width on mobile, inline on desktop */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-              <button className="inline-flex items-center justify-center sm:justify-start gap-2.5 bg-[rgba(255,149,0,0.18)] backdrop-blur-sm border border-[rgba(255,149,0,0.4)] text-[#FF9500] rounded-lg px-6 py-3 text-sm font-medium tracking-wide hover:bg-[rgba(255,149,0,0.28)] hover:border-[rgba(255,149,0,0.55)] transition-all duration-300 cursor-pointer">
+              <button
+                onClick={onBegin}
+                className="inline-flex items-center justify-center sm:justify-start gap-2.5 bg-[rgba(255,149,0,0.18)] backdrop-blur-sm border border-[rgba(255,149,0,0.4)] text-[#FF9500] rounded-lg px-6 py-3 text-sm font-medium tracking-wide hover:bg-[rgba(255,149,0,0.28)] hover:border-[rgba(255,149,0,0.55)] transition-all duration-300 cursor-pointer"
+              >
                 Begin Your Journey
                 <ArrowRight size={14} />
               </button>
