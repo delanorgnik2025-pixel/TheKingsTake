@@ -25,8 +25,6 @@ import AncestorChatPage from './pages/AncestorChatPage'
 import SacredGalleryPage from './pages/SacredGalleryPage'
 import StoryKeeperPage from './pages/StoryKeeperPage'
 import AncestorPassPage from './pages/AncestorPassPage'
-import RootsRegistryLanding from './pages/RootsRegistryLanding'
-import RootsRegistryWizard from './pages/RootsRegistryWizard'
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -99,8 +97,6 @@ function AppRoutes() {
         <Route path="/sacred-gallery" element={<SacredGalleryPage />} />
         <Route path="/story-keeper" element={<StoryKeeperPage />} />
         <Route path="/ancestor-pass" element={<AncestorPassPage />} />
-        <Route path="/roots-registry" element={<RootsRegistryLanding />} />
-        <Route path="/roots-registry/register" element={<RootsRegistryWizard />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AppLayout>
