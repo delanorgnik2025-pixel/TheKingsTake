@@ -27,6 +27,7 @@ import StoryKeeperPage from './pages/StoryKeeperPage'
 import AncestorPassPage from './pages/AncestorPassPage'
 import AncestorRootRegistryPage from './pages/AncestorRootRegistryPage'
 import RootRegistryStep1 from './pages/RootRegistryStep1'
+import NationResearchPage from './pages/NationResearchPage'
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -101,6 +102,7 @@ function AppRoutes() {
         <Route path="/ancestor-pass" element={<AncestorPassPage />} />
         <Route path="/ancestor-root-registry" element={<AncestorRootRegistryPage />} />
         <Route path="/root-registry/step-1" element={<RootRegistryStep1 />} />
+        <Route path="/research/:nationId" element={<NationResearchPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AppLayout>

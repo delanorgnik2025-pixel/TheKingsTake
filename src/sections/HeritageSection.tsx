@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Map, ChevronUp, ChevronDown, ExternalLink, Phone, Globe, FileText, Landmark, Dna, Scroll, BookOpen, Users, MapPin, AlertTriangle, X, Plus, Minus, Maximize2, MousePointerClick, Database, Compass } from 'lucide-react'
+import { Map, ChevronUp, ChevronDown, ExternalLink, Phone, Globe, FileText, Landmark, Dna, Scroll, BookOpen, Users, MapPin, AlertTriangle, X, Plus, Minus, Maximize2, MousePointerClick, Database } from 'lucide-react'
 import ScrollReveal from '../components/ScrollReveal'
 import { STATE_DATA, POPULAR_STATES, STATE_COORDS, TRIBE_DB, TREATY_DB } from '../data/heritageData'
 import type { TribeDetail } from '../data/heritageData'
-import PanIndigenousMap from '../components/PanIndigenousMap'
+import { jamaicaNations } from '../data/panIndigenousData'
+import CountryDetailModal from '../components/CountryDetailModal'
 
 // Public Mapbox token - split to avoid secret scanning false positive
 const _t1 = 'pk.eyJ1IjoidGFzYXR1IiwiYSI6ImNtcXI4azdsYjBqMmYycXB5cjIzdDR5a24ifQ'
@@ -319,10 +320,17 @@ function StateDetailModal({ stateKey, onClose }: { stateKey: string; onClose: ()
 // ============================================
 // MAP + STATE SELECTOR
 // ============================================
+
+// Country data for Pan-Indigenous nations on the map
+const COUNTRY_MARKERS: Record<string, { name: string; coords: [number, number]; nations: typeof jamaicaNations }> = {
+  jamaica: { name: 'Jamaica', coords: [-77.2975, 18.1096], nations: jamaicaNations },
+}
+
 function HeritageMap() {
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<any>(null)
   const [selectedState, setSelectedState] = useState<string | null>(null)
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null)
   const [mapError, setMapError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -357,16 +365,70 @@ function HeritageMap() {
         })
         map.setPaintProperty('satellite', 'raster-opacity', 0.7)
 
+        // Add Jamaica marker
+        const jamaicaCoords = COUNTRY_MARKERS.jamaica.coords
+        const el = document.createElement('div')
+        el.className = 'country-marker'
+        el.innerHTML = `
+          <div style="
+            width: 24px; height: 24px; border-radius: 50%;
+            background: rgba(255,149,0,0.8);
+            border: 2px solid #FF9500;
+            box-shadow: 0 0 12px rgba(255,149,0,0.6), 0 0 24px rgba(255,149,0,0.3);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.2s;
+          ">
+            <div style="width: 6px; height: 6px; border-radius: 50%; background: #F0EBE1;"></div>
+          </div>
+          <div style="
+            position: absolute; top: 28px; left: 50%; transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 10px; font-weight: 600; color: #FF9500;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            pointer-events: none;
+          ">Jamaica</div>
+        `
+        el.style.position = 'relative'
+        el.addEventListener('mouseenter', () => {
+          el.querySelector('div')!.style.transform = 'scale(1.2)'
+        })
+        el.addEventListener('mouseleave', () => {
+          el.querySelector('div')!.style.transform = 'scale(1)'
+        })
+        el.addEventListener('click', () => {
+          setSelectedCountry('jamaica')
+        })
+
+        new mapboxgl.Marker({ element: el, anchor: 'center' })
+          .setLngLat(jamaicaCoords)
+          .addTo(map)
+
         map.on('click', (e: any) => {
           const lng = e.lngLat.lng
           const lat = e.lngLat.lat
+
+          // Check if click is near Jamaica marker first
+          const jLng = COUNTRY_MARKERS.jamaica.coords[0]
+          const jLat = COUNTRY_MARKERS.jamaica.coords[1]
+          const distToJamaica = Math.sqrt(Math.pow(lng - jLng, 2) + Math.pow(lat - jLat, 2))
+          if (distToJamaica < 2.0) {
+            setSelectedCountry('jamaica')
+            return
+          }
+
           fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?types=region&access_token=${token}`)
             .then(r => r.json())
             .then(data => {
               if (data.features?.length > 0) {
                 const placeName = data.features[0].place_name
+                // Check for US states
                 const stateMatch = Object.keys(STATE_DATA).find(s => placeName.includes(s))
                 if (stateMatch) { setSelectedState(stateMatch) }
+                // Check for Jamaica
+                else if (placeName.toLowerCase().includes('jamaica')) {
+                  setSelectedCountry('jamaica')
+                }
               }
             })
             .catch(() => {})
@@ -441,7 +503,7 @@ function HeritageMap() {
               <div className="flex items-center justify-center gap-4 md:gap-6 flex-wrap">
                 <div className="flex items-center gap-1.5 text-[10px] md:text-xs text-[#C9B99A]/70">
                   <MousePointerClick size={12} className="text-[#FF9500]/60" />
-                  <span>Click a state to explore</span>
+                  <span>Click a state or Jamaica to explore</span>
                 </div>
                 <span className="hidden md:inline text-[#C9B99A]/20">|</span>
                 <div className="hidden md:flex items-center gap-1.5 text-[10px] md:text-xs text-[#C9B99A]/70">
@@ -495,6 +557,18 @@ function HeritageMap() {
         </div>
       </div>
 
+      {/* Jamaica quick-access button */}
+      <div className="flex justify-center">
+        <button
+          onClick={() => setSelectedCountry('jamaica')}
+          className="flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.06)] border border-[rgba(255,149,0,0.15)] hover:border-[rgba(255,149,0,0.4)] rounded-full px-5 py-2.5 transition-all"
+        >
+          <MapPin size={12} />
+          Jamaica — 4 Indigenous Nations Documented
+          <ChevronRight size={10} />
+        </button>
+      </div>
+
       {/* State Detail Popup Modal */}
       <AnimatePresence>
         {selectedState && (
@@ -505,10 +579,22 @@ function HeritageMap() {
         )}
       </AnimatePresence>
 
+      {/* Country Detail Popup Modal */}
+      <AnimatePresence>
+        {selectedCountry && COUNTRY_MARKERS[selectedCountry] && (
+          <CountryDetailModal
+            country={COUNTRY_MARKERS[selectedCountry].name}
+            countryCode={selectedCountry}
+            nations={COUNTRY_MARKERS[selectedCountry].nations}
+            onClose={() => setSelectedCountry(null)}
+          />
+        )}
+      </AnimatePresence>
+
       {/* Hint when no state selected */}
       <div className="bg-[rgba(27,40,56,0.3)] rounded-lg border border-[rgba(255,149,0,0.1)] border-dashed p-5 text-center">
         <MapPin size={24} className="text-[#FF9500]/60 mx-auto mb-2" />
-        <p className="text-sm text-[#C9B99A]/70">Tap any state on the map or a button above to explore tribal nations</p>
+        <p className="text-sm text-[#C9B99A]/70">Tap any state on the map, click Jamaica, or use the buttons above to explore tribal nations</p>
       </div>
     </div>
   )
@@ -517,11 +603,7 @@ function HeritageMap() {
 // ============================================
 // MAIN EXPORT
 // ============================================
-type MapView = 'us' | 'americas'
-
 export default function HeritageSection() {
-  const [mapView, setMapView] = useState<MapView>('us')
-
   return (
     <section id="heritage" className="relative py-24 md:py-32 px-6 md:px-12 overflow-hidden">
       <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/cosmic-bg.jpg)' }} />
@@ -549,7 +631,7 @@ export default function HeritageSection() {
               We Were Here<br className="hidden md:block" /> Before Anybody
             </h2>
             <p className="text-lg md:text-xl text-[#C9B99A] max-w-2xl leading-relaxed">
-              Discover the truth they never taught you. Explore the United States by state, or journey across the entire Indigenous Americas — from Jamaica to Suriname, Mexico to Canada, and beyond. 275+ nations fully documented.
+              Discover the truth they never taught you. Tap any state on the map to explore Indigenous nations, treaties, laws, and vital records — or journey beyond to Jamaica and beyond. 275+ nations fully documented.
             </p>
           </div>
         </ScrollReveal>
@@ -566,7 +648,7 @@ export default function HeritageSection() {
               <Landmark size={12} /> Laws & Treaties
             </span>
             <span className="flex items-center gap-2 text-xs text-[#C9B99A] bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.15)] rounded-full px-4 py-2">
-              <Compass size={12} /> 51 States + Pan-Americas
+              <Globe size={12} /> 51 States + Jamaica
             </span>
           </div>
         </ScrollReveal>
@@ -579,8 +661,8 @@ export default function HeritageSection() {
               <div className="flex items-start gap-3 bg-[rgba(21,32,43,0.5)] rounded-lg p-3">
                 <span className="flex items-center justify-center w-7 h-7 rounded-full bg-[rgba(255,149,0,0.15)] border border-[rgba(255,149,0,0.25)] text-xs text-[#FF9500] font-bold shrink-0">1</span>
                 <div>
-                  <p className="text-sm text-[#F0EBE1] font-medium">Select Your Region</p>
-                  <p className="text-[11px] text-[#C9B99A]/70 mt-0.5">Toggle between US States or The Americas, then pick a region or state</p>
+                  <p className="text-sm text-[#F0EBE1] font-medium">Click the Map</p>
+                  <p className="text-[11px] text-[#C9B99A]/70 mt-0.5">Tap any state on the US map, click Jamaica, or select from the list below</p>
                 </div>
               </div>
               <div className="flex items-start gap-3 bg-[rgba(21,32,43,0.5)] rounded-lg p-3">
@@ -601,38 +683,8 @@ export default function HeritageSection() {
           </div>
         </ScrollReveal>
 
-        {/* Map View Toggle */}
-        <ScrollReveal delay={0.3}>
-          <div className="mb-6">
-            <div className="inline-flex bg-[rgba(27,40,56,0.5)] border border-[rgba(255,149,0,0.12)] rounded-xl p-1 gap-1">
-              <button
-                onClick={() => setMapView('us')}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-medium transition-all duration-300 cursor-pointer ${
-                  mapView === 'us'
-                    ? 'bg-[rgba(255,149,0,0.15)] text-[#FF9500] border border-[rgba(255,149,0,0.3)]'
-                    : 'text-[#C9B99A]/60 hover:text-[#C9B99A] border border-transparent'
-                }`}
-              >
-                <Map size={13} />
-                United States
-              </button>
-              <button
-                onClick={() => setMapView('americas')}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-medium transition-all duration-300 cursor-pointer ${
-                  mapView === 'americas'
-                    ? 'bg-[rgba(255,149,0,0.15)] text-[#FF9500] border border-[rgba(255,149,0,0.3)]'
-                    : 'text-[#C9B99A]/60 hover:text-[#C9B99A] border border-transparent'
-                }`}
-              >
-                <Compass size={13} />
-                The Americas
-              </button>
-            </div>
-          </div>
-        </ScrollReveal>
-
         <ScrollReveal delay={0.35}>
-          {mapView === 'us' ? <HeritageMap /> : <PanIndigenousMap />}
+          <HeritageMap />
         </ScrollReveal>
 
         <ScrollReveal delay={0.5}>
