@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Map, ChevronUp, ChevronDown, ExternalLink, Phone, Globe, FileText, Landmark, Dna, Scroll, BookOpen, Users, MapPin, AlertTriangle, X, Plus, Minus, Maximize2, MousePointerClick, Database } from 'lucide-react'
+import { Map, ChevronUp, ChevronDown, ExternalLink, Phone, Globe, FileText, Landmark, Dna, Scroll, BookOpen, Users, MapPin, AlertTriangle, X, Plus, Minus, Maximize2, MousePointerClick, Database, Compass } from 'lucide-react'
 import ScrollReveal from '../components/ScrollReveal'
 import { STATE_DATA, POPULAR_STATES, STATE_COORDS, TRIBE_DB, TREATY_DB } from '../data/heritageData'
 import type { TribeDetail } from '../data/heritageData'
+import PanIndigenousMap from '../components/PanIndigenousMap'
 
 // Public Mapbox token - split to avoid secret scanning false positive
 const _t1 = 'pk.eyJ1IjoidGFzYXR1IiwiYSI6ImNtcXI4azdsYjBqMmYycXB5cjIzdDR5a24ifQ'
@@ -516,7 +517,11 @@ function HeritageMap() {
 // ============================================
 // MAIN EXPORT
 // ============================================
+type MapView = 'us' | 'americas'
+
 export default function HeritageSection() {
+  const [mapView, setMapView] = useState<MapView>('us')
+
   return (
     <section id="heritage" className="relative py-24 md:py-32 px-6 md:px-12 overflow-hidden">
       <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/cosmic-bg.jpg)' }} />
@@ -544,7 +549,7 @@ export default function HeritageSection() {
               We Were Here<br className="hidden md:block" /> Before Anybody
             </h2>
             <p className="text-lg md:text-xl text-[#C9B99A] max-w-2xl leading-relaxed">
-              Discover the truth they never taught you. Tap any state to explore Indigenous nations, treaties, laws, and vital records — 225+ nations fully documented.
+              Discover the truth they never taught you. Explore the United States by state, or journey across the entire Indigenous Americas — from Jamaica to Suriname, Mexico to Canada, and beyond. 275+ nations fully documented.
             </p>
           </div>
         </ScrollReveal>
@@ -552,7 +557,7 @@ export default function HeritageSection() {
         <ScrollReveal delay={0.2}>
           <div className="flex flex-wrap gap-3 mb-6">
             <span className="flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.08)] border border-[rgba(255,149,0,0.2)] rounded-full px-4 py-2">
-              <Dna size={12} /> 225+ Nations Documented
+              <Dna size={12} /> 275+ Nations Documented
             </span>
             <span className="flex items-center gap-2 text-xs text-[#C9B99A] bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.15)] rounded-full px-4 py-2">
               <FileText size={12} /> Vital Records Access
@@ -561,7 +566,7 @@ export default function HeritageSection() {
               <Landmark size={12} /> Laws & Treaties
             </span>
             <span className="flex items-center gap-2 text-xs text-[#C9B99A] bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.15)] rounded-full px-4 py-2">
-              <Map size={12} /> 51 States & Territories
+              <Compass size={12} /> 51 States + Pan-Americas
             </span>
           </div>
         </ScrollReveal>
@@ -574,8 +579,8 @@ export default function HeritageSection() {
               <div className="flex items-start gap-3 bg-[rgba(21,32,43,0.5)] rounded-lg p-3">
                 <span className="flex items-center justify-center w-7 h-7 rounded-full bg-[rgba(255,149,0,0.15)] border border-[rgba(255,149,0,0.25)] text-xs text-[#FF9500] font-bold shrink-0">1</span>
                 <div>
-                  <p className="text-sm text-[#F0EBE1] font-medium">Choose a State</p>
-                  <p className="text-[11px] text-[#C9B99A]/70 mt-0.5">Click any state on the map or tap a state button below</p>
+                  <p className="text-sm text-[#F0EBE1] font-medium">Select Your Region</p>
+                  <p className="text-[11px] text-[#C9B99A]/70 mt-0.5">Toggle between US States or The Americas, then pick a region or state</p>
                 </div>
               </div>
               <div className="flex items-start gap-3 bg-[rgba(21,32,43,0.5)] rounded-lg p-3">
@@ -588,16 +593,46 @@ export default function HeritageSection() {
               <div className="flex items-start gap-3 bg-[rgba(21,32,43,0.5)] rounded-lg p-3">
                 <span className="flex items-center justify-center w-7 h-7 rounded-full bg-[rgba(255,149,0,0.15)] border border-[rgba(255,149,0,0.25)] text-xs text-[#FF9500] font-bold shrink-0">3</span>
                 <div>
-                  <p className="text-sm text-[#F0EBE1] font-medium">Tap Any Tribe</p>
-                  <p className="text-[11px] text-[#C9B99A]/70 mt-0.5">Click a nation name to see its full history, language & status</p>
+                  <p className="text-sm text-[#F0EBE1] font-medium">Tap Any Nation</p>
+                  <p className="text-[11px] text-[#C9B99A]/70 mt-0.5">Click a nation name to see its full history, language, status & current issues</p>
                 </div>
               </div>
             </div>
           </div>
         </ScrollReveal>
 
+        {/* Map View Toggle */}
+        <ScrollReveal delay={0.3}>
+          <div className="mb-6">
+            <div className="inline-flex bg-[rgba(27,40,56,0.5)] border border-[rgba(255,149,0,0.12)] rounded-xl p-1 gap-1">
+              <button
+                onClick={() => setMapView('us')}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-medium transition-all duration-300 cursor-pointer ${
+                  mapView === 'us'
+                    ? 'bg-[rgba(255,149,0,0.15)] text-[#FF9500] border border-[rgba(255,149,0,0.3)]'
+                    : 'text-[#C9B99A]/60 hover:text-[#C9B99A] border border-transparent'
+                }`}
+              >
+                <Map size={13} />
+                United States
+              </button>
+              <button
+                onClick={() => setMapView('americas')}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-medium transition-all duration-300 cursor-pointer ${
+                  mapView === 'americas'
+                    ? 'bg-[rgba(255,149,0,0.15)] text-[#FF9500] border border-[rgba(255,149,0,0.3)]'
+                    : 'text-[#C9B99A]/60 hover:text-[#C9B99A] border border-transparent'
+                }`}
+              >
+                <Compass size={13} />
+                The Americas
+              </button>
+            </div>
+          </div>
+        </ScrollReveal>
+
         <ScrollReveal delay={0.35}>
-          <HeritageMap />
+          {mapView === 'us' ? <HeritageMap /> : <PanIndigenousMap />}
         </ScrollReveal>
 
         <ScrollReveal delay={0.5}>
