@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Map, ChevronUp, ChevronDown, ExternalLink, Phone, Globe, FileText, Landmark, Dna, Scroll, BookOpen, Users, MapPin, AlertTriangle, X, Plus, Minus, Maximize2, MousePointerClick, Database } from 'lucide-react'
+import { Map, ChevronUp, ChevronDown, ExternalLink, Phone, Globe, FileText, Landmark, Dna, Scroll, BookOpen, Users, MapPin, AlertTriangle, X, Plus, Minus, Maximize2, MousePointerClick, Database, ChevronRight } from 'lucide-react'
 import ScrollReveal from '../components/ScrollReveal'
 import { STATE_DATA, POPULAR_STATES, STATE_COORDS, TRIBE_DB, TREATY_DB } from '../data/heritageData'
 import type { TribeDetail } from '../data/heritageData'
