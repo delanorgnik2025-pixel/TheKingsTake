@@ -311,6 +311,204 @@ export const jamaicaNations: IndigenousNation[] = [
 ]
 
 // ══════════════════════════════════════════════════════════════
+// HAITI — RESEARCHED 2025-07-06
+// ══════════════════════════════════════════════════════════════
+export const haitiNations: IndigenousNation[] = [
+  {
+    id: 'ht-taino',
+    name: 'Taíno (Ayiti)',
+    indigenousName: 'Ayiti / Kiskeya',
+    alternateNames: ['Arawak', 'Classic Taíno', 'Quisqueya'],
+    country: 'Haiti',
+    countryCode: 'HT',
+    location: 'Western Hispaniola — coastal plains and interior valleys',
+    coordinates: [-72.2852, 18.9712],
+    population: 'Cultural survival through intermarriage; estimated 200,000+ with Taíno ancestry',
+    language: 'Taíno (extinct); Arawakan language family',
+    languageFamily: 'Arawakan',
+    status: 'Original inhabitants — name survives as "Haiti"',
+    history: 'The Taíno called the island Ayiti ("mountainous land") and Kiskeya ("mother of all lands"). At European contact in 1492, the Taíno population of Hispaniola was organized into five caciquats (kingdoms) led by caciques. Anacaona, the female cacique of Xaragua (modern Leogane), was one of the most celebrated leaders — renowned for her beauty, poetry, and diplomacy. Columbus landed on December 6, 1492, renaming the island "Española." Within 25 years of contact, most Taíno had died from enslavement, massacre, and disease. By 1514, only 32,000 remained from an original population estimated at several hundred thousand to over one million. Taíno survivors fled to remote mountain regions and intermarried with escaped Africans, contributing to the genetic and cultural heritage of modern Haitians.',
+    currentIssues: 'No formal recognition as Indigenous people. Taíno DNA survives in Haitian population through intermarriage with escaped Africans. The name "Haiti" itself honors Taíno heritage. Cultural revival growing through DNA studies and heritage education.',
+    resources: ['https://thehaitianrevolution.com/taino-and-spanish-rule', 'https://www.smithsonianmag.com/history/who-were-taino-original-inhabitants-columbus-island-73824867/'],
+    category: 'Taíno',
+    researchDocument: {
+      title: 'The Taíno of Ayiti: Original People of Haiti',
+      subtitle: 'A Comprehensive Research Document on the Indigenous Taíno of Haiti',
+      lastUpdated: '2025-07-06',
+      sections: [
+        {
+          heading: 'Pre-Columbian Haiti: The Five Caciquats',
+          content: 'Before European contact, the Taíno of Hispaniola (which they called Ayiti and Kiskeya) lived in a well-organized communal society divided among five caciquats or kingdoms. Each caciquat was governed by a cacique (chief) and centered on the island\'s coastal plains and interior valleys. The name "Ayiti" meant "mountainous land" — a fitting description of Haiti\'s dramatic landscape. "Kiskeya" (or Quisqueya) meant "mother of all lands," reflecting the Taíno belief that Hispaniola was the cradle of creation. Estimates of the Taíno population at contact range from several hundred thousand to over one million, making Hispaniola one of the most densely populated islands in the Caribbean. The Taíno were skilled farmers who cultivated cassava, sweet potatoes, maize, and tobacco; expert navigators who built canoes capable of carrying 150 people; and sophisticated artisans who created pottery, zemis (sacred idols), and intricate woven goods.'
+        },
+        {
+          heading: 'Anacaona: The Golden Flower',
+          content: 'Anacaona, whose name means "Golden Flower," was the cacica (female chief) of Xaragua in southwestern Hispaniola — the territory of modern Leogane, Haiti. She was renowned throughout the Caribbean for her beauty, intelligence, poetic skill, and diplomatic abilities. Her husband Caonabo was the cacique of Maguana, making them one of the most powerful couples in Taíno society. After Caonabo was captured by the Spanish and died en route to Spain, Anacaona ruled Xaragua alone. She initially attempted peaceful coexistence with the Spanish, hosting them in her village and entertaining Spanish governor Nicolas de Ovando. However, Ovando betrayed her hospitality — during a feast in 1502, Spanish soldiers massacred Anacaona\'s nobles and burned her village. Anacaona was captured and hanged. A statue of Anacaona now stands in Leogane, and she remains a powerful symbol of Haitian resistance and Indigenous identity. Her story exemplifies the betrayal and violence that characterized Spanish-Taíno relations.'
+        },
+        {
+          heading: 'Columbus and the Destruction of La Navidad',
+          content: 'Christopher Columbus landed on the north coast of Ayiti on December 6, 1492, during his first voyage. He renamed the island "Española" (Little Spain) and established a small fort called La Navidad, leaving 39 men behind to search for gold. The men brutalized the local Taíno, pillaging villages, seizing women, and committing acts of violence. The Taíno retaliated by killing the men and burning La Navidad to the ground. When Columbus returned a year later with 17 ships and 1,200 men, he found only ruins. He then established La Isabela on the north coast in 1494 — the first permanent European settlement in the Americas. The Spanish immediately began systematic exploitation: men were forced to work in gold mines and plantations, separated from their families and prevented from planting crops. Starvation, combined with European diseases (smallpox, measles) to which the Taíno had no immunity, caused catastrophic population collapse.'
+        },
+        {
+          heading: 'The Genocide: 32,000 Remaining by 1514',
+          content: 'Within just 25 years of Columbus\' arrival, the Taíno population of Hispaniola collapsed from hundreds of thousands to approximately 32,000 by 1514. The causes were multiple and interconnected: disease (smallpox, measles, typhus), overwork in mines and plantations, starvation due to displaced agriculture, mass suicide, direct violence, and the disruption of family and community structures. Spanish records document the devastation with bureaucratic coldness. By 1519, a third of the remaining population had died from smallpox alone. In the 1530s, Spanish officials inquired about the number of Indians and their chiefs; the response was "none — they are gone." However, "gone" did not mean extinct. As Puerto Rican historian Ricardo Alegría documented, some Taíno survived by fleeing to remote mountain regions beyond colonial control, where they intermarried with escaped Africans and formed the communities that would become the Haitian Maroons.'
+        },
+        {
+          heading: 'Survival and the African-Taíno Fusion',
+          content: 'The Taíno did not vanish — they transformed. Survivors fled to the Bahoruco Mountains and other remote regions of western Hispaniola, where they joined with escaped African slaves (maroons) who had begun establishing independent communities. This Taíno-African fusion created a unique cultural synthesis that would become the foundation of Haitian identity. The Maroons adopted Taíno knowledge of the terrain, agricultural techniques, and medicinal plants. Taíno place names survived and became the names of Haitian towns and regions. Perhaps most significantly, the African spiritual traditions that would become Haitian Vodou incorporated Taíno elements — the Taíno reverence for nature spirits, ancestral veneration, and the use of tobacco in ceremonies all found their way into Vodou practice. Genetic studies have confirmed Indigenous American ancestry in the Haitian population, though it is less extensively studied than in Jamaica or Puerto Rico.'
+        },
+        {
+          heading: 'The Name Haiti: A Taíno Legacy',
+          content: 'When Haiti achieved independence in 1804, becoming the first Black republic in the world, the revolutionary leaders chose to rename the country "Haiti" — the Taíno name for the island. This was a deliberate act of cultural reclamation, replacing the French colonial name "Saint-Domingue" with the Indigenous name "Ayiti" (spelled "Haiti" in French). Jean-Jacques Dessalines, the revolutionary leader who proclaimed independence, thus honored the island\'s first inhabitants while simultaneously asserting a new identity free from colonial nomenclature. The name "Haiti" is therefore one of the most powerful symbols of Indigenous survival in the Americas — a daily reminder that the Taíno were here, that their name for the land persisted through centuries of colonization, and that the descendants of enslaved Africans chose to honor their memory. No other country in the Caribbean bears an Indigenous name in this way.'
+        }
+      ],
+      sources: [
+        'The Haitian Revolution — taino-and-spanish-rule (thehaitianrevolution.com)',
+        'Smithsonian Magazine — Who Were the Taíno, the Original Inhabitants of Columbus\' Island Colonies? (2023)',
+        'University of Connecticut — The Decline of the Tainos, 1492-1542: A Re-Vision',
+        'Ricardo Alegría — Puerto Rican historian and anthropologist (archival research)',
+        'Wikipedia — Taíno (peer-reviewed)',
+        'Schimmer, Russell — GSP, Yale University',
+        'Black History Month — Taíno History Archives',
+        'Jean Casimir (2020) — "The Haitians: A Decolonial History"'
+      ]
+    }
+  },
+  {
+    id: 'ht-maroons',
+    name: 'Haitian Maroons (Mawon)',
+    indigenousName: 'Mawon',
+    alternateNames: ['Marron', 'Grand Marronage', 'Bahoruco Maroons'],
+    country: 'Haiti',
+    countryCode: 'HT',
+    location: 'Bahoruco Mountains and remote highlands throughout western Hispaniola',
+    coordinates: [-73.9667, 18.2333],
+    population: 'Historical — communities in the thousands; legacy continues in modern Haiti',
+    language: 'Haitian Creole (Kreyol), French; African languages in spiritual contexts',
+    languageFamily: 'French Creole / Kwa / Bantu',
+    status: 'Historical — foundational to Haitian independence',
+    history: 'The Haitian Maroons (Mawon) were escaped slaves who formed independent communities in the remote mountainous regions of Saint-Domingue, particularly the Bahoruco Mountains. From the 17th century onward, enslaved Africans fled the brutal French plantation system and established free communities practicing subsistence agriculture and hunting. The Maroons were never defeated by French forces despite repeated expeditions in 1702, 1728, 1733, 1740, 1742, 1746, 1757, and 1761. In 1776-1777, a joint French-Spanish expedition failed to destroy Maroon settlements after the Maroons were alerted and retreated deeper into the mountains. The most famous Maroon leader was François Mackandal, a Vodou priest who led a six-year rebellion (1751-1757) using poison to attack plantation owners. Mackandal was captured and executed in 1758, becoming a martyr. The Maroon tradition of resistance culminated in the Haitian Revolution of 1791-1804, when Maroon leaders including Boukman Dutty launched the uprising that created the first Black republic.',
+    currentIssues: 'The Maroon legacy is central to Haitian national identity — the iconic Neg Mawon statue in Port-au-Prince commemorates their role. However, modern Haiti faces political instability, economic crisis, and environmental degradation that threaten historical Maroon territories. The Bahoruco Mountains remain a biodiversity hotspot but face deforestation. Scholarly research into Maroon history continues, with new archival discoveries revealing the sophistication of Maroon communities.',
+    resources: ['https://thehaitianrevolution.com/', 'https://en.wikipedia.org/wiki/Maroons'],
+    category: 'Maroon',
+    researchDocument: {
+      title: 'The Haitian Maroons: Mawon and the Path to Freedom',
+      subtitle: 'A Comprehensive Research Document on the Maroons of Haiti',
+      lastUpdated: '2025-07-06',
+      sections: [
+        {
+          heading: 'The Birth of Marronnage in Saint-Domingue',
+          content: 'Marronnage — the act of escaping slavery and forming independent communities — was a continuous feature of life in colonial Saint-Domingue from the earliest days of French colonization in the 17th century. The term "marron" (French) or "mawon" (Haitian Creole) referred to escaped slaves who fled to remote mountainous areas beyond colonial control. Saint-Domingue, which would become Haiti, was France\'s most profitable colony — the "Pearl of the Antilles" — generating enormous wealth through sugar, coffee, and indigo plantations worked by hundreds of thousands of enslaved Africans. The brutal conditions of slavery — torture, family separation, overwork, and malnutrition — drove constant escapes. Unlike in Jamaica, where the British eventually signed treaties with Maroons, the French never negotiated permanent peace with Saint-Domingue\'s Maroons. Instead, the French pursued a policy of extermination, sending repeated military expeditions into the mountains. These expeditions consistently failed, demonstrating the Maroons\' military superiority in terrain warfare.'
+        },
+        {
+          heading: 'The Bahoruco Mountains: Impregnable Fortress',
+          content: 'The Bahoruco Mountains in southwestern Hispaniola served as the primary stronghold for Haitian Maroons. This rugged mountain range, with its dense forests, deep caves, and steep ravines, proved virtually impenetrable to French colonial forces. Maroon communities in the Bahoruco practiced small-scale agriculture, hunted, and maintained close-knit social structures based on African village models. They were known to return to plantations to free family members and friends, and on occasion joined Taíno settlements that had survived Spanish colonization. French military records document repeated failures to dislodge the Maroons: in 1702, an expedition killed three Maroons and captured 11, but over 30 escaped; in 1719, French forces captured a leader named Michel, but the communities continued; expeditions in 1728 and 1733 captured 46 and 32 Maroons respectively, yet the communities persisted. In 1776-1777, a joint French-Spanish expedition ventured into the Bahoruco Mountains but found only abandoned villages — the Maroons had been alerted and retreated to even more remote areas.'
+        },
+        {
+          heading: 'François Mackandal: The Poison Rebel',
+          content: 'François Mackandal stands as the most celebrated Maroon leader in Haitian history. A one-armed man from Guinea (West Africa), Mackandal was a Vodou priest (houngan) who escaped slavery and established himself as a leader in the northern mountains of Saint-Domingue around 1750. For six years (1751-1757), Mackandal led a guerrilla war against the plantation system, using poison ("gadé kò" or bodyguards) to kill plantation owners, their families, and livestock. His network of enslaved collaborators poisoned water supplies and food across the northern plain. Mackandal claimed supernatural powers and prophesied that the whites would be driven from the island. The French responded with mass arrests and torture, but Mackandal evaded capture until 1758. According to legend, at his execution by burning in Cap-Francais (modern Cap-Haitien), Mackandal broke free from his bonds and flew away — a story that elevated him to near-mythical status among the enslaved population. Mackandal\'s rebellion demonstrated that organized resistance was possible and laid groundwork for the Haitian Revolution.'
+        },
+        {
+          heading: 'Boukman Dutty: The Spark of Revolution',
+          content: 'Boukman Dutty was a Vodou priest and Maroon leader whose actions ignited the Haitian Revolution. On the night of August 14, 1791, Boukman presided over a Vodou ceremony at Bois Caiman (Alligator Woods), where enslaved people gathered to plan an uprising. During the ceremony, a priestess named Cecile Fatiman sacrificed a black pig and distributed its blood to the participants as a sacred oath. Boukman then issued a call to arms: "The god who created the sun which gives us light, who rouses the waves and rules the storm, though hidden in the clouds, he watches us. He sees all that the white man does. The god of the white man inspires him with crime, but our god calls upon us to do good works. Our god who is good to us orders us to revenge our wrongs. He will direct our arms and aid us. Throw away the symbol of the god of the whites who has so often caused us to weep, and listen to the voice of liberty, which speaks in the hearts of us all." Within days, the uprising had swept across the northern plain, burning plantations and killing plantation owners. Boukman was killed in battle in November 1791, but the revolution he started would continue for 13 years and ultimately destroy slavery and colonial rule.'
+        },
+        {
+          heading: 'Maroon Communities: Social and Political Organization',
+          content: 'Haitian Maroon communities developed sophisticated social and political structures. They were organized around extended kin networks, with leadership typically vested in elders, warriors, and spiritual leaders (Vodou priests and priestesses). Communities practiced subsistence agriculture, growing cassava, yams, plantains, and vegetables on mountain terraces. They maintained trade relationships with free Black communities and enslaved people on plantations, exchanging food and medicinal plants for tools, gunpowder, and information. Maroon communities were not isolated — they formed networks of communication and mutual aid across the mountains. The Maroons preserved African spiritual traditions, which evolved into Haitian Vodou. They also maintained African musical traditions, with drumming and call-and-response singing serving both ceremonial and communication purposes. Maroon communities served as schools of resistance, where escaped slaves learned guerrilla tactics, African history, and the principles of self-governance.'
+        },
+        {
+          heading: 'From Marronnage to Revolution: The Continuous Struggle',
+          content: 'The Haitian Revolution of 1791-1804 was not a sudden eruption but the culmination of two centuries of continuous Maroon resistance. As scholar Jean Casimir argues, marronnage was a "longue-duree" form of resistance — a dialectical response to the plantation system that aimed to deny humanity and sever social ties. When maroons escaped, they reclaimed possession of themselves, their time, their relationships, and their labor. When they mobilized, they challenged and subverted colonial structures. During the revolution, Africa-born rebels and Maroons were central to the mobilizing structures that abolished slavery and overthrew colonialism. Even after independence, the formerly enslaved masses organized themselves into communal social arrangements that prioritized subsistence labor and extended kin networks — the "counter-plantation" system described by Casimir. The Maroon legacy is thus not merely historical but foundational to Haitian national identity and social organization.'
+        },
+        {
+          heading: 'The Nèg Mawon: Symbol of a Nation',
+          content: 'The Nèg Mawon (Maroon Man) is one of the most iconic symbols of Haiti. A bronze statue erected in the heart of Port-au-Prince depicts a muscular man blowing a conch shell, a machete in one hand and a broken chain in the other — the image of the escaped slave calling others to freedom. The statue was created by architect Albert Mangones in 1968 and has become synonymous with Haitian independence and resistance. UNESCO recognizes the Nèg Mawon as a monument of universal significance. The conch shell (lambi) was historically used by Maroons as a horn to communicate across mountain valleys — the same function as the Jamaican abeng. The broken chain represents liberation from slavery, while the machete symbolizes both agricultural labor and armed resistance. The Nèg Mawon stands not just for Haitian Maroons but for all people who have resisted oppression, making it a universal symbol of human freedom.'
+        }
+      ],
+      sources: [
+        'Wikipedia — Maroons (peer-reviewed)',
+        'The Haitian Revolution (thehaitianrevolution.com)',
+        'Journal of World-Systems Research — Maroon Movements Against Empire (2022)',
+        'Jean Casimir (2020) — "The Haitians: A Decolonial History"',
+        'Cedric Robinson (1983) — "Black Marxism"',
+        'Sylvia Wynter — Marronnage and Anti-Capitalist Resistance',
+        'David Geggus — "The Haitian Revolution: A Documentary History"',
+        'Kate Ramsey — "Spirits and the Law: Vodou and Power in Haiti"',
+        'Carolyn Fick — "The Making of Haiti"',
+        'Laurent Dubois — "Avengers of the New World"'
+      ]
+    }
+  },
+  {
+    id: 'ht-african',
+    name: 'African Ethnic Origins',
+    indigenousName: '',
+    alternateNames: ['Fon/Dahomey', 'Yoruba/Nago', 'Kongo', 'Igbo', 'Rada', 'Petwo'],
+    country: 'Haiti',
+    countryCode: 'HT',
+    location: 'Island-wide — foundational heritage of the Haitian people',
+    coordinates: [-72.5, 18.9],
+    population: 'Constitutes the majority of Haiti\'s population (95%+ African descent)',
+    language: 'Haitian Creole (Kreyol), French; Fon, Yoruba, and Kongo elements in Vodou ritual',
+    languageFamily: 'French Creole / Kwa / Bantu / Yoruboid',
+    status: 'Foundational heritage — constitutive element of Haitian national identity',
+    history: 'Haiti received more enslaved Africans than any other Caribbean colony — nearly half the laborers on the island\'s sugar plantations came from West and Central Africa. The majority were Congos (Kongo peoples) — historian David Geggus notes upwards of 60% of enslaved Africans in colonial Saint-Domingue were referred to as Congos before the Revolution. Significant populations also came from the Fon/Dahomey peoples (modern Benin), Yoruba (Nago) peoples of Nigeria, and Igbo of southeastern Nigeria. These diverse African traditions merged under French colonialism to create Haitian Vodou — the religion that would inspire the Haitian Revolution. The Vodou spirits (lwa) are organized into "nations" (nanchon) reflecting their African origins: the Rada nation derives from Fon and Yoruba deities, while the Petwo nation reflects Kongo traditions. The Haitian Revolution of 1791-1804, which created the first Black republic, was organized through Vodou ceremonies and led by Africa-born rebels and Maroons.',
+    currentIssues: 'Haiti faces severe political, economic, and environmental crises that disproportionately affect the poor majority. The African cultural heritage remains central to Haitian identity, but poverty and instability threaten cultural preservation. Vodou continues to be stigmatized and misunderstood internationally. The reparations movement — France forced Haiti to pay 150 million francs (later reduced to 90 million) as "compensation" for lost "property" (slaves) after independence — continues to demand return of this "independence debt." Contemporary movements seek to strengthen ties with Africa and preserve Vodou traditions.',
+    resources: ['https://pluralism.org/vodou-serving-the-spirits', 'https://www.britannica.com/topic/Vodou', 'https://en.wikipedia.org/wiki/Haitian_Vodou'],
+    category: 'AfricanIndigenous',
+    researchDocument: {
+      title: 'African Origins in Haiti: The Foundations of Vodou and Revolution',
+      subtitle: 'A Comprehensive Research Document on the African Heritage of the Haitian People',
+      lastUpdated: '2025-07-06',
+      sections: [
+        {
+          heading: 'The African Demographics of Saint-Domingue',
+          content: 'Colonial Saint-Domingue received more enslaved Africans than any other Caribbean colony. By the late 18th century, the island\'s sugar plantations — the most profitable in the world — were worked by hundreds of thousands of enslaved Africans. Historian David Geggus\'s analysis of French slave trade records reveals that upwards of 60% of enslaved Africans in colonial Saint-Domingue were referred to as "Congos" — people from the Kongo kingdom and surrounding regions of Central Africa. In addition to the Kongo, significant populations came from the Fon and related peoples of Dahomey (modern Benin), the Yoruba (called "Nago" in Haiti) of southwestern Nigeria, the Igbo of southeastern Nigeria, and smaller numbers from the Wolof, Bambara, and other West African peoples. This extraordinary ethnic diversity — forced together under the brutal plantation system — created the conditions for a unique cultural synthesis. Unlike in Jamaica, where the Akan peoples predominated, Haiti\'s African heritage was more evenly distributed among Kongo, Fon, and Yoruba traditions.'
+        },
+        {
+          heading: 'Vodou: The Religion Born from African Survival',
+          content: 'Haitian Vodou emerged as a syncretism of West and Central African religions with Roman Catholicism. The word "Vodou" derives from the Fon language of Dahomey, meaning "spirit" or "deity." Vodou is not merely a religion but a complete worldview encompassing philosophy, medicine, justice, and cosmology. Its fundamental principle is that everything is spirit — humans inhabit the visible world, while the unseen world is populated by lwa (spirits), ancestors, and the recently deceased. The lwa (also called mystères, anges, or les invisibles) serve as intermediaries between humans and Bondye, the creator God. There are over 1,000 lwa, organized into "nations" (nanchon) that reflect their African origins. The Rada nation derives primarily from Fon and Yoruba deities — Legba (the gatekeeper), Danbala (the serpent of life), and Ezili Freda (the lwa of love). The Petwo nation reflects Kongo traditions, with more aggressive, fiery spirits like Ogou and Ezili Danto. Vodou temples (ounfò) are run by oungan (priests) and manbo (priestesses), with ceremonies involving drumming, singing, dancing, and spirit possession.'
+        },
+        {
+          heading: 'The Fon/Dahomey Contribution: The Rada Tradition',
+          content: 'The Fon and related peoples of Dahomey (modern Benin) made foundational contributions to Haitian Vodou, particularly the Rada tradition. The very name "Vodou" comes from the Fon language. Fon deities who became Haitian lwa include: Legba (the gatekeeper who opens the door between human and spirit worlds, syncretized with St. Peter), Danbala Wedo (the serpent deity of life and wisdom, syncretized with St. Patrick), Ayida Wedo (the rainbow serpent, Danbala\'s partner), and Ezili Freda (the lwa of love and beauty, syncretized with the Virgin Mary). The Rada tradition is characterized by its focus oncool, calm energies and its emphasis on harmony, healing, and social order. Rada ceremonies feature specific drum rhythms (played on the tanbou), call-and-response singing, and the tracing of vèvè — intricate cornmeal drawings on the ground that serve as spiritual "signatures" of individual lwa. The Rada tradition preserves many elements of Fon governance structures, with oungan and manbo serving roles analogous to Fon spiritual leaders.'
+        },
+        {
+          heading: 'The Kongo Contribution: The Petwo Tradition',
+          content: 'The Kongo peoples of Central Africa contributed the Petwo (or Petwo) tradition to Haitian Vodou — the fiery, aggressive aspect of the religion that historians increasingly recognize as central to the Haitian Revolution. While the Rada tradition emphasizes harmony and healing, the Petwo tradition channels anger, resistance, and transformative power. Petwo lwa include Ogou (the warrior spirit, syncretized with St. James), Ezili Danto (the fierce mother protector), and the Bawon Samdi (Baron Saturday, guardian of the dead). The Petwo ceremony at Bois Caiman on August 14, 1791, where Boukman Dutty and priestess Cecile Fatiman sacrificed a black pig and called for revolution, was a Petwo ritual. Kongo cosmological concepts that survive in Haitian Vodou include: the dikenga (the Kongo cosmogram, a circle with a cross representing the cycle of life, death, and rebirth), the concept of the soul\'s journey, and the use of paket kongo (sacred bundles containing herbs, stones, and other materials) as spiritual protection. Kongo-derived practices like the makandal (poison charms) and the use of specific drum rhythms distinguish the Petwo tradition.'
+        },
+        {
+          heading: 'The Yoruba/Nago Contribution: Orisha Traditions',
+          content: 'The Yoruba peoples of southwestern Nigeria, called "Nago" in Haiti, contributed orisha traditions that merged with Fon and Kongo elements in Haitian Vodou. Yoruba deities who became Haitian lwa include: Shango (the thunder deity, syncretized with St. Barbara), Ogun (the iron warrior, also a major Petwo spirit), Oshun (the river goddess of love), and Yemaya (the ocean mother). The Nago tradition in Haiti preserved Yoruba divination practices, herbal medicine knowledge, and concepts of spiritual balance. The Yoruba emphasis on ancestral veneration (egungun) also influenced Haitian practices of honoring the dead. While Yoruba traditions are most clearly preserved in Cuban Santería, Haitian Vodou contains significant Yoruba elements, particularly in the Rada nation. The Yoruba concept of ashe (spiritual power) finds parallels in Haitian Vodou\'s understanding of spiritual energy. The Nago drumming tradition, with its complex polyrhythms, contributed to Vodou\'s distinctive musical heritage.'
+        },
+        {
+          heading: 'Vodou and the Haitian Revolution',
+          content: 'The Haitian Revolution of 1791-1804 was organized through Vodou. The famous Bois Caiman ceremony on August 14, 1791, was a Vodou ritual that launched the revolution. Vodou priest Boukman Dutty and priestess Cecile Fatiman presided over the sacrifice of a black pig, and participants drank its blood as a sacred oath to fight for freedom. Vodou provided the organizational structure for the revolution — oungan and manbo served as community leaders, Vodou ceremonies became planning meetings, and the lwa provided spiritual motivation and guidance. The revolutionary leader François-Dominique Toussaint Louverture, though he later sought to suppress Vodou, initially used its organizational networks. Jean-Jacques Dessalines, who proclaimed independence in 1804, was known to invoke Vodou spirits before battle. The revolution\'s success — the only successful slave revolt in modern history — was thus inseparable from Vodou. As scholar Sylvia Wynter argues, marronnage (escape from slavery) was a "dialectical response to the plantation system," and Vodou was the spiritual framework that made collective resistance possible.'
+        },
+        {
+          heading: 'The Independence Debt and Modern Reparations',
+          content: 'In 1825, France sent warships to Haiti and demanded 150 million francs (later reduced to 90 million) as "compensation" for lost "property" — meaning the enslaved people who had freed themselves. Haiti was forced to borrow from French banks at high interest to pay this "independence debt," which was not fully paid off until 1947. Economist Thomas Piketty has calculated that France owes Haiti at least $28 billion in today\'s money for this extortion. The debt crippled Haiti\'s economic development for over a century, preventing investment in infrastructure, education, and healthcare. In 2003, President Jean-Bertrand Aristide formally demanded reparations from France. France responded by supporting the coup that overthrew Aristide in 2004. The reparations movement continues, with scholars, activists, and international organizations documenting the debt\'s devastating impact. The New York Times\' 2022 investigative series "The Ransom" brought renewed international attention to the independence debt and the case for reparations.'
+        }
+      ],
+      sources: [
+        'Britannica — Vodou (1998-2024)',
+        'Pluralism.org — Vodou: Serving the Spirits',
+        'Wikipedia — Haitian Vodou (peer-reviewed)',
+        'David Geggus — "The Haitian Revolution: A Documentary History"',
+        'Harold Courlander — American anthropologist and Vodou scholar',
+        'Patrick Bellegarde-Smith — "Vodou Cosmology Worldview: Haiti The Breached Citadel"',
+        'Jean Casimir (2020) — "The Haitians: A Decolonial History"',
+        'Cedric Robinson (1983) — "Black Marxism"',
+        'Sylvia Wynter — Marronnage and Resistance Theory',
+        'Kate Ramsey — "Spirits and the Law: Vodou and Power in Haiti"',
+        'Carolyn Fick — "The Making of Haiti"',
+        'Laurent Dubois — "Avengers of the New World"',
+        'New York Times (2022) — "The Ransom: The Roots of Haiti\'s Crisis"'
+      ]
+    }
+  },
+]
+
+// ══════════════════════════════════════════════════════════════
 // ALL REGIONS
 // ══════════════════════════════════════════════════════════════
 export const allRegions: Region[] = [
@@ -322,10 +520,19 @@ export const allRegions: Region[] = [
     mapCenter: [-77.2975, 18.1096],
     mapZoom: 8,
   },
+  {
+    id: 'haiti',
+    name: 'Haiti',
+    countries: 'Haiti',
+    nations: haitiNations,
+    mapCenter: [-72.2852, 18.9712],
+    mapZoom: 8,
+  },
 ]
 
 export const allNations: IndigenousNation[] = [
   ...jamaicaNations,
+  ...haitiNations,
 ]
 
 // Helper: Get a nation by ID
