@@ -4,7 +4,7 @@ import { Map, ChevronUp, ChevronDown, ExternalLink, Phone, Globe, FileText, Land
 import ScrollReveal from '../components/ScrollReveal'
 import { STATE_DATA, POPULAR_STATES, STATE_COORDS, TRIBE_DB, TREATY_DB } from '../data/heritageData'
 import type { TribeDetail } from '../data/heritageData'
-import { jamaicaNations, haitiNations } from '../data/panIndigenousData'
+import { jamaicaNations, haitiNations, caribbeanNations } from '../data/panIndigenousData'
 import CountryDetailModal from '../components/CountryDetailModal'
 
 // Public Mapbox token - split to avoid secret scanning false positive
@@ -325,6 +325,11 @@ function StateDetailModal({ stateKey, onClose }: { stateKey: string; onClose: ()
 const COUNTRY_MARKERS: Record<string, { name: string; coords: [number, number]; nations: typeof jamaicaNations }> = {
   jamaica: { name: 'Jamaica', coords: [-77.2975, 18.1096], nations: jamaicaNations },
   haiti: { name: 'Haiti', coords: [-72.2852, 18.9712], nations: haitiNations },
+  cuba: { name: 'Cuba', coords: [-77.7812, 21.5218], nations: caribbeanNations.filter(n => n.country === 'Cuba') },
+  puertoRico: { name: 'Puerto Rico', coords: [-66.5901, 18.2208], nations: caribbeanNations.filter(n => n.country === 'Puerto Rico') },
+  dominicanRepublic: { name: 'Dominican Republic', coords: [-70.1627, 18.7357], nations: caribbeanNations.filter(n => n.country === 'Dominican Republic') },
+  bahamas: { name: 'Bahamas', coords: [-77.3963, 25.0343], nations: caribbeanNations.filter(n => n.country === 'Bahamas') },
+  trinidadTobago: { name: 'Trinidad & Tobago', coords: [-61.2225, 10.6918], nations: caribbeanNations.filter(n => n.country === 'Trinidad & Tobago') },
 }
 
 function HeritageMap() {
@@ -366,81 +371,45 @@ function HeritageMap() {
         })
         map.setPaintProperty('satellite', 'raster-opacity', 0.7)
 
-        // Add Jamaica marker
-        const jamaicaCoords = COUNTRY_MARKERS.jamaica.coords
-        const el = document.createElement('div')
-        el.className = 'country-marker'
-        el.innerHTML = `
-          <div style="
-            width: 24px; height: 24px; border-radius: 50%;
-            background: rgba(255,149,0,0.8);
-            border: 2px solid #FF9500;
-            box-shadow: 0 0 12px rgba(255,149,0,0.6), 0 0 24px rgba(255,149,0,0.3);
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: transform 0.2s;
-          ">
-            <div style="width: 6px; height: 6px; border-radius: 50%; background: #F0EBE1;"></div>
-          </div>
-          <div style="
-            position: absolute; top: 28px; left: 50%; transform: translateX(-50%);
-            white-space: nowrap;
-            font-size: 10px; font-weight: 600; color: #FF9500;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-            pointer-events: none;
-          ">Jamaica</div>
-        `
-        el.style.position = 'relative'
-        el.addEventListener('mouseenter', () => {
-          el.querySelector('div')!.style.transform = 'scale(1.2)'
-        })
-        el.addEventListener('mouseleave', () => {
-          el.querySelector('div')!.style.transform = 'scale(1)'
-        })
-        el.addEventListener('click', () => {
-          setSelectedCountry('jamaica')
-        })
+        // Add all country markers
+        Object.entries(COUNTRY_MARKERS).forEach(([key, data]) => {
+          const markerEl = document.createElement('div')
+          markerEl.className = 'country-marker'
+          markerEl.innerHTML = `
+            <div style="
+              width: 24px; height: 24px; border-radius: 50%;
+              background: rgba(255,149,0,0.8);
+              border: 2px solid #FF9500;
+              box-shadow: 0 0 12px rgba(255,149,0,0.6), 0 0 24px rgba(255,149,0,0.3);
+              cursor: pointer;
+              display: flex; align-items: center; justify-content: center;
+              transition: transform 0.2s;
+            ">
+              <div style="width: 6px; height: 6px; border-radius: 50%; background: #F0EBE1;"></div>
+            </div>
+            <div style="
+              position: absolute; top: 28px; left: 50%; transform: translateX(-50%);
+              white-space: nowrap;
+              font-size: 10px; font-weight: 600; color: #FF9500;
+              text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+              pointer-events: none;
+            ">${data.name}</div>
+          `
+          markerEl.style.position = 'relative'
+          markerEl.addEventListener('mouseenter', () => {
+            markerEl.querySelector('div')!.style.transform = 'scale(1.2)'
+          })
+          markerEl.addEventListener('mouseleave', () => {
+            markerEl.querySelector('div')!.style.transform = 'scale(1)'
+          })
+          markerEl.addEventListener('click', () => {
+            setSelectedCountry(key)
+          })
 
-        new mapboxgl.Marker({ element: el, anchor: 'center' })
-          .setLngLat(jamaicaCoords)
-          .addTo(map)
-
-        // Add Haiti marker
-        const haitiCoords = COUNTRY_MARKERS.haiti.coords
-        const haitiEl = document.createElement('div')
-        haitiEl.className = 'country-marker'
-        haitiEl.innerHTML = `
-          <div style="
-            width: 24px; height: 24px; border-radius: 50%;
-            background: rgba(255,149,0,0.8);
-            border: 2px solid #FF9500;
-            box-shadow: 0 0 12px rgba(255,149,0,0.6), 0 0 24px rgba(255,149,0,0.3);
-            cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: transform 0.2s;
-          ">
-            <div style="width: 6px; height: 6px; border-radius: 50%; background: #F0EBE1;"></div>
-          </div>
-          <div style="
-            position: absolute; top: 28px; left: 50%; transform: translateX(-50%);
-            white-space: nowrap;
-            font-size: 10px; font-weight: 600; color: #FF9500;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-            pointer-events: none;
-          ">Haiti</div>
-        `
-        haitiEl.style.position = 'relative'
-        haitiEl.addEventListener('mouseenter', () => {
-          haitiEl.querySelector('div')!.style.transform = 'scale(1.2)'
+          new mapboxgl.Marker({ element: markerEl, anchor: 'center' })
+            .setLngLat(data.coords)
+            .addTo(map)
         })
-        haitiEl.addEventListener('mouseleave', () => {
-          haitiEl.querySelector('div')!.style.transform = 'scale(1)'
-        })
-        haitiEl.addEventListener('click', () => {
-          setSelectedCountry('haiti')
-        })
-
-        new mapboxgl.Marker({ element: haitiEl, anchor: 'center' })
           .setLngLat(haitiCoords)
           .addTo(map)
 
@@ -448,39 +417,33 @@ function HeritageMap() {
           const lng = e.lngLat.lng
           const lat = e.lngLat.lat
 
-          // Check if click is near Jamaica marker first
-          const jLng = COUNTRY_MARKERS.jamaica.coords[0]
-          const jLat = COUNTRY_MARKERS.jamaica.coords[1]
-          const distToJamaica = Math.sqrt(Math.pow(lng - jLng, 2) + Math.pow(lat - jLat, 2))
-          if (distToJamaica < 2.0) {
-            setSelectedCountry('jamaica')
-            return
-          }
-
-          // Check if click is near Haiti marker
-          const hLng = COUNTRY_MARKERS.haiti.coords[0]
-          const hLat = COUNTRY_MARKERS.haiti.coords[1]
-          const distToHaiti = Math.sqrt(Math.pow(lng - hLng, 2) + Math.pow(lat - hLat, 2))
-          if (distToHaiti < 2.0) {
-            setSelectedCountry('haiti')
-            return
+          // Check if click is near any country marker first
+          for (const [key, data] of Object.entries(COUNTRY_MARKERS)) {
+            const cLng = data.coords[0]
+            const cLat = data.coords[1]
+            const dist = Math.sqrt(Math.pow(lng - cLng, 2) + Math.pow(lat - cLat, 2))
+            if (dist < 3.0) {
+              setSelectedCountry(key)
+              return
+            }
           }
 
           fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?types=region&access_token=${token}`)
             .then(r => r.json())
             .then(data => {
               if (data.features?.length > 0) {
-                const placeName = data.features[0].place_name
+                const placeName = data.features[0].place_name.toLowerCase()
                 // Check for US states
-                const stateMatch = Object.keys(STATE_DATA).find(s => placeName.includes(s))
+                const stateMatch = Object.keys(STATE_DATA).find(s => placeName.includes(s.toLowerCase()))
                 if (stateMatch) { setSelectedState(stateMatch) }
-                // Check for Jamaica
-                else if (placeName.toLowerCase().includes('jamaica')) {
-                  setSelectedCountry('jamaica')
-                }
-                // Check for Haiti
-                else if (placeName.toLowerCase().includes('haiti')) {
-                  setSelectedCountry('haiti')
+                // Check for Pan-Indigenous countries
+                else {
+                  for (const [key, data] of Object.entries(COUNTRY_MARKERS)) {
+                    if (placeName.includes(data.name.toLowerCase())) {
+                      setSelectedCountry(key)
+                      return
+                    }
+                  }
                 }
               }
             })
@@ -556,7 +519,7 @@ function HeritageMap() {
               <div className="flex items-center justify-center gap-4 md:gap-6 flex-wrap">
                 <div className="flex items-center gap-1.5 text-[10px] md:text-xs text-[#C9B99A]/70">
                   <MousePointerClick size={12} className="text-[#FF9500]/60" />
-                  <span>Click a state, Jamaica, or Haiti to explore</span>
+                  <span>Click a state or Caribbean nation to explore</span>
                 </div>
                 <span className="hidden md:inline text-[#C9B99A]/20">|</span>
                 <div className="hidden md:flex items-center gap-1.5 text-[10px] md:text-xs text-[#C9B99A]/70">
@@ -612,22 +575,13 @@ function HeritageMap() {
 
       {/* Pan-Indigenous quick-access buttons */}
       <div className="flex flex-wrap justify-center gap-2">
-        <button
-          onClick={() => setSelectedCountry('jamaica')}
-          className="flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.06)] border border-[rgba(255,149,0,0.15)] hover:border-[rgba(255,149,0,0.4)] rounded-full px-5 py-2.5 transition-all"
-        >
-          <MapPin size={12} />
-          Jamaica — 4 Nations
-          <ChevronRight size={10} />
-        </button>
-        <button
-          onClick={() => setSelectedCountry('haiti')}
-          className="flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.06)] border border-[rgba(255,149,0,0.15)] hover:border-[rgba(255,149,0,0.4)] rounded-full px-5 py-2.5 transition-all"
-        >
-          <MapPin size={12} />
-          Haiti — 3 Nations
-          <ChevronRight size={10} />
-        </button>
+        <button onClick={() => setSelectedCountry('jamaica')} className="flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.06)] border border-[rgba(255,149,0,0.15)] hover:border-[rgba(255,149,0,0.4)] rounded-full px-4 py-2 transition-all"><MapPin size={11} /> Jamaica <ChevronRight size={10} /></button>
+        <button onClick={() => setSelectedCountry('haiti')} className="flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.06)] border border-[rgba(255,149,0,0.15)] hover:border-[rgba(255,149,0,0.4)] rounded-full px-4 py-2 transition-all"><MapPin size={11} /> Haiti <ChevronRight size={10} /></button>
+        <button onClick={() => setSelectedCountry('cuba')} className="flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.06)] border border-[rgba(255,149,0,0.15)] hover:border-[rgba(255,149,0,0.4)] rounded-full px-4 py-2 transition-all"><MapPin size={11} /> Cuba <ChevronRight size={10} /></button>
+        <button onClick={() => setSelectedCountry('puertoRico')} className="flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.06)] border border-[rgba(255,149,0,0.15)] hover:border-[rgba(255,149,0,0.4)] rounded-full px-4 py-2 transition-all"><MapPin size={11} /> Puerto Rico <ChevronRight size={10} /></button>
+        <button onClick={() => setSelectedCountry('dominicanRepublic')} className="flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.06)] border border-[rgba(255,149,0,0.15)] hover:border-[rgba(255,149,0,0.4)] rounded-full px-4 py-2 transition-all"><MapPin size={11} /> Dominican Republic <ChevronRight size={10} /></button>
+        <button onClick={() => setSelectedCountry('bahamas')} className="flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.06)] border border-[rgba(255,149,0,0.15)] hover:border-[rgba(255,149,0,0.4)] rounded-full px-4 py-2 transition-all"><MapPin size={11} /> Bahamas <ChevronRight size={10} /></button>
+        <button onClick={() => setSelectedCountry('trinidadTobago')} className="flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.06)] border border-[rgba(255,149,0,0.15)] hover:border-[rgba(255,149,0,0.4)] rounded-full px-4 py-2 transition-all"><MapPin size={11} /> Trinidad & Tobago <ChevronRight size={10} /></button>
       </div>
 
       {/* State Detail Popup Modal */}
@@ -655,7 +609,7 @@ function HeritageMap() {
       {/* Hint when no state selected */}
       <div className="bg-[rgba(27,40,56,0.3)] rounded-lg border border-[rgba(255,149,0,0.1)] border-dashed p-5 text-center">
         <MapPin size={24} className="text-[#FF9500]/60 mx-auto mb-2" />
-        <p className="text-sm text-[#C9B99A]/70">Tap any state on the map, click Jamaica or Haiti, or use the buttons above to explore</p>
+        <p className="text-sm text-[#C9B99A]/70">Tap any state or Caribbean nation on the map, or use the buttons above</p>
       </div>
     </div>
   )
@@ -709,7 +663,7 @@ export default function HeritageSection() {
               <Landmark size={12} /> Laws & Treaties
             </span>
             <span className="flex items-center gap-2 text-xs text-[#C9B99A] bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.15)] rounded-full px-4 py-2">
-              <Globe size={12} /> 51 States + Jamaica & Haiti
+              <Globe size={12} /> 51 States + Caribbean
             </span>
           </div>
         </ScrollReveal>

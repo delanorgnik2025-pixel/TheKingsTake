@@ -530,9 +530,306 @@ export const allRegions: Region[] = [
   },
 ]
 
+// ══════════════════════════════════════════════════════════════
+// CARIBBEAN — RESEARCHED 2025-07-06
+// ══════════════════════════════════════════════════════════════
+export const caribbeanNations: IndigenousNation[] = [
+  {
+    id: 'cu-taino',
+    name: 'Taíno & Ciboney of Cuba',
+    indigenousName: 'Cobba / Cubanacan',
+    alternateNames: ['Ciboney', 'Siboney', 'Guanahatabey', 'Sub-Taíno'],
+    country: 'Cuba',
+    countryCode: 'CU',
+    location: 'Throughout Cuba — concentrated in eastern mountains (Sierra Maestra)',
+    coordinates: [-77.7812, 21.5218],
+    population: 'Descendants in eastern Cuba; Panchito Ramírez community and others',
+    language: 'Taíno/Ciboney (extinct); Arawakan language family',
+    languageFamily: 'Arawakan',
+    status: 'Surviving descendants in eastern Cuba; cultural revival active',
+    history: 'Cuba was inhabited by at least two distinct Indigenous peoples before 1492: the Guanahatabey (hunter-gatherers in the west), and the Taíno and Ciboney agriculturalists. Columbus arrived in 1492 and the Spanish under Diego Velázquez conquered the island by 1514. The Taíno leader Hatuey, who had fled Hispaniola, organized resistance but was captured and burned at the stake in 1512. Unlike most Caribbean islands, Cuba\'s Indigenous people did not completely disappear. In the eastern mountains near Santiago de Cuba, families of Taíno and Ciboney descent survived through intermarriage in communities like El Caney. Panchito Ramírez, a farmer from the Rojas-Ramírez lineage, has been pressing for recognition of his community\'s Indigenous identity for over 30 years. Archaeologist William Keegan notes that the "extinction" narrative was "prescribed and cemented by cosmopolitan scholars" who never visited the eastern mountains. Cuba\'s Indigenous heritage persists in place names (Havana, Camagüey, Baracoa), food (cassava, corn), and the eastern Cuban tradition of making casabe bread.',
+    currentIssues: 'The Cuban government does not officially recognize Indigenous peoples, though cultural preservation efforts exist. The Ranchería community and other eastern mountain communities maintain traditions. Academic research by José Jiménez Santander and others continues to document survival. Cuban cigar-making traces directly to Indigenous tobacco cultivation techniques shown to Europeans.',
+    resources: ['https://www.americanindianmagazine.org/story/indigenous-cuba-hidden-plain-sight', 'https://en.wikibooks.org/wiki/Ancient_History/Americas/Ancient_Cuba'],
+    category: 'Taíno',
+    researchDocument: {
+      title: 'The Taíno and Ciboney of Cuba: Hidden in Plain Sight',
+      subtitle: 'A Comprehensive Research Document on the Indigenous Peoples of Cuba',
+      lastUpdated: '2025-07-06',
+      sections: [
+        {
+          heading: 'Pre-Columbian Cuba: Three Indigenous Peoples',
+          content: 'Before European contact, Cuba was home to at least three distinct Indigenous groups. The Guanahatabey (also called Ciboney) were the earliest inhabitants — hunter-gatherers who lived in western Cuba and spoke a language unrelated to Arawakan. They were followed by the Ciboney-Taíno (Sub-Taíno), who arrived around 600 CE and practiced limited agriculture. Finally, the Classic Taíno arrived around 1300 CE, bringing fully developed agriculture, pottery, and complex social organization. By 1492, the Taíno and Ciboney together numbered between 16,000 and 200,000 (Bartolomé de las Casas estimated 200,000). The Taíno called the island "Cobba" or "Cubanacan." Archaeological evidence shows human habitation in Cuba dating back to at least 3,000 BCE, making it one of the longest-inhabited islands in the Caribbean.'
+        },
+        {
+          heading: 'Hatuey: The First Hero of Cuban Resistance',
+          content: 'Hatuey was a Taíno cacique (chief) who fled Hispaniola to Cuba after witnessing the Spanish atrocities there. He organized the first armed resistance to European colonization in the Americas, warning Cuban Taíno about the Spanish cruelty. In 1511, Diego Velázquez led a Spanish expedition to conquer Cuba. Hatuey\'s forces fought a guerrilla war from the mountains but were eventually overwhelmed by Spanish weapons and dogs. Captured in 1512, Hatuey was tied to a stake and offered a choice: conversion to Christianity and a quick death, or refusal and burning. When asked if he wanted to go to heaven, Hatuey asked if Spaniards went there. Told yes, he replied "Then I do not want to go." He was burned alive, becoming the first martyr of Indigenous resistance in Cuba and a symbol of dignity that inspires Indigenous movements throughout the Americas.'
+        },
+        {
+          heading: 'The Rojas-Ramírez Families: Surviving in the East',
+          content: 'Contrary to the widespread narrative of extinction, Indigenous Cuban families survived in the eastern mountains for centuries. The Rojas-Ramírez families of El Caney, near Santiago de Cuba, trace their ancestry to the last wave of Taíno settlement. When the Spanish encomienda system gave way to pueblos of free Indian families, San Luis de los Caneyes (El Caney) became a survival place for these families for three centuries. Spanish governors granted them the names Rojas and Ramírez en masse during baptisms. A Spanish Royal grant of Indian jurisdiction over their community lands was squelched by the colonial audiencia in 1850, but the families remained together, resettling in more remote lands. Panchito Ramírez, a farmer from this lineage, has been pressing for recognition of his community\'s Indigenous identity for over 30 years. As archaeologist William Keegan notes, the "extinction" narrative was written by scholars who "never visited and none of them studied in these mountains."'
+        },
+        {
+          heading: 'Ciboney Culture: The Western Hunter-Gatherers',
+          content: 'The Ciboney (or Siboney) of western Cuba represented a distinct cultural tradition that predated the Taíno arrival. Unlike the agricultural Taíno, the Ciboney were primarily hunter-gatherers and fisherfolk who lived in caves and coastal shelters. They developed a unique material culture including shell tools, bone implements, and distinctive pottery. The Ciboney practiced the cohoba ritual — inhaling narcotized tobacco vapors for spiritual purposes — a tradition they shared with the Taíno. Spanish colonization forced Ciboney and Taíno into reservations, including one at Guanabacoa (now a suburb of Havana). The two groups intermarried extensively, creating a mestizo population that the Native Cubans called "Guajiro" ("one of us"). Today, the Ciboney legacy survives in western Cuban place names, fishing techniques, and the continued use of certain medicinal plants known to Ciboney healers.'
+        },
+        {
+          heading: 'Indigenous Legacies in Modern Cuba',
+          content: 'Cuba\'s Indigenous heritage pervades the island\'s culture, often unrecognized. The island\'s name derives from Taíno "Cubanacan." Hundreds of place names are of Indigenous origin: Havana (Habana), Camagüey, Baracoa, Guantánamo, Cauto, Toa. Indigenous foods remain staples: cassava (yuca), corn (maíz), sweet potatoes, tobacco, and the casabe bread still made in eastern Cuba. The Cuban cigar traces directly to Taíno tobacco cultivation — the word "cigar" comes from the Mayan "sikar," but the practice of rolling and smoking tobacco leaves was shown to Columbus by Taíno in Cuba. The hammock (from Taíno "hamaca"), canoe ("kanoa"), and barbecue ("barbacoa") are Taíno words that entered global vocabulary. Cuban music incorporates rhythmic patterns with Indigenous roots, and the island\'s traditional medicine preserves knowledge of plants used by Taíno and Ciboney healers.'
+        },
+        {
+          heading: 'The Ranchería and Contemporary Communities',
+          content: 'In the mountains near Santiago de Cuba, the community known as La Ranchería was described by Reina, an elder, as "all Indian families" in her childhood — "just in this community we had 30 houses or more. Now we are only 12 houses here. Many moved to the coast and other places looking for better conditions." These communities represent living links to Cuba\'s Indigenous past. The Cuban government does not officially recognize Indigenous peoples, which limits access to protections and resources available to Indigenous communities in other countries. However, cultural preservation efforts continue through academic research, community organizing, and the work of individuals like Panchito Ramírez. The 2017 article in American Indian Magazine titled "Indigenous Cuba: Hidden in Plain Sight" brought international attention to these surviving communities, challenging the extinction narrative that has dominated Cuban historiography.'
+        }
+      ],
+      sources: [
+        'American Indian Magazine (2017) — "Indigenous Cuba: Hidden in Plain Sight"',
+        'Wikibooks — Ancient History/Americas/Ancient Cuba',
+        'Keegan, William — "Lucayan Legacies: Indigenous Lifeways in the Bahamas"',
+        'History StackExchange — Ciboney and Guanahatabey timelines',
+        'José Jiménez Santander & Lisandra Jimenez Ortega — CITMA Cuba archaeological timeline',
+        'Hartmann — Regional historian on Cuban Indigenous survival',
+        'Bartolomé de las Casas — Historical population estimates',
+        'Granberry, Dr. Julian — Taíno language research on "Bahama" etymology',
+        'Grand Bahama Museum — Lucayan Taino history',
+        'Smithsonian Magazine (2024) — Bahamas archaeology'
+      ]
+    }
+  },
+  {
+    id: 'pr-taino',
+    name: 'Taíno of Borikén',
+    indigenousName: 'Borikén / Borinquen',
+    alternateNames: ['Boriqueño', 'Arawak', 'Jíbaro'],
+    country: 'Puerto Rico',
+    countryCode: 'PR',
+    location: 'Throughout Puerto Rico — highest concentrations in central mountainous regions',
+    coordinates: [-66.5901, 18.2208],
+    population: 'DNA studies show 61% of Puerto Ricans have Taíno mitochondrial DNA; ~30,000+ active in cultural revival',
+    language: 'Taíno (extinct, revival efforts); Arawakan language family',
+    languageFamily: 'Arawakan',
+    status: 'Cultural revival very active — largest Taíno revival movement in the Caribbean',
+    history: 'The Taíno called Puerto Rico "Borikén" (Land of the Brave Lord). They arrived around 700 CE from the Orinoco region of South America, displacing earlier Archaic peoples. At European contact, Puerto Rico\'s Taíno lived in organized villages (yucayeques) under caciques, practicing agriculture, fishing, and craft traditions. Columbus arrived on his second voyage in 1493. Juan Ponce de León became governor in 1508 and began systematic colonization. The Taíno rebelled under cacique Agüeybaná II in 1511 — the only large-scale Taíno revolt against Spanish rule. The revolt was crushed, and Agüeybaná II was killed. By 1530, the Taíno population had collapsed from an estimated 30,000-50,000 to fewer than 1,000. However, Taíno DNA survived through intermarriage. A 2003 genetic study by Juan Carlos Martínez Cruzado found that 61% of Puerto Ricans carry Taíno mitochondrial DNA. Today, Puerto Rico has the most vibrant Taíno cultural revival movement in the Caribbean, with organizations like the United Confederation of Taíno People and the Jatibonicu Taíno Tribal Nation.',
+    currentIssues: 'No federal recognition as Native American tribes (Puerto Rico\'s colonial status complicates this). However, cultural revival is thriving — annual Taíno gatherings, language reclamation projects, and educational programs. DNA studies continue to document Taíno ancestry. The Jíbaro (mountain farmer) tradition is increasingly recognized as preserving Taíno agricultural practices. Many Puerto Ricans now identify as "Boriqueño" or "Taíno" as a form of cultural reclamation.',
+    resources: ['https://nmaahc.si.edu/explore/stories/taino-figure', 'https://teachersinstitute.yale.edu/curriculum/units/1998/3/98.03.04/4'],
+    category: 'Taíno',
+    researchDocument: {
+      title: 'The Taíno of Borikén: The Heart of Caribbean Indigenous Revival',
+      subtitle: 'A Comprehensive Research Document on the Indigenous Taíno of Puerto Rico',
+      lastUpdated: '2025-07-06',
+      sections: [
+        {
+          heading: 'Borikén: The Land of the Brave Lord',
+          content: 'The Taíno called Puerto Rico "Borikén" or "Borinquen," meaning "Land of the Brave Lord" or "Great Land of the Valiant and Noble Lord." They arrived around 700 CE, navigating from the Orinoco River Delta in South America in large dugout canoes called "kanoas." The Taíno were not Puerto Rico\'s first inhabitants — earlier Archaic peoples had arrived from Florida around 2,500 years ago, living as fishermen and hunters. The Taíno quickly displaced or assimilated these earlier groups, establishing agricultural villages (yucayeques) with populations of 1,000-2,000 people. At European contact, an estimated 30,000-50,000 Taíno inhabited the island, organized under caciques including Agüeybaná I ("The Great Sun"), the supreme cacique of the island. The Taíno of Borikén were part of the Classic Taíno culture — the most developed form of Taíno civilization, with sophisticated agriculture, pottery, weaving, and religious practices centered on zemis (sacred idols).'
+        },
+        {
+          heading: 'The Revolt of Agüeybaná II',
+          content: 'In 1511, cacique Agüeybaná II ("The Brave") organized the only large-scale, island-wide Taíno revolt against Spanish colonization. After the death of his brother Agüeybaná I, Agüeybaná II realized that peaceful coexistence with the Spanish was impossible. He united the caciques of the island and launched coordinated attacks on Spanish settlements. The revolt was fierce — Taíno warriors killed Spanish soldiers and burned settlements. However, the Spanish had superior weapons and armor, as well as attack dogs trained to kill. Agüeybaná II was killed in battle, and the revolt was crushed. Many surviving Taíno fled to the central mountains, where they intermarried with escaped Africans and Europeans. The revolt, though unsuccessful, demonstrated Taíno courage and resistance, and Agüeybaná II remains a national hero in Puerto Rico — streets, schools, and public buildings bear his name.'
+        },
+        {
+          heading: 'The Jíbaro Connection: Living Taíno Agriculture',
+          content: 'The Jíbaro — the traditional mountain farmers of Puerto Rico\'s central highlands — are increasingly recognized as preserving Taíno agricultural practices. The Jíbaro way of life, with its small-scale farming of cassava, yams, plantains, and vegetables on mountain terraces, mirrors Taíno agricultural techniques documented by Spanish chroniclers. Jíbaro housing (the "bohío" style thatched-roof hut) derives from Taíno architecture. The Jíbaro diet, food preparation methods, and use of medicinal plants all show Taíno influence. The Spanish word "Jíbaro" itself likely derives from the Taíno word for "mountain" or "forest people." This connection is significant because it suggests that Taíno culture survived not through dramatic political action but through the quiet persistence of everyday practices — farming, cooking, healing — passed down through generations of rural Puerto Rican families who never stopped being Taíno in the ways that mattered most.'
+        },
+        {
+          heading: 'DNA Evidence: 61% Taíno Ancestry',
+          content: 'In 2003, geneticist Juan Carlos Martínez Cruzado of the University of Puerto Rico published a groundbreaking study that changed the understanding of Taíno survival. By analyzing mitochondrial DNA (passed from mother to child), Martínez Cruzado found that 61% of Puerto Ricans carry Taíno genetic markers. This means that the majority of Puerto Ricans have at least one direct maternal ancestor who was Taíno — a remarkable rate of Indigenous survival given the historical narrative of extinction. The study also revealed that Taíno DNA was most prevalent in the central mountainous regions — precisely where escaped Taíno would have fled and where the Jíbaro tradition survived. Follow-up studies have confirmed these findings and added nuance, showing that the average Puerto Rican has approximately 15-20% Indigenous ancestry, with significant variation across regions and families. This genetic evidence has been transformative for the Taíno cultural revival movement, providing scientific validation for what many Puerto Rican families already knew through oral tradition.'
+        },
+        {
+          heading: 'The Taíno Cultural Revival Movement',
+          content: 'Puerto Rico has the most vibrant and organized Taíno cultural revival movement in the Caribbean. Organizations include: the United Confederation of Taíno People, which represents Taíno communities across the Caribbean; the Jatibonicu Taíno Tribal Nation, which claims direct descent from the island\'s original inhabitants; the Taíno Nation of Puerto Rico; and numerous local groups throughout the island. These organizations host annual gatherings (called "areytos," after the traditional Taíno ceremonies), conduct language reclamation workshops, teach traditional crafts (pottery, weaving, zemi carving), and advocate for official recognition. The Smithsonian National Museum of the American Indian has collaborated with Puerto Rican Taíno groups on exhibitions. The Puerto Rican government has acknowledged Taíno heritage in educational curricula, though full recognition comparable to US Native American tribes remains elusive due to Puerto Rico\'s colonial political status.'
+        },
+        {
+          heading: 'Place Names and Cultural Survival',
+          content: 'Taíno heritage pervades Puerto Rican culture in countless ways. The island\'s nickname "Borinquen" comes from Taíno "Borikén." Hundreds of place names are of Taíno origin: Caguas (from cacique Caguax), Mayagüez, Arecibo, Guánica, Cayey, Coamo, Utuado, Loíza. Taíno words in everyday use include: huracán (hurricane), hamaca (hammock), kanoa (canoe), barbacoa (barbecue), mahíz (corn), and names of foods like ají (pepper) and guanábana (soursop). Taíno religious concepts survive in Puerto Rican Espiritismo and folk Catholicism. The island\'s traditional medicine (yerbería) preserves Taíno knowledge of medicinal plants. Puerto Rican art, music (particularly bomba and plena), and dance incorporate Indigenous elements alongside African and European influences. The Taíno legacy is not a distant memory but a living, breathing presence in Puerto Rican identity.'
+        }
+      ],
+      sources: [
+        'National Museum of African American History & Culture — Taíno Figure (2023)',
+        'Yale Teachers Institute — "The Taínos of Puerto Rico: Rediscovering Borinquen" (1998)',
+        'Martínez Cruzado, J.C. (2003) — University of Puerto Rico genetic study',
+        'Wikipedia — Taíno (peer-reviewed)',
+        'Smithsonian National Museum of the American Indian — Taíno exhibitions',
+        'United Confederation of Taíno People',
+        'Jatibonicu Taíno Tribal Nation',
+        'National Museum of American History — Puerto Rican devotional objects'
+      ]
+    }
+  },
+  {
+    id: 'dr-taino',
+    name: 'Taíno of Quisqueya',
+    indigenousName: 'Quisqueya / Kiskeya',
+    alternateNames: ['Indio', 'Arawak', 'Enriquillo\'s People'],
+    country: 'Dominican Republic',
+    countryCode: 'DO',
+    location: 'Throughout Dominican Republic — cultural practices strongest in rural communities',
+    coordinates: [-70.1627, 18.7357],
+    population: 'Majority of rural Dominicans retain Taíno cultural elements; ~200,000+ self-identify',
+    language: 'Taíno (extinct); Arawakan language family',
+    languageFamily: 'Arawakan',
+    status: 'Cultural survival extensive; self-identification as "Indio" persists',
+    history: 'The Taíno called the island Quisqueya ("mother of all lands"). At contact, an estimated 1 million Taíno lived on Hispaniola. The Dominican Republic occupies the eastern two-thirds of the island. Enriquillo, a Taíno cacique, led the longest Indigenous resistance campaign in the Caribbean from 1519 to 1533, conducting hit-and-run raids against Spanish settlements from the Bahoruco Mountains. He eventually negotiated a peace treaty with the Spanish — one of the few successful Indigenous resistance leaders to do so. Over centuries, Spanish colonists intermarried with Taíno women; 1514 census records show 40% of Spanish men had Taíno wives. This mixing created a mestizo population that retained significant Taíno cultural elements. Today, many rural Dominicans self-identify as "Indio" — a term that refers to Indigenous ancestry and encompasses various skin-tone categories from "Indio Claro" (light) to "Indio Oscuro" (dark). This represents one of the most extensive cases of Indigenous cultural survival in the Caribbean.',
+    currentIssues: 'The Taíno heritage of the Dominican Republic is politically contested. The narrative of extinction has been used to distance Dominicans from their African heritage and from Haitians. However, Indigenous communities and scholars are challenging this, documenting extensive Taíno cultural survival in rural areas. The Minority Rights Group has noted that Taíno history has been eliminated from educational textbooks. Activists are working for official recognition and the inclusion of Indigenous history in national curriculum. The legacy of anti-Haitianismo complicates discussions of Indigenous identity.',
+    resources: ['https://minorityrights.org/country/dominican-republic/', 'https://lagaleriamag.com/quisqueyana-identifying-with-my-indigenous-roots/'],
+    category: 'Taíno',
+    researchDocument: {
+      title: 'The Taíno of Quisqueya: Enriquillo and the Indio Identity',
+      subtitle: 'A Comprehensive Research Document on the Indigenous Taíno of the Dominican Republic',
+      lastUpdated: '2025-07-06',
+      sections: [
+        {
+          heading: 'Quisqueya: Mother of All Lands',
+          content: 'The Taíno called the island of Hispaniola "Quisqueya" or "Kiskeya," meaning "mother of all lands." At the time of Columbus\' arrival in 1492, an estimated 1 million Taíno inhabited the island — the densest Indigenous population in the Caribbean. The Taíno of Quisqueya were organized into five caciquats (kingdoms), each governed by a cacique. The most celebrated was Anacaona of Xaragua, a cacica (female chief) renowned for her beauty, poetry, and hospitality. The Dominican Republic occupies the eastern two-thirds of Hispaniola, the part that was first and most intensively colonized by Spain. Santo Domingo, founded in 1496, was the first permanent European settlement in the Americas and became the base for Spanish conquest of the Caribbean and mainland.'
+        },
+        {
+          heading: 'Enriquillo: The Longest Resistance',
+          content: 'Enriquillo (c. 1498-1535) was a Taíno cacique who led the longest Indigenous resistance campaign in Caribbean history. Born into the cacique family of Jaragua, Enriquillo was educated by Spanish friars and initially collaborated with the colonizers. However, after Spanish abuses against his people — including the murder of his wife by a Spaniard — Enriquillo fled to the Bahoruco Mountains in 1519 and began a guerrilla war that lasted 14 years. From his mountain stronghold, he conducted hit-and-run raids against Spanish settlements, freeing enslaved Taíno and attacking plantations. The Spanish sent repeated expeditions against him, all of which failed. In 1533, Emperor Charles V of Spain personally intervened, offering Enriquillo a peace treaty that granted his people freedom, land, and self-governance. Enriquillo accepted and lived out his days as a free man — one of the few Indigenous resistance leaders in the Americas to negotiate a successful peace. His legacy as a symbol of dignity and resistance endures in Dominican culture.'
+        },
+        {
+          heading: 'The "Indio" Identity: Taíno Survival in Dominican Culture',
+          content: 'The term "Indio" (Indian) in the Dominican Republic represents one of the most complex and contested aspects of Caribbean identity. Unlike in most of the Americas, where "Indio" fell out of use as Indigenous populations declined, in the Dominican Republic it became a primary category of self-identification. Census records and popular discourse use "Indio" to describe the majority of Dominicans — particularly those of mixed Indigenous, European, and African ancestry with lighter skin tones. Scholar Gabriel Haslip-Viera has documented how this Indio identity was promoted from the late 19th century as part of an indigenismo movement that sought to distance Dominicans from their African heritage and from Haitians. The term encompasses various categories: "Indio Claro" (light), "Indio Lavado" (medium), and "Indio Oscuro" (dark). While some scholars critique this as anti-Black colorism, others argue that it genuinely reflects the extensive Indigenous ancestry of the Dominican population. Rural Dominicans retain Taíno cultural elements including agricultural practices, food preparation, fishing techniques, medicinal plant knowledge, architecture, oral history, and religious beliefs.'
+        },
+        {
+          heading: 'Taíno Cultural Survival in Rural Dominican Republic',
+          content: 'Contemporary rural Dominicans retain extensive Taíno cultural elements, even though such traits may be considered "backward" in urban areas. These include: linguistic features — Taíno words persist in Dominican Spanish (conuco for small farm, batey for village square, mabí for a traditional drink); agricultural practices — the conuco (small farm) system mirrors Taíno agriculture, with yuca, sweet potatoes, and corn as staples; food ways — casabe bread, mabí, and other traditional foods derive from Taíno cuisine; fishing practices — techniques for catching fish and seafood using traps and nets passed down from Taíno; medicine — knowledge of medicinal plants used by traditional healers (curanderos); architecture — the bohío (thatched hut) style survives in rural areas; oral history — stories and legends passed down through generations; and religious views — folk Catholicism and Espiritismo incorporate Taíno spiritual concepts. Some families and individuals in rural communities explicitly identify as Taíno, maintaining what they describe as ancestral practices.'
+        },
+        {
+          heading: 'The Contested Politics of Indigenous Identity',
+          content: 'Taíno heritage in the Dominican Republic is deeply politicized. The narrative of Taíno extinction, established by Spanish colonial documents as early as 1550, was reinforced by 19th-century indigenismo that celebrated an idealized Indigenous past while simultaneously erasing living Indigenous people. The Dominican educational system has eliminated Taíno history from textbooks, and dominant scholarship continues to assert extinction despite extensive evidence of survival. This erasure serves political purposes: it allows Dominicans to claim Indigenous heritage without acknowledging ongoing Indigenous rights, and it distances Dominicans from their African heritage and from Haitians — a key element of anti-Haitianismo. Indigenous activists are challenging this erasure, demanding recognition, land rights, and inclusion in the national curriculum. The Minority Rights Group has documented that "Taíno people claim that their culture and ancestral practices survive to this day due to intermarriage with other indigenous groups." The struggle for Taíno recognition in the Dominican Republic is thus inseparable from broader struggles against anti-Black racism, anti-Haitian discrimination, and colonial historiography.'
+        }
+      ],
+      sources: [
+        'Minority Rights Group (2024) — Dominican Republic Country Report',
+        'La Galería Magazine — "Quisqueyana: Identifying With My Indigenous Roots" (2015)',
+        'Wikipedia — Taíno (peer-reviewed)',
+        'Haslip-Viera, Gabriel & Alcántara Almánzar, J. — Dominican indigenismo studies',
+        'Frank Moya Pons — Dominican historian on Spanish-Taíno intermarriage',
+        'Playagrandebeachclub.com — Dominican Republic Indigenous history',
+        'Smithsonian NMAAHC — Taíno Figure exhibition',
+        'Ernesto Sagas — "A Case of Mistaken Identity: Antihaitianismo in Dominican culture"'
+      ]
+    }
+  },
+  {
+    id: 'bs-lucayan',
+    name: 'Lucayan Taíno',
+    indigenousName: 'Lukku-Cairi',
+    alternateNames: ['Bahama Taíno', 'Island People', 'Arawak'],
+    country: 'Bahamas',
+    countryCode: 'BS',
+    location: 'Throughout the Bahamian archipelago — 19 largest islands and nearby cays',
+    coordinates: [-77.3963, 25.0343],
+    population: 'Extinct as distinct population by 1530; DNA may survive through intermarriage',
+    language: 'Lucayan/Taíno (extinct); Arawakan language family',
+    languageFamily: 'Arawakan',
+    status: 'Extinct as distinct population — archaeological heritage preserved',
+    history: 'The Lucayans (Lukku-Cairi, "people of the islands") were a branch of the Taíno who settled the Bahamian archipelago between 500-800 CE, expanding from Hispaniola and Cuba. They were the first Indigenous people encountered by Columbus when he landed on Guanahani (San Salvador) on October 12, 1492. The Lucayans had developed a distinctive maritime culture, adapted to the island environment. Unlike their Taíno relatives in the Greater Antilles, the Lucayans lived in smaller villages and relied more heavily on fishing, conch harvesting, and maritime trade. Their pottery (called Palmetto Ware) was distinct from the pottery of Cuba and Hispaniola. The Spanish, under the encomienda system, enslaved the Lucayans and shipped them to work in mines and plantations on Hispaniola and Cuba. Within 40 years of contact, the entire Lucayan population — estimated at 40,000 — had been effectively wiped out through enslavement, disease, and overwork. By 1530, the Bahamas were uninhabited.',
+    currentIssues: 'The Lucayans are extinct as a distinct population, but their archaeological heritage is being preserved. Recent excavations have uncovered important sites, including the Coralie site on Grand Turk (1,100-1,400 years old). The Bahamas National Trust manages archaeological sites. The word "Bahamas" itself derives from the Taíno name for Grand Bahama — "Bahama" meant "large upper midland." Lucayan place names persist throughout the archipelago. The story of the Lucayans serves as a stark reminder of the speed and brutality of Indigenous genocide in the Caribbean.',
+    resources: ['https://www.smithsonianmag.com/history/how-archaeologists-are-unearthing-the-secrets-of-the-bahamas-first-inhabitants-180983548/', 'https://www.tcmuseum.org/culture-history/lucayans/'],
+    category: 'Taíno',
+    researchDocument: {
+      title: 'The Lucayans: The First People Columbus Met',
+      subtitle: 'A Comprehensive Research Document on the Lucayan Taíno of the Bahamas',
+      lastUpdated: '2025-07-06',
+      sections: [
+        {
+          heading: 'Origins: From Hispaniola to the Bahamas',
+          content: 'The Lucayans were a branch of the Taíno people who settled the Bahamian archipelago between 500 and 800 CE. Archaeologist William Keegan has traced their migration routes: from Hispaniola to the Caicos Islands, then to Great Inagua (the closest Bahamian island to Hispaniola, just 56 miles away), and from there gradually northward throughout the archipelago. The settlement process took approximately 800 years (c. 700 – c. 1500), with the Lucayans eventually reaching a population of about 40,000 spread across the 19 largest islands. The Lucayans called themselves "Lukku-Cairi" — "people of the islands" — distinguishing themselves from their Taíno relatives in the Greater Antilles. They spoke a dialect of the Taíno language and maintained trade relationships with Cuba and Hispaniola, traveling in large dugout canoes across open water.'
+        },
+        {
+          heading: 'A Maritime Culture: Life in the Islands',
+          content: 'The Lucayans developed a distinctive maritime culture adapted to the Bahamian environment. Unlike the Taíno of Hispaniola, who lived in large agricultural villages, the Lucayans lived in smaller settlements and relied heavily on the sea. They were expert divers, swimming to depths of 60 feet or more to harvest conch, lobster, and fish. Columbus\'s chronicler Bartolomé de las Casas described Lucayan divers who could hold their breath for extraordinary lengths of time. The Lucayans developed Palmetto Ware pottery — distinctive shell-tempered ceramics unique to the Bahamas. They built canoes from large pine trees, some capable of carrying 50-100 people. Their houses (bohíos) were smaller than those of the Greater Antilles Taíno, reflecting the more dispersed settlement pattern. The Lucayans practiced agriculture on a smaller scale, growing cassava, maize, and sweet potatoes in island soils. They were known for their gentle nature — Columbus described them as "generous beyond belief" and noted that they would give everything they had to visitors.'
+        },
+        {
+          heading: 'Columbus and the First Contact',
+          content: 'On October 12, 1492, Christopher Columbus landed on Guanahani — an island in the Bahamas now believed to be San Salvador (though the exact island is debated). The Lucayans who greeted him were the first Indigenous people encountered by Europeans in the Americas. Columbus described them in his log: "They should be good servants and intelligent, for I observed that they quickly took in what was said to them, and I believe that they would easily be made Christians, as it appeared to me that they had no religion." He noted their physical appearance — olive skin, broad foreheads (the result of deliberate cranial modification, a Taíno beauty practice), and body paint in red, black, and white. Columbus took several Lucayans captive to serve as interpreters, including a young man he named Diego Colón. The first peaceful encounter between Europeans and Indigenous Americans would prove tragically deceptive — within decades, the entire Lucayan population would be destroyed.'
+        },
+        {
+          heading: 'The Genocide: 40,000 to Zero in 40 Years',
+          content: 'The destruction of the Lucayan people was one of the fastest genocides in human history. Under the Spanish encomienda system, Lucayans were enslaved and shipped to work in gold mines on Hispaniola and Cuba. The Bahamas themselves had no gold, so the Spanish saw the islands only as a source of slave labor. Spanish slaver Pedro de Córdoba wrote in 1512: "These islands are now deserted and without people." By 1530, just 38 years after first contact, the entire Lucayan population — estimated at 40,000 — had been effectively eliminated through a combination of enslavement, disease, and overwork. The Bahamas became uninhabited, remaining so until British colonization in the 17th century. The speed of this genocide was partly due to the Lucayans\' maritime nature — their skill as canoeists made them valuable as pearl divers and fishermen, but it also made them easy to capture and transport. The Bahamas represent the most complete example of Indigenous extinction in the Caribbean — a fate that the Taíno of Hispaniola, Cuba, and Puerto Rico narrowly escaped through resistance and retreat to remote regions.'
+        },
+        {
+          heading: 'Archaeological Rediscovery and Legacy',
+          content: 'In recent decades, archaeologists have rediscovered the rich material culture of the Lucayans. Important sites include: the Coralie site on Grand Turk (1,100-1,400 years old, the oldest known in the Turks and Caicos); the middens (shell heaps) at numerous locations throughout the Bahamas; cave sites containing Lucayan artifacts and rock art; and underwater archaeological sites revealing Lucayan maritime technology. The Bahamas National Trust manages many of these sites. The word "Bahamas" itself is of Indigenous origin — "Bahama" was the Lucayan name for Grand Bahama, meaning "large upper midland" according to Taíno language scholar Dr. Julian Granberry. Other Taíno words that entered English through Lucayan contact include: iguana, potato, barbecue, tobacco, cay, guava, canoe, and hurricane. The Lucayan legacy, though their people are gone, persists in the language, place names, and cultural memory of the Caribbean.'
+        }
+      ],
+      sources: [
+        'Smithsonian Magazine (2024) — "How Archaeologists Are Unearthing the Secrets of the Bahamas\' First Inhabitants"',
+        'Ostapkowicz, Joanna — "Lucayan Legacies: Indigenous Lifeways in the Bahamas" (University of Oxford)',
+        'Turks and Caicos Museum — Lucayans and Tainos in the Turks and Caicos',
+        'The Bahamas National Trust',
+        'Grand Bahama Museum — The Lucayan Taino',
+        'Wikipedia — Lucayan people (peer-reviewed)',
+        'Granberry, Dr. Julian — Taíno language research',
+        'Bartolomé de las Casas — First-hand accounts of Lucayan contact',
+        'Keegan, William — Archaeological migration route studies',
+        'Craton, Michael — Bahamian historical studies'
+      ]
+    }
+  },
+  {
+    id: 'tt-firstpeoples',
+    name: 'First Peoples of Trinidad & Tobago',
+    indigenousName: 'Kalinago / Lokono',
+    alternateNames: ['Carib', 'Arawak', 'Nepoya', 'Santa Rosa Community', 'Warao'],
+    country: 'Trinidad & Tobago',
+    countryCode: 'TT',
+    location: 'Trinidad and Tobago — Santa Rosa First Peoples Community in Arima, Trinidad',
+    coordinates: [-61.2225, 10.6918],
+    population: '~35,000-40,000 Indigenous people; Santa Rosa Community ~200 active members',
+    language: 'Cariban, Arawakan (extinct locally); English, Trinidadian Creole',
+    languageFamily: 'Cariban / Arawakan',
+    status: 'Recognized by government; Santa Rosa First Peoples Community active',
+    history: 'Trinidad was the gateway to the Caribbean — the closest island to South America, separated by just 7-8 miles at its closest point. Indigenous peoples have inhabited Trinidad for at least 6,000 years, with an estimated population of 40,000 at Spanish settlement in 1592. The island was home to multiple groups: the Arawak/Lokono (including Nepoya and Suppoya subgroups), the Carib/Kalinago (including Yao and Galibi), the Warao from the Orinoco Delta, and smaller groups like the Chaguanes and Shebayo. Columbus arrived in 1498, and the Spanish established the encomienda system, forcing Indigenous peoples into labor. By 1797, when Trinidad was ceded to the British, the Indigenous population had been drastically reduced through disease, displacement, and assimilation. However, the Santa Rosa First Peoples Community in Arima — descendants of the Carib people — has survived and is today recognized by the Trinidad and Tobago government. They host the annual Santa Rosa Festival and work to preserve Indigenous culture through education, crafts, and advocacy.',
+    currentIssues: 'Land rights remain a pressing issue — many Indigenous communities struggle for recognition of traditional territories. Cultural erosion due to globalization and modernization. Socio-economic marginalization — Indigenous peoples face higher rates of poverty and limited access to education and healthcare. The Warao people continue to migrate from Venezuela due to political and economic crisis. The Santa Rosa First Peoples Community actively works for cultural preservation, land rights, and greater inclusion in the national narrative.',
+    resources: ['https://www.nalis.gov.tt/resources/tt-content-guide/first-peoples/', 'https://www.audaciousevolution.com/post/the-indigenous-people-of-trinidad-and-tobago-a-comprehensive-overview'],
+    category: 'Carib/Arawak',
+    researchDocument: {
+      title: 'The First Peoples of Trinidad & Tobago: Gateway to the Caribbean',
+      subtitle: 'A Comprehensive Research Document on the Indigenous Peoples of Trinidad & Tobago',
+      lastUpdated: '2025-07-06',
+      sections: [
+        {
+          heading: 'The Gateway: 6,000 Years of Indigenous History',
+          content: 'Trinidad holds a unique place in Caribbean Indigenous history as the "gateway to the Caribbean" — the closest island to South America, separated by just 7-8 miles at its closest point. Archaeological evidence shows human habitation for at least 6,000 years, with the population estimated at 40,000 at the time of Spanish settlement in 1592. Because of its proximity to the mainland, Trinidad received multiple waves of Indigenous migration and was home to a more diverse Indigenous population than most Caribbean islands. The island was a transit point in the Caribbean network of Amerindian trade and exchange, connecting island communities with the Orinoco Delta and the South American mainland. This geographical position made Trinidad both a cultural crossroads and a target for European colonization.'
+        },
+        {
+          heading: 'The Arawak/Lokono: Agricultural Pioneers',
+          content: 'The Arawak (also called Lokono on the mainland) were among the earliest inhabitants of Trinidad. They originated from the Orinoco River Delta and formed agrarian societies based on cassava, maize, and sweet potato cultivation. In Trinidad, Arawak subgroups included the Nepoya and Suppoya, who were skilled farmers living in organized communities. The Nepoya were particularly prominent — they actively resisted Spanish rule from their base in the Arima district, limiting Spanish attempts to control northern Trinidad. The most famous Nepoya leader was Hyarima, a war chief who continuously harassed Spanish settlements. The Arawak legacy in Trinidad includes numerous place names: Arima (from the Arawak word for water), Arouca, Tacarigua, Couva, Mucurapo, Chaguanas, and Mayaro. Arawak agricultural techniques — particularly cassava cultivation and the making of cassava bread (casabe) — survived and became staples of Trinidadian cuisine.'
+        },
+        {
+          heading: 'The Carib/Kalinago: Warriors of the Southern Caribbean',
+          content: 'The Carib (Kalinago, Karina, or Kalipuna) were another significant group in Trinidad\'s Indigenous history. Originating from the South American mainland, they were seafarers and warriors who expanded throughout the Lesser Antilles. In Trinidad, Carib subgroups included the Yao (expert hunters and fishermen) and the Galibi (predominantly in Tobago, known for their defensive warrior culture). The Carib have been historically misunderstood — European chroniclers depicted them as "fierce cannibals" to justify colonization, but modern scholarship has challenged this narrative. The Carib were sophisticated navigators, traders, and diplomats who maintained complex relationships with both Arawak neighbors and European colonizers. The very name "Caribbean" derives from "Carib," a testament to their historical significance. In Trinidad, Carib cultural elements survive in traditional fishing techniques, craft traditions, and the annual Santa Rosa Festival.'
+        },
+        {
+          heading: 'Hyarima: The Arima Resistance',
+          content: 'Hyarima was a Nepoya (Arawak) war chief who led the most effective Indigenous resistance to Spanish colonization in Trinidad. Based in the Arima district — which was effectively Indian Territory for most of the 16th and 17th centuries — Hyarima organized continuous attacks on Spanish settlements from his mountain strongholds. His resistance was so effective that it "effectively limited Spanish attempts to control and settle northern Trinidad," according to historian Jean Patricia Elie. The Spanish made repeated expeditions against Hyarima but were never able to defeat him. His resistance delayed Spanish consolidation of control over Trinidad for decades, preserving Indigenous autonomy in the northern and central regions. Hyarima remains a symbol of Indigenous resistance in Trinidad, and the town of Arima — where the Santa Rosa First Peoples Community is based — honors his legacy.'
+        },
+        {
+          heading: 'The Santa Rosa First Peoples Community',
+          content: 'The Santa Rosa First Peoples Community in Arima, Trinidad, represents the descendants of the Carib people who survived colonization through intermarriage, retreat to remote areas, and cultural adaptation. The community takes its name from the Santa Rosa Festival, held annually to celebrate Carib heritage with traditional music, dance, and rituals. The community engages in educational programs, craft workshops, and advocacy for Indigenous rights. They have been recognized by the Trinidad and Tobago government and work with international Indigenous organizations. The Santa Rosa Festival has become an important event for Indigenous cultural preservation in the Caribbean, attracting visitors from across the region and drawing attention to the ongoing struggles of Caribbean Indigenous peoples for recognition, land rights, and cultural survival.'
+        },
+        {
+          heading: 'Indigenous Legacies in Modern Trinidad & Tobago',
+          content: 'The Indigenous heritage of Trinidad and Tobago pervades the islands\' culture. Place names of Indigenous origin include: Caroni and Oropouche (rivers), Tamana and Aripo (mountains), Arima, Paria, Arouca, Caura, Tunapuna, Tacarigua, Couva, Mucurapo, Chaguanas, Carapichaima, Mayaro, Guayaguayare. Indigenous foods remain central to Trinidadian cuisine: cassava bread (casabe), pepperpot (a traditional stew), and corn-based dishes. Indigenous drumming patterns influenced Trinidadian musical genres. The Warao people from Venezuela continue to migrate to Trinidad, particularly to the Icacos area in the south, maintaining an ongoing Indigenous presence. The First Peoples of Trinidad and Tobago, through organizations like the Santa Rosa Community, continue to advocate for recognition, land rights, and the preservation of their ancestral heritage in the face of modernization and globalization.'
+        }
+      ],
+      sources: [
+        'National Library and Information System Authority (NALIS) — First Peoples of Trinidad and Tobago',
+        'Audacious Evolution — "The Indigenous People of Trinidad and Tobago" (2024)',
+        'Elie, Jean Patricia — "A Short History of Santa Rosa De Arima"',
+        'Wikipedia — Kalinago, Arawak, Warao (peer-reviewed)',
+        'Smithsonian Magazine — Caribbean Indigenous history',
+        'Keegan, William — Archaeological studies on Caribbean migration',
+        'Craton, Michael — Bahamian and Caribbean historical studies'
+      ]
+    }
+  },
+]
+
 export const allNations: IndigenousNation[] = [
   ...jamaicaNations,
   ...haitiNations,
+  ...caribbeanNations,
 ]
 
 // Helper: Get a nation by ID
