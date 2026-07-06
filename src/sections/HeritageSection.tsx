@@ -404,14 +404,13 @@ function HeritageMap() {
           })
           markerEl.addEventListener('click', () => {
             setSelectedCountry(key)
+            map.flyTo({ center: data.coords, zoom: 8, duration: 2000 })
           })
 
           new mapboxgl.Marker({ element: markerEl, anchor: 'center' })
             .setLngLat(data.coords)
             .addTo(map)
         })
-          .setLngLat(haitiCoords)
-          .addTo(map)
 
         map.on('click', (e: any) => {
           const lng = e.lngLat.lng
@@ -481,6 +480,14 @@ function HeritageMap() {
       mapRef.current.flyTo({ center: [lng, lat], zoom, duration: 2000 })
     }
   }, [selectedState])
+
+  // Fly to Caribbean/country when selected via button
+  useEffect(() => {
+    if (selectedCountry && mapRef.current && COUNTRY_MARKERS[selectedCountry]) {
+      const [lng, lat] = COUNTRY_MARKERS[selectedCountry].coords
+      mapRef.current.flyTo({ center: [lng, lat], zoom: 8, duration: 2000 })
+    }
+  }, [selectedCountry])
 
   const allStates = Object.keys(STATE_DATA).sort()
 
