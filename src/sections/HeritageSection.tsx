@@ -339,6 +339,7 @@ function HeritageMap() {
   const mapRef = useRef<any>(null)
   const [selectedState, setSelectedState] = useState<string | null>(null)
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null)
+  const [focusedTerritory, setFocusedTerritory] = useState<string | null>(null)
   const [mapError, setMapError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -391,7 +392,7 @@ function HeritageMap() {
           markerEl.addEventListener('mouseleave', () => { dot.style.transform = 'scale(1)' })
           markerEl.addEventListener('click', (e) => {
             e.stopPropagation()
-            setSelectedCountry(territory.id)
+            setFocusedTerritory(territory.id)
             map.flyTo({ center: territory.coords, zoom: territory.zoom, duration: 2000 })
           })
           new mapboxgl.Marker({ element: markerEl, anchor: 'center' })
@@ -405,7 +406,7 @@ function HeritageMap() {
           for (const t of ALL_TERRITORIES) {
             const dist = Math.sqrt(Math.pow(lng - t.coords[0], 2) + Math.pow(lat - t.coords[1], 2))
             if (dist < 5.0) {
-              setSelectedCountry(t.id)
+              setFocusedTerritory(t.id)
               map.flyTo({ center: t.coords, zoom: t.zoom, duration: 2000 })
               return
             }
@@ -419,7 +420,7 @@ function HeritageMap() {
                 if (stateMatch) { setSelectedState(stateMatch) }
                 else {
                   const t = ALL_TERRITORIES.find(x => placeName.includes(x.name.toLowerCase()))
-                  if (t) { setSelectedCountry(t.id); map.flyTo({ center: t.coords, zoom: t.zoom, duration: 2000 }) }
+                  if (t) { setFocusedTerritory(t.id); map.flyTo({ center: t.coords, zoom: t.zoom, duration: 2000 }) }
                 }
               }
             })
@@ -562,10 +563,33 @@ function HeritageMap() {
         </div>
       </div>
 
+      {/* Focused Territory — Explore Button */}
+      {focusedTerritory && (() => {
+        const t = TERRITORY_BY_ID.get(focusedTerritory)
+        if (!t) return null
+        return (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="relative z-20"
+          >
+            <button
+              onClick={() => { setSelectedCountry(t.id); setFocusedTerritory(null) }}
+              className="w-full flex items-center justify-center gap-2 bg-[rgba(255,149,0,0.1)] border border-[rgba(255,149,0,0.3)] hover:bg-[rgba(255,149,0,0.2)] hover:border-[rgba(255,149,0,0.5)] rounded-xl py-3 transition-all"
+            >
+              <BookOpen size={14} className="text-[#FF9500]" />
+              <span className="text-sm text-[#FF9500] font-medium">Explore {t.name}</span>
+              <span className="text-[10px] text-[#C9B99A]/50 ml-1">— {t.description}</span>
+              <ChevronRight size={12} className="text-[#FF9500]/50" />
+            </button>
+          </motion.div>
+        )
+      })()}
+
       {/* Search Bar */}
       <div className="relative z-20">
         <MapSearchBar onSelectTerritory={(territory) => {
-          setSelectedCountry(territory.id)
+          setFocusedTerritory(territory.id)
           if (mapRef.current) {
             mapRef.current.flyTo({ center: territory.coords, zoom: territory.zoom, duration: 2000 })
           }
@@ -579,7 +603,7 @@ function HeritageMap() {
           <p className="text-[9px] uppercase tracking-[0.12em] text-[#FF9500]/50 mb-2">Caribbean</p>
           <div className="flex flex-wrap gap-1.5">
             {ALL_TERRITORIES.filter(t => t.region === 'caribbean').slice(0, 8).map(t => (
-              <button key={t.id} onClick={() => setSelectedCountry(t.id)}
+              <button key={t.id} onClick={() => setFocusedTerritory(t.id)}
                 className="flex items-center gap-1.5 text-[10px] text-[#FF9500] bg-[rgba(255,149,0,0.05)] border border-[rgba(255,149,0,0.12)] hover:border-[rgba(255,149,0,0.4)] rounded-full px-2.5 py-1.5 transition-all">
                 <MapPin size={9} /> {t.name}
               </button>
@@ -591,7 +615,7 @@ function HeritageMap() {
           <p className="text-[9px] uppercase tracking-[0.12em] text-[#C9B99A]/40 mb-2">Canada</p>
           <div className="flex flex-wrap gap-1.5">
             {ALL_TERRITORIES.filter(t => t.region === 'canada').map(t => (
-              <button key={t.id} onClick={() => setSelectedCountry(t.id)}
+              <button key={t.id} onClick={() => setFocusedTerritory(t.id)}
                 className="flex items-center gap-1.5 text-[10px] text-[#C9B99A]/70 bg-[rgba(201,185,154,0.04)] border border-[rgba(201,185,154,0.1)] hover:border-[rgba(255,149,0,0.3)] hover:text-[#FF9500] rounded-full px-2.5 py-1.5 transition-all">
                 <MapPin size={9} /> {t.name}
               </button>
@@ -603,7 +627,7 @@ function HeritageMap() {
           <p className="text-[9px] uppercase tracking-[0.12em] text-[#C9B99A]/40 mb-2">Mexico & Central America</p>
           <div className="flex flex-wrap gap-1.5">
             {ALL_TERRITORIES.filter(t => t.region === 'mexico' || t.region === 'centralAmerica').map(t => (
-              <button key={t.id} onClick={() => setSelectedCountry(t.id)}
+              <button key={t.id} onClick={() => setFocusedTerritory(t.id)}
                 className="flex items-center gap-1.5 text-[10px] text-[#C9B99A]/70 bg-[rgba(201,185,154,0.04)] border border-[rgba(201,185,154,0.1)] hover:border-[rgba(255,149,0,0.3)] hover:text-[#FF9500] rounded-full px-2.5 py-1.5 transition-all">
                 <MapPin size={9} /> {t.name}
               </button>
@@ -615,7 +639,7 @@ function HeritageMap() {
           <p className="text-[9px] uppercase tracking-[0.12em] text-[#C9B99A]/40 mb-2">South America</p>
           <div className="flex flex-wrap gap-1.5">
             {ALL_TERRITORIES.filter(t => t.region === 'southAmerica').map(t => (
-              <button key={t.id} onClick={() => setSelectedCountry(t.id)}
+              <button key={t.id} onClick={() => setFocusedTerritory(t.id)}
                 className="flex items-center gap-1.5 text-[10px] text-[#C9B99A]/70 bg-[rgba(201,185,154,0.04)] border border-[rgba(201,185,154,0.1)] hover:border-[rgba(255,149,0,0.3)] hover:text-[#FF9500] rounded-full px-2.5 py-1.5 transition-all">
                 <MapPin size={9} /> {t.name}
               </button>
