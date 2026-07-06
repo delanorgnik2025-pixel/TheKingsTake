@@ -4,6 +4,12 @@ import { TRPCProvider } from '@/providers/trpc'
 import App from './App'
 import './index.css'
 
+// IMMEDIATE VISIBILITY TEST - adds a green dot to confirm JS executes
+const testEl = document.createElement('div')
+testEl.id = 'js-boot-marker'
+testEl.style.cssText = 'position:fixed;top:10px;left:10px;width:20px;height:20px;background:#0f0;border-radius:50%;z-index:99999;'
+document.body.appendChild(testEl)
+
 // Global error handlers to catch and display runtime errors
 window.onerror = function(message, source, lineno, colno, error) {
   const root = document.getElementById('root')
