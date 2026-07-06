@@ -1,8 +1,10 @@
 import { Routes, Route, useLocation } from 'react-router'
 import { useEffect, useRef, useCallback, useState } from 'react'
 import Lenis from 'lenis'
+import Navigation from './components/Navigation'
 
 function AppLayout({ children }: { children: React.ReactNode }) {
+  const [menuOpen, setMenuOpen] = useState(false)
   const lenisRef = useRef<Lenis | null>(null)
   useEffect(() => {
     const lenis = new Lenis({ duration: 1.2, easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), lerp: 0.1 })
@@ -11,7 +13,19 @@ function AppLayout({ children }: { children: React.ReactNode }) {
     requestAnimationFrame(raf)
     return () => { lenis.destroy() }
   }, [])
-  return <>{children}</>
+  const scrollToSection = useCallback((id: string) => {
+    setMenuOpen(false)
+    setTimeout(() => {
+      const el = document.getElementById(id)
+      if (el) lenisRef.current?.scrollTo(el, { offset: -64 })
+    }, menuOpen ? 400 : 0)
+  }, [menuOpen])
+  return (
+    <>
+      <Navigation onMenuToggle={() => setMenuOpen(true)} onNavClick={scrollToSection} />
+      {children}
+    </>
+  )
 }
 
 export default function App() {
@@ -19,7 +33,7 @@ export default function App() {
     <Routes>
       <Route path="*" element={
         <AppLayout>
-          <div style={{ padding: '100px', color: 'red', fontSize: '40px' }}>LENIS WORKS</div>
+          <div style={{ padding: '100px', color: 'red', fontSize: '40px' }}>NAV WORKS</div>
         </AppLayout>
       } />
     </Routes>
