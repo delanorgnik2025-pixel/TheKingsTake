@@ -20,7 +20,7 @@ export default function AncestorRootRegistryPage() {
       className="relative w-full bg-[#05080e] overflow-hidden"
     >
       {/* Desktop: img element with object-fit cover */}
-      <div className="hidden sm:block relative w-full" style={{ height: 'calc(100dvh - 72px)' }}>
+      <div className="hidden sm:block relative w-full" style={{ height: '100dvh' }}>
         <img
           src="/images/ancestor-root-registry-entry.jpg"
           alt="Ancestor Root Registry"
@@ -53,7 +53,7 @@ export default function AncestorRootRegistryPage() {
       <div
         className="sm:hidden relative w-full"
         style={{
-          minHeight: 'calc(100svh - 72px)',
+          minHeight: '100dvh',
           backgroundImage: 'url(/images/ancestor-root-registry-entry.jpg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center center',

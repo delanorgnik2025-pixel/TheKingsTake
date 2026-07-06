@@ -34,6 +34,8 @@ import PreOrderSuccessPage from './pages/PreOrderSuccessPage'
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const lenisRef = useRef<Lenis | null>(null)
+  const location = useLocation()
+  const hideNav = location.pathname === '/ancestor-root-registry'
 
   useEffect(() => {
     const lenis = new Lenis({
@@ -64,10 +66,10 @@ function AppLayout({ children }: { children: React.ReactNode }) {
     <>
       <CustomCursor />
       <AudioExperience />
-      <Navigation onMenuToggle={() => setMenuOpen(true)} onNavClick={scrollToSection} />
+      {!hideNav && <Navigation onMenuToggle={() => setMenuOpen(true)} onNavClick={scrollToSection} />}
       <MenuOverlay isOpen={menuOpen} onClose={() => setMenuOpen(false)} onNavClick={scrollToSection} />
       {children}
-      <Footer onNavClick={scrollToSection} />
+      {!hideNav && <Footer onNavClick={scrollToSection} />}
     </>
   )
 }

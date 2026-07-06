@@ -1,13 +1,14 @@
 import HeroSection from '../sections/HeroSection'
 import HeroPortraitSection from '../sections/HeroPortraitSection'
-import BookPromoSection from '../sections/BookPromoSection'
+import BlogFeed from '../components/BlogFeed'
+import VideoBox from '../components/VideoBox'
 import HeritageSection from '../sections/HeritageSection'
 import AncestryResearchSection from '../sections/AncestryResearchSection'
 import AboutSection from '../sections/AboutSection'
 import ServicesSection from '../sections/ServicesSection'
 import WritingMarketSection from '../sections/WritingMarketSection'
 import MarqueeDivider from '../components/MarqueeDivider'
-import BlogPreviewSection from '../sections/BlogPreviewSection'
+
 import ContactSection from '../sections/ContactSection'
 import AncestorRootRegistrySection from '../sections/AncestorRootRegistrySection'
 import AncestorRealmTeaser from '../sections/AncestorRealmTeaser'
@@ -18,11 +19,12 @@ export default function HomePage() {
       {/* 1. Ronald's Cosmic Portrait — Indigenous Aboriginal Royal American */}
       <HeroPortraitSection />
 
-      {/* 2. Book Promo — The African American State of the Union */}
-      <MarqueeDivider text="#TheKingsTake — From the Loins of the Beast — The African American State of the Union — Available Now" />
+      {/* 2. Book Promo + Blog Feed + Video Box */}
+      <MarqueeDivider text="#TheKingsTake — From the Loins of the Beast — The African American State of the Union — Pre-Order Now" />
       <HeroSection />
       <div className="h-4" />
-      <BookPromoSection />
+      <BlogFeed title="Latest From #TheKingsTake" subtitle="Investigative journalism, legal education, and community advocacy." />
+      <VideoBox />
 
       {/* 3. Indigenous Soul Tribe Map — Cosmic aesthetic continues */}
       <MarqueeDivider text="#TheKingsTake — We Were Here Before Anybody — Discover Your Roots — 225+ Nations Documented — The Land Remembers" />
@@ -45,8 +47,7 @@ export default function HomePage() {
       <ServicesSection />
       <WritingMarketSection />
       <MarqueeDivider text="#TheKingsTake — The People's Voice — AASOTU Media Group — Advocacy. Truth. Justice." />
-      <BlogPreviewSection />
-      <MarqueeDivider text="#TheKingsTake — Justice. Truth. Power. — 12,000 Strong and Growing — The People's Voice" />
+      {/* Blog content now featured prominently after hero section */}
       <ContactSection />
     </main>
   )

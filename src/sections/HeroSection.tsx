@@ -2,43 +2,13 @@ import { useRef } from 'react'
 import { Link } from 'react-router'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { Globe, PenTool, Sparkles, BookOpen, ArrowRight, TrendingUp, Map } from 'lucide-react'
-import { trpc } from '@/providers/trpc'
 
-const BOOK_PRICE_ID = 'price_1TUuET5rzCiGdPFNiXG2ZEi6'
-
-function BookCheckoutButton({ className }: { className?: string }) {
-  const checkout = trpc.stripe.createCheckoutByPriceId.useMutation({
-    onSuccess: (data) => {
-      if (data.url) {
-        window.location.href = data.url
-      } else if (data.testMode) {
-        alert('Test mode: ' + data.message)
-      }
-    },
-    onError: (err) => {
-      alert('Checkout error: ' + err.message)
-    },
-  })
-
-  const handleCheckout = () => {
-    const successUrl = window.location.origin + '/?payment=success'
-    const cancelUrl = window.location.origin + '/?payment=cancelled'
-    checkout.mutate({
-      priceId: BOOK_PRICE_ID,
-      successUrl,
-      cancelUrl,
-    })
-  }
-
+function PreOrderButton({ className }: { className?: string }) {
   return (
-    <button 
-      onClick={handleCheckout}
-      disabled={checkout.isPending}
-      className={className}
-    >
+    <Link to="/pre-order" className={className}>
       <BookOpen size={20} />
-      {checkout.isPending ? 'Loading...' : 'Order Now — $19.99'}
-    </button>
+      Pre-Order — $19.99
+    </Link>
   )
 }
 
@@ -189,7 +159,7 @@ export default function HeroSection() {
               className="flex flex-wrap gap-4"
             >
               {/* PRIMARY CTA — ORDER THE BOOK */}
-              <BookCheckoutButton className="inline-flex items-center justify-center gap-2 rounded-full h-14 px-10 text-base bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-['Newsreader'] tracking-[0.02em] font-medium" />
+              <PreOrderButton className="inline-flex items-center justify-center gap-2 rounded-full h-14 px-10 text-base bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-['Newsreader'] tracking-[0.02em] font-medium" />
               
               {/* SECONDARY — WORK WITH ME */}
               <Link

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { motion } from 'framer-motion'
-import { BookOpen, Clock, Shield, CheckCircle, ArrowLeft, Sparkles, Mail, FileText, Star, Quote } from 'lucide-react'
+import { BookOpen, Shield, ArrowLeft, Sparkles, Mail, FileText, Star, Quote } from 'lucide-react'
 import { trpc } from '@/providers/trpc'
 import ScrollReveal from '../components/ScrollReveal'
 
@@ -16,13 +16,7 @@ const benefits = [
   { icon: <Sparkles size={16} />, title: 'Discount Locked In', desc: 'Pre-order price is the lowest the book will ever be' },
 ]
 
-const timeline = [
-  { phase: 'Pre-Order Open', status: 'active', date: 'Now', desc: 'Reserve your copy at the lowest price' },
-  { phase: 'ISBN & Copyright', status: 'upcoming', date: 'In Progress', desc: 'Finalizing ISBN registration and copyright' },
-  { phase: 'Final Production', status: 'upcoming', date: 'Coming Soon', desc: 'Professional formatting, proofreading, cover finalization' },
-  { phase: 'Digital Release', status: 'upcoming', date: 'Target: Q3 2025', desc: 'Digital edition delivered to all pre-order customers first' },
-  { phase: 'Paperback & Signed', status: 'upcoming', date: 'After Digital', desc: 'Physical editions for those who want the tangible experience' },
-]
+
 
 export default function PreOrderPage() {
   const navigate = useNavigate()
@@ -158,35 +152,6 @@ export default function PreOrderPage() {
           </div>
         </ScrollReveal>
 
-        {/* Timeline */}
-        <ScrollReveal delay={0.1}>
-          <h2 className="text-lg text-[#F0EBE1] font-medium mb-6" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
-            Production Timeline
-          </h2>
-          <div className="space-y-0 mb-16">
-            {timeline.map((t, i) => (
-              <div key={i} className="flex gap-4 relative">
-                {/* Connector line */}
-                {i < timeline.length - 1 && (
-                  <div className="absolute left-[11px] top-8 bottom-0 w-px bg-[rgba(255,149,0,0.1)]" />
-                )}
-                {/* Dot */}
-                <div className={`w-6 h-6 rounded-full shrink-0 flex items-center justify-center mt-0.5 ${t.status === 'active' ? 'bg-[#FF9500]' : 'bg-[rgba(255,149,0,0.15)] border border-[rgba(255,149,0,0.2)]'}`}>
-                  {t.status === 'active' ? <CheckCircle size={14} className="text-[#1B2838]" /> : <Clock size={12} className="text-[#FF9500]/40" />}
-                </div>
-                {/* Content */}
-                <div className="pb-6">
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <span className={`text-sm font-medium ${t.status === 'active' ? 'text-[#FF9500]' : 'text-[#F0EBE1]'}`}>{t.phase}</span>
-                    <span className="text-[9px] uppercase tracking-wider text-[#C9B99A]/40 bg-[rgba(201,185,154,0.05)] rounded px-1.5 py-0.5">{t.date}</span>
-                  </div>
-                  <p className="text-xs text-[#C9B99A]/50">{t.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </ScrollReveal>
-
         {/* About the Author */}
         <ScrollReveal delay={0.1}>
           <div className="bg-[rgba(27,40,56,0.4)] border border-[rgba(255,149,0,0.1)] rounded-xl p-6 mb-12">
@@ -218,7 +183,7 @@ export default function PreOrderPage() {
           </h2>
           <div className="space-y-3 mb-16">
             {[
-              { q: 'When will I receive my digital copy?', a: 'Pre-order customers will receive their digital copy (PDF + ePub) 48 hours before the public release. Target release is Q3 2025.' },
+              { q: 'When will I receive my digital copy?', a: 'Pre-order customers will receive their digital copy (PDF + ePub) 48 hours before the public release. Target release is 2026.' },
               { q: 'Can I get a refund?', a: 'Yes. You can request a full refund at any time before the book is released. After release, standard digital goods policies apply.' },
               { q: 'What formats will I receive?', a: 'You will receive both PDF (for computers and printing) and ePub (for e-readers like Kindle, Nook, and Apple Books).' },
               { q: 'Will there be a paperback version?', a: 'Yes. A paperback edition ($24.99) and a signed edition ($49.99) are planned for release after the digital edition. Pre-order customers will be notified first.' },
