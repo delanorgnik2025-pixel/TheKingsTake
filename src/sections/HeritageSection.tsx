@@ -6,6 +6,8 @@ import { STATE_DATA, POPULAR_STATES, STATE_COORDS, TRIBE_DB, TREATY_DB } from '.
 import type { TribeDetail } from '../data/heritageData'
 import { jamaicaNations, haitiNations, caribbeanNations } from '../data/panIndigenousData'
 import CountryDetailModal from '../components/CountryDetailModal'
+import MapSearchBar from '../components/MapSearchBar'
+import { ALL_TERRITORIES, TERRITORY_BY_ID, type TerritoryMarker } from '../data/territoryMarkers'
 
 // Public Mapbox token - split to avoid secret scanning false positive
 const _t1 = 'pk.eyJ1IjoidGFzYXR1IiwiYSI6ImNtcXI4azdsYjBqMmYycXB5cjIzdDR5a24ifQ'
@@ -372,77 +374,52 @@ function HeritageMap() {
         map.setPaintProperty('satellite', 'raster-opacity', 0.7)
 
         // Add all country markers
-        Object.entries(COUNTRY_MARKERS).forEach(([key, data]) => {
+        // Add ALL 75+ territory markers
+        ALL_TERRITORIES.forEach((territory) => {
           const markerEl = document.createElement('div')
-          markerEl.className = 'country-marker'
+          markerEl.className = 'territory-marker'
+          const sz = territory.region === 'southAmerica' ? 14 : 16
           markerEl.innerHTML = `
-            <div style="
-              width: 24px; height: 24px; border-radius: 50%;
-              background: rgba(255,149,0,0.8);
-              border: 2px solid #FF9500;
-              box-shadow: 0 0 12px rgba(255,149,0,0.6), 0 0 24px rgba(255,149,0,0.3);
-              cursor: pointer;
-              display: flex; align-items: center; justify-content: center;
-              transition: transform 0.2s;
-            ">
-              <div style="width: 6px; height: 6px; border-radius: 50%; background: #F0EBE1;"></div>
+            <div style="width:${sz}px;height:${sz}px;border-radius:50%;background:rgba(255,149,0,0.75);border:2px solid #FF9500;box-shadow:0 0 8px rgba(255,149,0,0.5);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform 0.2s;">
+              <div style="width:4px;height:4px;border-radius:50%;background:#F0EBE1;"></div>
             </div>
-            <div style="
-              position: absolute; top: 28px; left: 50%; transform: translateX(-50%);
-              white-space: nowrap;
-              font-size: 10px; font-weight: 600; color: #FF9500;
-              text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-              pointer-events: none;
-            ">${data.name}</div>
+            <div style="position:absolute;top:${sz+4}px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:8px;font-weight:600;color:#FF9500;text-shadow:0 1px 2px rgba(0,0,0,0.9);pointer-events:none;">${territory.name}</div>
           `
           markerEl.style.position = 'relative'
-          markerEl.addEventListener('mouseenter', () => {
-            markerEl.querySelector('div')!.style.transform = 'scale(1.2)'
+          const dot = markerEl.querySelector('div')!
+          markerEl.addEventListener('mouseenter', () => { dot.style.transform = 'scale(1.3)' })
+          markerEl.addEventListener('mouseleave', () => { dot.style.transform = 'scale(1)' })
+          markerEl.addEventListener('click', (e) => {
+            e.stopPropagation()
+            setSelectedCountry(territory.id)
+            map.flyTo({ center: territory.coords, zoom: territory.zoom, duration: 2000 })
           })
-          markerEl.addEventListener('mouseleave', () => {
-            markerEl.querySelector('div')!.style.transform = 'scale(1)'
-          })
-          markerEl.addEventListener('click', () => {
-            setSelectedCountry(key)
-            map.flyTo({ center: data.coords, zoom: 8, duration: 2000 })
-          })
-
           new mapboxgl.Marker({ element: markerEl, anchor: 'center' })
-            .setLngLat(data.coords)
+            .setLngLat(territory.coords)
             .addTo(map)
         })
 
         map.on('click', (e: any) => {
           const lng = e.lngLat.lng
           const lat = e.lngLat.lat
-
-          // Check if click is near any country marker first
-          for (const [key, data] of Object.entries(COUNTRY_MARKERS)) {
-            const cLng = data.coords[0]
-            const cLat = data.coords[1]
-            const dist = Math.sqrt(Math.pow(lng - cLng, 2) + Math.pow(lat - cLat, 2))
-            if (dist < 3.0) {
-              setSelectedCountry(key)
+          for (const t of ALL_TERRITORIES) {
+            const dist = Math.sqrt(Math.pow(lng - t.coords[0], 2) + Math.pow(lat - t.coords[1], 2))
+            if (dist < 5.0) {
+              setSelectedCountry(t.id)
+              map.flyTo({ center: t.coords, zoom: t.zoom, duration: 2000 })
               return
             }
           }
-
           fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?types=region&access_token=${token}`)
             .then(r => r.json())
             .then(data => {
               if (data.features?.length > 0) {
                 const placeName = data.features[0].place_name.toLowerCase()
-                // Check for US states
                 const stateMatch = Object.keys(STATE_DATA).find(s => placeName.includes(s.toLowerCase()))
                 if (stateMatch) { setSelectedState(stateMatch) }
-                // Check for Pan-Indigenous countries
                 else {
-                  for (const [key, data] of Object.entries(COUNTRY_MARKERS)) {
-                    if (placeName.includes(data.name.toLowerCase())) {
-                      setSelectedCountry(key)
-                      return
-                    }
-                  }
+                  const t = ALL_TERRITORIES.find(x => placeName.includes(x.name.toLowerCase()))
+                  if (t) { setSelectedCountry(t.id); map.flyTo({ center: t.coords, zoom: t.zoom, duration: 2000 }) }
                 }
               }
             })
@@ -481,11 +458,16 @@ function HeritageMap() {
     }
   }, [selectedState])
 
-  // Fly to Caribbean/country when selected via button
+  // Fly to territory when selected via button
   useEffect(() => {
-    if (selectedCountry && mapRef.current && COUNTRY_MARKERS[selectedCountry]) {
-      const [lng, lat] = COUNTRY_MARKERS[selectedCountry].coords
-      mapRef.current.flyTo({ center: [lng, lat], zoom: 8, duration: 2000 })
+    if (selectedCountry && mapRef.current) {
+      const t = TERRITORY_BY_ID.get(selectedCountry)
+      if (t) {
+        mapRef.current.flyTo({ center: t.coords, zoom: t.zoom, duration: 2000 })
+      } else if (COUNTRY_MARKERS[selectedCountry]) {
+        const [lng, lat] = COUNTRY_MARKERS[selectedCountry].coords
+        mapRef.current.flyTo({ center: [lng, lat], zoom: 8, duration: 2000 })
+      }
     }
   }, [selectedCountry])
 
@@ -580,15 +562,66 @@ function HeritageMap() {
         </div>
       </div>
 
-      {/* Pan-Indigenous quick-access buttons */}
-      <div className="flex flex-wrap justify-center gap-2">
-        <button onClick={() => setSelectedCountry('jamaica')} className="flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.06)] border border-[rgba(255,149,0,0.15)] hover:border-[rgba(255,149,0,0.4)] rounded-full px-4 py-2 transition-all"><MapPin size={11} /> Jamaica <ChevronRight size={10} /></button>
-        <button onClick={() => setSelectedCountry('haiti')} className="flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.06)] border border-[rgba(255,149,0,0.15)] hover:border-[rgba(255,149,0,0.4)] rounded-full px-4 py-2 transition-all"><MapPin size={11} /> Haiti <ChevronRight size={10} /></button>
-        <button onClick={() => setSelectedCountry('cuba')} className="flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.06)] border border-[rgba(255,149,0,0.15)] hover:border-[rgba(255,149,0,0.4)] rounded-full px-4 py-2 transition-all"><MapPin size={11} /> Cuba <ChevronRight size={10} /></button>
-        <button onClick={() => setSelectedCountry('puertoRico')} className="flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.06)] border border-[rgba(255,149,0,0.15)] hover:border-[rgba(255,149,0,0.4)] rounded-full px-4 py-2 transition-all"><MapPin size={11} /> Puerto Rico <ChevronRight size={10} /></button>
-        <button onClick={() => setSelectedCountry('dominicanRepublic')} className="flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.06)] border border-[rgba(255,149,0,0.15)] hover:border-[rgba(255,149,0,0.4)] rounded-full px-4 py-2 transition-all"><MapPin size={11} /> Dominican Republic <ChevronRight size={10} /></button>
-        <button onClick={() => setSelectedCountry('bahamas')} className="flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.06)] border border-[rgba(255,149,0,0.15)] hover:border-[rgba(255,149,0,0.4)] rounded-full px-4 py-2 transition-all"><MapPin size={11} /> Bahamas <ChevronRight size={10} /></button>
-        <button onClick={() => setSelectedCountry('trinidadTobago')} className="flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.06)] border border-[rgba(255,149,0,0.15)] hover:border-[rgba(255,149,0,0.4)] rounded-full px-4 py-2 transition-all"><MapPin size={11} /> Trinidad & Tobago <ChevronRight size={10} /></button>
+      {/* Search Bar */}
+      <div className="relative z-20">
+        <MapSearchBar onSelectTerritory={(territory) => {
+          setSelectedCountry(territory.id)
+          if (mapRef.current) {
+            mapRef.current.flyTo({ center: territory.coords, zoom: territory.zoom, duration: 2000 })
+          }
+        }} />
+      </div>
+
+      {/* Territory quick-access buttons by region */}
+      <div className="space-y-3">
+        {/* Caribbean */}
+        <div>
+          <p className="text-[9px] uppercase tracking-[0.12em] text-[#FF9500]/50 mb-2">Caribbean</p>
+          <div className="flex flex-wrap gap-1.5">
+            {ALL_TERRITORIES.filter(t => t.region === 'caribbean').slice(0, 8).map(t => (
+              <button key={t.id} onClick={() => setSelectedCountry(t.id)}
+                className="flex items-center gap-1.5 text-[10px] text-[#FF9500] bg-[rgba(255,149,0,0.05)] border border-[rgba(255,149,0,0.12)] hover:border-[rgba(255,149,0,0.4)] rounded-full px-2.5 py-1.5 transition-all">
+                <MapPin size={9} /> {t.name}
+              </button>
+            ))}
+          </div>
+        </div>
+        {/* Canada */}
+        <div>
+          <p className="text-[9px] uppercase tracking-[0.12em] text-[#C9B99A]/40 mb-2">Canada</p>
+          <div className="flex flex-wrap gap-1.5">
+            {ALL_TERRITORIES.filter(t => t.region === 'canada').map(t => (
+              <button key={t.id} onClick={() => setSelectedCountry(t.id)}
+                className="flex items-center gap-1.5 text-[10px] text-[#C9B99A]/70 bg-[rgba(201,185,154,0.04)] border border-[rgba(201,185,154,0.1)] hover:border-[rgba(255,149,0,0.3)] hover:text-[#FF9500] rounded-full px-2.5 py-1.5 transition-all">
+                <MapPin size={9} /> {t.name}
+              </button>
+            ))}
+          </div>
+        </div>
+        {/* Mexico & Central America */}
+        <div>
+          <p className="text-[9px] uppercase tracking-[0.12em] text-[#C9B99A]/40 mb-2">Mexico & Central America</p>
+          <div className="flex flex-wrap gap-1.5">
+            {ALL_TERRITORIES.filter(t => t.region === 'mexico' || t.region === 'centralAmerica').map(t => (
+              <button key={t.id} onClick={() => setSelectedCountry(t.id)}
+                className="flex items-center gap-1.5 text-[10px] text-[#C9B99A]/70 bg-[rgba(201,185,154,0.04)] border border-[rgba(201,185,154,0.1)] hover:border-[rgba(255,149,0,0.3)] hover:text-[#FF9500] rounded-full px-2.5 py-1.5 transition-all">
+                <MapPin size={9} /> {t.name}
+              </button>
+            ))}
+          </div>
+        </div>
+        {/* South America */}
+        <div>
+          <p className="text-[9px] uppercase tracking-[0.12em] text-[#C9B99A]/40 mb-2">South America</p>
+          <div className="flex flex-wrap gap-1.5">
+            {ALL_TERRITORIES.filter(t => t.region === 'southAmerica').map(t => (
+              <button key={t.id} onClick={() => setSelectedCountry(t.id)}
+                className="flex items-center gap-1.5 text-[10px] text-[#C9B99A]/70 bg-[rgba(201,185,154,0.04)] border border-[rgba(201,185,154,0.1)] hover:border-[rgba(255,149,0,0.3)] hover:text-[#FF9500] rounded-full px-2.5 py-1.5 transition-all">
+                <MapPin size={9} /> {t.name}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* State Detail Popup Modal */}
@@ -601,22 +634,76 @@ function HeritageMap() {
         )}
       </AnimatePresence>
 
-      {/* Country Detail Popup Modal */}
+      {/* Territory Detail Popup Modal */}
       <AnimatePresence>
-        {selectedCountry && COUNTRY_MARKERS[selectedCountry] && (
-          <CountryDetailModal
-            country={COUNTRY_MARKERS[selectedCountry].name}
-            countryCode={selectedCountry}
-            nations={COUNTRY_MARKERS[selectedCountry].nations}
-            onClose={() => setSelectedCountry(null)}
-          />
-        )}
+        {selectedCountry && (() => {
+          const t = TERRITORY_BY_ID.get(selectedCountry)
+          if (!t) {
+            // Fallback to old COUNTRY_MARKERS
+            const cm = COUNTRY_MARKERS[selectedCountry]
+            if (!cm) return null
+            return (
+              <CountryDetailModal
+                country={cm.name}
+                countryCode={selectedCountry}
+                nations={cm.nations}
+                onClose={() => setSelectedCountry(null)}
+              />
+            )
+          }
+          // Get nations for territory
+          let nations: typeof jamaicaNations = []
+          if (t.region === 'caribbean') {
+            if (t.id === 'jm') nations = jamaicaNations
+            else if (t.id === 'ht') nations = haitiNations
+            else nations = caribbeanNations.filter(n => {
+              const map: Record<string, string> = { cu: 'Cuba', pr: 'Puerto Rico', do: 'Dominican Republic', bs: 'Bahamas', tt: 'Trinidad & Tobago' }
+              return n.country === map[t.id]
+            })
+          }
+          // Placeholder for territories without full research yet
+          if (nations.length === 0) {
+            nations = [{
+              id: t.id,
+              name: t.name,
+              indigenousName: '',
+              alternateNames: t.nations.slice(0, 3),
+              country: t.name,
+              countryCode: t.id,
+              location: t.description,
+              coordinates: t.coords,
+              population: 'Research in progress',
+              language: '',
+              languageFamily: '',
+              status: 'Documented territory',
+              history: `The Indigenous peoples of ${t.name} include: ${t.nations.join(', ')}. Full research documents coming soon.`,
+              currentIssues: 'Documentation in progress',
+              resources: [],
+              category: 'Indigenous',
+              researchDocument: {
+                title: `${t.name}: Indigenous Heritage`,
+                subtitle: `Research document for ${t.name} — Coming Soon`,
+                lastUpdated: '2025-07-07',
+                sections: [{ heading: 'Overview', content: `The territory of ${t.name} is home to numerous Indigenous nations including ${t.nations.join(', ')}. A comprehensive research document is being compiled.` }],
+                sources: ['Research in progress — AASOTU Media Group LLC']
+              }
+            } as any]
+          }
+          return (
+            <CountryDetailModal
+              country={t.name}
+              countryCode={t.id}
+              nations={nations}
+              onClose={() => setSelectedCountry(null)}
+            />
+          )
+        })()}
       </AnimatePresence>
 
       {/* Hint when no state selected */}
       <div className="bg-[rgba(27,40,56,0.3)] rounded-lg border border-[rgba(255,149,0,0.1)] border-dashed p-5 text-center">
         <MapPin size={24} className="text-[#FF9500]/60 mx-auto mb-2" />
-        <p className="text-sm text-[#C9B99A]/70">Tap any state or Caribbean nation on the map, or use the buttons above</p>
+        <p className="text-sm text-[#C9B99A]/70">Click any marker on the map, use the search bar, or tap the buttons above to explore {ALL_TERRITORIES.length} territories across the Americas</p>
       </div>
     </div>
   )
@@ -670,7 +757,7 @@ export default function HeritageSection() {
               <Landmark size={12} /> Laws & Treaties
             </span>
             <span className="flex items-center gap-2 text-xs text-[#C9B99A] bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.15)] rounded-full px-4 py-2">
-              <Globe size={12} /> 51 States + Caribbean
+              <Globe size={12} /> 51 States + {ALL_TERRITORIES.length} Territories
             </span>
           </div>
         </ScrollReveal>
@@ -684,7 +771,7 @@ export default function HeritageSection() {
                 <span className="flex items-center justify-center w-7 h-7 rounded-full bg-[rgba(255,149,0,0.15)] border border-[rgba(255,149,0,0.25)] text-xs text-[#FF9500] font-bold shrink-0">1</span>
                 <div>
                   <p className="text-sm text-[#F0EBE1] font-medium">Click the Map</p>
-                  <p className="text-[11px] text-[#C9B99A]/70 mt-0.5">Tap any state on the US map, click Jamaica, or select from the list below</p>
+                  <p className="text-[11px] text-[#C9B99A]/70 mt-0.5">Tap any marker on the map, search, or select from the list below</p>
                 </div>
               </div>
               <div className="flex items-start gap-3 bg-[rgba(21,32,43,0.5)] rounded-lg p-3">
