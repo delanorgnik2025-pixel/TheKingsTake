@@ -320,6 +320,106 @@ function StateDetailModal({ stateKey, onClose }: { stateKey: string; onClose: ()
 }
 
 // ============================================
+// IN-MAP PLACEHOLDER POPUP (Mapbox Popup)
+// ============================================
+function createMapPopup(
+  mapboxgl: any,
+  map: any,
+  territory: TerritoryMarker,
+  onExplore: () => void,
+  onClose: () => void
+) {
+  // Remove any existing popups first
+  const existing = document.querySelectorAll('.mapboxgl-popup')
+  existing.forEach((el) => el.remove())
+
+  // Create popup HTML
+  const popupNode = document.createElement('div')
+  popupNode.innerHTML = `
+    <div style="
+      background: rgba(21, 32, 43, 0.95);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 149, 0, 0.3);
+      border-radius: 12px;
+      padding: 12px 16px;
+      min-width: 220px;
+      max-width: 280px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      font-family: 'Newsreader', Georgia, serif;
+    ">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <span style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:#FF9500;font-weight:600;">${territory.region}</span>
+        <button id="popup-close-btn" style="background:none;border:none;color:#C9B99A;cursor:pointer;padding:2px;line-height:1;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      <h3 style="font-size:16px;color:#F0EBE1;margin:0 0 4px 0;font-weight:500;">${territory.name}</h3>
+      <p style="font-size:12px;color:#C9B99A;margin:0 0 10px 0;line-height:1.4;">${territory.description}</p>
+      <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px;">
+        ${territory.nations.slice(0, 4).map((n: string) => `
+          <span style="font-size:10px;color:#FFB840;background:rgba(255,149,0,0.1);border-radius:4px;padding:2px 6px;">${n}</span>
+        `).join('')}
+        ${territory.nations.length > 4 ? `<span style="font-size:10px;color:#C9B99A60;">+${territory.nations.length - 4} more</span>` : ''}
+      </div>
+      <button id="popup-explore-btn" style="
+        width:100%;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:6px;
+        background:rgba(255,149,0,0.12);
+        border:1px solid rgba(255,149,0,0.35);
+        border-radius:8px;
+        padding:8px 12px;
+        color:#FF9500;
+        font-size:13px;
+        font-weight:500;
+        cursor:pointer;
+        transition:all 0.2s;
+        font-family:inherit;
+      " onmouseover="this.style.background='rgba(255,149,0,0.2)';this.style.borderColor='rgba(255,149,0,0.5)'" onmouseout="this.style.background='rgba(255,149,0,0.12)';this.style.borderColor='rgba(255,149,0,0.35)'">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+        Enter ${territory.name} Information
+      </button>
+    </div>
+  `
+
+  // Create the Mapbox Popup
+  const popup = new mapboxgl.Popup({
+    closeButton: false,
+    closeOnClick: false,
+    anchor: 'bottom',
+    offset: [0, -8],
+    className: 'territory-explore-popup',
+  })
+    .setLngLat(territory.coords)
+    .setDOMContent(popupNode)
+    .addTo(map)
+
+  // Attach event listeners after popup is added to DOM
+  setTimeout(() => {
+    const exploreBtn = popupNode.querySelector('#popup-explore-btn')
+    const closeBtn = popupNode.querySelector('#popup-close-btn')
+    if (exploreBtn) {
+      exploreBtn.addEventListener('click', (e) => {
+        e.stopPropagation()
+        popup.remove()
+        onExplore()
+      })
+    }
+    if (closeBtn) {
+      closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation()
+        popup.remove()
+        onClose()
+      })
+    }
+  }, 10)
+
+  return popup
+}
+
+// ============================================
 // MAP + STATE SELECTOR
 // ============================================
 
@@ -337,6 +437,8 @@ const COUNTRY_MARKERS: Record<string, { name: string; coords: [number, number]; 
 function HeritageMap() {
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<any>(null)
+  const mapboxglRef = useRef<any>(null)
+  const popupRef = useRef<any>(null)
   const [selectedState, setSelectedState] = useState<string | null>(null)
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null)
   const [focusedTerritory, setFocusedTerritory] = useState<string | null>(null)
@@ -352,6 +454,7 @@ function HeritageMap() {
     import('mapbox-gl').then((mb) => {
       if (cancelled) return
       const mapboxgl = mb.default
+      mapboxglRef.current = mapboxgl
       mapboxgl.accessToken = token
       const map = new mapboxgl.Map({
         container: mapContainerRef.current!,
@@ -374,7 +477,6 @@ function HeritageMap() {
         })
         map.setPaintProperty('satellite', 'raster-opacity', 0.7)
 
-        // Add all country markers
         // Add ALL 75+ territory markers
         ALL_TERRITORIES.forEach((territory) => {
           const markerEl = document.createElement('div')
@@ -401,6 +503,11 @@ function HeritageMap() {
         })
 
         map.on('click', (e: any) => {
+          // Clear any existing popup when clicking empty map area
+          if (popupRef.current) {
+            popupRef.current.remove()
+            popupRef.current = null
+          }
           const lng = e.lngLat.lng
           const lat = e.lngLat.lat
           for (const t of ALL_TERRITORIES) {
@@ -434,8 +541,52 @@ function HeritageMap() {
     return () => { cancelled = true }
   }, [])
 
+  // Show in-map popup when focusedTerritory changes (after flyTo completes)
+  useEffect(() => {
+    if (!focusedTerritory || !mapRef.current || !mapboxglRef.current) return
+
+    const territory = TERRITORY_BY_ID.get(focusedTerritory)
+    if (!territory) return
+
+    // Remove any existing popup
+    if (popupRef.current) {
+      popupRef.current.remove()
+      popupRef.current = null
+    }
+
+    // Wait for flyTo to complete, then show popup
+    const map = mapRef.current
+    const onMoveEnd = () => {
+      if (!TERRITORY_BY_ID.get(focusedTerritory)) return
+      const t = TERRITORY_BY_ID.get(focusedTerritory)!
+      popupRef.current = createMapPopup(
+        mapboxglRef.current,
+        map,
+        t,
+        () => { setSelectedCountry(t.id); setFocusedTerritory(null) },
+        () => { setFocusedTerritory(null) }
+      )
+    }
+
+    map.once('moveend', onMoveEnd)
+
+    return () => {
+      map.off('moveend', onMoveEnd)
+    }
+  }, [focusedTerritory])
+
+  // Clear popup when modal opens
+  useEffect(() => {
+    if (selectedCountry && popupRef.current) {
+      popupRef.current.remove()
+      popupRef.current = null
+    }
+  }, [selectedCountry])
+
   const resetMapView = () => {
     if (mapRef.current) {
+      if (popupRef.current) { popupRef.current.remove(); popupRef.current = null }
+      setFocusedTerritory(null)
       mapRef.current.flyTo({ center: [-95, 38], zoom: 3.5, duration: 1500 })
     }
   }
@@ -454,6 +605,9 @@ function HeritageMap() {
 
   useEffect(() => {
     if (selectedState && mapRef.current && STATE_COORDS[selectedState]) {
+      // Clear popup when state is selected
+      if (popupRef.current) { popupRef.current.remove(); popupRef.current = null }
+      setFocusedTerritory(null)
       const [lng, lat, zoom] = STATE_COORDS[selectedState]
       mapRef.current.flyTo({ center: [lng, lat], zoom, duration: 2000 })
     }
@@ -509,7 +663,12 @@ function HeritageMap() {
               <div className="flex items-center justify-center gap-4 md:gap-6 flex-wrap">
                 <div className="flex items-center gap-1.5 text-[10px] md:text-xs text-[#C9B99A]/70">
                   <MousePointerClick size={12} className="text-[#FF9500]/60" />
-                  <span>Click a state or Caribbean nation to explore</span>
+                  <span>Click a territory marker to explore</span>
+                </div>
+                <span className="hidden md:inline text-[#C9B99A]/20">|</span>
+                <div className="hidden md:flex items-center gap-1.5 text-[10px] md:text-xs text-[#C9B99A]/70">
+                  <span className="text-[#FF9500]/60">Tap the card</span>
+                  <span>that appears to view details</span>
                 </div>
                 <span className="hidden md:inline text-[#C9B99A]/20">|</span>
                 <div className="hidden md:flex items-center gap-1.5 text-[10px] md:text-xs text-[#C9B99A]/70">
@@ -521,7 +680,7 @@ function HeritageMap() {
                   <span className="text-[#FF9500]/60">Drag</span>
                   <span>to pan</span>
                 </div>
-                <span className="hidden md:inline text-[#C9B99A]/20">|</span>
+                <span className="flex md:hidden text-[#C9B99A]/20">|</span>
                 <div className="flex md:hidden items-center gap-1.5 text-[10px] text-[#C9B99A]/70">
                   <span className="text-[#FF9500]/60">Pinch</span>
                   <span>to zoom</span>
@@ -562,29 +721,6 @@ function HeritageMap() {
           ))}
         </div>
       </div>
-
-      {/* Focused Territory — Explore Button */}
-      {focusedTerritory && (() => {
-        const t = TERRITORY_BY_ID.get(focusedTerritory)
-        if (!t) return null
-        return (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="relative z-20"
-          >
-            <button
-              onClick={() => { setSelectedCountry(t.id); setFocusedTerritory(null) }}
-              className="w-full flex items-center justify-center gap-2 bg-[rgba(255,149,0,0.1)] border border-[rgba(255,149,0,0.3)] hover:bg-[rgba(255,149,0,0.2)] hover:border-[rgba(255,149,0,0.5)] rounded-xl py-3 transition-all"
-            >
-              <BookOpen size={14} className="text-[#FF9500]" />
-              <span className="text-sm text-[#FF9500] font-medium">Explore {t.name}</span>
-              <span className="text-[10px] text-[#C9B99A]/50 ml-1">— {t.description}</span>
-              <ChevronRight size={12} className="text-[#FF9500]/50" />
-            </button>
-          </motion.div>
-        )
-      })()}
 
       {/* Search Bar */}
       <div className="relative z-20">
@@ -764,7 +900,7 @@ export default function HeritageSection() {
               We Were Here<br className="hidden md:block" /> Before Anybody
             </h2>
             <p className="text-lg md:text-xl text-[#C9B99A] max-w-2xl leading-relaxed">
-              Discover the truth they never taught you. Tap any state on the map to explore Indigenous nations, treaties, laws, and vital records — or journey beyond to Jamaica and beyond. 275+ nations fully documented.
+              Discover the truth they never taught you. Tap any territory on the map to explore Indigenous nations, treaties, laws, and vital records — or journey beyond to Jamaica and beyond. 275+ nations fully documented.
             </p>
           </div>
         </ScrollReveal>
@@ -801,15 +937,15 @@ export default function HeritageSection() {
               <div className="flex items-start gap-3 bg-[rgba(21,32,43,0.5)] rounded-lg p-3">
                 <span className="flex items-center justify-center w-7 h-7 rounded-full bg-[rgba(255,149,0,0.15)] border border-[rgba(255,149,0,0.25)] text-xs text-[#FF9500] font-bold shrink-0">2</span>
                 <div>
-                  <p className="text-sm text-[#F0EBE1] font-medium">Become the Researcher</p>
-                  <p className="text-[11px] text-[#C9B99A]/70 mt-0.5">A window opens with tribes, laws, treaties & vital records — your evidence starts here</p>
+                  <p className="text-sm text-[#F0EBE1] font-medium">Tap the Info Card</p>
+                  <p className="text-[11px] text-[#C9B99A]/70 mt-0.5">A card appears on the map — tap "Enter [Territory] Information" to view details</p>
                 </div>
               </div>
               <div className="flex items-start gap-3 bg-[rgba(21,32,43,0.5)] rounded-lg p-3">
                 <span className="flex items-center justify-center w-7 h-7 rounded-full bg-[rgba(255,149,0,0.15)] border border-[rgba(255,149,0,0.25)] text-xs text-[#FF9500] font-bold shrink-0">3</span>
                 <div>
-                  <p className="text-sm text-[#F0EBE1] font-medium">Tap Any Nation</p>
-                  <p className="text-[11px] text-[#C9B99A]/70 mt-0.5">Click a nation name to see its full history, language, status & current issues</p>
+                  <p className="text-sm text-[#F0EBE1] font-medium">Explore the Data</p>
+                  <p className="text-[11px] text-[#C9B99A]/70 mt-0.5">Tribes, laws, treaties, vital records — your evidence starts here</p>
                 </div>
               </div>
             </div>

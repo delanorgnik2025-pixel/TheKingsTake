@@ -30,6 +30,7 @@ import RootRegistryStep1 from './pages/RootRegistryStep1'
 import NationResearchPage from './pages/NationResearchPage'
 import PreOrderPage from './pages/PreOrderPage'
 import PreOrderSuccessPage from './pages/PreOrderSuccessPage'
+import AboutAuthorPage from './pages/AboutAuthorPage'
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -109,6 +110,7 @@ function AppRoutes() {
         <Route path="/research/:nationId" element={<NationResearchPage />} />
         <Route path="/pre-order" element={<PreOrderPage />} />
         <Route path="/pre-order/success" element={<PreOrderSuccessPage />} />
+        <Route path="/about-author" element={<AboutAuthorPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AppLayout>

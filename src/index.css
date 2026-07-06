@@ -125,3 +125,33 @@
     text-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
   }
 }
+
+/* Mapbox Territory Explore Popup */
+.territory-explore-popup .mapboxgl-popup-content {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+}
+
+.territory-explore-popup .mapboxgl-popup-tip {
+  border-top-color: rgba(21, 32, 43, 0.95) !important;
+  border-width: 8px !important;
+}
+
+.territory-explore-popup.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
+  border-top-color: rgba(21, 32, 43, 0.95) !important;
+}
+
+.territory-explore-popup.mapboxgl-popup-anchor-top .mapboxgl-popup-tip {
+  border-bottom-color: rgba(21, 32, 43, 0.95) !important;
+}
+
+/* Line clamp utility */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
