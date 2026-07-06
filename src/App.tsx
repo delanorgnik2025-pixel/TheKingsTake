@@ -28,6 +28,8 @@ import AncestorPassPage from './pages/AncestorPassPage'
 import AncestorRootRegistryPage from './pages/AncestorRootRegistryPage'
 import RootRegistryStep1 from './pages/RootRegistryStep1'
 import NationResearchPage from './pages/NationResearchPage'
+import PreOrderPage from './pages/PreOrderPage'
+import PreOrderSuccessPage from './pages/PreOrderSuccessPage'
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -103,6 +105,8 @@ function AppRoutes() {
         <Route path="/ancestor-root-registry" element={<AncestorRootRegistryPage />} />
         <Route path="/root-registry/step-1" element={<RootRegistryStep1 />} />
         <Route path="/research/:nationId" element={<NationResearchPage />} />
+        <Route path="/pre-order" element={<PreOrderPage />} />
+        <Route path="/pre-order/success" element={<PreOrderSuccessPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AppLayout>

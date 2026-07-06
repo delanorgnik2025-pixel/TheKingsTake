@@ -1,10 +1,7 @@
 import { motion } from 'framer-motion'
-import { BookOpen, Star, Quote, ArrowRight } from 'lucide-react'
-import { trpc } from '@/providers/trpc'
+import { BookOpen, Star, Quote, Clock, Shield, Sparkles } from 'lucide-react'
+import { useNavigate } from 'react-router'
 import ScrollReveal from '../components/ScrollReveal'
-
-// Stripe Price ID for the book
-const BOOK_PRICE_ID = 'price_1TUuET5rzCiGdPFNiXG2ZEi6'
 
 const testimonials = [
   {
@@ -24,39 +21,17 @@ const testimonials = [
   }
 ]
 
-function BookCheckoutButton() {
-  const checkout = trpc.stripe.createCheckoutByPriceId.useMutation({
-    onSuccess: (data) => {
-      if (data.url) {
-        window.location.href = data.url
-      } else if (data.testMode) {
-        alert('Test mode: ' + data.message)
-      }
-    },
-    onError: (err) => {
-      alert('Checkout error: ' + err.message)
-    },
-  })
-
-  const handleCheckout = () => {
-    const successUrl = window.location.origin + '/?payment=success'
-    const cancelUrl = window.location.origin + '/?payment=cancelled'
-    checkout.mutate({
-      priceId: BOOK_PRICE_ID,
-      successUrl,
-      cancelUrl,
-    })
-  }
+function PreOrderButton() {
+  const navigate = useNavigate()
 
   return (
     <button 
-      onClick={handleCheckout}
-      disabled={checkout.isPending}
-      className="w-full flex items-center justify-center gap-2 rounded-full h-12 bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-['Newsreader'] tracking-[0.02em] font-medium disabled:opacity-50"
+      onClick={() => navigate('/pre-order')}
+      className="w-full flex items-center justify-center gap-2 rounded-full h-12 bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-['Newsreader'] tracking-[0.02em] font-medium"
       style={{ boxShadow: '0 4px 16px rgba(255,149,0,0.25)' }}
     >
-      <BookOpen size={18} />
-      {checkout.isPending ? 'Loading...' : 'Order Now — $19.99'}
+      <Sparkles size={18} />
+      Pre-Order Now — $19.99
     </button>
   )
 }
@@ -90,15 +65,33 @@ export default function BookPromoSection() {
 
             <ScrollReveal delay={0.25}>
               <div className="bg-[rgba(27,40,56,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.2)] p-5">
+                {/* Pre-order badge */}
+                <div className="flex items-center gap-2 mb-3 bg-[rgba(255,149,0,0.1)] border border-[rgba(255,149,0,0.2)] rounded-lg px-3 py-1.5">
+                  <Clock size={12} className="text-[#FF9500]" />
+                  <span className="text-[10px] uppercase tracking-[0.12em] text-[#FF9500] font-medium">Pre-Order — Reserve Your Copy</span>
+                </div>
+
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-3xl text-[#FF9500] font-medium">$19.99</span>
                   <div className="flex gap-1">
                     {[1,2,3,4,5].map(i => <Star key={i} size={14} className="text-[#FF9500] fill-[#FF9500]" />)}
                   </div>
                 </div>
-                <p className="text-xs text-[#C9B99A] mb-2">Digital Edition — Available Now</p>
+                <p className="text-xs text-[#C9B99A] mb-2">Digital Edition — Pre-Order</p>
                 <p className="text-[10px] text-[#C9B99A]/60 mb-4">Paperback ($24.99) &amp; Signed Edition ($49.99) coming soon</p>
-                <BookCheckoutButton />
+                <PreOrderButton />
+
+                {/* Pre-order guarantees */}
+                <div className="mt-4 space-y-2">
+                  <div className="flex items-center gap-2 text-[10px] text-[#C9B99A]/50">
+                    <Shield size={10} className="text-[#FF9500]/40 shrink-0" />
+                    <span>Secure payment via Stripe</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-[10px] text-[#C9B99A]/50">
+                    <Clock size={10} className="text-[#FF9500]/40 shrink-0" />
+                    <span>Full refund anytime before release</span>
+                  </div>
+                </div>
               </div>
             </ScrollReveal>
           </div>
