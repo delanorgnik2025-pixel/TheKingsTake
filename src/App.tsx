@@ -2,6 +2,7 @@ import { Routes, Route, useLocation } from 'react-router'
 import { useEffect, useRef, useCallback, useState } from 'react'
 import Lenis from 'lenis'
 import Navigation from './components/Navigation'
+import MenuOverlay from './components/MenuOverlay'
 import CustomCursor from './components/CustomCursor'
 import AudioExperience from './components/AudioExperience'
 
@@ -27,6 +28,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
       <CustomCursor />
       <AudioExperience />
       <Navigation onMenuToggle={() => setMenuOpen(true)} onNavClick={scrollToSection} />
+      <MenuOverlay isOpen={menuOpen} onClose={() => setMenuOpen(false)} onNavClick={scrollToSection} />
       {children}
     </>
   )
@@ -37,7 +39,7 @@ export default function App() {
     <Routes>
       <Route path="*" element={
         <AppLayout>
-          <div style={{ padding: '100px', color: 'red', fontSize: '40px' }}>CURSOR+AUDIO WORKS</div>
+          <div style={{ padding: '100px', color: 'red', fontSize: '40px' }}>MENU WORKS</div>
         </AppLayout>
       } />
     </Routes>
