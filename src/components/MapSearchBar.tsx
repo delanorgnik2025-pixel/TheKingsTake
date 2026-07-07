@@ -39,21 +39,50 @@ function useVoiceSearch(onResult: (text: string) => void) {
 
 interface Props {
   onSelectTerritory: (territory: TerritoryMarker) => void
+  /** When voice/auto search finds a match, this is called to fly + popup */
+  onAutoSelect?: (territory: TerritoryMarker) => void
 }
 
-export default function MapSearchBar({ onSelectTerritory }: Props) {
+export default function MapSearchBar({ onSelectTerritory, onAutoSelect }: Props) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<ReturnType<typeof searchTerritories>>([])
   const [isOpen, setIsOpen] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
+  // Voice result handler — auto-selects best match
   const handleVoiceResult = useCallback((text: string) => {
+    const cleanText = text.trim().toLowerCase()
     setQuery(text)
+
+    // Try exact match first
+    const exactMatch = ALL_TERRITORIES.find(t =>
+      t.name.toLowerCase() === cleanText ||
+      t.nations.some(n => n.toLowerCase() === cleanText)
+    )
+
+    if (exactMatch && onAutoSelect) {
+      setResults([])
+      setIsOpen(false)
+      onAutoSelect(exactMatch)
+      return
+    }
+
+    // Fuzzy search
     const r = searchTerritories(text)
+
+    // If only 1 result, auto-select it
+    if (r.length === 1 && onAutoSelect) {
+      setResults([])
+      setIsOpen(false)
+      onAutoSelect(r[0].territory)
+      return
+    }
+
+    // Otherwise show dropdown
     setResults(r)
     setIsOpen(r.length > 0)
-  }, [])
+  }, [onAutoSelect])
 
   const { isListening, isSupported, toggle: toggleVoice } = useVoiceSearch(handleVoiceResult)
 
@@ -99,6 +128,11 @@ export default function MapSearchBar({ onSelectTerritory }: Props) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => results.length > 0 && setIsOpen(true)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && results.length > 0) {
+              handleSelect(results[0])
+            }
+          }}
           placeholder="Search nations, tribes, or territories..."
           className="w-full bg-[rgba(27,40,56,0.7)] border border-[rgba(255,149,0,0.2)] rounded-xl pl-10 pr-20 py-3 text-sm text-[#F0EBE1] placeholder:text-[#C9B99A]/30 focus:outline-none focus:border-[rgba(255,149,0,0.5)] transition-colors"
         />

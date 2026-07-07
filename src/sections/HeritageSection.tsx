@@ -724,12 +724,21 @@ function HeritageMap() {
 
       {/* Search Bar */}
       <div className="relative z-20">
-        <MapSearchBar onSelectTerritory={(territory) => {
-          setFocusedTerritory(territory.id)
-          if (mapRef.current) {
-            mapRef.current.flyTo({ center: territory.coords, zoom: territory.zoom, duration: 2000 })
-          }
-        }} />
+        <MapSearchBar
+          onSelectTerritory={(territory) => {
+            setFocusedTerritory(territory.id)
+            if (mapRef.current) {
+              mapRef.current.flyTo({ center: territory.coords, zoom: territory.zoom, duration: 2000 })
+            }
+          }}
+          onAutoSelect={(territory) => {
+            // Voice search auto-select: same flyTo + popup flow
+            setFocusedTerritory(territory.id)
+            if (mapRef.current) {
+              mapRef.current.flyTo({ center: territory.coords, zoom: territory.zoom, duration: 2000 })
+            }
+          }}
+        />
       </div>
 
       {/* Territory quick-access buttons by region */}

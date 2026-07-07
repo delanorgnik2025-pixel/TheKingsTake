@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { motion } from 'framer-motion'
-import { BookOpen, Shield, ArrowLeft, Sparkles, Mail, FileText, Star, Quote } from 'lucide-react'
+import { BookOpen, Shield, ArrowLeft, Sparkles, Mail, FileText, Star, Quote, Clock, CheckCircle } from 'lucide-react'
 import { trpc } from '@/providers/trpc'
 import ScrollReveal from '../components/ScrollReveal'
 

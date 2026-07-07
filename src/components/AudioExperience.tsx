@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Volume2, VolumeX, Play, Pause, Music, ChevronRight } from 'lucide-react'
 
 const AUDIO_SRC = '/audio/ambient-heritage.mp3'
-const STORAGE_KEY = 'thekingstake-audio-pref'
+const SESSION_KEY = 'tk-audio-session'
 
 // Floating audio control (visible after user opts in)
 function FloatingAudioControl({ audioRef }: { audioRef: React.RefObject<HTMLAudioElement | null> }) {
@@ -118,14 +118,19 @@ function FloatingAudioControl({ audioRef }: { audioRef: React.RefObject<HTMLAudi
   )
 }
 
-// Entrance overlay — first visit only
+// Entrance overlay — shown every NEW browser session (not permanently)
 function EntranceOverlay({ onEnter, onEnterWithSound }: { onEnter: () => void; onEnterWithSound: () => void }) {
+  // Ensure tap works on mobile by using onTouchEnd + onClick
+  const handleSound = useCallback(() => onEnterWithSound(), [onEnterWithSound])
+  const handleQuiet = useCallback(() => onEnter(), [onEnter])
+
   return (
     <motion.div
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.8, ease: 'easeInOut' }}
       className="fixed inset-0 z-[100] bg-[#0a0f1a] flex items-center justify-center"
+      style={{ touchAction: 'manipulation' }}
     >
       {/* Cosmic background effect */}
       <div className="absolute inset-0 bg-cover bg-center opacity-30" style={{ backgroundImage: 'url(/images/cosmic-bg.jpg)' }} />
@@ -159,22 +164,27 @@ function EntranceOverlay({ onEnter, onEnterWithSound }: { onEnter: () => void; o
           Enter the experience. Explore 225+ Indigenous nations, tribal rolls, treaties, and the records they tried to hide.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+        {/* Mobile-optimized buttons — larger tap targets, full width on small screens */}
+        <div className="flex flex-col gap-3 justify-center">
           <button
-            onClick={onEnterWithSound}
-            className="flex items-center justify-center gap-2 bg-[rgba(255,149,0,0.15)] border border-[rgba(255,149,0,0.4)] text-[#FF9500] rounded-xl px-6 py-3.5 hover:bg-[rgba(255,149,0,0.25)] transition-all group"
+            onClick={handleSound}
+            onTouchEnd={(e) => { e.preventDefault(); handleSound() }}
+            className="flex items-center justify-center gap-2 bg-[rgba(255,149,0,0.15)] border border-[rgba(255,149,0,0.4)] text-[#FF9500] rounded-xl px-6 py-4 min-h-[52px] hover:bg-[rgba(255,149,0,0.25)] transition-all active:scale-95 select-none"
+            style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
           >
-            <Music size={16} />
-            <span className="text-sm font-medium">Enter With Sound</span>
-            <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
+            <Music size={18} />
+            <span className="text-base font-medium">Enter With Sound</span>
+            <ChevronRight size={16} />
           </button>
 
           <button
-            onClick={onEnter}
-            className="flex items-center justify-center gap-2 bg-[rgba(27,40,56,0.6)] border border-[rgba(255,149,0,0.15)] text-[#C9B99A] rounded-xl px-6 py-3.5 hover:border-[rgba(255,149,0,0.3)] hover:text-[#F0EBE1] transition-all"
+            onClick={handleQuiet}
+            onTouchEnd={(e) => { e.preventDefault(); handleQuiet() }}
+            className="flex items-center justify-center gap-2 bg-[rgba(27,40,56,0.6)] border border-[rgba(255,149,0,0.15)] text-[#C9B99A] rounded-xl px-6 py-4 min-h-[52px] hover:border-[rgba(255,149,0,0.3)] hover:text-[#F0EBE1] transition-all active:scale-95 select-none"
+            style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
           >
-            <span className="text-sm">Enter Quietly</span>
-            <ChevronRight size={14} />
+            <span className="text-base">Enter Quietly</span>
+            <ChevronRight size={16} />
           </button>
         </div>
 
@@ -195,15 +205,12 @@ export default function AudioExperience() {
   const [audioEnabled, setAudioEnabled] = useState(false)
 
   useEffect(() => {
-    const pref = localStorage.getItem(STORAGE_KEY)
-    if (pref === null) {
-      // First visit — show overlay
+    // Use sessionStorage so prompt shows every new browser session
+    // NOT localStorage — user wants to see it on each fresh visit
+    const dismissedThisSession = sessionStorage.getItem(SESSION_KEY)
+    if (dismissedThisSession !== 'dismissed') {
       setShowOverlay(true)
-    } else if (pref === 'on') {
-      // Returning user who had sound on
-      setAudioEnabled(true)
     }
-    // pref === 'off' → silent, no overlay
   }, [])
 
   useEffect(() => {
@@ -217,13 +224,13 @@ export default function AudioExperience() {
   }, [audioEnabled])
 
   const handleEnterWithSound = useCallback(() => {
-    localStorage.setItem(STORAGE_KEY, 'on')
+    sessionStorage.setItem(SESSION_KEY, 'dismissed')
     setAudioEnabled(true)
     setShowOverlay(false)
   }, [])
 
   const handleEnterSilent = useCallback(() => {
-    localStorage.setItem(STORAGE_KEY, 'off')
+    sessionStorage.setItem(SESSION_KEY, 'dismissed')
     setAudioEnabled(false)
     setShowOverlay(false)
   }, [])
@@ -233,7 +240,7 @@ export default function AudioExperience() {
       {/* Hidden audio element */}
       <audio ref={audioRef} src={AUDIO_SRC} preload="auto" />
 
-      {/* Entrance overlay (first visit only) */}
+      {/* Entrance overlay — shown every new session */}
       <AnimatePresence>
         {showOverlay && (
           <EntranceOverlay onEnter={handleEnterSilent} onEnterWithSound={handleEnterWithSound} />
