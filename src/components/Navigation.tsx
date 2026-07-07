@@ -89,6 +89,7 @@ export default function Navigation({ onMenuToggle, onNavClick }: NavigationProps
         </div>
 
         <Link to="/civics" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200">Civics</Link>
+        <Link to="/aasotu" className="text-[#C9B99A] text-sm hover:text-[#FF9500] transition-colors duration-200">AASOTU</Link>
         <Link to="/about-author" className="text-[#C9B99A] text-sm hover:text-[#FF9500] transition-colors duration-200 flex items-center gap-1">
           <User size={13} /> About
         </Link>
@@ -134,6 +135,7 @@ export default function Navigation({ onMenuToggle, onNavClick }: NavigationProps
             </div>
 
             <Link to="/civics" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Civics</Link>
+            <Link to="/aasotu" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">AASOTU Media</Link>
             <Link to="/about-author" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500] flex items-center gap-2">
               <User size={16} /> About
             </Link>

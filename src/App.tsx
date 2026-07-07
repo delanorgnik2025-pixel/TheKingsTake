@@ -23,6 +23,7 @@ const AdminDashboardPage = lazy(() => import('./pages/AdminDashboard'))
 const PreOrderPage = lazy(() => import('./pages/PreOrderPage'))
 const PreOrderSuccessPage = lazy(() => import('./pages/PreOrderSuccessPage'))
 const AboutAuthorPage = lazy(() => import('./pages/AboutAuthorPage'))
+const AasotuBrandPage = lazy(() => import('./pages/AasotuBrandPage'))
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -79,6 +80,7 @@ function AppRoutes() {
           <Route path="/pre-order" element={<PreOrderPage />} />
           <Route path="/pre-order/success" element={<PreOrderSuccessPage />} />
           <Route path="/about-author" element={<AboutAuthorPage />} />
+        <Route path="/aasotu" element={<AasotuBrandPage />} />
           <Route path="*" element={<HomePage />} />
         </Routes>
       </Suspense>

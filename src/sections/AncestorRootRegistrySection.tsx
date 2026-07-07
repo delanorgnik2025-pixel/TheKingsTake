@@ -13,12 +13,20 @@ export default function AncestorRootRegistrySection() {
       className="relative w-full overflow-hidden"
       style={{ minHeight: 'clamp(500px, 70vh, 800px)' }}
     >
-      {/* Background image */}
+      {/* Background image — desktop vs mobile */}
       <div className="absolute inset-0">
+        {/* Desktop image (hidden on mobile) */}
         <img
           src="/images/ancestor-root-registry-hero.jpg"
           alt="Ancestor Root Registry"
-          className={`w-full h-full object-cover object-center transition-opacity duration-1000 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+          className={`hidden md:block w-full h-full object-cover object-center transition-opacity duration-1000 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+          onLoad={() => setLoaded(true)}
+        />
+        {/* Mobile image (hidden on desktop) — THE LAW 9:16 */}
+        <img
+          src="/images/ancestor-root-registry-mobile.jpg"
+          alt="Ancestor Root Registry"
+          className={`block md:hidden w-full h-full object-cover object-top transition-opacity duration-1000 ${loaded ? 'opacity-100' : 'opacity-0'}`}
           onLoad={() => setLoaded(true)}
         />
         {!loaded && <div className="absolute inset-0 bg-[#05080e]" />}

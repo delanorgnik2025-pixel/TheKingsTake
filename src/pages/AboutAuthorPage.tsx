@@ -92,7 +92,7 @@ const PORTFOLIO_ITEMS = [
     subtitle: 'The People\'s Voice',
     description: 'Independent media company providing investigative journalism, publishing, speechwriting, book development, and content creation. Building platforms that amplify truth and empower communities.',
     tags: ['Media Company', 'Publishing', 'Writing Services'],
-    link: '/#services',
+    link: '/aasotu',
     icon: Mic,
     color: '#C9B99A',
   },
