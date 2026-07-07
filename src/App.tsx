@@ -3,6 +3,7 @@ import { useEffect, useRef, useCallback, useState } from 'react'
 import Lenis from 'lenis'
 import Navigation from './components/Navigation'
 import MenuOverlay from './components/MenuOverlay'
+import Footer from './components/Footer'
 import CustomCursor from './components/CustomCursor'
 import AudioExperience from './components/AudioExperience'
 
@@ -30,6 +31,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
       <Navigation onMenuToggle={() => setMenuOpen(true)} onNavClick={scrollToSection} />
       <MenuOverlay isOpen={menuOpen} onClose={() => setMenuOpen(false)} onNavClick={scrollToSection} />
       {children}
+      <Footer onNavClick={scrollToSection} />
     </>
   )
 }
@@ -39,7 +41,7 @@ export default function App() {
     <Routes>
       <Route path="*" element={
         <AppLayout>
-          <div style={{ padding: '100px', color: 'red', fontSize: '40px' }}>MENU WORKS</div>
+          <div style={{ padding: '100px', color: 'red', fontSize: '40px' }}>FOOTER TEST</div>
         </AppLayout>
       } />
     </Routes>
