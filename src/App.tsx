@@ -6,6 +6,7 @@ import MenuOverlay from './components/MenuOverlay'
 import Footer from './components/Footer'
 import CustomCursor from './components/CustomCursor'
 import AudioExperience from './components/AudioExperience'
+import ScrollToTop from './components/ScrollToTop'
 
 // ============================================
 // LAZY-LOADED PAGES — Prevents eager import crashes
@@ -64,6 +65,7 @@ function AppRoutes() {
 
   return (
     <AppLayout>
+      <ScrollToTop />
       <Suspense fallback={<div className="min-h-screen bg-[#0a0f1a]" />}>
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<HomePage />} />
