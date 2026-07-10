@@ -289,7 +289,7 @@ export default function HeritageSection() {
       markerEl.addEventListener('click', () => { handleSelectTerritory(territory) })
 
       const marker = new mapboxglRef.current.Marker({ element: markerEl, anchor: 'center' })
-        .setLngLat(territory.coordinates)
+        .setLngLat(territory.coords)
         .addTo(mapRef.current)
       markersRef.current.push(marker)
     })
@@ -320,7 +320,7 @@ export default function HeritageSection() {
     setSelectedTerritory(territory)
     if (mapRef.current) {
       mapRef.current.flyTo({
-        center: territory.coordinates,
+        center: territory.coords,
         zoom: territory.zoom || 7,
         duration: 1200,
         essential: true
