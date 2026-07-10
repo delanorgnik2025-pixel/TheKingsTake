@@ -541,21 +541,21 @@ function createMapPopup(
   document.querySelectorAll('.mapboxgl-popup').forEach((el) => el.remove())
   const popupNode = document.createElement('div')
   popupNode.innerHTML = `
-    <div style="background:rgba(21,32,43,0.95);backdrop-filter:blur(12px);border:1px solid rgba(255,149,0,0.3);border-radius:12px;padding:12px 16px;min-width:220px;max-width:280px;box-shadow:0 8px 32px rgba(0,0,0,0.5);font-family:'Newsreader',Georgia,serif;">
+    <div style="background:rgba(21,32,43,0.95);backdrop-filter:blur(12px);border:1px solid rgba(255,149,0,0.3);border-radius:16px;padding:16px 20px;min-width:320px;max-width:420px;box-shadow:0 12px 40px rgba(0,0,0,0.6);font-family:'Newsreader',Georgia,serif;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-        <span style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:#FF9500;font-weight:600;">${territory.region}</span>
-        <button id="popup-close-btn" style="background:none;border:none;color:#C9B99A;cursor:pointer;padding:2px;line-height:1;">
+        <span style="font-size:12px;text-transform:uppercase;letter-spacing:0.1em;color:#FF9500;font-weight:600;">${territory.region}</span>
+        <button id="popup-close-btn" style="background:none;border:none;color:#C9B99A;cursor:pointer;padding:4px;line-height:1;border-radius:4px;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
       </div>
-      <h3 style="font-size:16px;color:#F0EBE1;margin:0 0 4px 0;font-weight:500;">${territory.name}</h3>
-      <p style="font-size:12px;color:#C9B99A;margin:0 0 10px 0;line-height:1.4;">${territory.description}</p>
+      <h3 style="font-size:20px;color:#F0EBE1;margin:0 0 6px 0;font-weight:500;">${territory.name}</h3>
+      <p style="font-size:13px;color:#C9B99A;margin:0 0 12px 0;line-height:1.5;">${territory.description}</p>
       <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px;">
-        ${territory.nations.slice(0, 4).map((n: string) => `<span style="font-size:10px;color:#FFB840;background:rgba(255,149,0,0.1);border-radius:4px;padding:2px 6px;">${n}</span>`).join('')}
-        ${territory.nations.length > 4 ? `<span style="font-size:10px;color:#C9B99A60;">+${territory.nations.length - 4} more</span>` : ''}
+        ${territory.nations.slice(0, 6).map((n: string) => `<span style="font-size:11px;color:#FFB840;background:rgba(255,149,0,0.1);border-radius:6px;padding:3px 8px;">${n}</span>`).join('')}
+        ${territory.nations.length > 6 ? `<span style="font-size:11px;color:#C9B99A60;">+${territory.nations.length - 6} more</span>` : ''}
       </div>
-      <button id="popup-explore-btn" style="width:100%;display:flex;align-items:center;justify-content:center;gap:6px;background:rgba(255,149,0,0.12);border:1px solid rgba(255,149,0,0.35);border-radius:8px;padding:8px 12px;color:#FF9500;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;font-family:inherit;" onmouseover="this.style.background='rgba(255,149,0,0.2')" onmouseout="this.style.background='rgba(255,149,0,0.12)'">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+      <button id="popup-explore-btn" style="width:100%;display:flex;align-items:center;justify-content:center;gap:6px;background:rgba(255,149,0,0.12);border:1px solid rgba(255,149,0,0.35);border-radius:10px;padding:10px 14px;color:#FF9500;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.2s;font-family:inherit;" onmouseover="this.style.background='rgba(255,149,0,0.2')" onmouseout="this.style.background='rgba(255,149,0,0.12)'">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
         Explore ${territory.name}
       </button>
     </div>`
@@ -623,7 +623,7 @@ function HeritageMap({
         container: mapContainerRef.current!,
         style: 'mapbox://styles/mapbox/satellite-streets-v12',
         center: [-95, 38], zoom: 3.5, interactive: true,
-        attributionControl: false, cooperativeGestures: true,
+        attributionControl: false,
       })
       mapRef.current = map
       if (externalMapRef) (externalMapRef as any).current = map
@@ -635,17 +635,17 @@ function HeritageMap({
         ALL_TERRITORIES.forEach((territory) => {
           const markerEl = document.createElement('div')
           markerEl.className = 'territory-marker'
-          const sz = territory.region === 'southAmerica' ? 14 : 16
+          const sz = territory.region === 'southAmerica' ? 18 : 22
           markerEl.innerHTML = `
             <div style="width:${sz}px;height:${sz}px;border-radius:50%;background:rgba(255,149,0,0.75);border:2px solid #FF9500;box-shadow:0 0 8px rgba(255,149,0,0.5);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform 0.2s;">
-              <div style="width:4px;height:4px;border-radius:50%;background:#F0EBE1;"></div>
+              <div style="width:6px;height:6px;border-radius:50%;background:#F0EBE1;"></div>
             </div>
             <div style="position:absolute;top:${sz+4}px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:8px;font-weight:600;color:#FF9500;text-shadow:0 1px 2px rgba(0,0,0,0.9);pointer-events:none;">${territory.name}</div>
           `
           markerEl.style.position = 'relative'
           const dot = markerEl.querySelector('div')!
-          markerEl.addEventListener('mouseenter', () => { dot.style.transform = 'scale(1.3)' })
-          markerEl.addEventListener('mouseleave', () => { dot.style.transform = 'scale(1)' })
+          markerEl.addEventListener('mouseenter', () => { dot.style.transform = 'scale(1.5)'; dot.style.boxShadow = '0 0 16px rgba(255,149,0,0.8)'; })
+          markerEl.addEventListener('mouseleave', () => { dot.style.transform = 'scale(1)'; dot.style.boxShadow = '0 0 8px rgba(255,149,0,0.5)'; })
           markerEl.addEventListener('click', (e) => {
             e.stopPropagation()
             setFocusedTerritory(territory.id)
@@ -749,25 +749,15 @@ function HeritageMap({
           </div>
         ) : (
           <>
-            <div ref={mapContainerRef} className="h-[350px] md:h-[450px] w-full" />
+            <div ref={mapContainerRef} className="h-[450px] md:h-[550px] w-full" />
             <div className="absolute top-3 right-3 flex flex-col gap-1.5 z-10">
               <button onClick={zoomIn} className="w-9 h-9 flex items-center justify-center rounded-lg bg-[#15202B]/90 backdrop-blur border border-[rgba(255,149,0,0.25)] text-[#C9B99A] hover:text-[#FF9500] transition-all"><Plus size={16} /></button>
               <button onClick={zoomOut} className="w-9 h-9 flex items-center justify-center rounded-lg bg-[#15202B]/90 backdrop-blur border border-[rgba(255,149,0,0.25)] text-[#C9B99A] hover:text-[#FF9500] transition-all"><Minus size={16} /></button>
               <button onClick={resetMapView} className="w-9 h-9 flex items-center justify-center rounded-lg bg-[#15202B]/90 backdrop-blur border border-[rgba(255,149,0,0.25)] text-[#C9B99A] hover:text-[#FF9500] transition-all"><Maximize2 size={14} /></button>
             </div>
-            <div className="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-[#0a0f1a] via-[#0a0f1a]/90 to-transparent pt-8 pb-3 px-4">
-              <div className="flex items-center justify-center gap-4 md:gap-6 flex-wrap">
-                <div className="flex items-center gap-1.5 text-[10px] md:text-xs text-[#C9B99A]/70"><MousePointerClick size={12} className="text-[#FF9500]/60" /><span>Click a territory marker to explore</span></div>
-                <span className="hidden md:inline text-[#C9B99A]/20">|</span>
-                <div className="hidden md:flex items-center gap-1.5 text-[10px] md:text-xs text-[#C9B99A]/70"><span className="text-[#FF9500]/60">Tap the card</span><span>that appears to view details</span></div>
-                <span className="hidden md:inline text-[#C9B99A]/20">|</span>
-                <div className="hidden md:flex items-center gap-1.5 text-[10px] md:text-xs text-[#C9B99A]/70"><span className="text-[#FF9500]/60">Scroll</span><span>to zoom</span></div>
-                <span className="hidden md:inline text-[#C9B99A]/20">|</span>
-                <div className="hidden md:flex items-center gap-1.5 text-[10px] md:text-xs text-[#C9B99A]/70"><span className="text-[#FF9500]/60">Drag</span><span>to pan</span></div>
-                <span className="flex md:hidden text-[#C9B99A]/20">|</span>
-                <div className="flex md:hidden items-center gap-1.5 text-[10px] text-[#C9B99A]/70"><span className="text-[#FF9500]/60">Pinch</span><span>to zoom</span></div>
-                <span className="flex md:hidden text-[#C9B99A]/20">|</span>
-                <div className="flex md:hidden items-center gap-1.5 text-[10px] text-[#C9B99A]/70"><span className="text-[#FF9500]/60">Two fingers</span><span>to pan</span></div>
+            <div className="absolute bottom-2 left-0 right-0 z-10 pointer-events-none">
+              <div className="flex items-center justify-center">
+                <span className="text-[10px] text-[#C9B99A]/30 pointer-events-auto bg-[#0a0f1a]/60 backdrop-blur-sm rounded-full px-3 py-1">Tap markers to explore &middot; Scroll to zoom &middot; Drag to pan</span>
               </div>
             </div>
           </>
