@@ -806,12 +806,12 @@ function HeritageMap({
         )}
       </AnimatePresence>
 
-      {/* Old CountryDetailModal fallback */}
+      {/* Country Detail Modal (Jamaica, Haiti, Cuba, etc.) */}
       <AnimatePresence>
         {selectedCountry && (() => {
           const cm = COUNTRY_MARKERS[selectedCountry]
           if (!cm) return null
-          return <CountryDetailModal country={cm.name} countryCode={selectedCountry} nations={cm.nations} onClose={() => setSelectedCountry(null)} />
+          return <CountryDetailModal country={cm.name} countryCode={selectedCountry} nations={cm.nations} onClose={() => { setSelectedCountry(null); setSelectedTerritory(null) }} />
         })()}
       </AnimatePresence>
     </div>
@@ -824,6 +824,7 @@ function HeritageMap({
 export default function HeritageSection() {
   const [selectedTerritory, setSelectedTerritory] = useState<TerritoryMarker | null>(null)
   const [selectedState, setSelectedState] = useState<string | null>(null)
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<ReturnType<typeof searchTerritories>>([])
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -843,6 +844,40 @@ export default function HeritageSection() {
   // Handle territory selection from any source
   const handleTerritorySelect = useCallback((territory: TerritoryMarker) => {
     setSelectedState(null)
+    // Check if this territory has full nation data → open CountryDetailModal
+    if (territory.id === 'jm') { setSelectedCountry('jamaica'); setSelectedTerritory(null); scrollToMap(); return }
+    if (territory.id === 'ht') { setSelectedCountry('haiti'); setSelectedTerritory(null); scrollToMap(); return }
+    // For other territories, check if they have nation data in panIndigenousData
+    const hasFullData = (() => {
+      if (territory.region === 'caribbean') {
+        const countryMap: Record<string, string> = {
+          cu: 'Cuba', pr: 'Puerto Rico', do: 'Dominican Republic', bs: 'Bahamas', tt: 'Trinidad & Tobago'
+        }
+        const cn = countryMap[territory.id]
+        if (cn) return caribbeanNations.some(n => n.country === cn)
+      }
+      if (territory.region === 'canada') return canadaNations.some(n => n.country === territory.name)
+      if (territory.region === 'mexico') return mexicoNations.some(n => n.country === territory.name)
+      if (territory.region === 'centralAmerica') return centralAmericaNations.some(n => n.country === territory.name)
+      if (territory.region === 'southAmerica') return southAmericaNations.some(n => n.country === territory.name)
+      return false
+    })()
+    if (hasFullData) {
+      // Find matching COUNTRY_MARKERS key or create one
+      const countryKey = territory.id === 'cu' ? 'cuba'
+        : territory.id === 'pr' ? 'puertoRico'
+        : territory.id === 'do' ? 'dominicanRepublic'
+        : territory.id === 'bs' ? 'bahamas'
+        : territory.id === 'tt' ? 'trinidadTobago'
+        : null
+      if (countryKey && COUNTRY_MARKERS[countryKey]) {
+        setSelectedCountry(countryKey)
+        setSelectedTerritory(null)
+        scrollToMap()
+        return
+      }
+    }
+    // Fallback: show inline panel
     setSelectedTerritory(territory)
     scrollToMap()
   }, [scrollToMap])
@@ -850,6 +885,7 @@ export default function HeritageSection() {
   // Handle state selection
   const handleStateSelect = useCallback((state: string) => {
     setSelectedTerritory(null)
+    setSelectedCountry(null)
     setSelectedState(state)
     scrollToMap()
   }, [scrollToMap])
