@@ -1,6 +1,5 @@
 import HeroSection from '../sections/HeroSection'
 import HeroPortraitSection from '../sections/HeroPortraitSection'
-import NewsBroadcast from '../components/NewsBroadcast'
 import HeritageSection from '../sections/HeritageSection'
 import AncestryResearchSection from '../sections/AncestryResearchSection'
 import AboutSection from '../sections/AboutSection'
@@ -21,7 +20,6 @@ export default function HomePage() {
       {/* 2. Book Promo + Blog Feed + Video Box */}
       <MarqueeDivider text="#TheKingsTake — From the Loins of the Beast — The African American State of the Union — Pre-Order Now" />
       <HeroSection />
-      <NewsBroadcast />
 
       {/* 3. Indigenous Soul Tribe Map — Cosmic aesthetic continues */}
       <MarqueeDivider text="#TheKingsTake — We Were Here Before Anybody — Discover Your Roots — 225+ Nations Documented — The Land Remembers" />

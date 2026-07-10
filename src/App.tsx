@@ -21,10 +21,12 @@ const AncestorRootRegistryPage = lazy(() => import('./pages/AncestorRootRegistry
 const CivicsPage = lazy(() => import('./pages/CivicsPage'))
 const AdminLoginPage = lazy(() => import('./pages/AdminLogin'))
 const AdminDashboardPage = lazy(() => import('./pages/AdminDashboard'))
+const AdminVideosPage = lazy(() => import('./pages/AdminVideosPage'))
 const PreOrderPage = lazy(() => import('./pages/PreOrderPage'))
 const PreOrderSuccessPage = lazy(() => import('./pages/PreOrderSuccessPage'))
 const AboutAuthorPage = lazy(() => import('./pages/AboutAuthorPage'))
 const AasotuBrandPage = lazy(() => import('./pages/AasotuBrandPage'))
+const ArticlePage = lazy(() => import('./pages/ArticlePage'))
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -79,10 +81,12 @@ function AppRoutes() {
           <Route path="/civics" element={<CivicsPage />} />
           <Route path="/admin/login" element={<AdminLoginPage />} />
           <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+        <Route path="/admin/videos" element={<AdminVideosPage />} />
           <Route path="/pre-order" element={<PreOrderPage />} />
           <Route path="/pre-order/success" element={<PreOrderSuccessPage />} />
           <Route path="/about-author" element={<AboutAuthorPage />} />
         <Route path="/aasotu" element={<AasotuBrandPage />} />
+        <Route path="/article/:slug" element={<ArticlePage />} />
           <Route path="*" element={<HomePage />} />
         </Routes>
       </Suspense>

@@ -132,6 +132,25 @@ export const petitionSigners = mysqlTable("petition_signers", {
 export type PetitionSigner = typeof petitionSigners.$inferSelect;
 export type InsertPetitionSigner = typeof petitionSigners.$inferInsert;
 
+// ─── Videos ────────────────────────────────────────────────
+export const videos = mysqlTable("videos", {
+  id: serial("id").primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description"),
+  youtubeId: varchar("youtubeId", { length: 50 }),
+  thumbnail: varchar("thumbnail", { length: 500 }),
+  duration: varchar("duration", { length: 20 }),
+  category: varchar("category", { length: 50 }).default("talk").notNull(),
+  isLive: boolean("isLive").default(false).notNull(),
+  isFeatured: boolean("isFeatured").default(false).notNull(),
+  published: boolean("published").default(true).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull().$onUpdate(() => new Date()),
+});
+
+export type Video = typeof videos.$inferSelect;
+export type InsertVideo = typeof videos.$inferInsert;
+
 // ─── Story Submissions ─────────────────────────────────────
 export const storySubmissions = mysqlTable("story_submissions", {
   id: serial("id").primaryKey(),

@@ -9,7 +9,7 @@ import {
 import ScrollReveal from '../components/ScrollReveal'
 import { STATE_DATA, POPULAR_STATES, STATE_COORDS, TRIBE_DB, TREATY_DB } from '../data/heritageData'
 import type { TribeDetail } from '../data/heritageData'
-import { jamaicaNations, haitiNations, caribbeanNations } from '../data/panIndigenousData'
+import { jamaicaNations, haitiNations, caribbeanNations, canadaNations, mexicoNations, centralAmericaNations, southAmericaNations } from '../data/panIndigenousData'
 import CountryDetailModal from '../components/CountryDetailModal'
 import { ALL_TERRITORIES, TERRITORY_BY_ID, searchTerritories, type TerritoryMarker, REGION_LABELS } from '../data/territoryMarkers'
 
@@ -75,17 +75,41 @@ function TerritoryDetailPanel({
     if (territory.id === 'ht') {
       return { type: 'full' as const, nations: haitiNations }
     }
-    // Other Caribbean with data
+    // Caribbean nations
     if (territory.region === 'caribbean') {
       const countryMap: Record<string, string> = {
         cu: 'Cuba', pr: 'Puerto Rico', do: 'Dominican Republic',
-        bs: 'Bahamas', tt: 'Trinidad & Tobago'
+        bs: 'Bahamas', tt: 'Trinidad & Tobago', ag: 'Antigua & Barbuda',
+        dm: 'Dominica', gd: 'Grenada', kn: 'St. Kitts & Nevis',
+        lc: 'St. Lucia', vc: 'St. Vincent', bb: 'Barbados',
+        vi: 'US Virgin Islands', ky: 'Cayman Islands', tc: 'Turks & Caicos',
+        gp: 'Guadeloupe', mq: 'Martinique', aw: 'Aruba', cw: 'Curacao', bo: 'Bonaire'
       }
       const countryName = countryMap[territory.id]
       if (countryName) {
         const filtered = caribbeanNations.filter(n => n.country === countryName)
         if (filtered.length > 0) return { type: 'partial' as const, nations: filtered }
       }
+    }
+    // Canada
+    if (territory.region === 'canada') {
+      const filtered = canadaNations.filter(n => n.country === territory.name)
+      if (filtered.length > 0) return { type: 'partial' as const, nations: filtered }
+    }
+    // Mexico
+    if (territory.region === 'mexico') {
+      const filtered = mexicoNations.filter(n => n.country === territory.name)
+      if (filtered.length > 0) return { type: 'partial' as const, nations: filtered }
+    }
+    // Central America
+    if (territory.region === 'centralAmerica') {
+      const filtered = centralAmericaNations.filter(n => n.country === territory.name)
+      if (filtered.length > 0) return { type: 'partial' as const, nations: filtered }
+    }
+    // South America
+    if (territory.region === 'southAmerica') {
+      const filtered = southAmericaNations.filter(n => n.country === territory.name)
+      if (filtered.length > 0) return { type: 'partial' as const, nations: filtered }
     }
     // Everything else — use territory.nations as the list
     return { type: 'territory' as const, nations: territory.nations }

@@ -10,6 +10,7 @@ import { petitionRouter } from "./petition-router";
 import { storyRouter } from "./story-router";
 import { conversionsRouter } from "./conversions-router";
 import { genealogyRouter } from "./routers/genealogy";
+import { videoRouter } from "./video-router";
 import { createRouter, publicQuery } from "./middleware";
 
 export const appRouter = createRouter({
@@ -26,6 +27,7 @@ export const appRouter = createRouter({
   story: storyRouter,
   conversions: conversionsRouter,
   genealogy: genealogyRouter,
+  video: videoRouter,
 });
 
 export type AppRouter = typeof appRouter;

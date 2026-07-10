@@ -324,7 +324,7 @@ export default function NewsBroadcast({ wordPressUrl }: Props) {
               {/* Featured Trending Story */}
               {trendingNews[0] && (
                 <ScrollReveal delay={0.05}>
-                  <Link to={`/blog/${trendingNews[0].slug}`} className="group block relative rounded-xl overflow-hidden border-2 border-[rgba(255,149,0,0.15)] hover:border-[rgba(255,149,0,0.5)] transition-all bg-[#0A0F1A]">
+                  <Link to={`/blog/${trendingNews[0].slug}`} className="group block relative rounded-xl overflow-hidden border-2 border-[rgba(255,149,0,0.15)] hover:border-[rgba(255,149,0,0.5)] transition-all bg-[#0A0F1A]" onClick={(e) => { if (trendingNews[0].isAIGenerated) { e.preventDefault(); alert('Full article coming soon. AASOTU Media Group is building out this content.'); } }}>
                     <div className="relative h-[200px] md:h-[280px]">
                       <img src={trendingNews[0].coverImage} alt={trendingNews[0].title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#0A0F1A] via-[#0A0F1A]/50 to-transparent" />
@@ -357,9 +357,10 @@ export default function NewsBroadcast({ wordPressUrl }: Props) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {trendingNews.slice(1, 3).map((post, i) => {
                   const style = getCategoryStyle(post.category)
+                  const handleClick = post.isAIGenerated ? (e: React.MouseEvent) => { e.preventDefault(); alert('Full article coming soon. AASOTU Media Group is building out this content.'); } : undefined
                   return (
                     <ScrollReveal key={post.id} delay={0.1 + i * 0.05}>
-                      <Link to={`/blog/${post.slug}`} className="group flex gap-3 p-3 rounded-xl border border-[rgba(255,149,0,0.08)] hover:border-[rgba(255,149,0,0.3)] bg-[rgba(27,40,56,0.4)] hover:bg-[rgba(27,40,56,0.6)] transition-all">
+                      <Link to={`/blog/${post.slug}`} onClick={handleClick} className="group flex gap-3 p-3 rounded-xl border border-[rgba(255,149,0,0.08)] hover:border-[rgba(255,149,0,0.3)] bg-[rgba(27,40,56,0.4)] hover:bg-[rgba(27,40,56,0.6)] transition-all">
                         <div className="w-20 h-20 rounded-lg overflow-hidden shrink-0 bg-[#0A0F1A]">
                           <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                         </div>
@@ -418,7 +419,7 @@ export default function NewsBroadcast({ wordPressUrl }: Props) {
                 <div className="bg-[rgba(0,206,209,0.03)] border border-[rgba(0,206,209,0.1)] rounded-xl p-4">
                   <div className="space-y-3">
                     {trendingNews.slice(3).map((post) => (
-                      <Link key={post.id} to={`/blog/${post.slug}`} className="group flex items-start gap-3 p-2 rounded-lg hover:bg-[rgba(0,206,209,0.05)] transition-colors">
+                      <Link key={post.id} to={`/blog/${post.slug}`} onClick={(e) => { if (post.isAIGenerated) { e.preventDefault(); alert('Full article coming soon. AASOTU Media Group is building out this content.'); } }} className="group flex items-start gap-3 p-2 rounded-lg hover:bg-[rgba(0,206,209,0.05)] transition-colors">
                         <div className="w-2 h-2 rounded-full bg-[#00CED1] shrink-0 mt-1.5 animate-pulse" />
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-0.5">
