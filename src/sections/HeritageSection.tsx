@@ -208,6 +208,7 @@ function RegionSidebar({ region, territories, onSelectTerritory, onClose, select
 export default function HeritageSection() {
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<any>(null)
+  const mapboxglRef = useRef<any>(null)
   const markersRef = useRef<any[]>([])
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null)
   const [selectedTerritory, setSelectedTerritory] = useState<TerritoryMarker | null>(null)
@@ -247,6 +248,7 @@ export default function HeritageSection() {
       })
 
       mapRef.current = mapInstance
+      mapboxglRef.current = mapboxgl
 
       mapInstance.on('load', () => {
         setIsMapLoaded(true)
@@ -286,8 +288,7 @@ export default function HeritageSection() {
       markerEl.addEventListener('mouseleave', () => { dot.style.transform = 'scale(1)'; dot.style.boxShadow = `0 0 8px ${regionColor}80,0 0 20px ${regionColor}40`; })
       markerEl.addEventListener('click', () => { handleSelectTerritory(territory) })
 
-      const mapboxgl = require('mapbox-gl')
-      const marker = new mapboxgl.Marker({ element: markerEl, anchor: 'center' })
+      const marker = new mapboxglRef.current.Marker({ element: markerEl, anchor: 'center' })
         .setLngLat(territory.coordinates)
         .addTo(mapRef.current)
       markersRef.current.push(marker)
