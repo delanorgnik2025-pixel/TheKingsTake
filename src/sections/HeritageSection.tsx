@@ -626,7 +626,6 @@ function HeritageMap({
         attributionControl: false,
       })
       mapRef.current = map
-      if (externalMapRef) (externalMapRef as any).current = map
 
       map.on('load', () => {
         map.setFog({ color: 'rgb(12, 21, 32)', 'high-color': 'rgb(27, 40, 56)', 'horizon-blend': 0.4, 'space-color': 'rgb(12, 21, 32)', 'star-intensity': 0.3 })
