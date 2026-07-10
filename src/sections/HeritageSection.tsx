@@ -263,7 +263,7 @@ export default function HeritageSection() {
 
   // Update markers when region changes
   useEffect(() => {
-    if (!mapRef.current || !isMapLoaded) return
+    if (!mapRef.current || !mapboxglRef.current || !isMapLoaded) return
 
     // Clear existing markers
     markersRef.current.forEach(m => m.remove())

@@ -47,6 +47,21 @@
   </head>
   <body>
     <div id="root"></div>
+    <div id="error-display" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:99999;background:#0a0f1a;color:#ff4444;font-family:monospace;padding:20px;overflow:auto;">
+      <h2 style="color:#FF9500;margin:0 0 10px 0;">JavaScript Error</h2>
+      <pre id="error-text" style="white-space:pre-wrap;word-break:break-all;"></pre>
+    </div>
+    <script>
+      window.onerror = function(msg, url, line, col, err) {
+        var d = document.getElementById('error-display'), t = document.getElementById('error-text');
+        if (d && t) { d.style.display = 'block'; t.textContent = 'ERROR: ' + msg + '\nAt: ' + (url || 'unknown') + ':' + line + '\nStack: ' + (err && err.stack ? err.stack : 'N/A'); }
+        return true;
+      };
+      window.onunhandledrejection = function(e) {
+        var d = document.getElementById('error-display'), t = document.getElementById('error-text');
+        if (d && t) { d.style.display = 'block'; t.textContent = 'UNHANDLED PROMISE: ' + (e.reason && e.reason.stack ? e.reason.stack : String(e.reason)); }
+      };
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

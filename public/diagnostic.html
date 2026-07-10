@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Diagnostic</title>
+  <style>
+    body { background: #0a0f1a; color: #F0EBE1; font-family: monospace; padding: 20px; }
+    .error { color: #ff4444; background: rgba(255,0,0,0.1); padding: 10px; border-radius: 8px; margin: 10px 0; }
+    .ok { color: #44ff44; }
+    .info { color: #FF9500; }
+  </style>
+</head>
+<body>
+  <h2>Runtime Diagnostic</h2>
+  <div id="log"></div>
+  <script>
+    const log = document.getElementById('log');
+    function write(msg, cls) {
+      const d = document.createElement('div');
+      d.className = cls || 'info';
+      d.textContent = new Date().toLocaleTimeString() + ' — ' + msg;
+      log.appendChild(d);
+    }
+
+    window.onerror = function(msg, url, line, col, err) {
+      write('ERROR: ' + msg + ' at ' + url + ':' + line + ':' + col + ' — ' + (err?.stack || ''), 'error');
+      return true;
+    };
+    window.onunhandledrejection = function(e) {
+      write('UNHANDLED REJECTION: ' + e.reason + ' — ' + (e.reason?.stack || ''), 'error');
+    };
+
+    write('Diagnostics loaded. Loading app...', 'ok');
+
+    // Try to load the main app module and catch any import errors
+    import('/assets/index-D-TrVpqt.js').then(() => {
+      write('Main module loaded successfully', 'ok');
+    }).catch(e => {
+      write('Module load FAILED: ' + e.message + ' — ' + e.stack, 'error');
+    });
+  </script>
+</body>
+</html>
