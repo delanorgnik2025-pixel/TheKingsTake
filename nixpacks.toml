@@ -1,5 +1,5 @@
 [phases.build]
-cmds = ["npm run build"]
+cmds = ["npx vite build"]
 
 [phases.setup]
 nixPkgs = ["nodejs_20"]

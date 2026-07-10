@@ -7,7 +7,7 @@ RUN npm install --no-audit --prefer-offline
 
 FROM deps AS build
 COPY . .
-RUN npx vite build && npx esbuild api/boot.ts --platform=node --bundle --format=esm --outdir=dist --banner:js="import { createRequire } from 'module';const require = createRequire(import.meta.url);"
+RUN npx vite build
 
 FROM node:20-alpine AS production
 COPY --from=deps /app/node_modules ./node_modules
