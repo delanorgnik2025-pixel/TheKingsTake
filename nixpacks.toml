@@ -5,4 +5,4 @@ cmds = ["npx vite build"]
 nixPkgs = ["nodejs_20"]
 
 [start]
-cmd = "npm start"
+cmd = "npx serve dist/public -l 3000"
