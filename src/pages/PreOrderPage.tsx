@@ -1,13 +1,15 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { motion } from 'framer-motion'
-import { BookOpen, Shield, ArrowLeft, Sparkles, Mail, FileText, Star, Quote, Clock, CheckCircle, AlertTriangle } from 'lucide-react'
+import { Shield, ArrowLeft, Sparkles, Mail, FileText, Star, Clock, CheckCircle, AlertTriangle } from 'lucide-react'
 import { loadStripe } from '@stripe/stripe-js'
+import { trpc } from '@/providers/trpc'
 import ScrollReveal from '../components/ScrollReveal'
 
-// Stripe configuration — uses VITE_STRIPE_PUBLISHABLE_KEY env var
-const STRIPE_PUBLISHABLE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || ''
 const BOOK_PRICE_ID = 'price_1TUuET5rzCiGdPFNiXG2ZEi6'
+
+// Client-side Stripe key (optional — used as fallback when backend is down)
+const STRIPE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || ''
 
 const benefits = [
   { icon: <FileText size={16} />, title: 'Digital Edition', desc: 'PDF + ePub formats for all devices' },
@@ -22,50 +24,68 @@ export default function PreOrderPage() {
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [agreed, setAgreed] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [testMode, setTestMode] = useState(false)
+  const [fallbackMode, setFallbackMode] = useState(false)
+  const [errorMsg, setErrorMsg] = useState('')
 
-  const handleCheckout = async () => {
-    if (!agreed) return
-    setError('')
-    setLoading(true)
+  // PRIMARY: Backend tRPC (this was working before)
+  const checkout = trpc.stripe.createCheckoutByPriceId.useMutation({
+    onSuccess: (data: any) => {
+      if (data?.url) {
+        window.location.href = data.url
+      } else if (data?.testMode) {
+        // Backend in test mode — try client-side fallback
+        tryClientSideCheckout()
+      }
+    },
+    onError: () => {
+      // Backend failed — try client-side fallback
+      setFallbackMode(true)
+      tryClientSideCheckout()
+    },
+  })
 
+  // FALLBACK: Client-side Stripe redirect
+  const tryClientSideCheckout = async () => {
+    if (!STRIPE_KEY) {
+      setErrorMsg('Stripe checkout is temporarily unavailable. Please contact support.')
+      return
+    }
     try {
-      // Check if Stripe key is configured
-      if (!STRIPE_PUBLISHABLE_KEY) {
-        setTestMode(true)
-        setLoading(false)
-        return
-      }
-
-      const stripe = await loadStripe(STRIPE_PUBLISHABLE_KEY)
-      if (!stripe) {
-        setError('Failed to load Stripe. Please try again.')
-        setLoading(false)
-        return
-      }
-
-      const successUrl = window.location.origin + '/pre-order/success'
-      const cancelUrl = window.location.origin + '/pre-order'
+      const stripe = await loadStripe(STRIPE_KEY)
+      if (!stripe) { setErrorMsg('Failed to load Stripe.'); return }
 
       const { error: redirectError } = await stripe.redirectToCheckout({
         lineItems: [{ price: BOOK_PRICE_ID, quantity: 1 }],
         mode: 'payment',
-        successUrl,
-        cancelUrl,
+        successUrl: window.location.origin + '/pre-order/success',
+        cancelUrl: window.location.origin + '/pre-order',
         customerEmail: email || undefined,
       })
-
-      if (redirectError) {
-        setError(redirectError.message || 'Checkout failed. Please try again.')
-      }
-    } catch (err: any) {
-      setError(err.message || 'An unexpected error occurred.')
-    } finally {
-      setLoading(false)
+      if (redirectError) setErrorMsg(redirectError.message || 'Checkout failed.')
+    } catch (e: any) {
+      setErrorMsg(e.message || 'Checkout failed.')
     }
   }
+
+  const handleCheckout = () => {
+    if (!agreed) return
+    setErrorMsg('')
+
+    if (fallbackMode) {
+      // Already know backend is down, go straight to client-side
+      tryClientSideCheckout()
+    } else {
+      // Try backend first (this was the working path)
+      checkout.mutate({
+        priceId: BOOK_PRICE_ID,
+        successUrl: window.location.origin + '/pre-order/success',
+        cancelUrl: window.location.origin + '/pre-order',
+        customerEmail: email || undefined,
+      })
+    }
+  }
+
+  const isLoading = checkout.isPending
 
   return (
     <div className="min-h-screen bg-[#05080e]">
@@ -100,38 +120,32 @@ export default function PreOrderPage() {
           </div>
         </ScrollReveal>
 
-        {/* Test Mode Banner */}
-        {testMode && (
-          <div className="mb-6 bg-[#FF9500]/10 border border-[#FF9500]/30 rounded-xl p-4 flex items-start gap-3">
-            <AlertTriangle size={18} className="text-[#FF9500] shrink-0 mt-0.5" />
+        {/* Error Banner */}
+        {errorMsg && (
+          <div className="mb-6 bg-red-500/10 border border-red-500/30 rounded-xl p-4 flex items-start gap-3">
+            <AlertTriangle size={18} className="text-red-400 shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm text-[#FF9500] font-medium mb-1">Stripe Not Configured</p>
-              <p className="text-xs text-[#C9B99A]/70 leading-relaxed">
-                To enable live payments, add your <code className="text-[#FF9500] bg-[#FF9500]/10 px-1 rounded">VITE_STRIPE_PUBLISHABLE_KEY</code> to your environment variables in Railway.
-                Get your key from <a href="https://dashboard.stripe.com/apikeys" target="_blank" rel="noopener noreferrer" className="text-[#FF9500] underline">Stripe Dashboard</a>.
-              </p>
+              <p className="text-sm text-red-300">{errorMsg}</p>
+              <p className="text-xs text-red-400/50 mt-1">Try refreshing the page or contact support.</p>
             </div>
           </div>
         )}
 
-        {/* Error Banner */}
-        {error && (
-          <div className="mb-6 bg-red-500/10 border border-red-500/30 rounded-xl p-4 flex items-start gap-3">
-            <AlertTriangle size={18} className="text-red-400 shrink-0 mt-0.5" />
-            <p className="text-sm text-red-300">{error}</p>
+        {/* Fallback mode indicator */}
+        {fallbackMode && (
+          <div className="mb-6 bg-[#FF9500]/5 border border-[#FF9500]/15 rounded-xl p-3 text-center">
+            <p className="text-[11px] text-[#C9B99A]/50">Using direct Stripe checkout</p>
           </div>
         )}
 
         {/* Book Cover + Checkout Card */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-          {/* Cover */}
           <ScrollReveal delay={0.1}>
             <div style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(255,149,0,0.15)' }}>
               <img src="/images/book-cover.jpg" alt="Book Cover" className="w-full h-auto rounded-lg" />
             </div>
           </ScrollReveal>
 
-          {/* Checkout Card */}
           <ScrollReveal delay={0.2}>
             <div className="bg-[rgba(27,40,56,0.6)] border border-[rgba(255,149,0,0.15)] rounded-xl p-6">
               <div className="flex items-baseline justify-between mb-4">
@@ -164,11 +178,11 @@ export default function PreOrderPage() {
               </label>
 
               {/* CTA */}
-              <button onClick={handleCheckout} disabled={!agreed || loading}
+              <button onClick={handleCheckout} disabled={!agreed || isLoading}
                 className="w-full flex items-center justify-center gap-2 rounded-full h-12 bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-medium disabled:opacity-30 disabled:cursor-not-allowed"
                 style={{ boxShadow: '0 4px 16px rgba(255,149,0,0.25)' }}>
                 <Sparkles size={18} />
-                {loading ? 'Loading Stripe...' : testMode ? 'Pre-Order — $19.99 (Setup Required)' : 'Pre-Order — $19.99'}
+                {isLoading ? 'Loading...' : 'Pre-Order — $19.99'}
               </button>
 
               <div className="flex items-center justify-center gap-1.5 mt-3">
@@ -206,7 +220,7 @@ export default function PreOrderPage() {
             </h2>
             <div className="space-y-3 text-sm text-[#C9B99A]/70 leading-relaxed">
               <p>
-                <strong className="text-[#F0EBE1]">The African American State of the Union: From the Loins of the Beast</strong> is being released independently by Ronald Lee King through AASOTU Media Group LLC — a company built from the ground up while fighting systemic injustice on multiple fronts.
+                <strong className="text-[#F0EBE1]">The African American State of the Union: From the Loins of the Beast</strong> is being released independently by Ronald Lee King through AASOTU Media Group LLC.
               </p>
               <p>
                 This book was written during one of the most challenging periods of the author's life: navigating a filed 1983 Civil Rights Action, an open EEOC case, and the loss of employment — all while building this platform and preparing this historic digital release.
@@ -256,18 +270,6 @@ export default function PreOrderPage() {
             <p className="text-[10px] text-[#C9B99A]/30 mt-3">Secure checkout via Stripe. Full refund guarantee before release.</p>
           </div>
         </ScrollReveal>
-
-        {/* Footer */}
-        <div className="text-center border-t border-[rgba(255,149,0,0.08)] pt-6">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <span className="text-[9px] uppercase tracking-[0.2em] text-[#FF9500]/40">#TheKingsTake</span>
-            <span className="text-[#C9B99A]/20">|</span>
-            <span className="text-[9px] uppercase tracking-wider text-[#C9B99A]/30">AASOTU Media Group LLC</span>
-          </div>
-          <p className="text-[10px] text-[#C9B99A]/20">
-            All pre-order sales are processed through Stripe. AASOTU Media Group LLC is a registered Limited Liability Company.
-          </p>
-        </div>
       </div>
     </div>
   )
