@@ -1,80 +1,92 @@
+import { useState } from 'react'
+import { Link, useLocation } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Link } from 'react-router'
-import { X, Facebook, Instagram, LayoutDashboard } from 'lucide-react'
-import { useAuth } from '@/hooks/useAuth'
+import { X, ArrowUpRight, TreePine, BookOpen, Users, Globe, Newspaper, PenTool, Settings, ScrollText, Shield, Sparkles } from 'lucide-react'
 
 interface MenuOverlayProps {
   isOpen: boolean
   onClose: () => void
-  onNavClick: (id: string) => void
 }
 
-export default function MenuOverlay({ isOpen, onClose, onNavClick }: MenuOverlayProps) {
-  const { isAdmin } = useAuth()
+export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
+  const location = useLocation()
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null)
+
+  const menuItems = [
+    { label: 'Home', href: '/', icon: null, desc: 'Main page' },
+    { label: 'Blog', href: '/blog', icon: <Newspaper size={16} />, desc: 'Articles & updates' },
+    { label: 'Writing Services', href: '/writing-services', icon: <PenTool size={16} />, desc: 'All writing offerings' },
+    { label: 'Civics', href: '/civics', icon: <Shield size={16} />, desc: 'Know your rights' },
+    { label: 'AASOTU Media', href: '/aasotu', icon: <Sparkles size={16} />, desc: 'Media group & brand' },
+    { label: 'About', href: '/about-author', icon: <Users size={16} />, desc: 'Ronald Lee King' },
+    { label: 'Root Registry', href: '/ancestor-root-registry', icon: <TreePine size={16} />, desc: 'Genealogy tools' },
+    { label: 'Heritage Map', href: '/#heritage', icon: <Globe size={16} />, desc: 'Explore territories' },
+    { label: 'Ancestry', href: '/ancestor-realm', icon: <BookOpen size={16} />, desc: 'Ancestral research' },
+    { label: 'Pre-Order Book', href: '/pre-order', icon: <ScrollText size={16} />, desc: '$19.99 early access' },
+  ]
+
+  const isActive = (href: string) => {
+    if (href === '/') return location.pathname === '/'
+    if (href.startsWith('/#')) return location.pathname === '/' && location.hash === href.slice(1)
+    return location.pathname === href
+  }
 
   return (
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 z-[1000] bg-[#1B2838] flex flex-col justify-center"
-          initial={{ x: '100%' }}
-          animate={{ x: 0 }}
-          exit={{ x: '100%' }}
-          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="fixed inset-0 z-[200]"
+          style={{ background: 'rgba(5,8,14,0.97)', backdropFilter: 'blur(20px)' }}
         >
-          <button onClick={onClose} className="absolute top-6 right-6 md:right-12 text-[#F0EBE1] text-xl hover:text-[#FF9500] transition-colors duration-200 cursor-pointer">
+          {/* Close */}
+          <button onClick={onClose} className="absolute top-6 right-6 text-[#F0EBE1] hover:text-[#FF9500] transition-colors p-2">
             <X size={28} />
           </button>
 
-          <div className="px-8 md:px-16 flex flex-col gap-4 md:gap-6">
-            {[
-              { label: 'HOME', action: () => { onNavClick('hero'); onClose(); } },
-              { label: 'BLOG', action: () => { window.location.href = '/blog'; } },
-              { label: 'WRITING SERVICES', action: () => { window.location.href = '/writing-services'; } },
-              { label: 'CIVICS', action: () => { window.location.href = '/civics'; } },
-              { label: 'HERITAGE MAP', action: () => { window.location.href = '/#heritage'; } },
-              { label: 'SERVICES', action: () => { onNavClick('services'); onClose(); } },
-              { label: 'CONTACT', action: () => { onNavClick('contact'); onClose(); } },
-            ].map((link, i) => (
-              <motion.button
-                key={link.label}
-                initial={{ opacity: 0, x: 40 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1 + i * 0.08, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                onClick={link.action}
-                className="text-left text-[#F0EBE1] text-4xl md:text-5xl tracking-[-0.02em] hover:text-[#FF9500] transition-colors duration-300 relative group cursor-pointer"
-              >
-                {link.label}
-                <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#FF9500] group-hover:w-full transition-all duration-300" />
-              </motion.button>
-            ))}
-
-            {isAdmin && (
-              <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5, duration: 0.4 }}>
-                <Link to="/admin" onClick={onClose} className="flex items-center gap-3 text-[#FF9500] text-2xl md:text-3xl hover:text-[#FFB840] transition-colors">
-                  <LayoutDashboard size={24} /> Admin Dashboard
+          <div className="h-full flex flex-col items-center justify-center px-6">
+            <nav className="w-full max-w-md space-y-1">
+              {menuItems.map((item, i) => (
+                <Link
+                  key={item.label}
+                  to={item.href}
+                  onClick={onClose}
+                  onMouseEnter={() => setHoveredIdx(i)}
+                  onMouseLeave={() => setHoveredIdx(null)}
+                  className={`group flex items-center gap-4 px-5 py-3.5 rounded-xl transition-all duration-200 ${
+                    isActive(item.href)
+                      ? 'bg-[rgba(255,149,0,0.1)] border border-[rgba(255,149,0,0.2)]'
+                      : 'hover:bg-[rgba(255,149,0,0.05)] border border-transparent'
+                  }`}
+                >
+                  {item.icon && (
+                    <span className="text-[#FF9500]/60 group-hover:text-[#FF9500] transition-colors">
+                      {item.icon}
+                    </span>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <span className={`text-base font-medium tracking-wide transition-colors ${
+                      isActive(item.href) ? 'text-[#FF9500]' : 'text-[#F0EBE1] group-hover:text-[#FF9500]'
+                    }`}>
+                      {item.label}
+                    </span>
+                    <span className="block text-[11px] text-[#C9B99A]/40 mt-0.5">{item.desc}</span>
+                  </div>
+                  <ArrowUpRight size={14} className={`text-[#C9B99A]/20 transition-all ${
+                    hoveredIdx === i ? 'text-[#FF9500] translate-x-0.5 -translate-y-0.5' : ''
+                  }`} />
                 </Link>
-              </motion.div>
-            )}
+              ))}
+            </nav>
+
+            {/* Footer */}
+            <div className="absolute bottom-6 left-0 right-0 text-center">
+              <span className="text-[9px] uppercase tracking-[0.2em] text-[#C9B99A]/20">#TheKingsTake &middot; AASOTU Media Group LLC</span>
+            </div>
           </div>
-
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
-            className="absolute bottom-16 left-8 md:left-16 flex gap-6 items-center">
-            {[
-              { icon: Facebook, href: 'https://www.facebook.com/thekingstake', label: 'Facebook' },
-              { icon: Instagram, href: 'https://www.instagram.com/thekingstake/', label: 'Instagram' },
-            ].map(social => (
-              <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer"
-                className="text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200" aria-label={social.label}>
-                <social.icon size={20} />
-              </a>
-            ))}
-          </motion.div>
-
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}
-            className="absolute bottom-8 left-8 md:left-16 text-xs text-[#C9B99A] uppercase tracking-[0.08em]">
-            AASOTU Media Group LLC
-          </motion.p>
         </motion.div>
       )}
     </AnimatePresence>

@@ -17,6 +17,7 @@ const BlogPostPage = lazy(() => import('./pages/BlogPostPage'))
 const WritingServicesPage = lazy(() => import('./pages/WritingServicesPage'))
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'))
 const AncestorRealmPage = lazy(() => import('./pages/AncestorRealmPage'))
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 const AncestorRootRegistryPage = lazy(() => import('./pages/AncestorRootRegistryPage'))
 const CivicsPage = lazy(() => import('./pages/CivicsPage'))
 const AdminLoginPage = lazy(() => import('./pages/AdminLogin'))
@@ -81,13 +82,13 @@ function AppRoutes() {
           <Route path="/civics" element={<CivicsPage />} />
           <Route path="/admin/login" element={<AdminLoginPage />} />
           <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
-        <Route path="/admin/videos" element={<AdminVideosPage />} />
+          <Route path="/admin/videos" element={<AdminVideosPage />} />
           <Route path="/pre-order" element={<PreOrderPage />} />
           <Route path="/pre-order/success" element={<PreOrderSuccessPage />} />
           <Route path="/about-author" element={<AboutAuthorPage />} />
-        <Route path="/aasotu" element={<AasotuBrandPage />} />
+          <Route path="/aasotu" element={<AasotuBrandPage />} />
         <Route path="/article/:slug" element={<ArticlePage />} />
-          <Route path="*" element={<HomePage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
     </AppLayout>
