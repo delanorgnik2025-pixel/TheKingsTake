@@ -91,6 +91,8 @@ export default function PreOrderPage() {
       // Pre-fill customer email when provided
       const url = email ? `${PAYMENT_LINK}?prefilled_email=${encodeURIComponent(email)}` : PAYMENT_LINK
       window.location.href = url
+      // Safety reset: if redirect is somehow blocked, re-enable the button
+      setTimeout(() => setIsLoading(false), 5000)
       return
     }
 
