@@ -1,8 +1,11 @@
 [phases.build]
-cmds = ["npx vite build"]
+cmds = [
+  "npx vite build",
+  "npx esbuild api/boot.ts --bundle --platform=node --format=esm --outfile=dist/server.mjs --packages=external --alias:@contracts=./contracts --alias:@db=./db"
+]
 
 [phases.setup]
 nixPkgs = ["nodejs_20"]
 
 [start]
-cmd = "npx serve dist/public -l 3000"
+cmd = "NODE_ENV=production node dist/server.mjs"
