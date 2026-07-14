@@ -8,7 +8,11 @@ import ScrollReveal from '../components/ScrollReveal'
 
 const BOOK_PRICE_ID = 'price_1TUuET5rzCiGdPFNiXG2ZEi6'
 
-// Client-side Stripe key (optional — used as fallback when backend is down)
+// Direct Stripe Payment Link (most reliable — no API keys required)
+// Create one at: https://dashboard.stripe.com/payment-links
+const PAYMENT_LINK = import.meta.env.VITE_STRIPE_PAYMENT_LINK || ''
+
+// Client-side Stripe publishable key (fallback when backend session fails)
 const STRIPE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || ''
 
 const benefits = [
@@ -24,36 +28,23 @@ export default function PreOrderPage() {
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [agreed, setAgreed] = useState(false)
-  const [fallbackMode, setFallbackMode] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
 
-  // PRIMARY: Backend tRPC (this was working before)
-  const checkout = trpc.stripe.createCheckoutByPriceId.useMutation({
-    onSuccess: (data: any) => {
-      if (data?.url) {
-        window.location.href = data.url
-      } else if (data?.testMode) {
-        // Backend in test mode — try client-side fallback
-        tryClientSideCheckout()
-      }
-    },
-    onError: () => {
-      // Backend failed — try client-side fallback
-      setFallbackMode(true)
-      tryClientSideCheckout()
-    },
-  })
-
-  // FALLBACK: Client-side Stripe redirect
+  // FALLBACK: Client-side Stripe.js redirect (requires VITE_STRIPE_PUBLISHABLE_KEY)
   const tryClientSideCheckout = async () => {
     if (!STRIPE_KEY) {
-      setErrorMsg('Stripe checkout is temporarily unavailable. Please contact support.')
+      setErrorMsg('Stripe checkout is temporarily unavailable. Please email us at support@thekingstake.com to complete your order.')
+      setIsLoading(false)
       return
     }
     try {
       const stripe = await loadStripe(STRIPE_KEY)
-      if (!stripe) { setErrorMsg('Failed to load Stripe.'); return }
-
+      if (!stripe) {
+        setErrorMsg('Failed to load Stripe. Please refresh the page and try again.')
+        setIsLoading(false)
+        return
+      }
       const { error: redirectError } = await stripe.redirectToCheckout({
         lineItems: [{ price: BOOK_PRICE_ID, quantity: 1 }],
         mode: 'payment',
@@ -61,31 +52,54 @@ export default function PreOrderPage() {
         cancelUrl: window.location.origin + '/pre-order',
         customerEmail: email || undefined,
       })
-      if (redirectError) setErrorMsg(redirectError.message || 'Checkout failed.')
+      if (redirectError) {
+        setErrorMsg(redirectError.message || 'Checkout failed. Please try again.')
+        setIsLoading(false)
+      }
     } catch (e: any) {
-      setErrorMsg(e.message || 'Checkout failed.')
+      setErrorMsg(e.message || 'Checkout failed. Please try again.')
+      setIsLoading(false)
     }
   }
+
+  // PRIMARY: Backend tRPC checkout session
+  const checkout = trpc.stripe.createCheckoutByPriceId.useMutation({
+    onSuccess: (data: any) => {
+      if (data?.url && !data?.testMode) {
+        // Real checkout session URL — redirect immediately
+        window.location.href = data.url
+      } else {
+        // Backend is in test mode (no STRIPE_SECRET_KEY) — fall back
+        tryClientSideCheckout()
+      }
+    },
+    onError: () => {
+      // Backend request failed — try client-side Stripe.js
+      tryClientSideCheckout()
+    },
+  })
 
   const handleCheckout = () => {
-    if (!agreed) return
+    if (!agreed || isLoading) return
     setErrorMsg('')
+    setIsLoading(true)
 
-    if (fallbackMode) {
-      // Already know backend is down, go straight to client-side
-      tryClientSideCheckout()
-    } else {
-      // Try backend first (this was the working path)
-      checkout.mutate({
-        priceId: BOOK_PRICE_ID,
-        successUrl: window.location.origin + '/pre-order/success',
-        cancelUrl: window.location.origin + '/pre-order',
-        customerEmail: email || undefined,
-      })
+    // OPTION 1 (most reliable): Direct Stripe Payment Link
+    if (PAYMENT_LINK) {
+      window.location.href = PAYMENT_LINK
+      return
     }
+
+    // OPTION 2: Backend-created checkout session
+    checkout.mutate({
+      priceId: BOOK_PRICE_ID,
+      successUrl: window.location.origin + '/pre-order/success',
+      cancelUrl: window.location.origin + '/pre-order',
+      customerEmail: email || undefined,
+    })
   }
 
-  const isLoading = checkout.isPending
+  const buttonLoading = isLoading || checkout.isPending
 
   return (
     <div className="min-h-screen bg-[#05080e]">
@@ -132,7 +146,7 @@ export default function PreOrderPage() {
         )}
 
         {/* Fallback mode indicator */}
-        {fallbackMode && (
+        {false && (
           <div className="mb-6 bg-[#FF9500]/5 border border-[#FF9500]/15 rounded-xl p-3 text-center">
             <p className="text-[11px] text-[#C9B99A]/50">Using direct Stripe checkout</p>
           </div>
@@ -178,11 +192,11 @@ export default function PreOrderPage() {
               </label>
 
               {/* CTA */}
-              <button onClick={handleCheckout} disabled={!agreed || isLoading}
+              <button onClick={handleCheckout} disabled={!agreed || buttonLoading}
                 className="w-full flex items-center justify-center gap-2 rounded-full h-12 bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-medium disabled:opacity-30 disabled:cursor-not-allowed"
                 style={{ boxShadow: '0 4px 16px rgba(255,149,0,0.25)' }}>
                 <Sparkles size={18} />
-                {isLoading ? 'Loading...' : 'Pre-Order — $19.99'}
+                {buttonLoading ? 'Loading...' : 'Pre-Order — $19.99'}
               </button>
 
               <div className="flex items-center justify-center gap-1.5 mt-3">
