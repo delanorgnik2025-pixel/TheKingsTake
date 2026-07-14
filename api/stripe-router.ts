@@ -14,6 +14,13 @@ async function getStripe() {
 }
 
 export const stripeRouter = createRouter({
+  // Return the Stripe Payment Link URL from server-side env (works at runtime, no rebuild needed)
+  getPaymentLink: publicQuery
+    .query(() => {
+      const url = process.env.STRIPE_PAYMENT_LINK || process.env.VITE_STRIPE_PAYMENT_LINK || null;
+      return { url };
+    }),
+
   // Create a checkout session for one-time purchases
   createCheckout: publicQuery
     .input(z.object({

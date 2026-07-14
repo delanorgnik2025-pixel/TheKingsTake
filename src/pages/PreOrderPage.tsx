@@ -8,10 +8,6 @@ import ScrollReveal from '../components/ScrollReveal'
 
 const BOOK_PRICE_ID = 'price_1TUuET5rzCiGdPFNiXG2ZEi6'
 
-// Direct Stripe Payment Link (most reliable — no API keys required)
-// Create one at: https://dashboard.stripe.com/payment-links
-const PAYMENT_LINK = import.meta.env.VITE_STRIPE_PAYMENT_LINK || ''
-
 // Client-side Stripe publishable key (fallback when backend session fails)
 const STRIPE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || ''
 
@@ -30,6 +26,9 @@ export default function PreOrderPage() {
   const [agreed, setAgreed] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
+
+  // Fetch the Stripe Payment Link URL from the backend at runtime
+  const { data: paymentLinkData } = trpc.stripe.getPaymentLink.useQuery()
 
   // FALLBACK: Client-side Stripe.js redirect (requires VITE_STRIPE_PUBLISHABLE_KEY)
   const tryClientSideCheckout = async () => {
@@ -86,10 +85,11 @@ export default function PreOrderPage() {
     setErrorMsg('')
     setIsLoading(true)
 
-    // OPTION 1 (most reliable): Direct Stripe Payment Link (no API keys required)
-    if (PAYMENT_LINK) {
+    // OPTION 1 (most reliable): Direct Stripe Payment Link served from backend (runtime, no rebuild needed)
+    const paymentLink = paymentLinkData?.url || import.meta.env.VITE_STRIPE_PAYMENT_LINK || ''
+    if (paymentLink) {
       // Pre-fill customer email when provided
-      const url = email ? `${PAYMENT_LINK}?prefilled_email=${encodeURIComponent(email)}` : PAYMENT_LINK
+      const url = email ? `${paymentLink}?prefilled_email=${encodeURIComponent(email)}` : paymentLink
       window.location.href = url
       // Safety reset: if redirect is somehow blocked, re-enable the button
       setTimeout(() => setIsLoading(false), 5000)
