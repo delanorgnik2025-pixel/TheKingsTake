@@ -65,11 +65,13 @@ export default function PreOrderPage() {
   // PRIMARY: Backend tRPC checkout session
   const checkout = trpc.stripe.createCheckoutByPriceId.useMutation({
     onSuccess: (data: any) => {
-      if (data?.url && !data?.testMode) {
+      if (data?.testMode) {
+        // Backend has no STRIPE_SECRET_KEY — fall back to client-side
+        tryClientSideCheckout()
+      } else if (data?.url) {
         // Real checkout session URL — redirect immediately
         window.location.href = data.url
       } else {
-        // Backend is in test mode (no STRIPE_SECRET_KEY) — fall back
         tryClientSideCheckout()
       }
     },
@@ -84,9 +86,11 @@ export default function PreOrderPage() {
     setErrorMsg('')
     setIsLoading(true)
 
-    // OPTION 1 (most reliable): Direct Stripe Payment Link
+    // OPTION 1 (most reliable): Direct Stripe Payment Link (no API keys required)
     if (PAYMENT_LINK) {
-      window.location.href = PAYMENT_LINK
+      // Pre-fill customer email when provided
+      const url = email ? `${PAYMENT_LINK}?prefilled_email=${encodeURIComponent(email)}` : PAYMENT_LINK
+      window.location.href = url
       return
     }
 
@@ -142,13 +146,6 @@ export default function PreOrderPage() {
               <p className="text-sm text-red-300">{errorMsg}</p>
               <p className="text-xs text-red-400/50 mt-1">Try refreshing the page or contact support.</p>
             </div>
-          </div>
-        )}
-
-        {/* Fallback mode indicator */}
-        {false && (
-          <div className="mb-6 bg-[#FF9500]/5 border border-[#FF9500]/15 rounded-xl p-3 text-center">
-            <p className="text-[11px] text-[#C9B99A]/50">Using direct Stripe checkout</p>
           </div>
         )}
 
