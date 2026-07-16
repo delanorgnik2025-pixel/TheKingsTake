@@ -9,7 +9,7 @@ import ScrollReveal from '../components/ScrollReveal'
 // STRIPE CONFIG — Client-side only (static deploy, no backend)
 // ============================================
 const BOOK_PRICE_ID = 'price_1TUuET5rzCiGdPFNiXG2ZEi6'
-const STRIPE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || ''
+const STRIPE_KEY = 'pk_live_51Tut6A5rzCiGdPFNSaBDY3BeG1lEEZzoD7X1qXjsvIvzP2JeDsdyA805uazIpdJP5BRKp7t5kYjb0yv0TbbGZeD00QP0mlwvF'
 
 const benefits = [
   { icon: <FileText size={16} />, title: 'Digital Edition', desc: 'PDF + ePub formats for all devices' },
