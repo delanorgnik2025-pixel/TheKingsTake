@@ -100,7 +100,7 @@ export default function Navigation({ onMenuToggle, onNavClick }: NavigationProps
         <a href="/#ancestry" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200 cursor-pointer">Ancestry</a>
         <Link to="/ancestor-realm" className="text-[#C9B99A] text-sm hover:text-[#FF9500] transition-colors duration-200 flex items-center gap-1"><TreePine size={13} /> Realm</Link>
         <a href="/#services" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200 cursor-pointer">Services</a>
-        <a href="/#contact" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200 cursor-pointer">Contact</a>
+        <Link to="/contact" className="text-[#C9B99A] text-sm hover:text-[#FF9500] transition-colors duration-200">Contact</Link>
         {isAdmin ? (
           <Link to="/admin" className="flex items-center gap-1 text-[#FF9500] text-sm hover:text-[#FFB840] transition-colors">
             <LayoutDashboard size={14} /> Admin
@@ -146,7 +146,7 @@ export default function Navigation({ onMenuToggle, onNavClick }: NavigationProps
             <a href="/#ancestry" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Ancestry</a>
             <Link to="/ancestor-realm" onClick={() => setMobileOpen(false)} className="block text-[#FF9500] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FFB840]">The Ancestor Realm</Link>
             <a href="/#services" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Services</a>
-            <a href="/#contact" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Contact</a>
+            <Link to="/contact" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Contact</Link>
             {isAdmin ? (
               <Link to="/admin" onClick={() => setMobileOpen(false)} className="block text-[#FF9500] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FFB840]">Admin Dashboard</Link>
             ) : (

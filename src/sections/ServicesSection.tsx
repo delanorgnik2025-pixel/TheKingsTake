@@ -143,8 +143,8 @@ export default function ServicesSection() {
                   <p className="text-[11px] text-[#FF9500]/70 mb-1">or 4 interest-free payments with Klarna</p>
                 )}
                 <p className="text-[10px] text-[#C9B99A]/40 mb-4">Payment plans available</p>
-                <Link to={`/services/${service.slug}`} className="inline-flex items-center gap-1 text-xs text-[#FF9500] uppercase tracking-[0.04em] cursor-pointer hover:underline transition-all">
-                  Learn More <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
+                <Link to="/writing-services" className="inline-flex items-center gap-1 text-xs text-[#FF9500] uppercase tracking-[0.04em] cursor-pointer hover:underline transition-all">
+                  View All Services <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
                 </Link>
               </motion.div>
             );

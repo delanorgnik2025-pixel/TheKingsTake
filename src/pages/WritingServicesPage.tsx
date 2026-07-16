@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import {
   ArrowLeft, PenTool, Mic, BookOpen, FileText, MessageSquare,
   Feather, Type, Scroll, Quote, ArrowRight, Check, Sparkles,
-  ChevronDown, ChevronUp
+  ChevronDown, ChevronUp, Users
 } from 'lucide-react'
 import ScrollReveal from '../components/ScrollReveal'
 import MarqueeDivider from '../components/MarqueeDivider'
@@ -200,11 +200,11 @@ export default function WritingServicesPage() {
 
           <ScrollReveal delay={0.35}>
             <Link
-              to="/#services"
+              to="/writing-services"
               className="inline-flex items-center justify-center rounded-full h-14 px-10 text-base bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-['Newsreader'] tracking-[0.02em]"
               style={{ boxShadow: "0 4px 16px rgba(255,149,0,0.25)" }}
             >
-              <Sparkles size={18} className="mr-2" /> View All Services
+              <Sparkles size={18} className="mr-2" /> Explore All Services
             </Link>
           </ScrollReveal>
         </div>
@@ -253,13 +253,11 @@ export default function WritingServicesPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <Link
-                        to={`/services/${service.slug}`}
-                        onClick={(e) => e.stopPropagation()}
-                        className="hidden md:inline-flex items-center gap-1 text-xs text-[#FF9500] uppercase tracking-[0.04em] hover:underline"
+                      <span
+                        className="hidden md:inline-flex items-center gap-1 text-xs text-[#FF9500] uppercase tracking-[0.04em]"
                       >
-                        Details <ArrowRight size={12} />
-                      </Link>
+                        {isExpanded ? 'Close' : 'Expand'} <ArrowRight size={12} className={`transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`} />
+                      </span>
                       {isExpanded ? (
                         <ChevronUp size={20} className="text-[#FF9500]" />
                       ) : (
@@ -286,12 +284,12 @@ export default function WritingServicesPage() {
                         ))}
                       </div>
                       <div className="flex items-center gap-4">
-                        <Link
-                          to={`/services/${service.slug}`}
+                        <a
+                          href="mailto:aasotumediagroup@gmail.com?subject=Service Inquiry: ${service.title}"
                           className="inline-flex items-center gap-2 text-sm bg-[#FF9500] text-[#0C1520] px-6 py-2.5 rounded hover:bg-[#CC6A00] transition-colors font-medium"
                         >
                           {service.cta} <ArrowRight size={14} />
-                        </Link>
+                        </a>
                         <span className="text-xs text-[#FF9500]/70">or 4 interest-free payments with Klarna</span>
                       </div>
                     </motion.div>
@@ -347,17 +345,17 @@ export default function WritingServicesPage() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
-                to="/#contact"
+                to="/contact"
                 className="inline-flex items-center justify-center rounded-full h-14 px-10 text-base bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-['Newsreader'] tracking-[0.02em]"
                 style={{ boxShadow: "0 4px 16px rgba(255,149,0,0.25)" }}
               >
                 <Sparkles size={18} className="mr-2" /> Get In Touch
               </Link>
               <Link
-                to="/#services"
+                to="/work-with-us"
                 className="inline-flex items-center justify-center rounded-full h-14 px-10 text-base border border-[rgba(255,149,0,0.4)] text-[#FF9500] hover:bg-[rgba(255,149,0,0.08)] transition-colors font-['Newsreader'] tracking-[0.02em]"
               >
-                View All Services
+                <Users size={18} className="mr-2" /> Work With Me
               </Link>
             </div>
           </ScrollReveal>

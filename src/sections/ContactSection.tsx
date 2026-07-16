@@ -1,4 +1,5 @@
 import { Facebook, Instagram, ArrowRight } from 'lucide-react'
+import { Link } from 'react-router'
 import ScrollReveal from '../components/ScrollReveal'
 import CTAButton from '../components/CTAButton'
 
@@ -85,12 +86,11 @@ export default function ContactSection() {
         </div>
 
         <ScrollReveal delay={0.5} className="flex justify-center mt-12">
-          <CTAButton
-            size="large"
-            onClick={() => window.location.href = 'mailto:aasotumediagroup@gmail.com'}
-          >
-            GET IN TOUCH
-          </CTAButton>
+          <Link to="/contact">
+            <CTAButton size="large">
+              GET IN TOUCH
+            </CTAButton>
+          </Link>
         </ScrollReveal>
       </div>
     </section>

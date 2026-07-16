@@ -127,7 +127,7 @@ export default function AasotuBrandPage() {
             src="/images/author-1.jpg"
             alt="Ronald Lee King — Founder, AASOTU Media Group LLC"
             className="w-full h-full object-cover object-top"
-            style={{ filter: 'brightness(0.35)' }}
+            style={{ filter: 'brightness(0.55)' }}
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1a] via-[#0a0f1a]/50 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-r from-[#0a0f1a]/70 via-transparent to-[#0a0f1a]/50" />
@@ -512,7 +512,7 @@ export default function AasotuBrandPage() {
               <Link to="/pre-order" className="inline-flex items-center gap-2 text-sm bg-[rgba(255,149,0,0.15)] text-[#FF9500] border border-[rgba(255,149,0,0.35)] rounded-lg px-8 py-3 hover:bg-[rgba(255,149,0,0.25)] transition-all">
                 <BookOpen size={15} /> Pre-Order the Book
               </Link>
-              <Link to="/writing-services" className="inline-flex items-center gap-2 text-sm bg-[rgba(27,40,56,0.6)] text-[#C9B99A] border border-[rgba(201,185,154,0.15)] rounded-lg px-8 py-3 hover:border-[rgba(255,149,0,0.3)] hover:text-[#FF9500] transition-all">
+              <Link to="/work-with-us" className="inline-flex items-center gap-2 text-sm bg-[rgba(27,40,56,0.6)] text-[#C9B99A] border border-[rgba(201,185,154,0.15)] rounded-lg px-8 py-3 hover:border-[rgba(255,149,0,0.3)] hover:text-[#FF9500] transition-all">
                 <Feather size={15} /> Work With Us
               </Link>
             </div>

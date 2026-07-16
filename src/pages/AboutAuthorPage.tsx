@@ -477,12 +477,12 @@ export default function AboutAuthorPage() {
               >
                 <BookOpen size={15} /> Pre-Order the Book
               </Link>
-              <a
-                href="/#contact"
+              <Link
+                to="/work-with-us"
                 className="inline-flex items-center gap-2 text-sm bg-[rgba(27,40,56,0.6)] text-[#C9B99A] border border-[rgba(201,185,154,0.15)] rounded-lg px-8 py-3 hover:border-[rgba(255,149,0,0.3)] hover:text-[#FF9500] transition-all"
               >
                 <Feather size={15} /> Work With Me
-              </a>
+              </Link>
             </div>
           </ScrollReveal>
         </div>

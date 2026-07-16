@@ -28,6 +28,9 @@ const PreOrderSuccessPage = lazy(() => import('./pages/PreOrderSuccessPage'))
 const AboutAuthorPage = lazy(() => import('./pages/AboutAuthorPage'))
 const AasotuBrandPage = lazy(() => import('./pages/AasotuBrandPage'))
 const ArticlePage = lazy(() => import('./pages/ArticlePage'))
+const ContactPage = lazy(() => import('./pages/ContactPage'))
+const WorkWithUsPage = lazy(() => import('./pages/WorkWithUsPage'))
+const RootRegistryPlaceholderPage = lazy(() => import('./pages/RootRegistryPlaceholderPage'))
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -88,6 +91,9 @@ function AppRoutes() {
           <Route path="/about-author" element={<AboutAuthorPage />} />
           <Route path="/aasotu" element={<AasotuBrandPage />} />
         <Route path="/article/:slug" element={<ArticlePage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/work-with-us" element={<WorkWithUsPage />} />
+          <Route path="/root-registry/step-1" element={<RootRegistryPlaceholderPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
