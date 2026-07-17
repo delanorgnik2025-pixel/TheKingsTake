@@ -1,15 +1,13 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { motion } from 'framer-motion'
-import { Shield, ArrowLeft, Sparkles, Mail, FileText, Star, Clock, CheckCircle, AlertTriangle } from 'lucide-react'
-import { loadStripe } from '@stripe/stripe-js'
+import { Shield, ArrowLeft, Sparkles, Mail, FileText, Star, Clock, CheckCircle } from 'lucide-react'
 import ScrollReveal from '../components/ScrollReveal'
 
 // ============================================
-// STRIPE CONFIG — Client-side only (static deploy, no backend)
+// STRIPE PAYMENT LINK — Direct redirect, no API keys needed
 // ============================================
-const BOOK_PRICE_ID = 'price_1TUuET5rzCiGdPFNiXG2ZEi6'
-const STRIPE_KEY = 'pk_live_51Tut6A5rzCiGdPFNSaBDY3BeG1lEEZzoD7X1qXjsvIvzP2JeDsdyA805uazIpdJP5BRKp7t5kYjb0yv0TbbGZeD00QP0mlwvF'
+const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/5kQbIU0Ii2vc2du4IHf7i01'
 
 const benefits = [
   { icon: <FileText size={16} />, title: 'Digital Edition', desc: 'PDF + ePub formats for all devices' },
@@ -22,52 +20,15 @@ const benefits = [
 
 export default function PreOrderPage() {
   const navigate = useNavigate()
-  const [email, setEmail] = useState('')
   const [agreed, setAgreed] = useState(false)
-  const [errorMsg, setErrorMsg] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
 
   // ============================================
-  // CLIENT-SIDE ONLY: Direct Stripe redirectToCheckout
-  // No backend required — works on static deploy
+  // Simple redirect to Stripe Payment Link
+  // No Stripe.js, no API keys, no backend — just a URL
   // ============================================
-  const handleCheckout = async () => {
+  const handleCheckout = () => {
     if (!agreed) return
-    setErrorMsg('')
-    setIsLoading(true)
-
-    // Validate Stripe key is available
-    if (!STRIPE_KEY) {
-      setErrorMsg('Stripe configuration missing. Please contact support at aasotumediagroup@gmail.com')
-      setIsLoading(false)
-      return
-    }
-
-    try {
-      const stripe = await loadStripe(STRIPE_KEY)
-      if (!stripe) {
-        setErrorMsg('Failed to initialize Stripe. Please try again or contact support.')
-        setIsLoading(false)
-        return
-      }
-
-      const { error: redirectError } = await stripe.redirectToCheckout({
-        lineItems: [{ price: BOOK_PRICE_ID, quantity: 1 }],
-        mode: 'payment',
-        successUrl: window.location.origin + '/pre-order/success',
-        cancelUrl: window.location.origin + '/pre-order',
-        customerEmail: email || undefined,
-      })
-
-      if (redirectError) {
-        setErrorMsg(redirectError.message || 'Checkout failed. Please try again.')
-      }
-    } catch (e: any) {
-      console.error('Stripe checkout error:', e)
-      setErrorMsg(e?.message || 'Something went wrong. Please try again or contact aasotumediagroup@gmail.com')
-    } finally {
-      setIsLoading(false)
-    }
+    window.open(STRIPE_PAYMENT_LINK, '_blank')
   }
 
   return (
@@ -103,21 +64,6 @@ export default function PreOrderPage() {
           </div>
         </ScrollReveal>
 
-        {/* Error Banner */}
-        {errorMsg && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-6 bg-red-500/10 border border-red-500/30 rounded-xl p-4 flex items-start gap-3"
-          >
-            <AlertTriangle size={18} className="text-red-400 shrink-0 mt-0.5" />
-            <div>
-              <p className="text-sm text-red-300">{errorMsg}</p>
-              <p className="text-xs text-red-400/50 mt-1">Try refreshing the page or contact aasotumediagroup@gmail.com</p>
-            </div>
-          </motion.div>
-        )}
-
         {/* Book Cover + Checkout Card */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
           <ScrollReveal delay={0.1}>
@@ -136,15 +82,7 @@ export default function PreOrderPage() {
                 <span className="text-[10px] uppercase tracking-wider text-[#FF9500] bg-[rgba(255,149,0,0.1)] border border-[rgba(255,149,0,0.2)] rounded-full px-3 py-1">Save 20%</span>
               </div>
 
-              <p className="text-sm text-[#C9B99A] mb-4">Digital Edition (PDF + ePub). Pre-order customers receive the book 48 hours before public release.</p>
-
-              {/* Email */}
-              <div className="mb-4">
-                <label className="text-[10px] uppercase tracking-wider text-[#C9B99A]/50 mb-1.5 block">Email Address (optional)</label>
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
-                  placeholder="For order updates & early access"
-                  className="w-full bg-[rgba(21,32,43,0.6)] border border-[rgba(255,149,0,0.15)] rounded-lg px-4 py-2.5 text-sm text-[#F0EBE1] placeholder:text-[#C9B99A]/25 focus:outline-none focus:border-[rgba(255,149,0,0.4)] transition-colors" />
-              </div>
+              <p className="text-sm text-[#C9B99A] mb-6">Digital Edition (PDF + ePub). Pre-order customers receive the book 48 hours before public release.</p>
 
               {/* Agreement */}
               <label className="flex items-start gap-3 mb-6 cursor-pointer">
@@ -157,12 +95,12 @@ export default function PreOrderPage() {
                 </span>
               </label>
 
-              {/* CTA */}
-              <button onClick={handleCheckout} disabled={!agreed || isLoading}
+              {/* CTA — Redirects to Stripe Payment Link */}
+              <button onClick={handleCheckout} disabled={!agreed}
                 className="w-full flex items-center justify-center gap-2 rounded-full h-12 bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-medium disabled:opacity-30 disabled:cursor-not-allowed"
                 style={{ boxShadow: '0 4px 16px rgba(255,149,0,0.25)' }}>
                 <Sparkles size={18} />
-                {isLoading ? 'Connecting to Stripe...' : 'Pre-Order — $19.99'}
+                Pre-Order — $19.99
               </button>
 
               <div className="flex items-center justify-center gap-1.5 mt-3">
@@ -238,11 +176,11 @@ export default function PreOrderPage() {
           </div>
         </ScrollReveal>
 
-        {/* Bottom CTA */}
+        {/* Bottom CTA — Also redirects to Payment Link */}
         <ScrollReveal delay={0.1}>
           <div className="text-center mb-12">
-            <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="inline-flex items-center gap-2 rounded-full h-12 bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-medium px-8"
+            <button onClick={handleCheckout} disabled={!agreed}
+              className="inline-flex items-center gap-2 rounded-full h-12 bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-medium px-8 disabled:opacity-30 disabled:cursor-not-allowed"
               style={{ boxShadow: '0 4px 16px rgba(255,149,0,0.25)' }}>
               <Sparkles size={18} />
               Pre-Order Your Copy — $19.99
