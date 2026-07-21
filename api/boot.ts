@@ -38,6 +38,24 @@ app.use("/api/trpc/*", async (c) => {
     createContext,
   });
 });
+// Health check endpoint — safe, no secrets
+app.get("/api/health", async (c) => {
+  let dbStatus = "unknown";
+  try {
+    const { connection } = await import("./queries/connection");
+    await connection.execute("SELECT 1");
+    dbStatus = "connected";
+  } catch {
+    dbStatus = "disconnected";
+  }
+  return c.json({
+    status: "ok",
+    server: "hono",
+    database: dbStatus,
+    timestamp: new Date().toISOString(),
+  });
+});
+
 app.all("/api/*", (c) => c.json({ error: "Not Found" }, 404));
 
 export default app;

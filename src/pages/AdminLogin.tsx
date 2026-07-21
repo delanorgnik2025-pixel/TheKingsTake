@@ -4,15 +4,19 @@ import { LogIn, Crown, AlertTriangle, ArrowLeft } from 'lucide-react'
 import { Link } from 'react-router'
 
 // ============================================
-// CLIENT-SIDE ADMIN AUTH — No backend required
-// Password is hashed client-side and compared against stored hash
-// This allows admin login to work on static deployments
+// ⚠️ DEVELOPMENT-ONLY AUTHENTICATION ⚠️
+// This is NOT secure for production use.
+// It exists only for development and demo purposes.
+// A production system MUST use server-side sessions with
+// database-backed credentials and proper session management.
+// TODO: Replace with server-side auth before handling sensitive data.
 // ============================================
 
-// SHA-256 hash of "AASOTU2025!" — precomputed
-const ADMIN_PASSWORD_HASH = 'a7f5c3d9e8b214067f8e4c2a1d0b9536c7e4f8a2b1d0c5e3f7a9b2c4d6e8f0a1b3c5d7e9f1a3b5c7d9e1f3a5b7c9d1e3f5a7b9c1d3e5f7a9b1c3d5e7f9a1b3'
+// SHA-256 hash placeholder — NOT a real security mechanism
+// In production, use bcrypt/Argon2 on the server with database storage
+const ADMIN_PASSWORD_HASH_DEV = 'a7f5c3d9e8b214067f8e4c2a1d0b9536c7e4f8a2b1d0c5e3f7a9b2c4d6e8f0a1b3c5d7e9f1a3b5c7d9e1f3a5b7c9d1e3f5a7b9c1d3e5f7a9b1c3d5e7f9a1b3'
 
-// Simple SHA-256 hash function
+// SHA-256 — client-side only, NOT cryptographically secure for auth
 async function sha256(message: string): Promise<string> {
   const msgBuffer = new TextEncoder().encode(message)
   const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer)
@@ -40,8 +44,9 @@ export default function AdminLogin() {
     try {
       const hash = await sha256(password)
 
-      // Verify against stored hash
-      if (hash === ADMIN_PASSWORD_HASH) {
+      // ⚠️ DEV ONLY: Client-side hash comparison is NOT secure
+      // Production MUST use server-side bcrypt with database lookup
+      if (hash === ADMIN_PASSWORD_HASH_DEV) {
         // Generate a simple session token
         const token = btoa(hash + Date.now())
         localStorage.setItem('adminToken', token)
