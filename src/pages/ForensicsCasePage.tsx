@@ -8,6 +8,7 @@ import {
   Eye, ChevronDown, ChevronUp, Info
 } from 'lucide-react'
 import InvestigationMap from '../components/InvestigationMap'
+import ForensicsBoard from '../components/ForensicsBoard'
 import {
   BEACH_HOMICIDE_EVIDENCE, BEACH_HOMICIDE_WITNESSES,
   BEACH_HOMICIDE_TIMELINE, BEACH_HOMICIDE_AUTOPSY,
@@ -197,17 +198,10 @@ export default function ForensicsCasePage() {
               <OfficeEnvironment onNavigate={setEnvironment} />
             )}
 
-            {/* ENVIRONMENT: BEACH CRIME SCENE */}
+            {/* ENVIRONMENT: BEACH CRIME SCENE — Interactive Board Game */}
             {environment === 'beach' && (
-              <BeachEnvironment
-                evidence={evidence}
+              <BoardGameEnvironment
                 collected={collected}
-                selectedEvidence={selectedEvidence}
-                setSelectedEvidence={setSelectedEvidence}
-                collectionPhase={collectionPhase}
-                setCollectionPhase={setCollectionPhase}
-                collectionFeedback={collectionFeedback}
-                setCollectionFeedback={setCollectionFeedback}
                 onCollect={collectEvidence}
                 onNavigate={setEnvironment}
               />
@@ -360,7 +354,40 @@ function OfficeEnvironment({ onNavigate }: { onNavigate: (env: Environment) => v
 }
 
 // ============================================
-// ENVIRONMENT: BEACH CRIME SCENE
+// ENVIRONMENT: BEACH CRIME SCENE — BOARD GAME
+// ============================================
+function BoardGameEnvironment({
+  collected, onCollect, onNavigate,
+}: {
+  collected: string[]
+  onCollect: (id: string) => void
+  onNavigate: (env: Environment) => void
+}) {
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="h-full flex flex-col">
+      <div className="shrink-0 px-4 py-2 bg-[rgba(12,21,32,0.8)] border-b border-[rgba(255,149,0,0.08)] flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Search size={14} className="text-[#FF9500]" />
+          <span className="text-xs text-[#F0EBE1]">Beach Crime Scene — Interactive Board</span>
+        </div>
+        <span className="text-[10px] text-[#C9B99A]/40">Drag pieces to build your theory</span>
+      </div>
+      <div className="flex-1 overflow-hidden">
+        <ForensicsBoard onCollectEvidence={onCollect} />
+      </div>
+      {collected.length >= 3 && (
+        <div className="shrink-0 text-center py-3 bg-[rgba(12,21,32,0.8)] border-t border-[rgba(255,149,0,0.08)]">
+          <button onClick={() => onNavigate('inventory')} className="inline-flex items-center gap-2 rounded-full h-10 px-6 bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors text-sm font-medium">
+            <Package size={14} /> Proceed to Evidence Intake <ChevronRight size={14} />
+          </button>
+        </div>
+      )}
+    </motion.div>
+  )
+}
+
+// ============================================
+// ENVIRONMENT: BEACH CRIME SCENE (OLD — REPLACED)
 // ============================================
 function BeachEnvironment({
   evidence, collected, selectedEvidence, setSelectedEvidence,
