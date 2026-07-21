@@ -32,7 +32,8 @@ const ContactPage = lazy(() => import('./pages/ContactPage'))
 const WorkWithUsPage = lazy(() => import('./pages/WorkWithUsPage'))
 const RootRegistryPlaceholderPage = lazy(() => import('./pages/RootRegistryPlaceholderPage'))
 const ForensicsLabPage = lazy(() => import('./pages/ForensicsLabPage'))
-const ForensicsCasePage = lazy(() => import('./pages/ForensicsCasePage'))
+const ForensicsCreateCase = lazy(() => import('./pages/ForensicsCreateCase'))
+const ForensicsInvestigate = lazy(() => import('./pages/ForensicsInvestigate'))
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -97,7 +98,9 @@ function AppRoutes() {
           <Route path="/work-with-us" element={<WorkWithUsPage />} />
           <Route path="/root-registry/step-1" element={<RootRegistryPlaceholderPage />} />
           <Route path="/forensics-lab" element={<ForensicsLabPage />} />
-          <Route path="/forensics-lab/case/:caseId" element={<ForensicsCasePage />} />
+          <Route path="/forensics-lab/create" element={<ForensicsCreateCase />} />
+          <Route path="/forensics-lab/investigate/:caseId" element={<ForensicsInvestigate />} />
+          <Route path="/forensics-lab/case/:caseId" element={<ForensicsInvestigate />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
