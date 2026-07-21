@@ -1,12 +1,13 @@
 import { z } from "zod";
 import { createRouter, publicQuery, adminQuery } from "./middleware";
-import { db } from "./lib/db";
-import { videos } from "../db/schema";
+import { getDb } from "./queries/connection";
+import { videos } from "@db/schema";
 import { eq, desc } from "drizzle-orm";
 
 export const videoRouter = createRouter({
   // Public: list all published videos
   list: publicQuery.query(async () => {
+    const db = getDb();
     return db
       .select()
       .from(videos)
@@ -16,6 +17,7 @@ export const videoRouter = createRouter({
 
   // Public: get featured video
   featured: publicQuery.query(async () => {
+    const db = getDb();
     const results = await db
       .select()
       .from(videos)
@@ -28,6 +30,7 @@ export const videoRouter = createRouter({
   getById: publicQuery
     .input(z.object({ id: z.number() }))
     .query(async ({ input }) => {
+      const db = getDb();
       const results = await db
         .select()
         .from(videos)
@@ -38,6 +41,7 @@ export const videoRouter = createRouter({
 
   // Admin: list all videos (including unpublished)
   adminList: adminQuery.query(async () => {
+    const db = getDb();
     return db
       .select()
       .from(videos)
@@ -60,6 +64,7 @@ export const videoRouter = createRouter({
       })
     )
     .mutation(async ({ input }) => {
+      const db = getDb();
       const result = await db.insert(videos).values(input);
       return { success: true, id: Number(result[0].insertId) };
     }),
@@ -81,6 +86,7 @@ export const videoRouter = createRouter({
       })
     )
     .mutation(async ({ input }) => {
+      const db = getDb();
       const { id, ...data } = input;
       await db.update(videos).set(data).where(eq(videos.id, id));
       return { success: true };
@@ -90,6 +96,7 @@ export const videoRouter = createRouter({
   delete: adminQuery
     .input(z.object({ id: z.number() }))
     .mutation(async ({ input }) => {
+      const db = getDb();
       await db.delete(videos).where(eq(videos.id, input.id));
       return { success: true };
     }),
