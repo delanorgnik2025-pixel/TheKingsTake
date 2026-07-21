@@ -284,13 +284,13 @@ export default function WritingServicesPage() {
                         ))}
                       </div>
                       <div className="flex items-center gap-4">
-                        <a
-                          href="mailto:aasotumediagroup@gmail.com?subject=Service Inquiry: ${service.title}"
+                        <Link
+                          to="/contact"
                           className="inline-flex items-center gap-2 text-sm bg-[#FF9500] text-[#0C1520] px-6 py-2.5 rounded hover:bg-[#CC6A00] transition-colors font-medium"
                         >
-                          {service.cta} <ArrowRight size={14} />
-                        </a>
-                        <span className="text-xs text-[#FF9500]/70">or 4 interest-free payments with Klarna</span>
+                          Request This Service <ArrowRight size={14} />
+                        </Link>
+                        <span className="text-xs text-[#FF9500]/70">Stripe checkout coming soon</span>
                       </div>
                     </motion.div>
                   )}

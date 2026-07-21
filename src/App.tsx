@@ -31,6 +31,8 @@ const ArticlePage = lazy(() => import('./pages/ArticlePage'))
 const ContactPage = lazy(() => import('./pages/ContactPage'))
 const WorkWithUsPage = lazy(() => import('./pages/WorkWithUsPage'))
 const RootRegistryPlaceholderPage = lazy(() => import('./pages/RootRegistryPlaceholderPage'))
+const ForensicsLabPage = lazy(() => import('./pages/ForensicsLabPage'))
+const ForensicsCasePage = lazy(() => import('./pages/ForensicsCasePage'))
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -94,6 +96,8 @@ function AppRoutes() {
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/work-with-us" element={<WorkWithUsPage />} />
           <Route path="/root-registry/step-1" element={<RootRegistryPlaceholderPage />} />
+          <Route path="/forensics-lab" element={<ForensicsLabPage />} />
+          <Route path="/forensics-lab/case/:caseId" element={<ForensicsCasePage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>

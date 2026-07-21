@@ -283,13 +283,13 @@ export default function ContactPage() {
             </div>
 
             <div className="flex flex-col sm:flex-row items-center gap-3">
-              <a
-                href="mailto:aasotumediagroup@gmail.com?subject=Consultation Request"
-                className="inline-flex items-center justify-center gap-2 rounded-full h-12 px-8 bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-medium"
+              <button
+                onClick={() => alert('Consultation booking coming soon! To request a consultation now, email aasotumediagroup@gmail.com or message us on Facebook.')}
+                className="inline-flex items-center justify-center gap-2 rounded-full h-12 px-8 bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-medium cursor-pointer"
                 style={{ boxShadow: '0 4px 16px rgba(255,149,0,0.25)' }}
               >
                 <Sparkles size={16} /> Book a Consultation
-              </a>
+              </button>
               <Link
                 to="/writing-services"
                 className="inline-flex items-center justify-center gap-2 rounded-full h-12 px-8 border border-[rgba(255,149,0,0.4)] text-[#FF9500] hover:bg-[rgba(255,149,0,0.08)] transition-colors"
