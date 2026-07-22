@@ -35,41 +35,15 @@ export default function RegistryLandingPage() {
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="mb-6"
+            className="mb-8"
           >
             <div className="w-16 h-16 mx-auto rounded-full border border-[rgba(201,185,154,0.25)] bg-[rgba(15,10,5,0.5)] backdrop-blur-sm flex items-center justify-center">
               <TreePine size={28} className="text-[#C9B99A]" strokeWidth={1.2} />
             </div>
           </motion.div>
 
-          <p className="text-[10px] uppercase tracking-[0.3em] text-[#C9B99A]/60 mb-5">
+          <p className="text-[10px] uppercase tracking-[0.3em] text-[#C9B99A]/60 mb-10">
             AASOTU Media Group LLC &middot; #TheKingsTake
-          </p>
-
-          <h1
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-medium leading-[1.1] mb-5"
-            style={{
-              fontFamily: "'Playfair Display', Georgia, serif",
-              color: '#F0EBE1',
-              textShadow: '0 2px 20px rgba(0,0,0,0.5)',
-            }}
-          >
-            Ancestor Root Registry
-          </h1>
-
-          <p
-            className="text-lg md:text-xl italic mb-4 max-w-xl mx-auto"
-            style={{ color: 'rgba(201,185,154,0.75)', textShadow: '0 1px 8px rgba(0,0,0,0.5)' }}
-          >
-            Preserve names. Honor bloodlines. Keep memory alive.
-          </p>
-
-          <p
-            className="text-sm max-w-lg mx-auto leading-relaxed mb-10"
-            style={{ color: 'rgba(201,185,154,0.5)', textShadow: '0 1px 6px rgba(0,0,0,0.5)' }}
-          >
-            A sacred digital archive where families document their heritage, store family trees,
-            record stories, and build a lasting legacy for generations to come.
           </p>
 
           {/* CTAs */}
