@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { motion } from 'framer-motion'
 import { TreePine, Users, Calendar, ArrowRight, UserPlus, BookOpen, Share2, AlertTriangle } from 'lucide-react'
+import RegistryBackground from '@/components/RegistryBackground'
 import { loadRegistryData, getRegistrySummary } from '@/lib/registry-storage'
 import type { RegistryData, RegistrySummary } from '@/types/registry'
 
@@ -26,7 +27,7 @@ export default function RegistryPlantedPage() {
   if (!data || !summary) return null
 
   return (
-    <div className="min-h-screen bg-[#05080e]">
+    <RegistryBackground variant="subpage">
       <div className="max-w-2xl mx-auto px-4 py-16 md:py-24 text-center">
         {/* Animated tree growth visual */}
         <motion.div
@@ -122,7 +123,7 @@ export default function RegistryPlantedPage() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => navigate('/ancestor-root-registry/build')}
-              className="p-3 rounded-xl border border-[rgba(201,185,154,0.1)] bg-[rgba(27,40,56,0.3)] text-[#C9B99A] hover:border-[rgba(255,149,0,0.2)] transition-all cursor-pointer flex flex-col items-center gap-1"
+              className="p-3 rounded-xl border border-[rgba(201,185,154,0.1)] bg-[rgba(40,25,12,0.3)] text-[#C9B99A] hover:border-[rgba(255,149,0,0.2)] transition-all cursor-pointer flex flex-col items-center gap-1"
             >
               <UserPlus size={16} />
               <span className="text-[10px]">Add Relative</span>
@@ -131,7 +132,7 @@ export default function RegistryPlantedPage() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => navigate('/ancestor-root-registry/stories')}
-              className="p-3 rounded-xl border border-[rgba(201,185,154,0.1)] bg-[rgba(27,40,56,0.3)] text-[#C9B99A] hover:border-[rgba(255,149,0,0.2)] transition-all cursor-pointer flex flex-col items-center gap-1"
+              className="p-3 rounded-xl border border-[rgba(201,185,154,0.1)] bg-[rgba(40,25,12,0.3)] text-[#C9B99A] hover:border-[rgba(255,149,0,0.2)] transition-all cursor-pointer flex flex-col items-center gap-1"
             >
               <BookOpen size={16} />
               <span className="text-[10px]">Add Story</span>
@@ -140,7 +141,7 @@ export default function RegistryPlantedPage() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => navigate('/ancestor-root-registry/share')}
-              className="p-3 rounded-xl border border-[rgba(201,185,154,0.1)] bg-[rgba(27,40,56,0.3)] text-[#C9B99A] hover:border-[rgba(255,149,0,0.2)] transition-all cursor-pointer flex flex-col items-center gap-1"
+              className="p-3 rounded-xl border border-[rgba(201,185,154,0.1)] bg-[rgba(40,25,12,0.3)] text-[#C9B99A] hover:border-[rgba(255,149,0,0.2)] transition-all cursor-pointer flex flex-col items-center gap-1"
             >
               <Share2 size={16} />
               <span className="text-[10px]">Share</span>
@@ -163,6 +164,6 @@ export default function RegistryPlantedPage() {
           </p>
         </motion.div>
       </div>
-    </div>
+    </RegistryBackground>
   )
 }

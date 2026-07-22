@@ -8,6 +8,7 @@ import {
   ArrowLeft, Edit2, UserPlus, BookOpen, Search, TreePine,
   Heart, MapPin, Calendar, Circle, Sparkles
 } from 'lucide-react'
+import RegistryBackground from '@/components/RegistryBackground'
 import { loadRegistryData, getPersonWithRelations, updatePerson } from '@/lib/registry-storage'
 import type { RegistryData, PersonWithRelations } from '@/types/registry'
 
@@ -70,9 +71,9 @@ export default function RegistryPersonPage() {
   if (!person || !data) return null
 
   return (
-    <div className="min-h-screen bg-[#05080e]">
+    <RegistryBackground variant="subpage">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-[#0A0F1A]/95 backdrop-blur-md border-b border-[rgba(201,185,154,0.08)]">
+      <header className="sticky top-0 z-50 backdrop-blur-md border-b border-[rgba(201,185,154,0.08)]">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
           <button
             onClick={() => navigate('/ancestor-root-registry/people')}
@@ -116,13 +117,13 @@ export default function RegistryPersonPage() {
                   <input
                     value={editForm.fullName || ''}
                     onChange={(e) => setEditForm((f) => ({ ...f, fullName: e.target.value }))}
-                    className="w-full px-3 py-2 rounded-lg bg-[rgba(27,40,56,0.5)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-sm focus:outline-none focus:border-[rgba(255,149,0,0.3)]"
+                    className="w-full px-3 py-2 rounded-lg bg-[rgba(40,25,12,0.5)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-sm focus:outline-none focus:border-[rgba(255,149,0,0.3)]"
                     placeholder="Full name"
                   />
                   <input
                     value={editForm.preferredName || ''}
                     onChange={(e) => setEditForm((f) => ({ ...f, preferredName: e.target.value }))}
-                    className="w-full px-3 py-2 rounded-lg bg-[rgba(27,40,56,0.5)] border border-[rgba(201,185,154,0.1)] text-[#C9B99A] text-xs focus:outline-none focus:border-[rgba(255,149,0,0.3)]"
+                    className="w-full px-3 py-2 rounded-lg bg-[rgba(40,25,12,0.5)] border border-[rgba(201,185,154,0.1)] text-[#C9B99A] text-xs focus:outline-none focus:border-[rgba(255,149,0,0.3)]"
                     placeholder="Preferred name"
                   />
                 </div>
@@ -158,7 +159,7 @@ export default function RegistryPersonPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.1 }}
-          className="p-5 rounded-xl bg-[rgba(27,40,56,0.35)] border border-[rgba(201,185,154,0.06)] mb-6"
+          className="p-5 rounded-xl bg-[rgba(40,25,12,0.35)] border border-[rgba(201,185,154,0.06)] mb-6"
         >
           <h3 className="text-xs text-[#C9B99A]/40 uppercase tracking-wider mb-4">Vital Information</h3>
 
@@ -169,7 +170,7 @@ export default function RegistryPersonPage() {
                 <input
                   value={editForm.birthDate || ''}
                   onChange={(e) => setEditForm((f) => ({ ...f, birthDate: e.target.value }))}
-                  className="w-full px-3 py-2 rounded-lg bg-[rgba(27,40,56,0.5)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-xs focus:outline-none focus:border-[rgba(255,149,0,0.3)]"
+                  className="w-full px-3 py-2 rounded-lg bg-[rgba(40,25,12,0.5)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-xs focus:outline-none focus:border-[rgba(255,149,0,0.3)]"
                 />
               </div>
               <div>
@@ -177,7 +178,7 @@ export default function RegistryPersonPage() {
                 <input
                   value={editForm.deathDate || ''}
                   onChange={(e) => setEditForm((f) => ({ ...f, deathDate: e.target.value }))}
-                  className="w-full px-3 py-2 rounded-lg bg-[rgba(27,40,56,0.5)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-xs focus:outline-none focus:border-[rgba(255,149,0,0.3)]"
+                  className="w-full px-3 py-2 rounded-lg bg-[rgba(40,25,12,0.5)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-xs focus:outline-none focus:border-[rgba(255,149,0,0.3)]"
                 />
               </div>
               <div>
@@ -185,7 +186,7 @@ export default function RegistryPersonPage() {
                 <input
                   value={editForm.birthPlace || ''}
                   onChange={(e) => setEditForm((f) => ({ ...f, birthPlace: e.target.value }))}
-                  className="w-full px-3 py-2 rounded-lg bg-[rgba(27,40,56,0.5)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-xs focus:outline-none focus:border-[rgba(255,149,0,0.3)]"
+                  className="w-full px-3 py-2 rounded-lg bg-[rgba(40,25,12,0.5)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-xs focus:outline-none focus:border-[rgba(255,149,0,0.3)]"
                 />
               </div>
               <div>
@@ -193,7 +194,7 @@ export default function RegistryPersonPage() {
                 <input
                   value={editForm.primaryLocation || ''}
                   onChange={(e) => setEditForm((f) => ({ ...f, primaryLocation: e.target.value }))}
-                  className="w-full px-3 py-2 rounded-lg bg-[rgba(27,40,56,0.5)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-xs focus:outline-none focus:border-[rgba(255,149,0,0.3)]"
+                  className="w-full px-3 py-2 rounded-lg bg-[rgba(40,25,12,0.5)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-xs focus:outline-none focus:border-[rgba(255,149,0,0.3)]"
                 />
               </div>
               <div className="col-span-2">
@@ -202,7 +203,7 @@ export default function RegistryPersonPage() {
                   value={editForm.biography || ''}
                   onChange={(e) => setEditForm((f) => ({ ...f, biography: e.target.value }))}
                   rows={3}
-                  className="w-full px-3 py-2 rounded-lg bg-[rgba(27,40,56,0.5)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-xs focus:outline-none focus:border-[rgba(255,149,0,0.3)] resize-none"
+                  className="w-full px-3 py-2 rounded-lg bg-[rgba(40,25,12,0.5)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-xs focus:outline-none focus:border-[rgba(255,149,0,0.3)] resize-none"
                 />
               </div>
               <div className="col-span-2">
@@ -278,7 +279,7 @@ export default function RegistryPersonPage() {
           <h3 className="text-xs text-[#C9B99A]/40 uppercase tracking-wider mb-3">Relationships</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {person.parents.length > 0 && (
-              <div className="p-4 rounded-xl bg-[rgba(27,40,56,0.25)] border border-[rgba(201,185,154,0.05)]">
+              <div className="p-4 rounded-xl bg-[rgba(40,25,12,0.25)] border border-[rgba(201,185,154,0.05)]">
                 <p className="text-[10px] text-[#C9B99A]/30 uppercase tracking-wider mb-2">Parents</p>
                 {person.parents.map((p) => (
                   <button
@@ -306,7 +307,7 @@ export default function RegistryPersonPage() {
               </div>
             )}
             {person.children.length > 0 && (
-              <div className="p-4 rounded-xl bg-[rgba(27,40,56,0.25)] border border-[rgba(201,185,154,0.05)]">
+              <div className="p-4 rounded-xl bg-[rgba(40,25,12,0.25)] border border-[rgba(201,185,154,0.05)]">
                 <p className="text-[10px] text-[#C9B99A]/30 uppercase tracking-wider mb-2">Children</p>
                 {person.children.map((p) => (
                   <button
@@ -320,7 +321,7 @@ export default function RegistryPersonPage() {
               </div>
             )}
             {person.siblings.length > 0 && (
-              <div className="p-4 rounded-xl bg-[rgba(27,40,56,0.25)] border border-[rgba(201,185,154,0.05)]">
+              <div className="p-4 rounded-xl bg-[rgba(40,25,12,0.25)] border border-[rgba(201,185,154,0.05)]">
                 <p className="text-[10px] text-[#C9B99A]/30 uppercase tracking-wider mb-2">Siblings</p>
                 {person.siblings.map((p) => (
                   <button
@@ -345,19 +346,19 @@ export default function RegistryPersonPage() {
         >
           <button
             onClick={() => navigate(`/ancestor-root-registry/stories?person=${person.id}`)}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs border border-[rgba(201,185,154,0.1)] bg-[rgba(27,40,56,0.3)] text-[#C9B99A] hover:border-[rgba(255,149,0,0.2)] transition-all cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs border border-[rgba(201,185,154,0.1)] bg-[rgba(40,25,12,0.3)] text-[#C9B99A] hover:border-[rgba(255,149,0,0.2)] transition-all cursor-pointer"
           >
             <BookOpen size={12} /> Add Story
           </button>
           <button
             onClick={() => navigate(`/ancestor-root-registry/research?person=${person.id}`)}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs border border-[rgba(201,185,154,0.1)] bg-[rgba(27,40,56,0.3)] text-[#C9B99A] hover:border-[rgba(255,149,0,0.2)] transition-all cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs border border-[rgba(201,185,154,0.1)] bg-[rgba(40,25,12,0.3)] text-[#C9B99A] hover:border-[rgba(255,149,0,0.2)] transition-all cursor-pointer"
           >
             <Search size={12} /> Add Research Note
           </button>
           <button
             onClick={() => navigate('/ancestor-root-registry/tree')}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs border border-[rgba(201,185,154,0.1)] bg-[rgba(27,40,56,0.3)] text-[#C9B99A] hover:border-[rgba(255,149,0,0.2)] transition-all cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs border border-[rgba(201,185,154,0.1)] bg-[rgba(40,25,12,0.3)] text-[#C9B99A] hover:border-[rgba(255,149,0,0.2)] transition-all cursor-pointer"
           >
             <TreePine size={12} /> View in Tree
           </button>
@@ -376,7 +377,7 @@ export default function RegistryPersonPage() {
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {['Photos', 'Documents', 'Meshy 3D', 'Spline Scene'].map((label) => (
-              <div key={label} className="p-3 rounded-lg bg-[rgba(27,40,56,0.2)] border border-[rgba(201,185,154,0.04)] text-center opacity-40">
+              <div key={label} className="p-3 rounded-lg bg-[rgba(40,25,12,0.2)] border border-[rgba(201,185,154,0.04)] text-center opacity-40">
                 <p className="text-[10px] text-[#C9B99A]/30">{label}</p>
                 <p className="text-[8px] text-[#C9B99A]/15">Coming soon</p>
               </div>
@@ -384,6 +385,6 @@ export default function RegistryPersonPage() {
           </div>
         </motion.div>
       </div>
-    </div>
+    </RegistryBackground>
   )
 }

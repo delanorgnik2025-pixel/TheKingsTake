@@ -4,6 +4,7 @@
 import { useNavigate } from 'react-router'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Heart, BookOpen, MapPin, Scroll, Shield, Users, FileText, Flame, Globe, TreePine, Landmark } from 'lucide-react'
+import RegistryBackground from '@/components/RegistryBackground'
 import ScrollReveal from '@/components/ScrollReveal'
 
 export default function RegistryWhyPage() {
@@ -50,9 +51,9 @@ export default function RegistryWhyPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#05080e]">
+    <RegistryBackground variant="subpage">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-[#0A0F1A]/95 backdrop-blur-md border-b border-[rgba(201,185,154,0.08)]">
+      <header className="sticky top-0 z-50 backdrop-blur-md border-b" style={{ background: 'rgba(13,8,5,0.95)', borderColor: 'rgba(201,185,154,0.08)' }} style={{ background: 'rgba(13,8,5,0.95)', borderColor: 'rgba(201,185,154,0.08)' }}>
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
           <button
             onClick={() => navigate('/ancestor-root-registry')}
@@ -96,7 +97,7 @@ export default function RegistryWhyPage() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.04 }}
-                  className="flex items-start gap-3 p-4 rounded-lg bg-[rgba(27,40,56,0.4)] border border-[rgba(201,185,154,0.06)]"
+                  className="flex items-start gap-3 p-4 rounded-lg bg-[rgba(40,25,12,0.4)] border border-[rgba(201,185,154,0.06)]"
                 >
                   <item.icon size={18} className="text-[#FF9500]/70 shrink-0 mt-0.5" strokeWidth={1.5} />
                   <p className="text-sm text-[#F0EBE1]/80">{item.text}</p>
@@ -181,6 +182,6 @@ export default function RegistryWhyPage() {
           </div>
         </ScrollReveal>
       </div>
-    </div>
+    </RegistryBackground>
   )
 }

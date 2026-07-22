@@ -9,6 +9,7 @@ import {
   ArrowLeft, ZoomIn, ZoomOut, Maximize2, ChevronDown, ChevronUp,
   TreePine, User, AlertTriangle
 } from 'lucide-react'
+import RegistryBackground from '@/components/RegistryBackground'
 import { loadRegistryData, getPersonWithRelations } from '@/lib/registry-storage'
 import type { RegistryData, Person } from '@/types/registry'
 
@@ -188,9 +189,10 @@ export default function RegistryTreePage() {
   if (!data) return null
 
   return (
-    <div className="min-h-screen bg-[#05080e] flex flex-col">
+    <RegistryBackground variant="subpage">
+      <div className="flex flex-col min-h-screen">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-[#0A0F1A]/95 backdrop-blur-md border-b border-[rgba(201,185,154,0.08)]">
+      <header className="sticky top-0 z-50 backdrop-blur-md border-b border-[rgba(201,185,154,0.08)]">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           <button
             onClick={() => navigate('/ancestor-root-registry/dashboard')}
@@ -311,7 +313,7 @@ export default function RegistryTreePage() {
                     cx={node.x}
                     cy={node.y}
                     r="32"
-                    fill="rgba(27,40,56,0.85)"
+                    fill="rgba(40,25,12,0.85)"
                     stroke={getStatusColor(node.person.recordStatus)}
                     strokeWidth="1.5"
                     filter="url(#glow)"
@@ -342,7 +344,7 @@ export default function RegistryTreePage() {
                     cy={node.y - 22}
                     r="4"
                     fill={getStatusDot(node.person.recordStatus)}
-                    stroke="rgba(27,40,56,0.85)"
+                    stroke="rgba(40,25,12,0.85)"
                     strokeWidth="1"
                   />
                   {/* Living indicator */}
@@ -363,7 +365,7 @@ export default function RegistryTreePage() {
                       cx={node.x + 110}
                       cy={node.y}
                       r="28"
-                      fill="rgba(27,40,56,0.7)"
+                      fill="rgba(40,25,12,0.7)"
                       stroke="rgba(255,149,0,0.3)"
                       strokeWidth="1"
                       strokeDasharray="4 2"
@@ -386,7 +388,7 @@ export default function RegistryTreePage() {
       </div>
 
       {/* Legend */}
-      <div className="px-4 py-3 border-t border-[rgba(201,185,154,0.06)] bg-[#0A0F1A]/80">
+      <div className="px-4 py-3 border-t border-[rgba(201,185,154,0.06)] bg-[#0d0805]/80">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center gap-4">
           <span className="text-[10px] text-[#C9B99A]/30 uppercase tracking-wider">Legend:</span>
           {[
@@ -407,6 +409,7 @@ export default function RegistryTreePage() {
           <div className="ml-auto text-[10px] text-[#C9B99A]/20">Click a node to view profile</div>
         </div>
       </div>
-    </div>
+      </div>
+    </RegistryBackground>
   )
 }

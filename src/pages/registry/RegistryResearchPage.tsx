@@ -8,6 +8,7 @@ import {
   ArrowLeft, Plus, X, Search, Filter, Trash2, Edit2, Save,
   CheckCircle2, Clock, HelpCircle, AlertTriangle
 } from 'lucide-react'
+import RegistryBackground from '@/components/RegistryBackground'
 import { loadRegistryData, addResearchNote, updateResearchNote, removeResearchNote, generateId } from '@/lib/registry-storage'
 import type { RegistryData, ResearchNote, ResearchStatus } from '@/types/registry'
 
@@ -123,9 +124,9 @@ export default function RegistryResearchPage() {
   if (!data) return null
 
   return (
-    <div className="min-h-screen bg-[#05080e]">
+    <RegistryBackground variant="subpage">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-[#0A0F1A]/95 backdrop-blur-md border-b border-[rgba(201,185,154,0.08)]">
+      <header className="sticky top-0 z-50 backdrop-blur-md border-b border-[rgba(201,185,154,0.08)]">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
           <button
             onClick={() => navigate('/ancestor-root-registry/dashboard')}
@@ -150,7 +151,7 @@ export default function RegistryResearchPage() {
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
-            className="px-3 py-1.5 rounded-lg bg-[rgba(27,40,56,0.4)] border border-[rgba(201,185,154,0.08)] text-xs text-[#C9B99A] focus:outline-none cursor-pointer"
+            className="px-3 py-1.5 rounded-lg bg-[rgba(40,25,12,0.4)] border border-[rgba(201,185,154,0.08)] text-xs text-[#C9B99A] focus:outline-none cursor-pointer"
           >
             <option value="all">All Statuses</option>
             {statuses.map((s) => (
@@ -165,7 +166,7 @@ export default function RegistryResearchPage() {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8 p-5 rounded-xl bg-[rgba(27,40,56,0.5)] border border-[rgba(33,150,243,0.15)]"
+            className="mb-8 p-5 rounded-xl bg-[rgba(40,25,12,0.5)] border border-[rgba(33,150,243,0.15)]"
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm text-[#F0EBE1] font-medium">{editingId ? 'Edit Note' : 'New Research Note'}</h3>
@@ -177,20 +178,20 @@ export default function RegistryResearchPage() {
                 value={form.title}
                 onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
                 placeholder="Research question or goal..."
-                className="w-full px-3 py-2 rounded-lg bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-sm placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(33,150,243,0.3)]"
+                className="w-full px-3 py-2 rounded-lg bg-[rgba(40,25,12,0.6)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-sm placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(33,150,243,0.3)]"
               />
               <textarea
                 value={form.note}
                 onChange={(e) => setForm((f) => ({ ...f, note: e.target.value }))}
                 placeholder="Notes, findings, observations..."
                 rows={3}
-                className="w-full px-3 py-2 rounded-lg bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-sm placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(33,150,243,0.3)] resize-none"
+                className="w-full px-3 py-2 rounded-lg bg-[rgba(40,25,12,0.6)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-sm placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(33,150,243,0.3)] resize-none"
               />
               <div className="grid grid-cols-3 gap-3">
                 <select
                   value={form.status}
                   onChange={(e) => setForm((f) => ({ ...f, status: e.target.value as ResearchStatus }))}
-                  className="px-3 py-2 rounded-lg bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-xs focus:outline-none cursor-pointer"
+                  className="px-3 py-2 rounded-lg bg-[rgba(40,25,12,0.6)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-xs focus:outline-none cursor-pointer"
                 >
                   {statuses.map((s) => <option key={s} value={s}>{s}</option>)}
                 </select>
@@ -198,19 +199,19 @@ export default function RegistryResearchPage() {
                   value={form.sourceCitation}
                   onChange={(e) => setForm((f) => ({ ...f, sourceCitation: e.target.value }))}
                   placeholder="Source or citation"
-                  className="px-3 py-2 rounded-lg bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-xs placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(33,150,243,0.3)]"
+                  className="px-3 py-2 rounded-lg bg-[rgba(40,25,12,0.6)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-xs placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(33,150,243,0.3)]"
                 />
                 <input
                   value={form.nextAction}
                   onChange={(e) => setForm((f) => ({ ...f, nextAction: e.target.value }))}
                   placeholder="Next action"
-                  className="px-3 py-2 rounded-lg bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-xs placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(33,150,243,0.3)]"
+                  className="px-3 py-2 rounded-lg bg-[rgba(40,25,12,0.6)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-xs placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(33,150,243,0.3)]"
                 />
               </div>
               <select
                 value={form.personId}
                 onChange={(e) => setForm((f) => ({ ...f, personId: e.target.value }))}
-                className="w-full px-3 py-2 rounded-lg bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-xs focus:outline-none cursor-pointer"
+                className="w-full px-3 py-2 rounded-lg bg-[rgba(40,25,12,0.6)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-xs focus:outline-none cursor-pointer"
               >
                 <option value="">Not linked to a specific person</option>
                 {data.people.map((p) => (
@@ -252,7 +253,7 @@ export default function RegistryResearchPage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.04 }}
-                  className="p-5 rounded-xl bg-[rgba(27,40,56,0.3)] border border-[rgba(201,185,154,0.06)]"
+                  className="p-5 rounded-xl bg-[rgba(40,25,12,0.3)] border border-[rgba(201,185,154,0.06)]"
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-2">
@@ -288,6 +289,6 @@ export default function RegistryResearchPage() {
           </div>
         )}
       </div>
-    </div>
+    </RegistryBackground>
   )
 }

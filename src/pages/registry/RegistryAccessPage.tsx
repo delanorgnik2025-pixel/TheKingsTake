@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Plus, FolderOpen, KeyRound, TreePine, AlertTriangle } from 'lucide-react'
 import { hasRegistry } from '@/lib/registry-storage'
+import RegistryBackground from '@/components/RegistryBackground'
 import ScrollReveal from '@/components/ScrollReveal'
 
 export default function RegistryAccessPage() {
@@ -17,9 +18,9 @@ export default function RegistryAccessPage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-[#05080e]">
+    <RegistryBackground variant="subpage">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-[#0A0F1A]/95 backdrop-blur-md border-b border-[rgba(201,185,154,0.08)]">
+      <header className="sticky top-0 z-50 backdrop-blur-md border-b border-[rgba(201,185,154,0.08)]">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
           <button
             onClick={() => navigate('/ancestor-root-registry/why')}
@@ -93,7 +94,7 @@ export default function RegistryAccessPage() {
 
           {/* Access Key — Coming Soon */}
           <ScrollReveal delay={0.2}>
-            <div className="w-full p-6 rounded-xl border border-[rgba(201,185,154,0.08)] bg-[rgba(27,40,56,0.2)] opacity-60">
+            <div className="w-full p-6 rounded-xl border border-[rgba(201,185,154,0.08)] bg-[rgba(40,25,12,0.2)] opacity-60">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-full bg-[rgba(201,185,154,0.08)] flex items-center justify-center shrink-0">
                   <KeyRound size={22} className="text-[#C9B99A]/40" />
@@ -134,6 +135,6 @@ export default function RegistryAccessPage() {
           </button>
         </div>
       </div>
-    </div>
+    </RegistryBackground>
   )
 }

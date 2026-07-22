@@ -12,6 +12,7 @@ import {
 } from 'lucide-react'
 import { loadRegistryData, getRegistrySummary, deleteRegistry, downloadRegistryBackup } from '@/lib/registry-storage'
 import type { RegistryData, RegistrySummary } from '@/types/registry'
+import RegistryBackground from '@/components/RegistryBackground'
 import ScrollReveal from '@/components/ScrollReveal'
 
 const sections = [
@@ -59,9 +60,9 @@ export default function RegistryDashboardPage() {
   if (!data || !summary) return null
 
   return (
-    <div className="min-h-screen bg-[#05080e]">
+    <RegistryBackground variant="subpage">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-[#0A0F1A]/95 backdrop-blur-md border-b border-[rgba(201,185,154,0.08)]">
+      <header className="sticky top-0 z-50 backdrop-blur-md border-b border-[rgba(201,185,154,0.08)]">
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
           <button
             onClick={() => navigate('/ancestor-root-registry')}
@@ -125,7 +126,7 @@ export default function RegistryDashboardPage() {
               <motion.div
                 key={i}
                 whileHover={{ y: -2 }}
-                className="p-4 rounded-xl bg-[rgba(27,40,56,0.4)] border border-[rgba(201,185,154,0.06)]"
+                className="p-4 rounded-xl bg-[rgba(40,25,12,0.4)] border border-[rgba(201,185,154,0.06)]"
               >
                 <div className="flex items-center gap-2 mb-2">
                   <stat.icon size={14} style={{ color: stat.color }} strokeWidth={1.5} />
@@ -152,7 +153,7 @@ export default function RegistryDashboardPage() {
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={action.action}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs border border-[rgba(201,185,154,0.1)] bg-[rgba(27,40,56,0.3)] text-[#C9B99A] hover:border-[rgba(255,149,0,0.2)] hover:text-[#F0EBE1] transition-all cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs border border-[rgba(201,185,154,0.1)] bg-[rgba(40,25,12,0.3)] text-[#C9B99A] hover:border-[rgba(255,149,0,0.2)] hover:text-[#F0EBE1] transition-all cursor-pointer"
               >
                 <action.icon size={12} /> {action.label}
               </motion.button>
@@ -182,7 +183,7 @@ export default function RegistryDashboardPage() {
                 className="p-5 rounded-xl border text-left transition-all cursor-pointer disabled:cursor-default"
                 style={{
                   borderColor: section.comingSoon ? 'rgba(201,185,154,0.04)' : 'rgba(201,185,154,0.08)',
-                  background: section.comingSoon ? 'rgba(27,40,56,0.15)' : 'rgba(27,40,56,0.35)',
+                  background: section.comingSoon ? 'rgba(40,25,12,0.15)' : 'rgba(40,25,12,0.35)',
                   opacity: section.comingSoon ? 0.5 : 1,
                 }}
               >
@@ -232,7 +233,7 @@ export default function RegistryDashboardPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-[#0A0F1A] border border-[rgba(244,67,54,0.2)] rounded-xl p-6 max-w-sm w-full"
+            className="bg-[#0d0805] border border-[rgba(244,67,54,0.2)] rounded-xl p-6 max-w-sm w-full"
           >
             <Trash2 size={24} className="text-[#f44336] mb-3" />
             <p className="text-base text-[#F0EBE1] font-medium mb-2">Reset Registry?</p>
@@ -257,6 +258,6 @@ export default function RegistryDashboardPage() {
           </motion.div>
         </div>
       )}
-    </div>
+    </RegistryBackground>
   )
 }

@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeft, ArrowRight, TreePine, ShieldCheck, AlertTriangle } from 'lucide-react'
 import { generateId, createRegistryData } from '@/lib/registry-storage'
 import type { PrivacyMode } from '@/types/registry'
+import RegistryBackground from '@/components/RegistryBackground'
 
 interface FormStep {
   key: string
@@ -156,9 +157,10 @@ export default function RegistryCreatePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#05080e] flex flex-col">
+    <RegistryBackground variant="subpage">
+      <div className="flex flex-col min-h-screen">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-[#0A0F1A]/95 backdrop-blur-md border-b border-[rgba(201,185,154,0.08)]">
+      <header className="sticky top-0 z-50 backdrop-blur-md border-b border-[rgba(201,185,154,0.08)]">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
           <button
             onClick={handleBack}
@@ -231,7 +233,7 @@ export default function RegistryCreatePage() {
                     onChange={(e) => setFormData((d) => ({ ...d, [step.key]: e.target.value }))}
                     onKeyDown={(e) => e.key === 'Enter' && handleNext()}
                     placeholder={step.placeholder}
-                    className="w-full px-5 py-4 rounded-xl bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.12)] text-[#F0EBE1] text-base placeholder:text-[#C9B99A]/25 focus:outline-none focus:border-[rgba(255,149,0,0.4)] transition-colors"
+                    className="w-full px-5 py-4 rounded-xl bg-[rgba(40,25,12,0.6)] border border-[rgba(201,185,154,0.12)] text-[#F0EBE1] text-base placeholder:text-[#C9B99A]/25 focus:outline-none focus:border-[rgba(255,149,0,0.4)] transition-colors"
                     autoFocus
                   />
                 )}
@@ -241,7 +243,7 @@ export default function RegistryCreatePage() {
                     onChange={(e) => setFormData((d) => ({ ...d, [step.key]: e.target.value }))}
                     placeholder={step.placeholder}
                     rows={4}
-                    className="w-full px-5 py-4 rounded-xl bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.12)] text-[#F0EBE1] text-base placeholder:text-[#C9B99A]/25 focus:outline-none focus:border-[rgba(255,149,0,0.4)] transition-colors resize-none"
+                    className="w-full px-5 py-4 rounded-xl bg-[rgba(40,25,12,0.6)] border border-[rgba(201,185,154,0.12)] text-[#F0EBE1] text-base placeholder:text-[#C9B99A]/25 focus:outline-none focus:border-[rgba(255,149,0,0.4)] transition-colors resize-none"
                     autoFocus
                   />
                 )}
@@ -256,7 +258,7 @@ export default function RegistryCreatePage() {
                         className="w-full p-4 rounded-xl border text-left transition-all cursor-pointer"
                         style={{
                           borderColor: formData[step.key] === opt.value ? 'rgba(255,149,0,0.5)' : 'rgba(201,185,154,0.1)',
-                          background: formData[step.key] === opt.value ? 'rgba(255,149,0,0.08)' : 'rgba(27,40,56,0.3)',
+                          background: formData[step.key] === opt.value ? 'rgba(255,149,0,0.08)' : 'rgba(40,25,12,0.3)',
                         }}
                       >
                         <div className="flex items-center gap-3">
@@ -320,6 +322,7 @@ export default function RegistryCreatePage() {
           </p>
         </div>
       </div>
-    </div>
+      </div>
+    </RegistryBackground>
   )
 }

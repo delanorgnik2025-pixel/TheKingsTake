@@ -6,6 +6,7 @@ import { useEffect, useState, useRef } from 'react'
 import { useNavigate } from 'react-router'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Share2, Copy, Check, TreePine, Users, BookOpen } from 'lucide-react'
+import RegistryBackground from '@/components/RegistryBackground'
 import { loadRegistryData, getRegistrySummary } from '@/lib/registry-storage'
 import type { RegistryData, RegistrySummary } from '@/types/registry'
 
@@ -52,9 +53,9 @@ export default function RegistrySharePage() {
   if (!data || !summary) return null
 
   return (
-    <div className="min-h-screen bg-[#05080e]">
+    <RegistryBackground variant="subpage">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-[#0A0F1A]/95 backdrop-blur-md border-b border-[rgba(201,185,154,0.08)]">
+      <header className="sticky top-0 z-50 backdrop-blur-md border-b border-[rgba(201,185,154,0.08)]">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
           <button
             onClick={() => navigate('/ancestor-root-registry/dashboard')}
@@ -92,7 +93,7 @@ export default function RegistrySharePage() {
               ref={cardRef}
               className="w-full max-w-sm p-8 rounded-2xl border-2 text-center"
               style={{
-                background: 'linear-gradient(135deg, rgba(27,40,56,0.9), rgba(10,15,26,0.95))',
+                background: 'linear-gradient(135deg, rgba(40,25,12,0.9), rgba(10,15,26,0.95))',
                 borderColor: 'rgba(255,149,0,0.2)',
               }}
             >
@@ -140,7 +141,7 @@ export default function RegistrySharePage() {
           </div>
 
           {/* Share text preview */}
-          <div className="mb-6 p-4 rounded-xl bg-[rgba(27,40,56,0.3)] border border-[rgba(201,185,154,0.06)]">
+          <div className="mb-6 p-4 rounded-xl bg-[rgba(40,25,12,0.3)] border border-[rgba(201,185,154,0.06)]">
             <p className="text-[10px] text-[#C9B99A]/30 uppercase tracking-wider mb-2">Share Text</p>
             <p className="text-sm text-[#F0EBE1]/70 leading-relaxed">{shareText}</p>
           </div>
@@ -151,7 +152,7 @@ export default function RegistrySharePage() {
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
               onClick={handleCopy}
-              className="flex-1 p-4 rounded-xl border border-[rgba(201,185,154,0.1)] bg-[rgba(27,40,56,0.3)] text-[#C9B99A] hover:border-[rgba(255,149,0,0.2)] transition-all cursor-pointer flex items-center justify-center gap-2"
+              className="flex-1 p-4 rounded-xl border border-[rgba(201,185,154,0.1)] bg-[rgba(40,25,12,0.3)] text-[#C9B99A] hover:border-[rgba(255,149,0,0.2)] transition-all cursor-pointer flex items-center justify-center gap-2"
             >
               {copied ? <Check size={16} className="text-[#4CAF50]" /> : <Copy size={16} />}
               {copied ? 'Copied!' : 'Copy Share Text'}
@@ -170,7 +171,7 @@ export default function RegistrySharePage() {
           </div>
 
           {/* Privacy reminder */}
-          <div className="mt-8 p-4 rounded-lg border border-[rgba(201,185,154,0.04)] bg-[rgba(27,40,56,0.15)]">
+          <div className="mt-8 p-4 rounded-lg border border-[rgba(201,185,154,0.04)] bg-[rgba(40,25,12,0.15)]">
             <p className="text-[10px] text-[#C9B99A]/25 leading-relaxed text-center">
               Share cards intentionally do not include: full birth dates, private notes, addresses,
               access codes, living person details, unapproved stories, or source documents.
@@ -178,6 +179,6 @@ export default function RegistrySharePage() {
           </div>
         </motion.div>
       </div>
-    </div>
+    </RegistryBackground>
   )
 }

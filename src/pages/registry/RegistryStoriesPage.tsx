@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowLeft, Plus, X, BookOpen, Filter, Trash2, Edit2, Save
 } from 'lucide-react'
+import RegistryBackground from '@/components/RegistryBackground'
 import { loadRegistryData, addStory, updateStory, removeStory, generateId } from '@/lib/registry-storage'
 import type { RegistryData, Story, StoryType } from '@/types/registry'
 
@@ -132,9 +133,9 @@ export default function RegistryStoriesPage() {
   if (!data) return null
 
   return (
-    <div className="min-h-screen bg-[#05080e]">
+    <RegistryBackground variant="subpage">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-[#0A0F1A]/95 backdrop-blur-md border-b border-[rgba(201,185,154,0.08)]">
+      <header className="sticky top-0 z-50 backdrop-blur-md border-b border-[rgba(201,185,154,0.08)]">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
           <button
             onClick={() => navigate('/ancestor-root-registry/dashboard')}
@@ -159,7 +160,7 @@ export default function RegistryStoriesPage() {
           <select
             value={filterType}
             onChange={(e) => setFilterType(e.target.value)}
-            className="px-3 py-1.5 rounded-lg bg-[rgba(27,40,56,0.4)] border border-[rgba(201,185,154,0.08)] text-xs text-[#C9B99A] focus:outline-none cursor-pointer"
+            className="px-3 py-1.5 rounded-lg bg-[rgba(40,25,12,0.4)] border border-[rgba(201,185,154,0.08)] text-xs text-[#C9B99A] focus:outline-none cursor-pointer"
           >
             <option value="all">All Types</option>
             {storyTypes.map((t) => (
@@ -178,7 +179,7 @@ export default function RegistryStoriesPage() {
               exit={{ opacity: 0, height: 0 }}
               className="mb-8 overflow-hidden"
             >
-              <div className="p-5 rounded-xl bg-[rgba(27,40,56,0.5)] border border-[rgba(255,149,0,0.15)]">
+              <div className="p-5 rounded-xl bg-[rgba(40,25,12,0.5)] border border-[rgba(255,149,0,0.15)]">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-sm text-[#F0EBE1] font-medium">
                     {editingId ? 'Edit Story' : 'New Story'}
@@ -195,7 +196,7 @@ export default function RegistryStoriesPage() {
                       value={form.title}
                       onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
                       placeholder="Story title..."
-                      className="w-full px-3 py-2 rounded-lg bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-sm placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(255,149,0,0.3)]"
+                      className="w-full px-3 py-2 rounded-lg bg-[rgba(40,25,12,0.6)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-sm placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(255,149,0,0.3)]"
                     />
                   </div>
 
@@ -206,7 +207,7 @@ export default function RegistryStoriesPage() {
                       onChange={(e) => setForm((f) => ({ ...f, body: e.target.value }))}
                       placeholder="Write the story..."
                       rows={5}
-                      className="w-full px-3 py-2 rounded-lg bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-sm placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(255,149,0,0.3)] resize-none"
+                      className="w-full px-3 py-2 rounded-lg bg-[rgba(40,25,12,0.6)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-sm placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(255,149,0,0.3)] resize-none"
                     />
                   </div>
 
@@ -216,7 +217,7 @@ export default function RegistryStoriesPage() {
                       <select
                         value={form.storyType}
                         onChange={(e) => setForm((f) => ({ ...f, storyType: e.target.value as StoryType }))}
-                        className="w-full px-3 py-2 rounded-lg bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-xs focus:outline-none cursor-pointer"
+                        className="w-full px-3 py-2 rounded-lg bg-[rgba(40,25,12,0.6)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-xs focus:outline-none cursor-pointer"
                       >
                         {storyTypes.map((t) => (
                           <option key={t} value={t}>{t}</option>
@@ -229,7 +230,7 @@ export default function RegistryStoriesPage() {
                         value={form.approximateDate}
                         onChange={(e) => setForm((f) => ({ ...f, approximateDate: e.target.value }))}
                         placeholder="e.g., Summer 1965"
-                        className="w-full px-3 py-2 rounded-lg bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-xs placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(255,149,0,0.3)]"
+                        className="w-full px-3 py-2 rounded-lg bg-[rgba(40,25,12,0.6)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-xs placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(255,149,0,0.3)]"
                       />
                     </div>
                   </div>
@@ -241,7 +242,7 @@ export default function RegistryStoriesPage() {
                         value={form.location}
                         onChange={(e) => setForm((f) => ({ ...f, location: e.target.value }))}
                         placeholder="Where did this take place?"
-                        className="w-full px-3 py-2 rounded-lg bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-xs placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(255,149,0,0.3)]"
+                        className="w-full px-3 py-2 rounded-lg bg-[rgba(40,25,12,0.6)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-xs placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(255,149,0,0.3)]"
                       />
                     </div>
                     <div>
@@ -250,7 +251,7 @@ export default function RegistryStoriesPage() {
                         value={form.sourceNote}
                         onChange={(e) => setForm((f) => ({ ...f, sourceNote: e.target.value }))}
                         placeholder="Who told this story?"
-                        className="w-full px-3 py-2 rounded-lg bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-xs placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(255,149,0,0.3)]"
+                        className="w-full px-3 py-2 rounded-lg bg-[rgba(40,25,12,0.6)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-xs placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(255,149,0,0.3)]"
                       />
                     </div>
                   </div>
@@ -266,7 +267,7 @@ export default function RegistryStoriesPage() {
                           className="px-2.5 py-1 rounded-lg text-[10px] border transition-all cursor-pointer"
                           style={{
                             borderColor: form.personIds.includes(p.id) ? 'rgba(255,149,0,0.4)' : 'rgba(201,185,154,0.08)',
-                            background: form.personIds.includes(p.id) ? 'rgba(255,149,0,0.1)' : 'rgba(27,40,56,0.3)',
+                            background: form.personIds.includes(p.id) ? 'rgba(255,149,0,0.1)' : 'rgba(40,25,12,0.3)',
                             color: form.personIds.includes(p.id) ? '#F0EBE1' : '#C9B99A/50',
                           }}
                         >
@@ -315,7 +316,7 @@ export default function RegistryStoriesPage() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
-                className="p-5 rounded-xl bg-[rgba(27,40,56,0.3)] border border-[rgba(201,185,154,0.06)] hover:border-[rgba(201,185,154,0.1)] transition-all"
+                className="p-5 rounded-xl bg-[rgba(40,25,12,0.3)] border border-[rgba(201,185,154,0.06)] hover:border-[rgba(201,185,154,0.1)] transition-all"
               >
                 <div className="flex items-start justify-between mb-3">
                   <div>
@@ -369,6 +370,6 @@ export default function RegistryStoriesPage() {
           </div>
         )}
       </div>
-    </div>
+    </RegistryBackground>
   )
 }

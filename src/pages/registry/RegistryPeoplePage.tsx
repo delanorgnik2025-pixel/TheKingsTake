@@ -8,6 +8,7 @@ import {
   ArrowLeft, Search, Filter, Grid3X3, List, User, TreePine,
   Plus, Edit, BookOpen, Search as SearchIcon
 } from 'lucide-react'
+import RegistryBackground from '@/components/RegistryBackground'
 import { loadRegistryData } from '@/lib/registry-storage'
 import type { RegistryData, Person } from '@/types/registry'
 
@@ -73,9 +74,9 @@ export default function RegistryPeoplePage() {
   if (!data) return null
 
   return (
-    <div className="min-h-screen bg-[#05080e]">
+    <RegistryBackground variant="subpage">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-[#0A0F1A]/95 backdrop-blur-md border-b border-[rgba(201,185,154,0.08)]">
+      <header className="sticky top-0 z-50 backdrop-blur-md border-b border-[rgba(201,185,154,0.08)]">
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
           <button
             onClick={() => navigate('/ancestor-root-registry/dashboard')}
@@ -104,7 +105,7 @@ export default function RegistryPeoplePage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search by name, place..."
-                className="w-full pl-9 pr-4 py-2.5 rounded-lg bg-[rgba(27,40,56,0.5)] border border-[rgba(201,185,154,0.08)] text-[#F0EBE1] text-sm placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(255,149,0,0.3)] transition-colors"
+                className="w-full pl-9 pr-4 py-2.5 rounded-lg bg-[rgba(40,25,12,0.5)] border border-[rgba(201,185,154,0.08)] text-[#F0EBE1] text-sm placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(255,149,0,0.3)] transition-colors"
               />
             </div>
             <div className="flex items-center border border-[rgba(201,185,154,0.08)] rounded-lg overflow-hidden">
@@ -130,7 +131,7 @@ export default function RegistryPeoplePage() {
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-3 py-1.5 rounded-lg bg-[rgba(27,40,56,0.4)] border border-[rgba(201,185,154,0.08)] text-xs text-[#C9B99A] focus:outline-none cursor-pointer"
+              className="px-3 py-1.5 rounded-lg bg-[rgba(40,25,12,0.4)] border border-[rgba(201,185,154,0.08)] text-xs text-[#C9B99A] focus:outline-none cursor-pointer"
             >
               <option value="all">All Statuses</option>
               <option value="Documented">Documented</option>
@@ -141,7 +142,7 @@ export default function RegistryPeoplePage() {
             <select
               value={filterLiving}
               onChange={(e) => setFilterLiving(e.target.value)}
-              className="px-3 py-1.5 rounded-lg bg-[rgba(27,40,56,0.4)] border border-[rgba(201,185,154,0.08)] text-xs text-[#C9B99A] focus:outline-none cursor-pointer"
+              className="px-3 py-1.5 rounded-lg bg-[rgba(40,25,12,0.4)] border border-[rgba(201,185,154,0.08)] text-xs text-[#C9B99A] focus:outline-none cursor-pointer"
             >
               <option value="all">All</option>
               <option value="living">Living</option>
@@ -164,7 +165,7 @@ export default function RegistryPeoplePage() {
                 transition={{ delay: i * 0.03 }}
                 whileHover={{ y: -2 }}
                 onClick={() => navigate(`/ancestor-root-registry/person/${person.id}`)}
-                className="p-4 rounded-xl bg-[rgba(27,40,56,0.4)] border border-[rgba(201,185,154,0.06)] hover:border-[rgba(255,149,0,0.2)] transition-all cursor-pointer"
+                className="p-4 rounded-xl bg-[rgba(40,25,12,0.4)] border border-[rgba(201,185,154,0.06)] hover:border-[rgba(255,149,0,0.2)] transition-all cursor-pointer"
               >
                 <div className="flex items-start gap-3">
                   <div
@@ -199,7 +200,7 @@ export default function RegistryPeoplePage() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: i * 0.02 }}
                 onClick={() => navigate(`/ancestor-root-registry/person/${person.id}`)}
-                className="flex items-center gap-3 px-4 py-3 rounded-lg bg-[rgba(27,40,56,0.2)] border border-transparent hover:border-[rgba(255,149,0,0.15)] hover:bg-[rgba(27,40,56,0.4)] transition-all cursor-pointer"
+                className="flex items-center gap-3 px-4 py-3 rounded-lg bg-[rgba(40,25,12,0.2)] border border-transparent hover:border-[rgba(255,149,0,0.15)] hover:bg-[rgba(40,25,12,0.4)] transition-all cursor-pointer"
               >
                 <div
                   className="w-7 h-7 rounded-full flex items-center justify-center shrink-0"
@@ -229,6 +230,6 @@ export default function RegistryPeoplePage() {
           </div>
         )}
       </div>
-    </div>
+    </RegistryBackground>
   )
 }

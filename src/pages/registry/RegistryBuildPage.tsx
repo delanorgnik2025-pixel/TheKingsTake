@@ -188,9 +188,9 @@ export default function RegistryBuildPage() {
   if (!data) return null
 
   return (
-    <div className="min-h-screen bg-[#05080e]">
+    <RegistryBackground variant="subpage">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-[#0A0F1A]/95 backdrop-blur-md border-b border-[rgba(201,185,154,0.08)]">
+      <header className="sticky top-0 z-50 backdrop-blur-md border-b border-[rgba(201,185,154,0.08)]">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
           <button
             onClick={handleBack}
@@ -255,7 +255,7 @@ export default function RegistryBuildPage() {
                   value={person.fullName}
                   onChange={(e) => setPerson((p) => ({ ...p, fullName: e.target.value }))}
                   placeholder="e.g., Mary Elizabeth King"
-                  className="w-full px-4 py-3 rounded-lg bg-[rgba(27,40,56,0.5)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-sm placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(255,149,0,0.3)] transition-colors"
+                  className="w-full px-4 py-3 rounded-lg bg-[rgba(40,25,12,0.5)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-sm placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(255,149,0,0.3)] transition-colors"
                   autoFocus
                 />
               </div>
@@ -268,7 +268,7 @@ export default function RegistryBuildPage() {
                   value={person.preferredName}
                   onChange={(e) => setPerson((p) => ({ ...p, preferredName: e.target.value }))}
                   placeholder="e.g., Grandma Mary"
-                  className="w-full px-4 py-3 rounded-lg bg-[rgba(27,40,56,0.5)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-sm placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(255,149,0,0.3)] transition-colors"
+                  className="w-full px-4 py-3 rounded-lg bg-[rgba(40,25,12,0.5)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-sm placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(255,149,0,0.3)] transition-colors"
                 />
               </div>
 
@@ -280,7 +280,7 @@ export default function RegistryBuildPage() {
                   value={person.birthSurname}
                   onChange={(e) => setPerson((p) => ({ ...p, birthSurname: e.target.value }))}
                   placeholder="if different from current name"
-                  className="w-full px-4 py-3 rounded-lg bg-[rgba(27,40,56,0.5)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-sm placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(255,149,0,0.3)] transition-colors"
+                  className="w-full px-4 py-3 rounded-lg bg-[rgba(40,25,12,0.5)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-sm placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(255,149,0,0.3)] transition-colors"
                 />
               </div>
 
@@ -295,7 +295,7 @@ export default function RegistryBuildPage() {
                       className="px-3 py-2 rounded-lg text-xs border transition-all cursor-pointer"
                       style={{
                         borderColor: person.gender === g.value ? 'rgba(255,149,0,0.4)' : 'rgba(201,185,154,0.1)',
-                        background: person.gender === g.value ? 'rgba(255,149,0,0.08)' : 'rgba(27,40,56,0.3)',
+                        background: person.gender === g.value ? 'rgba(255,149,0,0.08)' : 'rgba(40,25,12,0.3)',
                         color: person.gender === g.value ? '#F0EBE1' : '#C9B99A/60',
                       }}
                     >
@@ -320,7 +320,7 @@ export default function RegistryBuildPage() {
                       className="px-4 py-2 rounded-lg text-xs border transition-all cursor-pointer"
                       style={{
                         borderColor: person.isLiving === opt.value ? 'rgba(255,149,0,0.4)' : 'rgba(201,185,154,0.1)',
-                        background: person.isLiving === opt.value ? 'rgba(255,149,0,0.08)' : 'rgba(27,40,56,0.3)',
+                        background: person.isLiving === opt.value ? 'rgba(255,149,0,0.08)' : 'rgba(40,25,12,0.3)',
                         color: person.isLiving === opt.value ? '#F0EBE1' : '#C9B99A/60',
                       }}
                     >
@@ -339,7 +339,7 @@ export default function RegistryBuildPage() {
                     value={person.birthDate}
                     onChange={(e) => setPerson((p) => ({ ...p, birthDate: e.target.value }))}
                     placeholder="e.g., 1950 or Mar 1950"
-                    className="w-full px-4 py-3 rounded-lg bg-[rgba(27,40,56,0.5)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-sm placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(255,149,0,0.3)] transition-colors"
+                    className="w-full px-4 py-3 rounded-lg bg-[rgba(40,25,12,0.5)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-sm placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(255,149,0,0.3)] transition-colors"
                   />
                 </div>
                 {person.isLiving === false && (
@@ -350,7 +350,7 @@ export default function RegistryBuildPage() {
                       value={person.deathDate}
                       onChange={(e) => setPerson((p) => ({ ...p, deathDate: e.target.value }))}
                       placeholder="e.g., 2010"
-                      className="w-full px-4 py-3 rounded-lg bg-[rgba(27,40,56,0.5)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-sm placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(255,149,0,0.3)] transition-colors"
+                      className="w-full px-4 py-3 rounded-lg bg-[rgba(40,25,12,0.5)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-sm placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(255,149,0,0.3)] transition-colors"
                     />
                   </div>
                 )}
@@ -365,7 +365,7 @@ export default function RegistryBuildPage() {
                     value={person.birthPlace}
                     onChange={(e) => setPerson((p) => ({ ...p, birthPlace: e.target.value }))}
                     placeholder="City, State, Country"
-                    className="w-full px-4 py-3 rounded-lg bg-[rgba(27,40,56,0.5)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-sm placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(255,149,0,0.3)] transition-colors"
+                    className="w-full px-4 py-3 rounded-lg bg-[rgba(40,25,12,0.5)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-sm placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(255,149,0,0.3)] transition-colors"
                   />
                 </div>
                 <div>
@@ -375,7 +375,7 @@ export default function RegistryBuildPage() {
                     value={person.primaryLocation}
                     onChange={(e) => setPerson((p) => ({ ...p, primaryLocation: e.target.value }))}
                     placeholder="Where they live/lived"
-                    className="w-full px-4 py-3 rounded-lg bg-[rgba(27,40,56,0.5)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-sm placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(255,149,0,0.3)] transition-colors"
+                    className="w-full px-4 py-3 rounded-lg bg-[rgba(40,25,12,0.5)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-sm placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(255,149,0,0.3)] transition-colors"
                   />
                 </div>
               </div>
@@ -388,7 +388,7 @@ export default function RegistryBuildPage() {
                   onChange={(e) => setPerson((p) => ({ ...p, biography: e.target.value }))}
                   placeholder="A few sentences about this person..."
                   rows={3}
-                  className="w-full px-4 py-3 rounded-lg bg-[rgba(27,40,56,0.5)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-sm placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(255,149,0,0.3)] transition-colors resize-none"
+                  className="w-full px-4 py-3 rounded-lg bg-[rgba(40,25,12,0.5)] border border-[rgba(201,185,154,0.1)] text-[#F0EBE1] text-sm placeholder:text-[#C9B99A]/20 focus:outline-none focus:border-[rgba(255,149,0,0.3)] transition-colors resize-none"
                 />
               </div>
 
@@ -403,7 +403,7 @@ export default function RegistryBuildPage() {
                       className="px-3 py-2 rounded-lg text-xs border transition-all cursor-pointer"
                       style={{
                         borderColor: person.recordStatus === s.value ? 'rgba(255,149,0,0.4)' : 'rgba(201,185,154,0.1)',
-                        background: person.recordStatus === s.value ? 'rgba(255,149,0,0.08)' : 'rgba(27,40,56,0.3)',
+                        background: person.recordStatus === s.value ? 'rgba(255,149,0,0.08)' : 'rgba(40,25,12,0.3)',
                         color: person.recordStatus === s.value ? '#F0EBE1' : '#C9B99A/60',
                       }}
                     >
@@ -448,6 +448,6 @@ export default function RegistryBuildPage() {
           </motion.div>
         </AnimatePresence>
       </div>
-    </div>
+    </RegistryBackground>
   )
 }
