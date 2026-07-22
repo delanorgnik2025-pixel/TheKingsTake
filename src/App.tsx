@@ -35,11 +35,28 @@ const ForensicsLabPage = lazy(() => import('./pages/ForensicsLabPage'))
 const ForensicsCreateCase = lazy(() => import('./pages/ForensicsCreateCase'))
 const ForensicsInvestigate = lazy(() => import('./pages/ForensicsInvestigate'))
 
+// ============================================
+// ANCESTOR ROOT REGISTRY — Phase 1 Pages
+// ============================================
+const RegistryLandingPage = lazy(() => import('./pages/registry/RegistryLandingPage'))
+const RegistryWhyPage = lazy(() => import('./pages/registry/RegistryWhyPage'))
+const RegistryAccessPage = lazy(() => import('./pages/registry/RegistryAccessPage'))
+const RegistryCreatePage = lazy(() => import('./pages/registry/RegistryCreatePage'))
+const RegistryBuildPage = lazy(() => import('./pages/registry/RegistryBuildPage'))
+const RegistryPlantedPage = lazy(() => import('./pages/registry/RegistryPlantedPage'))
+const RegistryDashboardPage = lazy(() => import('./pages/registry/RegistryDashboardPage'))
+const RegistryTreePage = lazy(() => import('./pages/registry/RegistryTreePage'))
+const RegistryPeoplePage = lazy(() => import('./pages/registry/RegistryPeoplePage'))
+const RegistryPersonPage = lazy(() => import('./pages/registry/RegistryPersonPage'))
+const RegistryStoriesPage = lazy(() => import('./pages/registry/RegistryStoriesPage'))
+const RegistryResearchPage = lazy(() => import('./pages/registry/RegistryResearchPage'))
+const RegistrySharePage = lazy(() => import('./pages/registry/RegistrySharePage'))
+
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const lenisRef = useRef<Lenis | null>(null)
   const location = useLocation()
-  const hideNav = location.pathname === '/ancestor-root-registry'
+  const hideNav = location.pathname === '/ancestor-root-registry' || location.pathname.startsWith('/ancestor-root-registry/')
 
   useEffect(() => {
     const lenis = new Lenis({ duration: 1.2, easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), lerp: 0.1 })
@@ -84,7 +101,22 @@ function AppRoutes() {
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           {/* Terms of Service page - add when file exists */}
           <Route path="/ancestor-realm" element={<AncestorRealmPage />} />
-          <Route path="/ancestor-root-registry" element={<AncestorRootRegistryPage />} />
+          {/* Ancestor Root Registry — Phase 1 */}
+          <Route path="/ancestor-root-registry" element={<RegistryLandingPage />} />
+          <Route path="/ancestor-root-registry/why" element={<RegistryWhyPage />} />
+          <Route path="/ancestor-root-registry/access" element={<RegistryAccessPage />} />
+          <Route path="/ancestor-root-registry/create" element={<RegistryCreatePage />} />
+          <Route path="/ancestor-root-registry/build" element={<RegistryBuildPage />} />
+          <Route path="/ancestor-root-registry/planted" element={<RegistryPlantedPage />} />
+          <Route path="/ancestor-root-registry/dashboard" element={<RegistryDashboardPage />} />
+          <Route path="/ancestor-root-registry/tree" element={<RegistryTreePage />} />
+          <Route path="/ancestor-root-registry/people" element={<RegistryPeoplePage />} />
+          <Route path="/ancestor-root-registry/person/:personId" element={<RegistryPersonPage />} />
+          <Route path="/ancestor-root-registry/stories" element={<RegistryStoriesPage />} />
+          <Route path="/ancestor-root-registry/research" element={<RegistryResearchPage />} />
+          <Route path="/ancestor-root-registry/share" element={<RegistrySharePage />} />
+          {/* Legacy redirects */}
+          <Route path="/root-registry/step-1" element={<RegistryAccessPage />} />
           <Route path="/civics" element={<CivicsPage />} />
           <Route path="/admin/login" element={<AdminLoginPage />} />
           <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
@@ -93,10 +125,9 @@ function AppRoutes() {
           <Route path="/pre-order/success" element={<PreOrderSuccessPage />} />
           <Route path="/about-author" element={<AboutAuthorPage />} />
           <Route path="/aasotu" element={<AasotuBrandPage />} />
-        <Route path="/article/:slug" element={<ArticlePage />} />
+          <Route path="/article/:slug" element={<ArticlePage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/work-with-us" element={<WorkWithUsPage />} />
-          <Route path="/root-registry/step-1" element={<RootRegistryPlaceholderPage />} />
           <Route path="/forensics-lab" element={<ForensicsLabPage />} />
           <Route path="/forensics-lab/create" element={<ForensicsCreateCase />} />
           <Route path="/forensics-lab/investigate/:caseId" element={<ForensicsInvestigate />} />
