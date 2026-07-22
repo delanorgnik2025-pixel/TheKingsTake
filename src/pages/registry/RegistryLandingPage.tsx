@@ -22,20 +22,20 @@ export default function RegistryLandingPage() {
 
   return (
     <RegistryBackground variant="landing">
-      {/* Hero Section — content floats over the background image */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-4">
+      {/* Hero Section — content positioned below the background image's text */}
+      <section className="relative min-h-screen flex flex-col items-center px-4">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="text-center max-w-3xl mx-auto"
+          className="text-center max-w-3xl mx-auto mt-[55vh]"
         >
           {/* Tree emblem */}
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="mb-8"
+            className="mb-6"
           >
             <div className="w-16 h-16 mx-auto rounded-full border border-[rgba(201,185,154,0.25)] bg-[rgba(15,10,5,0.5)] backdrop-blur-sm flex items-center justify-center">
               <TreePine size={28} className="text-[#C9B99A]" strokeWidth={1.2} />
