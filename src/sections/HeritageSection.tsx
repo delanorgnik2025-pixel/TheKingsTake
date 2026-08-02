@@ -624,10 +624,22 @@ function HeritageMap({
         style: 'mapbox://styles/mapbox/satellite-streets-v12',
         center: [-95, 38], zoom: 3.5, interactive: true,
         attributionControl: false,
+        preserveDrawingBuffer: true,
+        antialias: true,
+        touchPitch: false,
+        dragPan: { enabled: true },
+        dragRotate: false,
+        scrollZoom: { enabled: true },
+        touchZoomRotate: { enabled: true },
+        doubleClickZoom: true,
       })
       mapRef.current = map
 
+      // Fix iOS Safari touch gestures
+      mapContainerRef.current!.style.touchAction = 'none'
+
       map.on('load', () => {
+        map.resize()
         map.setFog({ color: 'rgb(12, 21, 32)', 'high-color': 'rgb(27, 40, 56)', 'horizon-blend': 0.4, 'space-color': 'rgb(12, 21, 32)', 'star-intensity': 0.3 })
         map.setPaintProperty('satellite', 'raster-opacity', 0.7)
 
@@ -677,9 +689,26 @@ function HeritageMap({
 
         map.on('mouseenter', () => { map.getCanvas().style.cursor = 'pointer' })
         map.on('mouseleave', () => { map.getCanvas().style.cursor = '' })
+        // Touch support for mobile
+        map.on('touchstart', () => { map.getCanvas().style.cursor = 'pointer' })
+        map.on('touchend', () => { map.getCanvas().style.cursor = '' })
+      })
+      // Resize handler for mobile Safari address bar changes
+      let resizeTimer: any
+      const handleResize = () => {
+        clearTimeout(resizeTimer)
+        resizeTimer = setTimeout(() => map.resize(), 100)
+      }
+      window.addEventListener('resize', handleResize)
+      // iOS Safari specific: also listen for orientation changes
+      window.addEventListener('orientationchange', () => {
+        setTimeout(() => map.resize(), 300)
       })
     }).catch(() => setMapError('Failed to load Mapbox.'))
-    return () => { cancelled = true }
+    return () => {
+      cancelled = true
+      window.removeEventListener('resize', () => {})
+    }
   }, [])
 
   // Show in-map popup when focusedTerritory changes
@@ -748,7 +777,7 @@ function HeritageMap({
           </div>
         ) : (
           <>
-            <div ref={mapContainerRef} className="h-[350px] md:h-[450px] w-full" />
+            <div ref={mapContainerRef} className="h-[350px] md:h-[450px] w-full touch-none" />
             <div className="absolute top-3 right-3 flex flex-col gap-1.5 z-10">
               <button onClick={zoomIn} className="w-9 h-9 flex items-center justify-center rounded-lg bg-[#15202B]/90 backdrop-blur border border-[rgba(255,149,0,0.25)] text-[#C9B99A] hover:text-[#FF9500] transition-all"><Plus size={16} /></button>
               <button onClick={zoomOut} className="w-9 h-9 flex items-center justify-center rounded-lg bg-[#15202B]/90 backdrop-blur border border-[rgba(255,149,0,0.25)] text-[#C9B99A] hover:text-[#FF9500] transition-all"><Minus size={16} /></button>
