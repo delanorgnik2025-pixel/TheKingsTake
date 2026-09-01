@@ -30,6 +30,9 @@ const AasotuBrandPage = lazy(() => import('./pages/AasotuBrandPage'))
 const ArticlePage = lazy(() => import('./pages/ArticlePage'))
 const ContactPage = lazy(() => import('./pages/ContactPage'))
 const WorkWithUsPage = lazy(() => import('./pages/WorkWithUsPage'))
+const NewsHubPage = lazy(() => import('./components/NewsHub'))
+const IndigenousHeritagePage = lazy(() => import('./pages/IndigenousHeritagePage'))
+const WorkWithMePage = lazy(() => import('./pages/WorkWithMe'))
 const RootRegistryPlaceholderPage = lazy(() => import('./pages/RootRegistryPlaceholderPage'))
 
 // ============================================
@@ -125,6 +128,9 @@ function AppRoutes() {
           <Route path="/article/:slug" element={<ArticlePage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/work-with-us" element={<WorkWithUsPage />} />
+          <Route path="/news" element={<NewsHubPage />} />
+          <Route path="/heritage" element={<IndigenousHeritagePage />} />
+          <Route path="/work-with-me" element={<WorkWithMePage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
