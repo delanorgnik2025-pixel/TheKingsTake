@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link } from 'react-router'
+import { useState, useEffect } from 'react'
+import { Link, useLocation } from 'react-router'
 import { motion } from 'framer-motion'
 import {
   ArrowLeft, PenTool, Mic, BookOpen, FileText, MessageSquare,
@@ -15,6 +15,16 @@ const cardVariants = {
     opacity: 1, y: 0, scale: 1,
     transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
   },
+}
+
+// Maps dropdown hash anchors -> service slugs so menu links scroll to the right card
+const ANCHOR_TO_SLUG: Record<string, string> = {
+  'speechwriting': 'speechwriting-narrative',
+  'book-publishing': 'book-publishing',
+  'legacy-interview': 'legacy-interview',
+  'ghostwriting': 'ghostwriting',
+  'content-writing': 'content-writing',
+  'ai-assisted': 'ai-assisted-creative',
 }
 
 const WRITING_SERVICES = [
@@ -166,6 +176,22 @@ const TESTIMONIALS = [
 
 export default function WritingServicesPage() {
   const [expandedService, setExpandedService] = useState<number | null>(null);
+  const location = useLocation();
+
+  // Scroll to the anchored service card when arriving via a #hash menu link
+  useEffect(() => {
+    const hash = location.hash.replace('#', '')
+    if (!hash) return
+    const slug = ANCHOR_TO_SLUG[hash] || hash
+    const match = WRITING_SERVICES.find(s => s.slug === slug)
+    if (match) setExpandedService(match.id)
+    // wait for layout/animation before scrolling
+    const t = setTimeout(() => {
+      const el = document.getElementById(slug)
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 300)
+    return () => clearTimeout(t)
+  }, [location.hash])
 
   return (
     <main>
@@ -231,11 +257,13 @@ export default function WritingServicesPage() {
               return (
                 <motion.div
                   key={service.id}
+                  id={service.slug}
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true, amount: 0.1 }}
                   variants={cardVariants}
                   transition={{ delay: i * 0.08 }}
+                  style={{ scrollMarginTop: '90px' }}
                 >
                   {/* Service Header */}
                   <button

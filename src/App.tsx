@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from 'react-router'
+import { Routes, Route, useLocation, Navigate } from 'react-router'
 import { useEffect, useRef, useCallback, useState, Suspense, lazy } from 'react'
 import Lenis from 'lenis'
 import Navigation from './components/Navigation'
@@ -74,6 +74,7 @@ function AppRoutes() {
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<HomePage />} />
           <Route path="/blog" element={<BlogPage />} />
+          <Route path="/news" element={<Navigate to="/blog" replace />} />
           <Route path="/blog/:slug" element={<BlogPostPage />} />
           <Route path="/writing-services" element={<WritingServicesPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
