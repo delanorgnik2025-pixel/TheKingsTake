@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, ArrowUpRight, TreePine, BookOpen, Users, Globe, Newspaper, PenTool, Settings, ScrollText, Shield, Sparkles } from 'lucide-react'
+import { X, ArrowUpRight, Users, Globe, Newspaper, PenTool, ScrollText, Shield, Sparkles } from 'lucide-react'
 
 interface MenuOverlayProps {
   isOpen: boolean
@@ -19,9 +19,7 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
     { label: 'Civics', href: '/civics', icon: <Shield size={16} />, desc: 'Know your rights' },
     { label: 'AASOTU Media', href: '/aasotu', icon: <Sparkles size={16} />, desc: 'Media group & brand' },
     { label: 'About', href: '/about-author', icon: <Users size={16} />, desc: 'Ronald Lee King' },
-    { label: 'Root Registry', href: '/ancestor-root-registry', icon: <TreePine size={16} />, desc: 'Genealogy tools' },
     { label: 'Heritage Map', href: '/#heritage', icon: <Globe size={16} />, desc: 'Explore territories' },
-    { label: 'Ancestry', href: '/ancestor-realm', icon: <BookOpen size={16} />, desc: 'Ancestral research' },
     { label: 'Pre-Order Book', href: '/pre-order', icon: <ScrollText size={16} />, desc: '$19.99 early access' },
   ]
 

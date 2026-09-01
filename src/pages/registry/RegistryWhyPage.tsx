@@ -53,7 +53,7 @@ export default function RegistryWhyPage() {
   return (
     <RegistryBackground variant="subpage">
       {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-md border-b" style={{ background: 'rgba(13,8,5,0.95)', borderColor: 'rgba(201,185,154,0.08)' }}>
+      <header className="sticky top-0 z-50 backdrop-blur-md border-b" style={{ background: 'rgba(13,8,5,0.95)', borderColor: 'rgba(201,185,154,0.08)' }} style={{ background: 'rgba(13,8,5,0.95)', borderColor: 'rgba(201,185,154,0.08)' }}>
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
           <button
             onClick={() => navigate('/ancestor-root-registry')}

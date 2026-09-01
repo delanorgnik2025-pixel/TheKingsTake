@@ -16,9 +16,7 @@ const BlogPage = lazy(() => import('./pages/BlogPage'))
 const BlogPostPage = lazy(() => import('./pages/BlogPostPage'))
 const WritingServicesPage = lazy(() => import('./pages/WritingServicesPage'))
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'))
-const AncestorRealmPage = lazy(() => import('./pages/AncestorRealmPage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
-const AncestorRootRegistryPage = lazy(() => import('./pages/AncestorRootRegistryPage'))
 const CivicsPage = lazy(() => import('./pages/CivicsPage'))
 const AdminLoginPage = lazy(() => import('./pages/AdminLogin'))
 const AdminDashboardPage = lazy(() => import('./pages/AdminDashboard'))
@@ -30,27 +28,7 @@ const AasotuBrandPage = lazy(() => import('./pages/AasotuBrandPage'))
 const ArticlePage = lazy(() => import('./pages/ArticlePage'))
 const ContactPage = lazy(() => import('./pages/ContactPage'))
 const WorkWithUsPage = lazy(() => import('./pages/WorkWithUsPage'))
-const NewsHubPage = lazy(() => import('./components/NewsHub'))
-const IndigenousHeritagePage = lazy(() => import('./pages/IndigenousHeritagePage'))
-const WorkWithMePage = lazy(() => import('./pages/WorkWithMe'))
-const RootRegistryPlaceholderPage = lazy(() => import('./pages/RootRegistryPlaceholderPage'))
-
-// ============================================
-// ANCESTOR ROOT REGISTRY — Phase 1 Pages
-// ============================================
-const RegistryLandingPage = lazy(() => import('./pages/registry/RegistryLandingPage'))
-const RegistryWhyPage = lazy(() => import('./pages/registry/RegistryWhyPage'))
-const RegistryAccessPage = lazy(() => import('./pages/registry/RegistryAccessPage'))
-const RegistryCreatePage = lazy(() => import('./pages/registry/RegistryCreatePage'))
-const RegistryBuildPage = lazy(() => import('./pages/registry/RegistryBuildPage'))
-const RegistryPlantedPage = lazy(() => import('./pages/registry/RegistryPlantedPage'))
-const RegistryDashboardPage = lazy(() => import('./pages/registry/RegistryDashboardPage'))
-const RegistryTreePage = lazy(() => import('./pages/registry/RegistryTreePage'))
-const RegistryPeoplePage = lazy(() => import('./pages/registry/RegistryPeoplePage'))
-const RegistryPersonPage = lazy(() => import('./pages/registry/RegistryPersonPage'))
-const RegistryStoriesPage = lazy(() => import('./pages/registry/RegistryStoriesPage'))
-const RegistryResearchPage = lazy(() => import('./pages/registry/RegistryResearchPage'))
-const RegistrySharePage = lazy(() => import('./pages/registry/RegistrySharePage'))
+// Ancestor Root Registry & Ancestor Realm pages retained in repo for future development; routes currently offline.
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -92,7 +70,7 @@ function AppRoutes() {
   return (
     <AppLayout>
       <ScrollToTop />
-      <Suspense fallback={<div className="min-h-screen bg-[#050508]" />}>
+      <Suspense fallback={<div className="min-h-screen bg-[#0a0f1a]" />}>
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<HomePage />} />
           <Route path="/blog" element={<BlogPage />} />
@@ -100,23 +78,7 @@ function AppRoutes() {
           <Route path="/writing-services" element={<WritingServicesPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           {/* Terms of Service page - add when file exists */}
-          <Route path="/ancestor-realm" element={<AncestorRealmPage />} />
-          {/* Ancestor Root Registry — Phase 1 */}
-          <Route path="/ancestor-root-registry" element={<RegistryLandingPage />} />
-          <Route path="/ancestor-root-registry/why" element={<RegistryWhyPage />} />
-          <Route path="/ancestor-root-registry/access" element={<RegistryAccessPage />} />
-          <Route path="/ancestor-root-registry/create" element={<RegistryCreatePage />} />
-          <Route path="/ancestor-root-registry/build" element={<RegistryBuildPage />} />
-          <Route path="/ancestor-root-registry/planted" element={<RegistryPlantedPage />} />
-          <Route path="/ancestor-root-registry/dashboard" element={<RegistryDashboardPage />} />
-          <Route path="/ancestor-root-registry/tree" element={<RegistryTreePage />} />
-          <Route path="/ancestor-root-registry/people" element={<RegistryPeoplePage />} />
-          <Route path="/ancestor-root-registry/person/:personId" element={<RegistryPersonPage />} />
-          <Route path="/ancestor-root-registry/stories" element={<RegistryStoriesPage />} />
-          <Route path="/ancestor-root-registry/research" element={<RegistryResearchPage />} />
-          <Route path="/ancestor-root-registry/share" element={<RegistrySharePage />} />
-          {/* Legacy redirects */}
-          <Route path="/root-registry/step-1" element={<RegistryAccessPage />} />
+          {/* Ancestor Root Registry & Ancestor Realm — temporarily offline, in development */}
           <Route path="/civics" element={<CivicsPage />} />
           <Route path="/admin/login" element={<AdminLoginPage />} />
           <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
@@ -128,9 +90,6 @@ function AppRoutes() {
           <Route path="/article/:slug" element={<ArticlePage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/work-with-us" element={<WorkWithUsPage />} />
-          <Route path="/news" element={<NewsHubPage />} />
-          <Route path="/heritage" element={<IndigenousHeritagePage />} />
-          <Route path="/work-with-me" element={<WorkWithMePage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>

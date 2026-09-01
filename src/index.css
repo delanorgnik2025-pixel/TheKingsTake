@@ -1,6 +1,5 @@
 @import '@fontsource/newsreader/400.css';
 @import '@fontsource/ibm-plex-mono/400.css';
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -8,183 +7,126 @@
 
 @layer base {
   :root {
-    --void-black: #050508;
-    --deep-void: #0a0a12;
-    --surface: #11111a;
-    --surface-elevated: #1a1a26;
-    --matrix-green: #00ff41;
-    --matrix-green-dim: rgba(0, 255, 65, 0.15);
-    --cyber-blue: #00c4fa;
-    --cyber-blue-dim: rgba(0, 196, 250, 0.15);
-    --brand-gold: #d4a843;
-    --brand-gold-dim: rgba(212, 168, 67, 0.2);
-    --hacker-red: #ff3b30;
-    --text-primary: #e8e8e8;
-    --text-secondary: #8a8a9a;
-    --text-muted: #4a4a5a;
-    --border-subtle: rgba(255, 255, 255, 0.06);
-    --border-glow: rgba(0, 255, 65, 0.2);
-    --dark-navy: #0a0a12;
-    --charcoal: #1a1a26;
-    --warm-amber: #d4a843;
-    --deep-amber: #b8942a;
-    --dark-amber: #8a6d1f;
-    --hud-gold: #f0c96a;
-    --off-white: #e8e8e8;
-    --muted-beige: #8a8a9a;
-    --flame-red-orange: #ff3b30;
-    --flame-gold: #d4a843;
+    --dark-navy: #1B2838;
+    --charcoal: #2A3A4A;
+    --warm-amber: #FF9500;
+    --deep-amber: #CC6A00;
+    --dark-amber: #A05200;
+    --hud-gold: #FFB840;
+    --off-white: #F0EBE1;
+    --muted-beige: #C9B99A;
+    --flame-red-orange: #E85D04;
+    --flame-gold: #FFBA08;
   }
-  html { scroll-behavior: auto; }
+
+  html {
+    scroll-behavior: auto;
+  }
+
   body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--void-black);
-    color: var(--text-primary);
+    font-family: 'Newsreader', serif;
+    background-color: var(--dark-navy);
+    color: var(--off-white);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
-    -webkit-tap-highlight-color: rgba(0, 255, 65, 0.15);
+    -webkit-tap-highlight-color: rgba(255, 149, 0, 0.15);
     touch-action: manipulation;
   }
+
+  /* Mobile optimizations */
   @media (max-width: 768px) {
-    html { font-size: 15px; }
-    input, textarea, select, button { min-height: 44px; font-size: 16px; }
+    html {
+      font-size: 15px;
+    }
+    input, textarea, select, button {
+      min-height: 44px;
+      font-size: 16px; /* Prevents iOS zoom on input focus */
+    }
   }
+
   ::selection {
-    background-color: var(--matrix-green);
-    color: var(--void-black);
+    background-color: var(--warm-amber);
+    color: var(--dark-navy);
   }
-  ::-webkit-scrollbar { width: 6px; height: 4px; }
-  ::-webkit-scrollbar-track { background: var(--void-black); }
-  ::-webkit-scrollbar-thumb { background: var(--matrix-green-dim); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--matrix-green); }
-}
 
-@layer components {
-  .font-display { font-family: 'Orbitron', sans-serif; }
-  .font-tech { font-family: 'Rajdhani', sans-serif; }
-  .font-mono-tech { font-family: 'JetBrains Mono', monospace; }
-  .hud-border { border: 1px solid var(--border-subtle); }
-  .hud-border-glow {
-    border: 1px solid var(--border-glow);
-    box-shadow: 0 0 12px var(--matrix-green-dim), inset 0 0 20px rgba(0, 255, 65, 0.03);
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 4px;
   }
-  .hud-border-glow-blue {
-    border: 1px solid rgba(0, 196, 250, 0.2);
-    box-shadow: 0 0 12px var(--cyber-blue-dim), inset 0 0 20px rgba(0, 196, 250, 0.03);
+
+  ::-webkit-scrollbar-track {
+    background: var(--charcoal);
   }
-  .hud-border-glow-gold {
-    border: 1px solid var(--brand-gold-dim);
-    box-shadow: 0 0 12px var(--brand-gold-dim), inset 0 0 20px rgba(212, 168, 67, 0.03);
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--warm-amber);
+    border-radius: 3px;
   }
-  .card-tech {
-    background: var(--surface);
-    border: 1px solid var(--border-subtle);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .card-tech:hover {
-    border-color: var(--border-glow);
-    box-shadow: 0 0 20px var(--matrix-green-dim), 0 8px 32px rgba(0, 0, 0, 0.4);
-    transform: translateY(-2px);
-  }
-  .grid-bg {
-    background-image:
-      linear-gradient(rgba(0, 255, 65, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
-    background-size: 50px 50px;
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--deep-amber);
   }
 }
 
-@layer utilities {
-  .text-shadow-glow { text-shadow: 0 0 10px var(--matrix-green-dim), 0 0 40px var(--matrix-green-dim); }
-  .text-shadow-glow-blue { text-shadow: 0 0 10px var(--cyber-blue-dim), 0 0 40px var(--cyber-blue-dim); }
-  .text-shadow-glow-gold { text-shadow: 0 0 10px var(--brand-gold-dim), 0 0 40px var(--brand-gold-dim); }
-}
-
+/* Marquee animation for petition ticker */
 @keyframes marquee {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
-@keyframes marquee-reverse {
-  0% { transform: translateX(-50%); }
-  100% { transform: translateX(0); }
-}
+
 .animate-marquee {
   animation: marquee 30s linear infinite;
 }
+
+/* Prevent ticker from causing horizontal scroll on mobile */
+@media (max-width: 768px) {
+  .animate-marquee {
+    animation-duration: 25s;
+  }
+}
+
 .animate-marquee:hover {
   animation-play-state: paused;
 }
-@media (max-width: 768px) {
-  .animate-marquee { animation-duration: 25s; }
-}
 
-@keyframes ticker-scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-.animate-ticker {
-  animation: ticker-scroll 45s linear infinite;
-}
-.animate-ticker:hover {
-  animation-play-state: paused;
-}
-
-@keyframes live-pulse {
-  0%, 100% { opacity: 1; box-shadow: 0 0 8px currentColor; }
-  50% { opacity: 0.3; box-shadow: 0 0 2px currentColor; }
-}
-.live-dot {
-  animation: live-pulse 2s infinite;
-}
-
-@keyframes glitch-1 {
-  0% { transform: translate(0); }
-  20% { transform: translate(-2px, 2px); }
-  40% { transform: translate(-2px, -2px); }
-  60% { transform: translate(2px, 2px); }
-  80% { transform: translate(2px, -2px); }
-  100% { transform: translate(0); }
-}
-@keyframes glitch-2 {
-  0% { transform: translate(0); }
-  20% { transform: translate(2px, -2px); }
-  40% { transform: translate(2px, 2px); }
-  60% { transform: translate(-2px, -2px); }
-  80% { transform: translate(-2px, 2px); }
-  100% { transform: translate(0); }
-}
-
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-.cursor-blink::after {
-  content: '_';
-  animation: blink 1s step-end infinite;
-  color: var(--matrix-green);
-}
-
+/* Fade in animation for ancestor realm */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes pulse-border {
-  0%, 100% { border-color: rgba(0, 255, 65, 0.2); }
-  50% { border-color: rgba(0, 255, 65, 0.5); }
-}
-.pulse-border {
-  animation: pulse-border 2s ease-in-out infinite;
+@layer components {
+  .font-mono-hud {
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .hud-border {
+    border: 1px solid rgba(255, 149, 0, 0.2);
+  }
+
+  .hud-border-hover:hover {
+    border-color: rgba(255, 149, 0, 0.4);
+  }
+
+  .text-dimmed {
+    color: rgba(201, 185, 154, 0.55);
+  }
+
+  .bg-hud {
+    background: rgba(42, 58, 74, 0.7);
+    backdrop-filter: blur(8px);
+  }
 }
 
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+@layer utilities {
+  .text-shadow-hero {
+    text-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
+  }
 }
 
+/* Mapbox Territory Explore Popup */
 .territory-explore-popup .mapboxgl-popup-content {
   background: transparent !important;
   border: none !important;
@@ -192,13 +134,34 @@
   padding: 0 !important;
   border-radius: 0 !important;
 }
+
 .territory-explore-popup .mapboxgl-popup-tip {
-  border-top-color: rgba(10, 10, 18, 0.95) !important;
+  border-top-color: rgba(21, 32, 43, 0.95) !important;
   border-width: 8px !important;
 }
+
 .territory-explore-popup.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
-  border-top-color: rgba(10, 10, 18, 0.95) !important;
+  border-top-color: rgba(21, 32, 43, 0.95) !important;
 }
+
 .territory-explore-popup.mapboxgl-popup-anchor-top .mapboxgl-popup-tip {
-  border-bottom-color: rgba(10, 10, 18, 0.95) !important;
+  border-bottom-color: rgba(21, 32, 43, 0.95) !important;
 }
+
+/* Line clamp utility */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* News ticker marquee */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-33.33%); }
+}
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+}
+/* 1783536493 */
