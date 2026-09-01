@@ -35,7 +35,7 @@ export default function AdminServices() {
     <div className="min-h-screen pt-24 pb-16 px-6 md:px-12 bg-[#1B2838]">
       <div className="max-w-5xl mx-auto">
         <div className="flex items-center gap-4 mb-8">
-          <Link to="/admin" className="text-sm text-[#C9B99A] hover:text-[#FF9500]"><ArrowLeft size={18} /></Link>
+          <Link to="/admin/dashboard" className="text-sm text-[#C9B99A] hover:text-[#FF9500]"><ArrowLeft size={18} /></Link>
           <h1 className="text-3xl text-[#F0EBE1]">Services & Bookings</h1>
         </div>
 

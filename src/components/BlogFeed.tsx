@@ -121,7 +121,7 @@ export default function BlogFeed({ wordPressUrl, title, subtitle }: Props) {
             </ScrollReveal>
           </div>
           <ScrollReveal delay={0.2} className="hidden md:block">
-            <Link to="/blog" className="flex items-center gap-1.5 text-xs text-[#FF9500] hover:underline transition-all">
+            <Link to="/news" className="flex items-center gap-1.5 text-xs text-[#FF9500] hover:underline transition-all">
               View All <ArrowRight size={12} />
             </Link>
           </ScrollReveal>
@@ -179,7 +179,7 @@ export default function BlogFeed({ wordPressUrl, title, subtitle }: Props) {
 
         {/* Mobile View All */}
         <div className="md:hidden mt-6 text-center">
-          <Link to="/blog" className="inline-flex items-center gap-1.5 text-xs text-[#FF9500]">
+          <Link to="/news" className="inline-flex items-center gap-1.5 text-xs text-[#FF9500]">
             View All Posts <ArrowRight size={12} />
           </Link>
         </div>

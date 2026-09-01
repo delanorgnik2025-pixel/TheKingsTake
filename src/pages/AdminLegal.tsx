@@ -55,7 +55,7 @@ export default function AdminLegal() {
       <div className="max-w-5xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
-            <Link to="/admin" className="text-sm text-[#C9B99A] hover:text-[#FF9500]"><ArrowLeft size={18} /></Link>
+            <Link to="/admin/dashboard" className="text-sm text-[#C9B99A] hover:text-[#FF9500]"><ArrowLeft size={18} /></Link>
             <h1 className="text-3xl text-[#F0EBE1]">Legal Forms Manager</h1>
           </div>
           <div className="flex gap-2">

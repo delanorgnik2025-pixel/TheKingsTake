@@ -304,7 +304,7 @@ export default function NewsBroadcast({ wordPressUrl }: Props) {
                   Real news. Real advocacy. No filter. Powered by AASOTU Media Group and AI-curated wire feeds.
                 </p>
               </div>
-              <Link to="/blog" className="hidden md:flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.1)] border border-[rgba(255,149,0,0.25)] rounded-lg px-4 py-2 hover:bg-[rgba(255,149,0,0.2)] transition-all">
+              <Link to="/news" className="hidden md:flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.1)] border border-[rgba(255,149,0,0.25)] rounded-lg px-4 py-2 hover:bg-[rgba(255,149,0,0.2)] transition-all">
                 <Newspaper size={14} /> View All Stories <ArrowRight size={12} />
               </Link>
             </div>
@@ -567,7 +567,7 @@ export default function NewsBroadcast({ wordPressUrl }: Props) {
 
           {/* Mobile View All */}
           <div className="md:hidden mt-8 text-center">
-            <Link to="/blog" className="inline-flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.08)] border border-[rgba(255,149,0,0.2)] rounded-lg px-5 py-2.5 font-medium">
+            <Link to="/news" className="inline-flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.08)] border border-[rgba(255,149,0,0.2)] rounded-lg px-5 py-2.5 font-medium">
               <Newspaper size={14} /> View All Stories <ArrowRight size={12} />
             </Link>
           </div>

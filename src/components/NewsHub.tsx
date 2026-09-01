@@ -255,7 +255,7 @@ export default function NewsHub() {
                   Real news. Real facts. Zero dead ends. Every story leads somewhere.
                 </p>
               </div>
-              <Link to="/blog" className="hidden md:flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.06)] border border-[rgba(255,149,0,0.15)] rounded-lg px-4 py-2 hover:bg-[rgba(255,149,0,0.12)] transition-all font-medium">
+              <Link to="/news" className="hidden md:flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.06)] border border-[rgba(255,149,0,0.15)] rounded-lg px-4 py-2 hover:bg-[rgba(255,149,0,0.12)] transition-all font-medium">
                 <Newspaper size={14} /> View All <ArrowRight size={12} />
               </Link>
             </div>
@@ -421,7 +421,7 @@ export default function NewsHub() {
 
           {/* Mobile View All */}
           <div className="md:hidden mt-8 text-center">
-            <Link to="/blog" className="inline-flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.06)] border border-[rgba(255,149,0,0.15)] rounded-lg px-5 py-2.5 font-medium">
+            <Link to="/news" className="inline-flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.06)] border border-[rgba(255,149,0,0.15)] rounded-lg px-5 py-2.5 font-medium">
               View All Stories <ArrowRight size={12} />
             </Link>
           </div>

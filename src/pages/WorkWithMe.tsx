@@ -424,7 +424,7 @@ export default function WorkWithMe() {
                 <CheckCircle className="w-12 h-12 text-[#FF9500] mx-auto mb-4" />
                 <h3 className="text-xl font-medium text-[#F0EBE1] mb-2" style={{ fontFamily: 'Newsreader, serif' }}>Story Received</h3>
                 <p className="text-[#C9B99A]/70">Thank you for trusting us with your story. Someone from our team will contact you within 48 hours to discuss how we can help bring your story to life.</p>
-                <Link to="/services/speechwriting-narrative" className="inline-flex items-center gap-2 mt-4 text-[#FF9500] text-sm hover:underline">
+                <Link to="/writing-services" className="inline-flex items-center gap-2 mt-4 text-[#FF9500] text-sm hover:underline">
                   <BookOpen size={16} /> Explore Our Writing Services
                 </Link>
               </div>
@@ -481,8 +481,8 @@ export default function WorkWithMe() {
               <Link to="/" className="inline-flex items-center justify-center gap-2 h-12 px-8 border border-[#FF9500] text-[#FF9500] text-sm tracking-[0.05em] uppercase hover:bg-[#FF9500]/10 transition-colors">
                 <ArrowLeft size={16} /> Back to Home
               </Link>
-              <Link to="/blog" className="inline-flex items-center justify-center gap-2 h-12 px-8 bg-[#FF9500] text-[#0C1520] text-sm tracking-[0.05em] uppercase hover:bg-[#FF9500]/90 transition-colors">
-                Read the Blog
+              <Link to="/news" className="inline-flex items-center justify-center gap-2 h-12 px-8 bg-[#FF9500] text-[#0C1520] text-sm tracking-[0.05em] uppercase hover:bg-[#FF9500]/90 transition-colors">
+                Read the News
               </Link>
             </div>
           </div>

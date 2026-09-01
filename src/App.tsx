@@ -31,9 +31,6 @@ const ArticlePage = lazy(() => import('./pages/ArticlePage'))
 const ContactPage = lazy(() => import('./pages/ContactPage'))
 const WorkWithUsPage = lazy(() => import('./pages/WorkWithUsPage'))
 const RootRegistryPlaceholderPage = lazy(() => import('./pages/RootRegistryPlaceholderPage'))
-const ForensicsLabPage = lazy(() => import('./pages/ForensicsLabPage'))
-const ForensicsCreateCase = lazy(() => import('./pages/ForensicsCreateCase'))
-const ForensicsInvestigate = lazy(() => import('./pages/ForensicsInvestigate'))
 
 // ============================================
 // ANCESTOR ROOT REGISTRY — Phase 1 Pages
@@ -92,7 +89,7 @@ function AppRoutes() {
   return (
     <AppLayout>
       <ScrollToTop />
-      <Suspense fallback={<div className="min-h-screen bg-[#0a0f1a]" />}>
+      <Suspense fallback={<div className="min-h-screen bg-[#050508]" />}>
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<HomePage />} />
           <Route path="/blog" element={<BlogPage />} />
@@ -128,10 +125,6 @@ function AppRoutes() {
           <Route path="/article/:slug" element={<ArticlePage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/work-with-us" element={<WorkWithUsPage />} />
-          <Route path="/forensics-lab" element={<ForensicsLabPage />} />
-          <Route path="/forensics-lab/create" element={<ForensicsCreateCase />} />
-          <Route path="/forensics-lab/investigate/:caseId" element={<ForensicsInvestigate />} />
-          <Route path="/forensics-lab/case/:caseId" element={<ForensicsInvestigate />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>

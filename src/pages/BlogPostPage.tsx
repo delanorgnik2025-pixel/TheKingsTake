@@ -536,7 +536,7 @@ export default function BlogPostPage() {
 
       <div className="relative z-10 max-w-3xl mx-auto">
         <Link
-          to="/blog"
+          to="/news"
           className="inline-flex items-center gap-2 text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors mb-8"
         >
           <ArrowLeft size={16} />

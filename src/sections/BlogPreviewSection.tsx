@@ -51,7 +51,7 @@ export default function BlogPreviewSection() {
             </h2>
           </ScrollReveal>
           <ScrollReveal delay={0.3} className="hidden md:block">
-            <Link to="/blog" className="flex items-center gap-2 text-sm text-[#FF9500] hover:underline transition-all">
+            <Link to="/news" className="flex items-center gap-2 text-sm text-[#FF9500] hover:underline transition-all">
               View All Posts <ArrowRight size={16} />
             </Link>
           </ScrollReveal>
@@ -93,7 +93,7 @@ export default function BlogPreviewSection() {
           <motion.p initial={{ opacity: 1 }} animate={{ opacity: showHint ? 1 : 0 }} className="text-xs text-dimmed">
             Drag to explore &rarr;
           </motion.p>
-          <Link to="/blog" className="md:hidden flex items-center gap-2 text-sm text-[#FF9500] hover:underline">
+          <Link to="/news" className="md:hidden flex items-center gap-2 text-sm text-[#FF9500] hover:underline">
             View All Posts <ArrowRight size={16} />
           </Link>
         </div>
