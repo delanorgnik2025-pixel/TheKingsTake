@@ -288,7 +288,7 @@ export default function RegistryStoriesPage() {
                       onClick={handleSubmit}
                       disabled={!form.title.trim() || !form.body.trim()}
                       className="px-4 py-2 rounded-lg text-xs font-medium cursor-pointer disabled:opacity-30"
-                      style={{ background: 'rgba(255,149,0,0.8)', color: '#0A0F1A' }}
+                      style={{ background: 'rgba(255,149,0,0.8)', color: '#14202E' }}
                     >
                       <Save size={12} className="inline mr-1" /> Save Story
                     </button>

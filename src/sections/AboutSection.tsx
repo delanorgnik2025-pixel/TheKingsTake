@@ -18,7 +18,7 @@ export default function AboutSection() {
         style={{ backgroundImage: 'url(/images/bg-about.jpg)' }}
       />
       {/* Dark overlay */}
-      <div className="absolute inset-0 bg-[#1B2838]/75" />
+      <div className="absolute inset-0 bg-[#25364B]/75" />
 
       <div className="relative z-10 max-w-7xl mx-auto">
         <ScrollReveal>

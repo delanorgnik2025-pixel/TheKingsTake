@@ -58,7 +58,7 @@ export default function CountryDetailModal({ country, nations, onClose }: Countr
         {/* Content */}
         <div className="p-4 md:p-5 space-y-4">
           {/* Overview */}
-          <div className="bg-[rgba(27,40,56,0.5)] rounded-lg border border-[rgba(255,149,0,0.12)] p-4">
+          <div className="bg-[rgba(37,54,75,0.5)] rounded-lg border border-[rgba(255,149,0,0.12)] p-4">
             <h4 className="text-xs text-[#FF9500] uppercase tracking-[0.04em] mb-2 flex items-center gap-2">
               <Globe size={14} /> About This Region
             </h4>
@@ -108,7 +108,7 @@ export default function CountryDetailModal({ country, nations, onClose }: Countr
 
 function NationRow({ nation, onViewResearch }: { nation: IndigenousNation; onViewResearch: () => void }) {
   return (
-    <div className="bg-[rgba(27,40,56,0.5)] rounded-lg border border-[rgba(255,149,0,0.1)] overflow-hidden">
+    <div className="bg-[rgba(37,54,75,0.5)] rounded-lg border border-[rgba(255,149,0,0.1)] overflow-hidden">
       {/* Main Row */}
       <div className="p-4">
         <div className="flex items-start justify-between gap-3">

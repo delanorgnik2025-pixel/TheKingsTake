@@ -198,7 +198,7 @@ export default function WritingServicesPage() {
       {/* Hero */}
       <section className="relative min-h-[60vh] flex items-center px-6 md:px-12 pt-24 pb-16 overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/bg-services.jpg)' }} />
-        <div className="absolute inset-0 bg-[#1B2838]/85" />
+        <div className="absolute inset-0 bg-[#25364B]/85" />
 
         <div className="relative z-10 max-w-7xl mx-auto w-full">
           <Link to="/" className="inline-flex items-center gap-2 text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors mb-8">
@@ -227,7 +227,7 @@ export default function WritingServicesPage() {
           <ScrollReveal delay={0.35}>
             <Link
               to="/writing-services"
-              className="inline-flex items-center justify-center rounded-full h-14 px-10 text-base bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-['Newsreader'] tracking-[0.02em]"
+              className="inline-flex items-center justify-center rounded-full h-14 px-10 text-base bg-[#FF9500] text-[#25364B] hover:bg-[#CC6A00] transition-colors font-['Newsreader'] tracking-[0.02em]"
               style={{ boxShadow: "0 4px 16px rgba(255,149,0,0.25)" }}
             >
               <Sparkles size={18} className="mr-2" /> Explore All Services
@@ -239,7 +239,7 @@ export default function WritingServicesPage() {
       <MarqueeDivider text="#TheKingsTake — Your Vision. My Words. — Storytelling That Moves People — AASOTU Media Group" />
 
       {/* Services Accordion */}
-      <section className="relative py-16 md:py-24 px-6 md:px-12 bg-[#0C1520]">
+      <section className="relative py-16 md:py-24 px-6 md:px-12 bg-[#182635]">
         <div className="max-w-7xl mx-auto">
           <ScrollReveal>
             <div className="mb-12">
@@ -268,7 +268,7 @@ export default function WritingServicesPage() {
                   {/* Service Header */}
                   <button
                     onClick={() => setExpandedService(isExpanded ? null : service.id)}
-                    className="w-full flex items-center justify-between p-5 md:p-6 bg-[rgba(27,40,56,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.2)] hover:border-[rgba(255,149,0,0.4)] transition-all duration-300 group text-left"
+                    className="w-full flex items-center justify-between p-5 md:p-6 bg-[rgba(37,54,75,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.2)] hover:border-[rgba(255,149,0,0.4)] transition-all duration-300 group text-left"
                     style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }}
                   >
                     <div className="flex items-center gap-4">
@@ -300,7 +300,7 @@ export default function WritingServicesPage() {
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
                       transition={{ duration: 0.3 }}
-                      className="mt-3 p-5 md:p-6 bg-[rgba(27,40,56,0.6)] rounded border border-[rgba(255,149,0,0.15)]"
+                      className="mt-3 p-5 md:p-6 bg-[rgba(37,54,75,0.6)] rounded border border-[rgba(255,149,0,0.15)]"
                     >
                       <p className="text-sm text-[#C9B99A] leading-relaxed mb-4">{service.details}</p>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-5">
@@ -314,7 +314,7 @@ export default function WritingServicesPage() {
                       <div className="flex items-center gap-4">
                         <Link
                           to="/contact"
-                          className="inline-flex items-center gap-2 text-sm bg-[#FF9500] text-[#0C1520] px-6 py-2.5 rounded hover:bg-[#CC6A00] transition-colors font-medium"
+                          className="inline-flex items-center gap-2 text-sm bg-[#FF9500] text-[#182635] px-6 py-2.5 rounded hover:bg-[#CC6A00] transition-colors font-medium"
                         >
                           Request This Service <ArrowRight size={14} />
                         </Link>
@@ -330,7 +330,7 @@ export default function WritingServicesPage() {
       </section>
 
       {/* Testimonials */}
-      <section className="relative py-16 md:py-24 px-6 md:px-12" style={{ backgroundColor: '#1B2838' }}>
+      <section className="relative py-16 md:py-24 px-6 md:px-12" style={{ backgroundColor: '#25364B' }}>
         <div className="max-w-7xl mx-auto">
           <ScrollReveal>
             <p className="text-xs uppercase tracking-[0.08em] text-[#C9B99A] mb-12">WHAT CLIENTS SAY</p>
@@ -345,7 +345,7 @@ export default function WritingServicesPage() {
                 viewport={{ once: true, amount: 0.2 }}
                 variants={cardVariants}
                 transition={{ delay: 0.3 + i * 0.12 }}
-                className="bg-[rgba(27,40,56,0.6)] rounded border border-[rgba(255,149,0,0.15)] p-6"
+                className="bg-[rgba(37,54,75,0.6)] rounded border border-[rgba(255,149,0,0.15)] p-6"
                 style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }}
               >
                 <Quote size={24} className="text-[#FF9500] mb-4" strokeWidth={1.5} />
@@ -361,7 +361,7 @@ export default function WritingServicesPage() {
       </section>
 
       {/* CTA */}
-      <section className="relative py-16 md:py-24 px-6 md:px-12 bg-[#0C1520]">
+      <section className="relative py-16 md:py-24 px-6 md:px-12 bg-[#182635]">
         <div className="max-w-4xl mx-auto text-center">
           <ScrollReveal>
             <FileText size={32} className="text-[#FF9500] mx-auto mb-6" strokeWidth={1.5} />
@@ -374,7 +374,7 @@ export default function WritingServicesPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 to="/contact"
-                className="inline-flex items-center justify-center rounded-full h-14 px-10 text-base bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-['Newsreader'] tracking-[0.02em]"
+                className="inline-flex items-center justify-center rounded-full h-14 px-10 text-base bg-[#FF9500] text-[#25364B] hover:bg-[#CC6A00] transition-colors font-['Newsreader'] tracking-[0.02em]"
                 style={{ boxShadow: "0 4px 16px rgba(255,149,0,0.25)" }}
               >
                 <Sparkles size={18} className="mr-2" /> Get In Touch

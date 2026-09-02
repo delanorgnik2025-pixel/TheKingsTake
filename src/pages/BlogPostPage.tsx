@@ -532,7 +532,7 @@ export default function BlogPostPage() {
           style={{ backgroundImage: `url(${post.coverImage})` }}
         />
       )}
-      <div className="absolute inset-0 bg-[#1B2838]/85" />
+      <div className="absolute inset-0 bg-[#25364B]/85" />
 
       <div className="relative z-10 max-w-3xl mx-auto">
         <Link
@@ -568,7 +568,7 @@ export default function BlogPostPage() {
           </p>
         )}
 
-        <div className="bg-[rgba(27,40,56,0.9)] backdrop-blur-lg rounded-lg border border-[rgba(255,149,0,0.2)] p-8">
+        <div className="bg-[rgba(37,54,75,0.9)] backdrop-blur-lg rounded-lg border border-[rgba(255,149,0,0.2)] p-8">
           <div
             className="prose prose-invert max-w-none text-[#C9B99A] leading-relaxed"
             dangerouslySetInnerHTML={{
@@ -586,7 +586,7 @@ export default function BlogPostPage() {
 
         <div className="mt-12 p-6 bg-[rgba(42,58,74,0.7)] rounded-lg border border-[rgba(255,149,0,0.2)]">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-[#FF9500] flex items-center justify-center text-[#1B2838] font-bold text-lg">
+            <div className="w-12 h-12 rounded-full bg-[#FF9500] flex items-center justify-center text-[#25364B] font-bold text-lg">
               RK
             </div>
             <div>

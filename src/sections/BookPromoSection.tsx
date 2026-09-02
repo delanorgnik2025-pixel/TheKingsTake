@@ -27,7 +27,7 @@ function PreOrderButton() {
   return (
     <button 
       onClick={() => navigate('/pre-order')}
-      className="w-full flex items-center justify-center gap-2 rounded-full h-12 bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-['Newsreader'] tracking-[0.02em] font-medium"
+      className="w-full flex items-center justify-center gap-2 rounded-full h-12 bg-[#FF9500] text-[#25364B] hover:bg-[#CC6A00] transition-colors font-['Newsreader'] tracking-[0.02em] font-medium"
       style={{ boxShadow: '0 4px 16px rgba(255,149,0,0.25)' }}
     >
       <Sparkles size={18} />
@@ -40,7 +40,7 @@ export default function BookPromoSection() {
   return (
     <section id="book" className="relative py-24 md:py-32 px-6 md:px-12 overflow-hidden">
       <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/bg-about.jpg)' }} />
-      <div className="absolute inset-0 bg-[#1B2838]/85" />
+      <div className="absolute inset-0 bg-[#25364B]/85" />
 
       <div className="relative z-10 max-w-7xl mx-auto">
         <ScrollReveal>
@@ -64,7 +64,7 @@ export default function BookPromoSection() {
             </ScrollReveal>
 
             <ScrollReveal delay={0.25}>
-              <div className="bg-[rgba(27,40,56,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.2)] p-5">
+              <div className="bg-[rgba(37,54,75,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.2)] p-5">
                 {/* Pre-order badge */}
                 <div className="flex items-center gap-2 mb-3 bg-[rgba(255,149,0,0.1)] border border-[rgba(255,149,0,0.2)] rounded-lg px-3 py-1.5">
                   <Clock size={12} className="text-[#FF9500]" />
@@ -105,7 +105,7 @@ export default function BookPromoSection() {
             </ScrollReveal>
 
             <ScrollReveal delay={0.3}>
-              <div className="bg-[rgba(27,40,56,0.8)] backdrop-blur-lg rounded border-l-2 border-[#FF9500] p-6 mb-8">
+              <div className="bg-[rgba(37,54,75,0.8)] backdrop-blur-lg rounded border-l-2 border-[#FF9500] p-6 mb-8">
                 <Quote size={20} className="text-[#FF9500] mb-3" />
                 <p className="text-lg text-[#F0EBE1] italic leading-relaxed">
                   "I didn't set out to become the voice of a movement. I set out to write a book that confronted the stereotypes we've been force-fed, challenged the lies about our place in this country, and charted a path toward a new Industrial Revolution built by and for Black people in America."

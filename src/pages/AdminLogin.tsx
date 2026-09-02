@@ -48,7 +48,8 @@ export default function AdminLogin() {
       // Production MUST use server-side bcrypt with database lookup
       if (hash === ADMIN_PASSWORD_HASH_DEV) {
         // Generate a simple session token
-        const token = btoa(hash + Date.now())
+        // Server middleware expects admin tokens to start with "admin_"
+        const token = 'admin_' + btoa(hash + Date.now())
         localStorage.setItem('adminToken', token)
         navigate('/admin/dashboard')
       } else {
@@ -62,9 +63,9 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0C1520]">
+    <div className="min-h-screen bg-[#182635]">
       <div className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-[0.15]" style={{ backgroundImage: 'url(/images/bg-hero.jpg)' }} />
-      <div className="fixed inset-0 bg-gradient-to-b from-[#0C1520]/95 via-[#0C1520]/90 to-[#0C1520]/95" />
+      <div className="fixed inset-0 bg-gradient-to-b from-[#182635]/95 via-[#182635]/90 to-[#182635]/95" />
 
       <div className="relative z-10">
         <div className="border-b border-white/[0.06]">
@@ -103,7 +104,7 @@ export default function AdminLogin() {
             <button
               type="submit"
               disabled={loading || !password}
-              className="w-full h-12 bg-[#FF9500] text-[#0C1520] font-medium text-sm tracking-[0.05em] uppercase hover:bg-[#FF9500]/90 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 rounded"
+              className="w-full h-12 bg-[#FF9500] text-[#182635] font-medium text-sm tracking-[0.05em] uppercase hover:bg-[#FF9500]/90 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 rounded"
             >
               <LogIn size={16} />
               {loading ? 'Verifying...' : 'Access Admin Panel'}

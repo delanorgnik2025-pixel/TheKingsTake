@@ -103,7 +103,7 @@ export default function AdminVideosPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0f1a] px-6 md:px-12 py-8">
+    <div className="min-h-screen bg-[#14202E] px-6 md:px-12 py-8">
       <div className="max-w-5xl mx-auto">
 
         {/* Header */}
@@ -147,7 +147,7 @@ export default function AdminVideosPage() {
                   value={form.title}
                   onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
                   placeholder="Video title"
-                  className="w-full bg-[rgba(27,40,56,0.6)] border border-[rgba(255,149,0,0.15)] rounded-lg px-3 py-2.5 text-sm text-[#F0EBE1] placeholder:text-[#C9B99A]/20 focus:border-[rgba(255,149,0,0.4)] focus:outline-none transition-colors"
+                  className="w-full bg-[rgba(37,54,75,0.6)] border border-[rgba(255,149,0,0.15)] rounded-lg px-3 py-2.5 text-sm text-[#F0EBE1] placeholder:text-[#C9B99A]/20 focus:border-[rgba(255,149,0,0.4)] focus:outline-none transition-colors"
                   required
                 />
               </div>
@@ -159,7 +159,7 @@ export default function AdminVideosPage() {
                   value={form.youtubeId}
                   onChange={e => setForm(f => ({ ...f, youtubeId: e.target.value }))}
                   placeholder="e.g. dQw4w9WgXcQ"
-                  className="w-full bg-[rgba(27,40,56,0.6)] border border-[rgba(255,149,0,0.15)] rounded-lg px-3 py-2.5 text-sm text-[#F0EBE1] placeholder:text-[#C9B99A]/20 focus:border-[rgba(255,149,0,0.4)] focus:outline-none transition-colors"
+                  className="w-full bg-[rgba(37,54,75,0.6)] border border-[rgba(255,149,0,0.15)] rounded-lg px-3 py-2.5 text-sm text-[#F0EBE1] placeholder:text-[#C9B99A]/20 focus:border-[rgba(255,149,0,0.4)] focus:outline-none transition-colors"
                 />
                 <p className="text-[9px] text-[#C9B99A]/20 mt-1">The part after youtube.com/watch?v=</p>
               </div>
@@ -171,7 +171,7 @@ export default function AdminVideosPage() {
                   value={form.duration}
                   onChange={e => setForm(f => ({ ...f, duration: e.target.value }))}
                   placeholder="e.g. 12:34"
-                  className="w-full bg-[rgba(27,40,56,0.6)] border border-[rgba(255,149,0,0.15)] rounded-lg px-3 py-2.5 text-sm text-[#F0EBE1] placeholder:text-[#C9B99A]/20 focus:border-[rgba(255,149,0,0.4)] focus:outline-none transition-colors"
+                  className="w-full bg-[rgba(37,54,75,0.6)] border border-[rgba(255,149,0,0.15)] rounded-lg px-3 py-2.5 text-sm text-[#F0EBE1] placeholder:text-[#C9B99A]/20 focus:border-[rgba(255,149,0,0.4)] focus:outline-none transition-colors"
                 />
               </div>
 
@@ -180,7 +180,7 @@ export default function AdminVideosPage() {
                 <select
                   value={form.category}
                   onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
-                  className="w-full bg-[rgba(27,40,56,0.6)] border border-[rgba(255,149,0,0.15)] rounded-lg px-3 py-2.5 text-sm text-[#F0EBE1] focus:border-[rgba(255,149,0,0.4)] focus:outline-none transition-colors"
+                  className="w-full bg-[rgba(37,54,75,0.6)] border border-[rgba(255,149,0,0.15)] rounded-lg px-3 py-2.5 text-sm text-[#F0EBE1] focus:border-[rgba(255,149,0,0.4)] focus:outline-none transition-colors"
                 >
                   {CATEGORIES.map(c => <option key={c} value={c} className="bg-[#15202B]">{c}</option>)}
                 </select>
@@ -193,7 +193,7 @@ export default function AdminVideosPage() {
                   value={form.thumbnail}
                   onChange={e => setForm(f => ({ ...f, thumbnail: e.target.value }))}
                   placeholder="https://... or /images/..."
-                  className="w-full bg-[rgba(27,40,56,0.6)] border border-[rgba(255,149,0,0.15)] rounded-lg px-3 py-2.5 text-sm text-[#F0EBE1] placeholder:text-[#C9B99A]/20 focus:border-[rgba(255,149,0,0.4)] focus:outline-none transition-colors"
+                  className="w-full bg-[rgba(37,54,75,0.6)] border border-[rgba(255,149,0,0.15)] rounded-lg px-3 py-2.5 text-sm text-[#F0EBE1] placeholder:text-[#C9B99A]/20 focus:border-[rgba(255,149,0,0.4)] focus:outline-none transition-colors"
                 />
               </div>
 
@@ -204,7 +204,7 @@ export default function AdminVideosPage() {
                   onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
                   placeholder="Brief description of the video content"
                   rows={3}
-                  className="w-full bg-[rgba(27,40,56,0.6)] border border-[rgba(255,149,0,0.15)] rounded-lg px-3 py-2.5 text-sm text-[#F0EBE1] placeholder:text-[#C9B99A]/20 focus:border-[rgba(255,149,0,0.4)] focus:outline-none transition-colors resize-none"
+                  className="w-full bg-[rgba(37,54,75,0.6)] border border-[rgba(255,149,0,0.15)] rounded-lg px-3 py-2.5 text-sm text-[#F0EBE1] placeholder:text-[#C9B99A]/20 focus:border-[rgba(255,149,0,0.4)] focus:outline-none transition-colors resize-none"
                 />
               </div>
 
@@ -242,7 +242,7 @@ export default function AdminVideosPage() {
                 <button
                   type="submit"
                   disabled={createMutation.isPending || updateMutation.isPending}
-                  className="flex items-center gap-2 text-sm bg-[#FF9500] text-[#1B2838] rounded-lg px-5 py-2.5 font-medium hover:bg-[#CC6A00] transition-all disabled:opacity-50"
+                  className="flex items-center gap-2 text-sm bg-[#FF9500] text-[#25364B] rounded-lg px-5 py-2.5 font-medium hover:bg-[#CC6A00] transition-all disabled:opacity-50"
                 >
                   <Save size={14} />
                   {createMutation.isPending || updateMutation.isPending ? 'Saving...' : editingId ? 'Update Video' : 'Add Video'}
@@ -263,7 +263,7 @@ export default function AdminVideosPage() {
         {isLoading ? (
           <div className="text-center py-12 text-[#C9B99A]/40 text-sm">Loading videos...</div>
         ) : videos.length === 0 ? (
-          <div className="text-center py-16 bg-[rgba(27,40,56,0.3)] rounded-xl border border-[rgba(255,149,0,0.08)] border-dashed">
+          <div className="text-center py-16 bg-[rgba(37,54,75,0.3)] rounded-xl border border-[rgba(255,149,0,0.08)] border-dashed">
             <Video size={40} className="text-[#FF9500]/20 mx-auto mb-4" />
             <p className="text-sm text-[#C9B99A]/40 mb-2">No videos yet</p>
             <p className="text-xs text-[#C9B99A]/25 mb-4">Click "Add Video" to create your first broadcast entry</p>
@@ -279,10 +279,10 @@ export default function AdminVideosPage() {
             {videos.map((video) => (
               <div
                 key={video.id}
-                className="bg-[rgba(27,40,56,0.4)] border border-[rgba(255,149,0,0.08)] hover:border-[rgba(255,149,0,0.2)] rounded-xl p-4 flex items-start gap-4 transition-all"
+                className="bg-[rgba(37,54,75,0.4)] border border-[rgba(255,149,0,0.08)] hover:border-[rgba(255,149,0,0.2)] rounded-xl p-4 flex items-start gap-4 transition-all"
               >
                 {/* Thumbnail */}
-                <div className="w-24 h-16 rounded-lg overflow-hidden shrink-0 bg-[#0A0F1A] relative">
+                <div className="w-24 h-16 rounded-lg overflow-hidden shrink-0 bg-[#14202E] relative">
                   {video.thumbnail ? (
                     <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover" />
                   ) : (

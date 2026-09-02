@@ -1,3 +1,4 @@
+import "./env-shim";
 import { Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
 import type { HttpBindings } from "@hono/node-server";
@@ -42,8 +43,8 @@ app.use("/api/trpc/*", async (c) => {
 app.get("/api/health", async (c) => {
   let dbStatus = "unknown";
   try {
-    const { connection } = await import("./queries/connection");
-    await connection.execute("SELECT 1");
+    const { getDb } = await import("./queries/connection");
+    await getDb().execute("SELECT 1");
     dbStatus = "connected";
   } catch {
     dbStatus = "disconnected";

@@ -34,7 +34,7 @@ function ServiceCheckoutButton({ label, price, serviceName, serviceSlug }: { lab
     <button
       onClick={handleBuy}
       disabled={checkout.isPending}
-      className="inline-flex items-center gap-1 text-xs bg-[#FF9500] text-[#0C1520] px-3 py-1.5 rounded hover:bg-[#CC6A00] transition-colors disabled:opacity-50 font-medium shrink-0"
+      className="inline-flex items-center gap-1 text-xs bg-[#FF9500] text-[#182635] px-3 py-1.5 rounded hover:bg-[#CC6A00] transition-colors disabled:opacity-50 font-medium shrink-0"
     >
       <ShoppingCart size={12} />
       {checkout.isPending ? '...' : 'Buy Now'}
@@ -177,7 +177,7 @@ export default function ServiceDetailPage() {
 
   if (isLoading && !service) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#1B2838]">
+      <div className="min-h-screen flex items-center justify-center bg-[#25364B]">
         <div className="w-8 h-8 border-2 border-[#FF9500] border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -185,7 +185,7 @@ export default function ServiceDetailPage() {
 
   if (!service) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#1B2838]">
+      <div className="min-h-screen flex items-center justify-center bg-[#25364B]">
         <div className="text-center">
           <h1 className="text-2xl text-[#F0EBE1] mb-2">Service not found</h1>
           <Link to="/" className="text-[#FF9500] hover:underline">Back Home</Link>
@@ -212,14 +212,14 @@ export default function ServiceDetailPage() {
   return (
     <div className="relative min-h-screen pt-24 pb-16 px-6 md:px-12 overflow-hidden">
       <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url(/images/bg-services.jpg)" }} />
-      <div className="absolute inset-0 bg-[#1B2838]/80" />
+      <div className="absolute inset-0 bg-[#25364B]/80" />
 
       <div className="relative z-10 max-w-4xl mx-auto">
         <Link to="/" className="inline-flex items-center gap-2 text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors mb-8">
           <ArrowLeft size={16} /> Back to Home
         </Link>
 
-        <div className="bg-[rgba(27,40,56,0.9)] backdrop-blur-lg rounded-lg border border-[rgba(255,149,0,0.3)] p-8 md:p-12">
+        <div className="bg-[rgba(37,54,75,0.9)] backdrop-blur-lg rounded-lg border border-[rgba(255,149,0,0.3)] p-8 md:p-12">
           <div className="flex items-start justify-between mb-6">
             <div>
               <h1 className="text-4xl md:text-5xl text-[#F0EBE1] tracking-[-0.02em] text-shadow-hero mb-2">{service.name}</h1>
@@ -314,7 +314,7 @@ export default function ServiceDetailPage() {
 
           {/* Book Button */}
           {!showBooking && !booked && (
-            <button onClick={() => setShowBooking(true)} className="inline-flex items-center justify-center rounded-full h-14 px-12 text-base bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-['Newsreader'] tracking-[0.02em]" style={{ boxShadow: "0 4px 16px rgba(255,149,0,0.25)" }}>
+            <button onClick={() => setShowBooking(true)} className="inline-flex items-center justify-center rounded-full h-14 px-12 text-base bg-[#FF9500] text-[#25364B] hover:bg-[#CC6A00] transition-colors font-['Newsreader'] tracking-[0.02em]" style={{ boxShadow: "0 4px 16px rgba(255,149,0,0.25)" }}>
               <Sparkles size={18} className="mr-2" /> Book This Service
             </button>
           )}
@@ -324,12 +324,12 @@ export default function ServiceDetailPage() {
             <form onSubmit={handleBook} className="mt-8 p-6 bg-[rgba(42,58,74,0.7)] rounded-lg border border-[rgba(255,149,0,0.2)]">
               <h3 className="text-xl text-[#F0EBE1] mb-4">Book Your Session</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <input type="text" placeholder="Your Name *" required value={bookingData.name} onChange={e => setBookingData({ ...bookingData, name: e.target.value })} className="bg-[rgba(27,40,56,0.8)] border border-[rgba(255,149,0,0.2)] rounded px-4 py-3 text-[#F0EBE1] placeholder:text-[#C9B99A]/50 focus:border-[#FF9500] focus:outline-none" />
-                <input type="email" placeholder="Email Address *" required value={bookingData.email} onChange={e => setBookingData({ ...bookingData, email: e.target.value })} className="bg-[rgba(27,40,56,0.8)] border border-[rgba(255,149,0,0.2)] rounded px-4 py-3 text-[#F0EBE1] placeholder:text-[#C9B99A]/50 focus:border-[#FF9500] focus:outline-none" />
-                <input type="tel" placeholder="Phone (optional)" value={bookingData.phone} onChange={e => setBookingData({ ...bookingData, phone: e.target.value })} className="bg-[rgba(27,40,56,0.8)] border border-[rgba(255,149,0,0.2)] rounded px-4 py-3 text-[#F0EBE1] placeholder:text-[#C9B99A]/50 focus:border-[#FF9500] focus:outline-none" />
-                <input type="text" placeholder="What do you need help with?" value={bookingData.message} onChange={e => setBookingData({ ...bookingData, message: e.target.value })} className="bg-[rgba(27,40,56,0.8)] border border-[rgba(255,149,0,0.2)] rounded px-4 py-3 text-[#F0EBE1] placeholder:text-[#C9B99A]/50 focus:border-[#FF9500] focus:outline-none md:col-span-2" />
+                <input type="text" placeholder="Your Name *" required value={bookingData.name} onChange={e => setBookingData({ ...bookingData, name: e.target.value })} className="bg-[rgba(37,54,75,0.8)] border border-[rgba(255,149,0,0.2)] rounded px-4 py-3 text-[#F0EBE1] placeholder:text-[#C9B99A]/50 focus:border-[#FF9500] focus:outline-none" />
+                <input type="email" placeholder="Email Address *" required value={bookingData.email} onChange={e => setBookingData({ ...bookingData, email: e.target.value })} className="bg-[rgba(37,54,75,0.8)] border border-[rgba(255,149,0,0.2)] rounded px-4 py-3 text-[#F0EBE1] placeholder:text-[#C9B99A]/50 focus:border-[#FF9500] focus:outline-none" />
+                <input type="tel" placeholder="Phone (optional)" value={bookingData.phone} onChange={e => setBookingData({ ...bookingData, phone: e.target.value })} className="bg-[rgba(37,54,75,0.8)] border border-[rgba(255,149,0,0.2)] rounded px-4 py-3 text-[#F0EBE1] placeholder:text-[#C9B99A]/50 focus:border-[#FF9500] focus:outline-none" />
+                <input type="text" placeholder="What do you need help with?" value={bookingData.message} onChange={e => setBookingData({ ...bookingData, message: e.target.value })} className="bg-[rgba(37,54,75,0.8)] border border-[rgba(255,149,0,0.2)] rounded px-4 py-3 text-[#F0EBE1] placeholder:text-[#C9B99A]/50 focus:border-[#FF9500] focus:outline-none md:col-span-2" />
               </div>
-              <button type="submit" disabled={bookMutation.isPending} className="inline-flex items-center justify-center rounded-full h-12 px-8 bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors disabled:opacity-50 font-['Newsreader']">
+              <button type="submit" disabled={bookMutation.isPending} className="inline-flex items-center justify-center rounded-full h-12 px-8 bg-[#FF9500] text-[#25364B] hover:bg-[#CC6A00] transition-colors disabled:opacity-50 font-['Newsreader']">
                 {bookMutation.isPending ? "Submitting..." : "Submit Booking Request"}
               </button>
               <p className="text-xs text-[#C9B99A]/60 mt-3">You will be contacted within 24 hours to schedule your session and discuss payment options.</p>

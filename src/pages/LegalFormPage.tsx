@@ -607,7 +607,7 @@ export default function LegalFormPage() {
 
   if (!form) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#1B2838]">
+      <div className="min-h-screen flex items-center justify-center bg-[#25364B]">
         <div className="text-center">
           <h1 className="text-2xl text-[#F0EBE1] mb-2">Form not found</h1>
           <Link to="/legal" className="text-[#FF9500] hover:underline">Back to Legal Hub</Link>
@@ -640,7 +640,7 @@ export default function LegalFormPage() {
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url(/images/bg-legal.jpg)" }}
       />
-      <div className="absolute inset-0 bg-[#1B2838]/85" />
+      <div className="absolute inset-0 bg-[#25364B]/85" />
 
       <div className="relative z-10 max-w-3xl mx-auto">
         <Link to="/legal" className="inline-flex items-center gap-2 text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors mb-8">
@@ -648,7 +648,7 @@ export default function LegalFormPage() {
           Back to Legal Hub
         </Link>
 
-        <div className="bg-[rgba(27,40,56,0.9)] backdrop-blur-lg rounded-lg border border-[rgba(255,149,0,0.3)] p-8">
+        <div className="bg-[rgba(37,54,75,0.9)] backdrop-blur-lg rounded-lg border border-[rgba(255,149,0,0.3)] p-8">
           <div className="flex items-center gap-3 mb-4">
             <FileText size={24} className="text-[#FF9500]" />
             <span className="text-xs uppercase tracking-[0.08em] text-[#FFB840]">{form.category}</span>
@@ -678,7 +678,7 @@ export default function LegalFormPage() {
 
           <button
             onClick={handleDownload}
-            className="inline-flex items-center gap-2 rounded-full h-12 px-8 bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-['Newsreader']"
+            className="inline-flex items-center gap-2 rounded-full h-12 px-8 bg-[#FF9500] text-[#25364B] hover:bg-[#CC6A00] transition-colors font-['Newsreader']"
             style={{ boxShadow: "0 4px 16px rgba(255,149,0,0.25)" }}
           >
             <Download size={18} />

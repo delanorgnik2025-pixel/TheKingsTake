@@ -194,7 +194,7 @@ export default function RealmEntryPortal({ onEnter }: Props) {
     <div className="fixed inset-0 z-50 bg-[#060a12] flex flex-col items-center justify-center overflow-hidden">
       {/* Deep cosmic background layers */}
       <div className="absolute inset-0" style={{
-        background: 'radial-gradient(ellipse at 50% 30%, rgba(27,40,56,0.8) 0%, rgba(6,10,18,1) 70%)',
+        background: 'radial-gradient(ellipse at 50% 30%, rgba(37,54,75,0.8) 0%, rgba(6,10,18,1) 70%)',
       }} />
       <div className="absolute inset-0" style={{
         background: 'radial-gradient(ellipse at 30% 70%, rgba(255,149,0,0.04) 0%, transparent 50%)',

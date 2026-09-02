@@ -137,9 +137,9 @@ export default function BlogFeed({ wordPressUrl, title, subtitle }: Props) {
               viewport={{ once: true }}
               transition={{ delay: i * 0.08, duration: 0.4 }}
             >
-              <Link to={`/blog/${post.slug}`} className="group flex gap-4 bg-[rgba(27,40,56,0.4)] border border-[rgba(255,149,0,0.08)] hover:border-[rgba(255,149,0,0.25)] rounded-xl p-4 transition-all">
+              <Link to={`/blog/${post.slug}`} className="group flex gap-4 bg-[rgba(37,54,75,0.4)] border border-[rgba(255,149,0,0.08)] hover:border-[rgba(255,149,0,0.25)] rounded-xl p-4 transition-all">
                 {/* Thumbnail */}
-                <div className="w-24 h-24 md:w-28 md:h-28 rounded-lg overflow-hidden shrink-0 bg-[#0A0F1A]">
+                <div className="w-24 h-24 md:w-28 md:h-28 rounded-lg overflow-hidden shrink-0 bg-[#14202E]">
                   <img
                     src={post.coverImage ?? '/images/blog-post-1.jpg'}
                     alt={post.title}

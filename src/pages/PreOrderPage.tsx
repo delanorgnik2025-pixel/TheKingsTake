@@ -34,7 +34,7 @@ export default function PreOrderPage() {
   return (
     <div className="min-h-screen bg-[#05080e]">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-[#0A0F1A]/95 backdrop-blur-md border-b border-[rgba(255,149,0,0.1)]">
+      <header className="sticky top-0 z-50 bg-[#14202E]/95 backdrop-blur-md border-b border-[rgba(255,149,0,0.1)]">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
           <button onClick={() => navigate(-1)}
             className="flex items-center gap-2 text-xs text-[#C9B99A] hover:text-[#FF9500] transition-colors">
@@ -73,7 +73,7 @@ export default function PreOrderPage() {
           </ScrollReveal>
 
           <ScrollReveal delay={0.2}>
-            <div className="bg-[rgba(27,40,56,0.6)] border border-[rgba(255,149,0,0.15)] rounded-xl p-6">
+            <div className="bg-[rgba(37,54,75,0.6)] border border-[rgba(255,149,0,0.15)] rounded-xl p-6">
               <div className="flex items-baseline justify-between mb-4">
                 <div>
                   <span className="text-4xl text-[#FF9500] font-medium">$19.99</span>
@@ -87,7 +87,7 @@ export default function PreOrderPage() {
               {/* Agreement */}
               <label className="flex items-start gap-3 mb-6 cursor-pointer">
                 <div className={`w-4 h-4 rounded border mt-0.5 shrink-0 flex items-center justify-center transition-colors ${agreed ? 'bg-[#FF9500] border-[#FF9500]' : 'border-[rgba(255,149,0,0.3)]'}`}>
-                  {agreed && <CheckCircle size={12} className="text-[#1B2838]" />}
+                  {agreed && <CheckCircle size={12} className="text-[#25364B]" />}
                 </div>
                 <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="sr-only" />
                 <span className="text-[11px] text-[#C9B99A]/60 leading-relaxed">
@@ -97,7 +97,7 @@ export default function PreOrderPage() {
 
               {/* CTA — Redirects to Stripe Payment Link */}
               <button onClick={handleCheckout} disabled={!agreed}
-                className="w-full flex items-center justify-center gap-2 rounded-full h-12 bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-medium disabled:opacity-30 disabled:cursor-not-allowed"
+                className="w-full flex items-center justify-center gap-2 rounded-full h-12 bg-[#FF9500] text-[#25364B] hover:bg-[#CC6A00] transition-colors font-medium disabled:opacity-30 disabled:cursor-not-allowed"
                 style={{ boxShadow: '0 4px 16px rgba(255,149,0,0.25)' }}>
                 <Sparkles size={18} />
                 Pre-Order — $19.99
@@ -119,7 +119,7 @@ export default function PreOrderPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-16">
             {benefits.map((b, i) => (
               <motion.div key={i} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}
-                className="flex items-start gap-3 bg-[rgba(27,40,56,0.4)] border border-[rgba(255,149,0,0.08)] rounded-lg p-4">
+                className="flex items-start gap-3 bg-[rgba(37,54,75,0.4)] border border-[rgba(255,149,0,0.08)] rounded-lg p-4">
                 <div className="text-[#FF9500] shrink-0 mt-0.5">{b.icon}</div>
                 <div>
                   <p className="text-sm text-[#F0EBE1] font-medium">{b.title}</p>
@@ -132,7 +132,7 @@ export default function PreOrderPage() {
 
         {/* About the Author */}
         <ScrollReveal delay={0.1}>
-          <div className="bg-[rgba(27,40,56,0.4)] border border-[rgba(255,149,0,0.1)] rounded-xl p-6 mb-12">
+          <div className="bg-[rgba(37,54,75,0.4)] border border-[rgba(255,149,0,0.1)] rounded-xl p-6 mb-12">
             <h2 className="text-lg text-[#F0EBE1] font-medium mb-4" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
               About This Release
             </h2>
@@ -168,7 +168,7 @@ export default function PreOrderPage() {
               { q: 'Is my payment secure?', a: 'All payments are processed through Stripe, the same payment platform used by major companies worldwide. Your card information is never stored on our servers.' },
               { q: 'Why pre-order instead of waiting?', a: 'Pre-order customers get the lowest price ($19.99 vs $24.99 at release), early access, exclusive updates from the author, and founding reader acknowledgment in the book.' },
             ].map((faq, i) => (
-              <div key={i} className="bg-[rgba(27,40,56,0.3)] border border-[rgba(255,149,0,0.06)] rounded-lg p-4">
+              <div key={i} className="bg-[rgba(37,54,75,0.3)] border border-[rgba(255,149,0,0.06)] rounded-lg p-4">
                 <p className="text-sm text-[#F0EBE1] font-medium mb-1">{faq.q}</p>
                 <p className="text-xs text-[#C9B99A]/50 leading-relaxed">{faq.a}</p>
               </div>
@@ -180,7 +180,7 @@ export default function PreOrderPage() {
         <ScrollReveal delay={0.1}>
           <div className="text-center mb-12">
             <button onClick={handleCheckout} disabled={!agreed}
-              className="inline-flex items-center gap-2 rounded-full h-12 bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-medium px-8 disabled:opacity-30 disabled:cursor-not-allowed"
+              className="inline-flex items-center gap-2 rounded-full h-12 bg-[#FF9500] text-[#25364B] hover:bg-[#CC6A00] transition-colors font-medium px-8 disabled:opacity-30 disabled:cursor-not-allowed"
               style={{ boxShadow: '0 4px 16px rgba(255,149,0,0.25)' }}>
               <Sparkles size={18} />
               Pre-Order Your Copy — $19.99

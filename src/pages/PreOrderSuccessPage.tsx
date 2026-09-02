@@ -38,7 +38,7 @@ export default function PreOrderSuccessPage() {
           </p>
 
           {/* What's Next */}
-          <div className="bg-[rgba(27,40,56,0.4)] border border-[rgba(255,149,0,0.1)] rounded-xl p-5 text-left mb-8">
+          <div className="bg-[rgba(37,54,75,0.4)] border border-[rgba(255,149,0,0.1)] rounded-xl p-5 text-left mb-8">
             <p className="text-[10px] uppercase tracking-[0.12em] text-[#FF9500] mb-4">What Happens Next</p>
             <div className="space-y-4">
               <div className="flex items-start gap-3">

@@ -83,9 +83,9 @@ export default function AdminBlog() {
   const posts = postsQuery.data || []
 
   return (
-    <div className="min-h-screen bg-[#0C1520]">
+    <div className="min-h-screen bg-[#182635]">
       <div className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-[0.08]" style={{ backgroundImage: 'url(/images/bg-hero.jpg)' }} />
-      <div className="fixed inset-0 bg-gradient-to-b from-[#0C1520]/98 via-[#0C1520]/95 to-[#0C1520]/98" />
+      <div className="fixed inset-0 bg-gradient-to-b from-[#182635]/98 via-[#182635]/95 to-[#182635]/98" />
 
       <div className="relative z-10">
         {/* Header */}
@@ -97,7 +97,7 @@ export default function AdminBlog() {
               <h1 className="text-lg text-[#F0EBE1] font-medium" style={{ fontFamily: 'Newsreader, serif' }}>Blog Admin</h1>
             </div>
             {mode === 'list' && (
-              <button onClick={() => { resetForm(); setMode('create') }} className="flex items-center gap-2 h-9 px-4 bg-[#FF9500] text-[#0C1520] text-sm font-medium rounded hover:bg-[#CC6A00] transition-colors">
+              <button onClick={() => { resetForm(); setMode('create') }} className="flex items-center gap-2 h-9 px-4 bg-[#FF9500] text-[#182635] text-sm font-medium rounded hover:bg-[#CC6A00] transition-colors">
                 <Plus size={16} /> New Post
               </button>
             )}
@@ -127,7 +127,7 @@ export default function AdminBlog() {
                 <div className="text-center py-20 bg-white/[0.02] border border-white/[0.06] rounded">
                   <FileText size={48} className="text-[#C9B99A]/30 mx-auto mb-4" />
                   <p className="text-[#C9B99A] mb-4">No blog posts yet.</p>
-                  <button onClick={() => { resetForm(); setMode('create') }} className="h-10 px-6 bg-[#FF9500] text-[#0C1520] text-sm font-medium rounded hover:bg-[#CC6A00] transition-colors">
+                  <button onClick={() => { resetForm(); setMode('create') }} className="h-10 px-6 bg-[#FF9500] text-[#182635] text-sm font-medium rounded hover:bg-[#CC6A00] transition-colors">
                     Create Your First Post
                   </button>
                 </div>
@@ -253,7 +253,7 @@ export default function AdminBlog() {
                     <button
                       onClick={handleCreate}
                       disabled={createMutation.isPending || !form.title || !form.content}
-                      className="flex items-center gap-2 h-12 px-8 bg-[#FF9500] text-[#0C1520] font-medium rounded hover:bg-[#CC6A00] transition-colors disabled:opacity-50"
+                      className="flex items-center gap-2 h-12 px-8 bg-[#FF9500] text-[#182635] font-medium rounded hover:bg-[#CC6A00] transition-colors disabled:opacity-50"
                     >
                       <Save size={16} />
                       {createMutation.isPending ? 'Publishing...' : 'Publish Post'}
@@ -262,7 +262,7 @@ export default function AdminBlog() {
                     <button
                       onClick={handleUpdate}
                       disabled={updateMutation.isPending || !form.title || !form.content}
-                      className="flex items-center gap-2 h-12 px-8 bg-[#FF9500] text-[#0C1520] font-medium rounded hover:bg-[#CC6A00] transition-colors disabled:opacity-50"
+                      className="flex items-center gap-2 h-12 px-8 bg-[#FF9500] text-[#182635] font-medium rounded hover:bg-[#CC6A00] transition-colors disabled:opacity-50"
                     >
                       <Save size={16} />
                       {updateMutation.isPending ? 'Saving...' : 'Save Changes'}

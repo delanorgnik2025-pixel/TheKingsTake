@@ -32,7 +32,7 @@ export default function SacredRealmBackground({
           className={`w-full h-full object-cover transition-opacity duration-1000 ${loaded ? 'opacity-100' : 'opacity-0'}`}
           onLoad={() => setLoaded(true)}
         />
-        {!loaded && <div className="absolute inset-0 bg-[#0a0f1a]" />}
+        {!loaded && <div className="absolute inset-0 bg-[#14202E]" />}
       </div>
 
       {/* ═══════ Atmospheric Overlays ═══════ */}

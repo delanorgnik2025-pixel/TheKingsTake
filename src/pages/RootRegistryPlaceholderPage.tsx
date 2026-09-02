@@ -7,7 +7,7 @@ export default function RootRegistryPlaceholderPage() {
   return (
     <div className="min-h-screen bg-[#05080e]">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-[#0A0F1A]/95 backdrop-blur-md border-b border-[rgba(255,149,0,0.1)]">
+      <header className="sticky top-0 z-50 bg-[#14202E]/95 backdrop-blur-md border-b border-[rgba(255,149,0,0.1)]">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link to="/ancestor-root-registry" className="flex items-center gap-2 text-xs text-[#C9B99A] hover:text-[#FF9500] transition-colors">
             <ArrowLeft size={14} /> Back to Registry
@@ -53,7 +53,7 @@ export default function RootRegistryPlaceholderPage() {
 
         {/* What to expect */}
         <ScrollReveal delay={0.1}>
-          <div className="bg-[rgba(27,40,56,0.6)] border border-[rgba(255,149,0,0.15)] rounded-xl p-6 md:p-8 mb-8">
+          <div className="bg-[rgba(37,54,75,0.6)] border border-[rgba(255,149,0,0.15)] rounded-xl p-6 md:p-8 mb-8">
             <h2 className="text-lg text-[#F0EBE1] font-medium mb-4" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
               What You'll Be Able To Do
             </h2>
@@ -87,7 +87,7 @@ export default function RootRegistryPlaceholderPage() {
 
         {/* Notify me */}
         <ScrollReveal delay={0.1}>
-          <div className="text-center bg-gradient-to-br from-[rgba(255,149,0,0.08)] to-[rgba(27,40,56,0.4)] border border-[rgba(255,149,0,0.2)] rounded-xl p-6 md:p-8">
+          <div className="text-center bg-gradient-to-br from-[rgba(255,149,0,0.08)] to-[rgba(37,54,75,0.4)] border border-[rgba(255,149,0,0.2)] rounded-xl p-6 md:p-8">
             <h3 className="text-lg text-[#F0EBE1] font-medium mb-2">Be the First to Know</h3>
             <p className="text-sm text-[#C9B99A]/60 mb-6 max-w-md mx-auto">
               Want early access to the Ancestor Root Registry? Send me an email and I'll add you to the launch list.
@@ -95,7 +95,7 @@ export default function RootRegistryPlaceholderPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <a
                 href="mailto:aasotumediagroup@gmail.com?subject=Ancestor Root Registry - Early Access Request"
-                className="inline-flex items-center gap-2 rounded-full h-12 px-8 bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-medium"
+                className="inline-flex items-center gap-2 rounded-full h-12 px-8 bg-[#FF9500] text-[#25364B] hover:bg-[#CC6A00] transition-colors font-medium"
                 style={{ boxShadow: '0 4px 16px rgba(255,149,0,0.25)' }}
               >
                 <Mail size={16} /> Get Early Access

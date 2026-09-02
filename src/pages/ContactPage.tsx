@@ -57,7 +57,7 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-[#05080e]">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-[#0A0F1A]/95 backdrop-blur-md border-b border-[rgba(255,149,0,0.1)]">
+      <header className="sticky top-0 z-50 bg-[#14202E]/95 backdrop-blur-md border-b border-[rgba(255,149,0,0.1)]">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 text-xs text-[#C9B99A] hover:text-[#FF9500] transition-colors">
             <ArrowLeft size={14} /> Back to Home
@@ -91,7 +91,7 @@ export default function ContactPage() {
           {/* Contact Form */}
           <div className="lg:col-span-3">
             <ScrollReveal delay={0.1}>
-              <div className="bg-[rgba(27,40,56,0.6)] border border-[rgba(255,149,0,0.15)] rounded-xl p-6 md:p-8">
+              <div className="bg-[rgba(37,54,75,0.6)] border border-[rgba(255,149,0,0.15)] rounded-xl p-6 md:p-8">
                 <h2 className="text-lg text-[#F0EBE1] font-medium mb-1" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
                   Send a Message
                 </h2>
@@ -170,7 +170,7 @@ export default function ContactPage() {
                     <button
                       type="submit"
                       disabled={sending || !form.name || !form.email || !form.message}
-                      className="w-full flex items-center justify-center gap-2 rounded-full h-12 bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-medium disabled:opacity-30 disabled:cursor-not-allowed"
+                      className="w-full flex items-center justify-center gap-2 rounded-full h-12 bg-[#FF9500] text-[#25364B] hover:bg-[#CC6A00] transition-colors font-medium disabled:opacity-30 disabled:cursor-not-allowed"
                       style={{ boxShadow: '0 4px 16px rgba(255,149,0,0.25)' }}
                     >
                       <Send size={16} />
@@ -185,7 +185,7 @@ export default function ContactPage() {
           {/* Contact Info Sidebar */}
           <div className="lg:col-span-2 space-y-6">
             <ScrollReveal delay={0.2}>
-              <div className="bg-[rgba(27,40,56,0.6)] border border-[rgba(255,149,0,0.15)] rounded-xl p-6">
+              <div className="bg-[rgba(37,54,75,0.6)] border border-[rgba(255,149,0,0.15)] rounded-xl p-6">
                 <div className="flex gap-1 mb-3">
                   {[0, 1, 2].map(i => <div key={i} className="w-[3px] h-[3px] rounded-full bg-[#FFB840]" />)}
                 </div>
@@ -212,7 +212,7 @@ export default function ContactPage() {
 
             {/* Social Links */}
             <ScrollReveal delay={0.3}>
-              <div className="bg-[rgba(27,40,56,0.6)] border border-[rgba(255,149,0,0.15)] rounded-xl p-6">
+              <div className="bg-[rgba(37,54,75,0.6)] border border-[rgba(255,149,0,0.15)] rounded-xl p-6">
                 <p className="text-[10px] uppercase tracking-[0.15em] text-[#FFB840] mb-4">Follow the Movement</p>
                 <div className="space-y-3">
                   <a
@@ -251,7 +251,7 @@ export default function ContactPage() {
 
         {/* Consultation Upsell */}
         <ScrollReveal delay={0.1}>
-          <div className="bg-gradient-to-br from-[rgba(27,40,56,0.8)] to-[rgba(27,40,56,0.4)] border border-[rgba(255,149,0,0.2)] rounded-xl p-6 md:p-8 mb-16">
+          <div className="bg-gradient-to-br from-[rgba(37,54,75,0.8)] to-[rgba(37,54,75,0.4)] border border-[rgba(255,149,0,0.2)] rounded-xl p-6 md:p-8 mb-16">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
               <div>
                 <div className="inline-flex items-center gap-2 bg-[rgba(255,149,0,0.1)] border border-[rgba(255,149,0,0.2)] rounded-full px-3 py-1 mb-3">
@@ -285,7 +285,7 @@ export default function ContactPage() {
             <div className="flex flex-col sm:flex-row items-center gap-3">
               <button
                 onClick={() => alert('Consultation booking coming soon! To request a consultation now, email aasotumediagroup@gmail.com or message us on Facebook.')}
-                className="inline-flex items-center justify-center gap-2 rounded-full h-12 px-8 bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-medium cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 rounded-full h-12 px-8 bg-[#FF9500] text-[#25364B] hover:bg-[#CC6A00] transition-colors font-medium cursor-pointer"
                 style={{ boxShadow: '0 4px 16px rgba(255,149,0,0.25)' }}
               >
                 <Sparkles size={16} /> Book a Consultation
@@ -324,7 +324,7 @@ export default function ContactPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="bg-[rgba(27,40,56,0.6)] border border-[rgba(255,149,0,0.15)] rounded-xl p-5 hover:border-[rgba(255,149,0,0.3)] transition-all"
+                  className="bg-[rgba(37,54,75,0.6)] border border-[rgba(255,149,0,0.15)] rounded-xl p-5 hover:border-[rgba(255,149,0,0.3)] transition-all"
                 >
                   <h3 className="text-base text-[#F0EBE1] font-medium mb-2">{role.title}</h3>
                   <p className="text-sm text-[#C9B99A]/70 mb-3">{role.desc}</p>

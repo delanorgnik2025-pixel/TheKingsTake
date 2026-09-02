@@ -14,7 +14,7 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
 
   const menuItems = [
     { label: 'Home', href: '/', icon: null, desc: 'Main page' },
-    { label: 'Blog', href: '/blog', icon: <Newspaper size={16} />, desc: 'Articles & updates' },
+    { label: 'The Feed', href: '/feed', icon: <Newspaper size={16} />, desc: 'News, posts & live broadcasts' },
     { label: 'Writing Services', href: '/writing-services', icon: <PenTool size={16} />, desc: 'All writing offerings' },
     { label: 'Civics', href: '/civics', icon: <Shield size={16} />, desc: 'Know your rights' },
     { label: 'AASOTU Media', href: '/aasotu', icon: <Sparkles size={16} />, desc: 'Media group & brand' },

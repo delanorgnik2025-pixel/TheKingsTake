@@ -23,7 +23,7 @@ export default function NotFoundPage() {
             Go Back
           </button>
           <Link to="/"
-            className="flex items-center gap-2 px-5 py-2.5 bg-[#FF9500] rounded-xl text-sm text-[#1B2838] font-medium hover:bg-[#CC6A00] transition-all">
+            className="flex items-center gap-2 px-5 py-2.5 bg-[#FF9500] rounded-xl text-sm text-[#25364B] font-medium hover:bg-[#CC6A00] transition-all">
             <Home size={16} />
             Return Home
           </Link>

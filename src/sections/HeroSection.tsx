@@ -26,11 +26,11 @@ export default function HeroSection() {
   return (
     <section ref={sectionRef} className="relative min-h-[100dvh] flex items-center overflow-hidden" id="hero">
       <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/bg-hero.jpg)' }} />
-      <div className="absolute inset-0 bg-[#1B2838]/60" />
+      <div className="absolute inset-0 bg-[#25364B]/60" />
 
       {/* HUD Panels */}
       <motion.div style={{ opacity: hudOpacity }} initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.6, duration: 0.6, ease: [0.16, 1, 0.3, 1] }} className="absolute top-20 md:top-24 left-4 md:left-12 z-[5] hidden sm:block">
-        <div className="bg-[rgba(27,40,56,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.3)] p-4 md:p-5" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
+        <div className="bg-[rgba(37,54,75,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.3)] p-4 md:p-5" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
           <div className="flex gap-1 mb-2">
             {[0, 1, 2].map(i => <div key={i} className="w-[3px] h-[3px] rounded-full bg-[#FFB840]" />)}
           </div>
@@ -47,22 +47,22 @@ export default function HeroSection() {
       </motion.div>
 
       <motion.div style={{ opacity: hudOpacity }} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.75, duration: 0.6, ease: [0.16, 1, 0.3, 1] }} className="absolute top-20 md:top-24 right-4 md:right-12 z-[5] hidden md:flex flex-col gap-4">
-        <div className="bg-[rgba(27,40,56,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.3)] p-3 flex flex-col items-center gap-1" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
+        <div className="bg-[rgba(37,54,75,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.3)] p-3 flex flex-col items-center gap-1" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
           <BookOpen size={22} className="text-[#FFB840]" strokeWidth={1.5} />
           <span className="text-[9px] uppercase tracking-[0.06em] text-[#C9B99A]">THE BOOK</span>
         </div>
-        <div className="bg-[rgba(27,40,56,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.3)] p-3 flex flex-col items-center gap-1" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
+        <div className="bg-[rgba(37,54,75,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.3)] p-3 flex flex-col items-center gap-1" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
           <PenTool size={22} className="text-[#FFB840]" strokeWidth={1.5} />
           <span className="text-[9px] uppercase tracking-[0.06em] text-[#C9B99A]">WRITING</span>
         </div>
-        <a href="#heritage" className="bg-[rgba(27,40,56,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.3)] p-3 flex flex-col items-center gap-1 hover:border-[rgba(255,149,0,0.6)] transition-colors" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
+        <a href="#heritage" className="bg-[rgba(37,54,75,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.3)] p-3 flex flex-col items-center gap-1 hover:border-[rgba(255,149,0,0.6)] transition-colors" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
           <Map size={22} className="text-[#FFB840]" strokeWidth={1.5} />
           <span className="text-[9px] uppercase tracking-[0.06em] text-[#C9B99A]">HERITAGE</span>
         </a>
       </motion.div>
 
       <motion.div style={{ opacity: hudOpacity }} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.9, duration: 0.6, ease: [0.16, 1, 0.3, 1] }} className="absolute bottom-8 md:bottom-12 left-4 md:left-12 z-[5] hidden sm:block">
-        <div className="bg-[rgba(27,40,56,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.3)] p-4" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
+        <div className="bg-[rgba(37,54,75,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.3)] p-4" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
           <div className="flex items-center gap-2 mb-2">
             <Globe size={16} className="text-[#FFB840]" strokeWidth={1.5} />
             <span className="text-[10px] uppercase tracking-[0.08em] text-[#F0EBE1]">platform assets</span>
@@ -79,7 +79,7 @@ export default function HeroSection() {
       </motion.div>
 
       <motion.div style={{ opacity: hudOpacity }} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.05, duration: 0.6, ease: [0.16, 1, 0.3, 1] }} className="absolute bottom-8 md:bottom-12 right-4 md:right-12 z-[5] hidden sm:block">
-        <div className="bg-[rgba(27,40,56,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.3)] p-4" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
+        <div className="bg-[rgba(37,54,75,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.3)] p-4" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
           <p className="text-[10px] uppercase tracking-[0.08em] text-[#FFB840] mb-2">MISSION STATUS</p>
           <div className="font-mono-hud text-[10px] space-y-1">
             <div className="flex justify-between gap-8 text-[#C9B99A]"><span>Individual Status:</span><span className="text-[#FF9500] font-bold">FIGHTING</span></div>
@@ -108,7 +108,7 @@ export default function HeroSection() {
                 />
               </div>
               {/* Floating badge */}
-              <div className="absolute -top-3 -right-3 bg-[#FF9500] text-[#1B2838] text-xs font-bold px-3 py-1 rounded uppercase tracking-wider">
+              <div className="absolute -top-3 -right-3 bg-[#FF9500] text-[#25364B] text-xs font-bold px-3 py-1 rounded uppercase tracking-wider">
                 Pre-Order
               </div>
             </div>
@@ -159,7 +159,7 @@ export default function HeroSection() {
               className="flex flex-wrap gap-4"
             >
               {/* PRIMARY CTA — ORDER THE BOOK */}
-              <PreOrderButton className="inline-flex items-center justify-center gap-2 rounded-full h-14 px-10 text-base bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-['Newsreader'] tracking-[0.02em] font-medium" />
+              <PreOrderButton className="inline-flex items-center justify-center gap-2 rounded-full h-14 px-10 text-base bg-[#FF9500] text-[#25364B] hover:bg-[#CC6A00] transition-colors font-['Newsreader'] tracking-[0.02em] font-medium" />
               
               {/* SECONDARY — WORK WITH ME */}
               <Link

@@ -33,7 +33,7 @@ function ExpandableCard({ title, subtitle, children, icon: Icon, accent = false 
 }) {
   const [open, setOpen] = useState(false)
   return (
-    <div className={`rounded-xl border transition-all ${accent ? 'border-[rgba(255,149,0,0.25)] bg-[rgba(255,149,0,0.05)]' : 'border-[rgba(255,149,0,0.12)] bg-[rgba(27,40,56,0.4)]'}`}>
+    <div className={`rounded-xl border transition-all ${accent ? 'border-[rgba(255,149,0,0.25)] bg-[rgba(255,149,0,0.05)]' : 'border-[rgba(255,149,0,0.12)] bg-[rgba(37,54,75,0.4)]'}`}>
       <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between p-4 md:p-5 text-left">
         <div className="flex items-center gap-3">
           <Icon size={18} className={accent ? 'text-[#FF9500]' : 'text-[#C9B99A]'} />
@@ -77,7 +77,7 @@ function RollModal({ roll, onClose }: { roll: TribalRollRecord; onClose: () => v
           <div><p className="text-xs text-[#FF9500] uppercase mb-1">Purpose</p><p className="text-sm text-[#C9B99A] leading-relaxed">{roll.purpose}</p></div>
           <div><p className="text-xs text-[#FF9500] uppercase mb-1">Records Included</p><p className="text-sm text-[#C9B99A] leading-relaxed">{roll.recordsIncluded}</p></div>
           <div><p className="text-xs text-[#FF9500] uppercase mb-1">Who Should Search</p><p className="text-sm text-[#C9B99A] leading-relaxed">{roll.whoShouldSearch}</p></div>
-          {roll.relatedStates.length > 0 && <div><p className="text-xs text-[#FF9500] uppercase mb-1">Related States</p><div className="flex flex-wrap gap-1.5">{roll.relatedStates.map(s => <span key={s} className="text-xs bg-[rgba(27,40,56,0.6)] text-[#C9B99A] rounded px-2 py-0.5">{s}</span>)}</div></div>}
+          {roll.relatedStates.length > 0 && <div><p className="text-xs text-[#FF9500] uppercase mb-1">Related States</p><div className="flex flex-wrap gap-1.5">{roll.relatedStates.map(s => <span key={s} className="text-xs bg-[rgba(37,54,75,0.6)] text-[#C9B99A] rounded px-2 py-0.5">{s}</span>)}</div></div>}
           {roll.cautionNote && <div className="bg-[rgba(255,149,0,0.06)] rounded-lg p-3 border border-[rgba(255,149,0,0.12)]"><p className="text-xs text-[#FF9500] uppercase mb-1">Research Caution</p><p className="text-sm text-[#C9B99A]/80 leading-relaxed">{roll.cautionNote}</p></div>}
           <div><p className="text-xs text-[#FF9500] uppercase mb-2 flex items-center gap-1.5"><ExternalLink size={10} /> Receipts — Official Sources</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -116,7 +116,7 @@ function LawModal({ law, onClose }: { law: LawPolicyRecord; onClose: () => void 
           <div><p className="text-xs text-[#FF9500] uppercase mb-1">Historical Impact</p><p className="text-sm text-[#C9B99A] leading-relaxed">{law.historicalImpact}</p></div>
           <div className="bg-[rgba(255,149,0,0.06)] rounded-lg p-3 border border-[rgba(255,149,0,0.12)]"><p className="text-xs text-[#FF9500] uppercase mb-1">Impact on Identity & Records</p><p className="text-sm text-[#C9B99A]/80 leading-relaxed">{law.identityImpact}</p></div>
           {law.relatedTribes.length > 0 && <div><p className="text-xs text-[#FF9500] uppercase mb-1">Related Tribes / Nations</p><div className="flex flex-wrap gap-1.5">{law.relatedTribes.map(t => <span key={t} className="text-xs bg-[rgba(255,149,0,0.08)] text-[#F0EBE1] rounded-full px-2.5 py-1">{t}</span>)}</div></div>}
-          {law.relatedStates.length > 0 && <div><p className="text-xs text-[#FF9500] uppercase mb-1">Related States</p><div className="flex flex-wrap gap-1.5">{law.relatedStates.map(s => <span key={s} className="text-xs bg-[rgba(27,40,56,0.6)] text-[#C9B99A] rounded px-2 py-0.5">{s}</span>)}</div></div>}
+          {law.relatedStates.length > 0 && <div><p className="text-xs text-[#FF9500] uppercase mb-1">Related States</p><div className="flex flex-wrap gap-1.5">{law.relatedStates.map(s => <span key={s} className="text-xs bg-[rgba(37,54,75,0.6)] text-[#C9B99A] rounded px-2 py-0.5">{s}</span>)}</div></div>}
           {law.relatedRecords.length > 0 && <div><p className="text-xs text-[#FF9500] uppercase mb-1">Related Records</p><ul className="list-disc list-inside text-sm text-[#C9B99A]/70">{law.relatedRecords.map((r, i) => <li key={i}>{r}</li>)}</ul></div>}
           <div><p className="text-xs text-[#FF9500] uppercase mb-2 flex items-center gap-1.5"><ExternalLink size={10} /> Receipts — Sources</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -217,7 +217,7 @@ export default function AncestryResearchSection() {
   return (
     <section id="ancestry" className="relative py-20 md:py-28 px-6 md:px-12 overflow-hidden">
       <div className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-15" style={{ backgroundImage: 'url(/images/cosmic-bg.jpg)' }} />
-      <div className="absolute inset-0 bg-[#0a0f1a]/88" />
+      <div className="absolute inset-0 bg-[#14202E]/88" />
 
       <div className="relative z-10 max-w-7xl mx-auto space-y-10 md:space-y-14">
 
@@ -289,7 +289,7 @@ export default function AncestryResearchSection() {
                 placeholder="Search rolls, laws, tribes, states, or keywords..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[rgba(27,40,56,0.6)] border border-[rgba(255,149,0,0.15)] rounded-xl pl-11 pr-4 py-3 text-sm text-[#F0EBE1] placeholder-[#C9B99A]/40 focus:outline-none focus:border-[rgba(255,149,0,0.4)] transition-colors"
+                className="w-full bg-[rgba(37,54,75,0.6)] border border-[rgba(255,149,0,0.15)] rounded-xl pl-11 pr-4 py-3 text-sm text-[#F0EBE1] placeholder-[#C9B99A]/40 focus:outline-none focus:border-[rgba(255,149,0,0.4)] transition-colors"
               />
             </div>
 
@@ -302,7 +302,7 @@ export default function AncestryResearchSection() {
                 { id: 'guide' as const, label: 'Research Guide', icon: BookOpen, count: null },
               ].map(tab => (
                 <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 text-xs rounded-lg px-4 py-2.5 border transition-all ${activeTab === tab.id ? 'bg-[rgba(255,149,0,0.2)] border-[rgba(255,149,0,0.4)] text-[#FF9500]' : 'bg-[rgba(27,40,56,0.5)] border-[rgba(255,149,0,0.1)] text-[#C9B99A] hover:border-[rgba(255,149,0,0.25)]'}`}>
+                  className={`flex items-center gap-2 text-xs rounded-lg px-4 py-2.5 border transition-all ${activeTab === tab.id ? 'bg-[rgba(255,149,0,0.2)] border-[rgba(255,149,0,0.4)] text-[#FF9500]' : 'bg-[rgba(37,54,75,0.5)] border-[rgba(255,149,0,0.1)] text-[#C9B99A] hover:border-[rgba(255,149,0,0.25)]'}`}>
                   <tab.icon size={13} /> {tab.label}
                   {tab.count !== null && <span className="text-[10px] bg-[rgba(255,149,0,0.15)] rounded-full px-1.5 py-0.5">{tab.count}</span>}
                 </button>
@@ -344,7 +344,7 @@ export default function AncestryResearchSection() {
               )}
               {filteredRolls.map(roll => (
                 <button key={roll.id} onClick={() => setSelectedRoll(roll)}
-                  className="w-full text-left bg-[rgba(27,40,56,0.5)] rounded-xl border border-[rgba(255,149,0,0.1)] hover:border-[rgba(255,149,0,0.3)] p-4 md:p-5 transition-all group">
+                  className="w-full text-left bg-[rgba(37,54,75,0.5)] rounded-xl border border-[rgba(255,149,0,0.1)] hover:border-[rgba(255,149,0,0.3)] p-4 md:p-5 transition-all group">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
@@ -353,7 +353,7 @@ export default function AncestryResearchSection() {
                       </div>
                       <p className="text-xs text-[#C9B99A]/70 mb-2 line-clamp-2">{roll.purpose}</p>
                       <div className="flex flex-wrap gap-1.5">
-                        {roll.tribes.slice(0, 5).map(t => <span key={t} className="text-[10px] bg-[rgba(27,40,56,0.6)] text-[#C9B99A]/60 rounded px-1.5 py-0.5">{t}</span>)}
+                        {roll.tribes.slice(0, 5).map(t => <span key={t} className="text-[10px] bg-[rgba(37,54,75,0.6)] text-[#C9B99A]/60 rounded px-1.5 py-0.5">{t}</span>)}
                         {roll.tribes.length > 5 && <span className="text-[10px] text-[#C9B99A]/40">+{roll.tribes.length - 5} more</span>}
                       </div>
                     </div>
@@ -372,7 +372,7 @@ export default function AncestryResearchSection() {
               )}
               {filteredLaws.map(law => (
                 <button key={law.id} onClick={() => setSelectedLaw(law)}
-                  className="w-full text-left bg-[rgba(27,40,56,0.5)] rounded-xl border border-[rgba(255,149,0,0.1)] hover:border-[rgba(255,149,0,0.3)] p-4 md:p-5 transition-all group">
+                  className="w-full text-left bg-[rgba(37,54,75,0.5)] rounded-xl border border-[rgba(255,149,0,0.1)] hover:border-[rgba(255,149,0,0.3)] p-4 md:p-5 transition-all group">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
@@ -381,7 +381,7 @@ export default function AncestryResearchSection() {
                       </div>
                       <p className="text-xs text-[#C9B99A]/70 mb-2 line-clamp-2">{law.summary}</p>
                       <div className="flex flex-wrap gap-1.5">
-                        {law.tags.slice(0, 6).map(t => <span key={t} className="text-[10px] bg-[rgba(27,40,56,0.6)] text-[#C9B99A]/60 rounded px-1.5 py-0.5">{t}</span>)}
+                        {law.tags.slice(0, 6).map(t => <span key={t} className="text-[10px] bg-[rgba(37,54,75,0.6)] text-[#C9B99A]/60 rounded px-1.5 py-0.5">{t}</span>)}
                       </div>
                     </div>
                     <ArrowRight size={16} className="text-[#C9B99A]/30 group-hover:text-[#FF9500] shrink-0 mt-1 transition-colors" />
@@ -396,7 +396,7 @@ export default function AncestryResearchSection() {
             <motion.div key="names" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                 {filteredNames.map((entry, i) => (
-                  <div key={i} className="bg-[rgba(27,40,56,0.4)] rounded-lg border border-[rgba(255,149,0,0.08)] p-3">
+                  <div key={i} className="bg-[rgba(37,54,75,0.4)] rounded-lg border border-[rgba(255,149,0,0.08)] p-3">
                     <p className="text-sm text-[#F0EBE1] font-medium">{entry.tribalName}</p>
                     <p className="text-xs text-[#FF9500] mt-0.5">= {entry.alternativeNames.join(', ')}</p>
                     {(entry.languageFamily || entry.region) && (

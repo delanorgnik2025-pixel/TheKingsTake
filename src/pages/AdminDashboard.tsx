@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useLocation } from 'react-router'
+import { useNavigate, useLocation, Link } from 'react-router'
 import { trpc } from '@/providers/trpc'
 import {
   LayoutDashboard, BookOpen, ShoppingCart, Users, Gavel,
   ScrollText, Settings, LogOut, Plus, Pencil, Trash2,
   Eye, EyeOff, Save, X, ChevronRight, BarChart3,
-  Calendar, FileText, Megaphone, Crown
+  Calendar, FileText, Megaphone, Crown, Radio
 } from 'lucide-react'
 
 const ADMIN_PASSWORD = 'AASOTU2025!'
@@ -102,7 +102,7 @@ function BlogModule() {
           {createMut.error && <p className="text-red-400 text-sm">{createMut.error.message}</p>}
           {updateMut.error && <p className="text-red-400 text-sm">{updateMut.error.message}</p>}
           <div className="flex gap-3">
-            <button onClick={mode === 'create' ? handleCreate : handleUpdate} disabled={!form.title || !form.content} className="flex items-center gap-2 h-10 px-6 bg-[#FF9500] text-[#0C1520] text-sm font-medium rounded hover:bg-[#CC6A00] disabled:opacity-50">
+            <button onClick={mode === 'create' ? handleCreate : handleUpdate} disabled={!form.title || !form.content} className="flex items-center gap-2 h-10 px-6 bg-[#FF9500] text-[#182635] text-sm font-medium rounded hover:bg-[#CC6A00] disabled:opacity-50">
               <Save size={14} /> {mode === 'create' ? 'Publish Post' : 'Save Changes'}
             </button>
             <button onClick={() => { setMode('list'); setEditPost(null); resetForm() }} className="h-10 px-4 border border-[#FF9500] text-[#FF9500] text-sm rounded hover:bg-[#FF9500]/10"><X size={14} /> Cancel</button>
@@ -116,14 +116,14 @@ function BlogModule() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-xl text-[#F0EBE1]" style={{ fontFamily: 'Newsreader, serif' }}>Blog Posts ({posts.length})</h3>
-        <button onClick={() => { resetForm(); setMode('create') }} className="flex items-center gap-2 h-9 px-4 bg-[#FF9500] text-[#0C1520] text-sm font-medium rounded hover:bg-[#CC6A00]"><Plus size={14} /> New Post</button>
+        <button onClick={() => { resetForm(); setMode('create') }} className="flex items-center gap-2 h-9 px-4 bg-[#FF9500] text-[#182635] text-sm font-medium rounded hover:bg-[#CC6A00]"><Plus size={14} /> New Post</button>
       </div>
       {postsQuery.isLoading && <div className="flex justify-center py-10"><div className="w-6 h-6 border-2 border-[#FF9500] border-t-transparent rounded-full animate-spin" /></div>}
       {!postsQuery.isLoading && posts.length === 0 && (
         <div className="text-center py-12 bg-white/[0.02] border border-white/[0.06] rounded">
           <BookOpen size={40} className="text-[#C9B99A]/30 mx-auto mb-3" />
           <p className="text-[#C9B99A] mb-3">No posts yet.</p>
-          <button onClick={() => { resetForm(); setMode('create') }} className="h-9 px-5 bg-[#FF9500] text-[#0C1520] text-sm rounded">Create First Post</button>
+          <button onClick={() => { resetForm(); setMode('create') }} className="h-9 px-5 bg-[#FF9500] text-[#182635] text-sm rounded">Create First Post</button>
         </div>
       )}
       <div className="space-y-2">
@@ -301,9 +301,9 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0C1520] flex">
+    <div className="min-h-screen bg-[#182635] flex">
       {/* Sidebar */}
-      <aside className="w-60 bg-[#0C1520] border-r border-white/[0.06] flex flex-col shrink-0">
+      <aside className="w-60 bg-[#182635] border-r border-white/[0.06] flex flex-col shrink-0">
         <div className="p-4 border-b border-white/[0.06]">
           <div className="flex items-center gap-2">
             <Crown size={20} className="text-[#FF9500]" />
@@ -322,6 +322,13 @@ export default function AdminDashboard() {
               <span className="truncate">{item.label}</span>
             </button>
           ))}
+          <Link
+            to="/feed"
+            className="w-full flex items-center gap-2.5 h-9 px-3 rounded text-sm transition-colors text-[#FFB840] hover:bg-[#FF9500]/10 hover:text-[#FF9500]"
+          >
+            <Radio size={16} />
+            <span className="truncate">The Feed — Post &amp; Go Live</span>
+          </Link>
         </nav>
 
         <div className="p-3 border-t border-white/[0.06]">

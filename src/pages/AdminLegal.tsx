@@ -47,11 +47,11 @@ export default function AdminLegal() {
     setAiResult("");
   };
 
-  if (isLoading) return <div className="min-h-screen flex items-center justify-center bg-[#1B2838]"><div className="w-8 h-8 border-2 border-[#FF9500] border-t-transparent rounded-full animate-spin" /></div>;
-  if (!isAdmin) return <div className="min-h-screen flex items-center justify-center bg-[#1B2838]"><div className="text-center"><h1 className="text-2xl text-[#F0EBE1]">Access Denied</h1><Link to="/" className="text-[#FF9500]">Home</Link></div></div>;
+  if (isLoading) return <div className="min-h-screen flex items-center justify-center bg-[#25364B]"><div className="w-8 h-8 border-2 border-[#FF9500] border-t-transparent rounded-full animate-spin" /></div>;
+  if (!isAdmin) return <div className="min-h-screen flex items-center justify-center bg-[#25364B]"><div className="text-center"><h1 className="text-2xl text-[#F0EBE1]">Access Denied</h1><Link to="/" className="text-[#FF9500]">Home</Link></div></div>;
 
   return (
-    <div className="min-h-screen pt-24 pb-16 px-6 md:px-12 bg-[#1B2838]">
+    <div className="min-h-screen pt-24 pb-16 px-6 md:px-12 bg-[#25364B]">
       <div className="max-w-5xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
@@ -62,7 +62,7 @@ export default function AdminLegal() {
             <button onClick={() => { setShowAI(true); setShowCreate(false); setAiResult(""); }} className="flex items-center gap-2 px-4 py-2 bg-[rgba(255,149,0,0.2)] text-[#FF9500] border border-[#FF9500] rounded hover:bg-[rgba(255,149,0,0.3)] transition-colors text-sm">
               <Wand2 size={16} /> Generate with AI
             </button>
-            <button onClick={() => { setShowCreate(true); setShowAI(false); resetForm(); }} className="flex items-center gap-2 px-4 py-2 bg-[#FF9500] text-[#1B2838] rounded hover:bg-[#CC6A00] transition-colors text-sm font-medium">
+            <button onClick={() => { setShowCreate(true); setShowAI(false); resetForm(); }} className="flex items-center gap-2 px-4 py-2 bg-[#FF9500] text-[#25364B] rounded hover:bg-[#CC6A00] transition-colors text-sm font-medium">
               <Plus size={16} /> Add Form
             </button>
           </div>
@@ -76,7 +76,7 @@ export default function AdminLegal() {
               <button onClick={() => setShowAI(false)} className="text-[#C9B99A] hover:text-[#FF9500]"><X size={18} /></button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
-              <select value={aiForm.documentType} onChange={e => setAiForm({ ...aiForm, documentType: e.target.value })} className="bg-[rgba(27,40,56,0.8)] border border-[rgba(255,149,0,0.2)] rounded px-4 py-2 text-[#F0EBE1]">
+              <select value={aiForm.documentType} onChange={e => setAiForm({ ...aiForm, documentType: e.target.value })} className="bg-[rgba(37,54,75,0.8)] border border-[rgba(255,149,0,0.2)] rounded px-4 py-2 text-[#F0EBE1]">
                 <option>Motion to Dismiss</option>
                 <option>Motion for Bond Reduction</option>
                 <option>Motion to Suppress Evidence</option>
@@ -86,15 +86,15 @@ export default function AdminLegal() {
                 <option>Notice of Appeal</option>
                 <option>Probation Modification Request</option>
               </select>
-              <input type="text" placeholder="Jurisdiction (e.g., California)" value={aiForm.jurisdiction} onChange={e => setAiForm({ ...aiForm, jurisdiction: e.target.value })} className="bg-[rgba(27,40,56,0.8)] border border-[rgba(255,149,0,0.2)] rounded px-4 py-2 text-[#F0EBE1] placeholder:text-[#C9B99A]/50" />
-              <select value={aiForm.provider} onChange={e => setAiForm({ ...aiForm, provider: e.target.value as "openai" | "google" })} className="bg-[rgba(27,40,56,0.8)] border border-[rgba(255,149,0,0.2)] rounded px-4 py-2 text-[#F0EBE1]">
+              <input type="text" placeholder="Jurisdiction (e.g., California)" value={aiForm.jurisdiction} onChange={e => setAiForm({ ...aiForm, jurisdiction: e.target.value })} className="bg-[rgba(37,54,75,0.8)] border border-[rgba(255,149,0,0.2)] rounded px-4 py-2 text-[#F0EBE1] placeholder:text-[#C9B99A]/50" />
+              <select value={aiForm.provider} onChange={e => setAiForm({ ...aiForm, provider: e.target.value as "openai" | "google" })} className="bg-[rgba(37,54,75,0.8)] border border-[rgba(255,149,0,0.2)] rounded px-4 py-2 text-[#F0EBE1]">
                 <option value="openai">ChatGPT (OpenAI)</option>
                 <option value="google">Google AI</option>
               </select>
             </div>
-            <textarea placeholder="Additional details (optional)" value={aiForm.details} onChange={e => setAiForm({ ...aiForm, details: e.target.value })} rows={3} className="w-full bg-[rgba(27,40,56,0.8)] border border-[rgba(255,149,0,0.2)] rounded px-4 py-2 text-[#F0EBE1] placeholder:text-[#C9B99A]/50 mb-4" />
+            <textarea placeholder="Additional details (optional)" value={aiForm.details} onChange={e => setAiForm({ ...aiForm, details: e.target.value })} rows={3} className="w-full bg-[rgba(37,54,75,0.8)] border border-[rgba(255,149,0,0.2)] rounded px-4 py-2 text-[#F0EBE1] placeholder:text-[#C9B99A]/50 mb-4" />
             <div className="flex gap-3">
-              <button onClick={() => generateAI.mutate(aiForm)} disabled={generateAI.isPending} className="px-6 py-2 bg-[#FF9500] text-[#1B2838] rounded hover:bg-[#CC6A00] transition-colors disabled:opacity-50 font-medium">
+              <button onClick={() => generateAI.mutate(aiForm)} disabled={generateAI.isPending} className="px-6 py-2 bg-[#FF9500] text-[#25364B] rounded hover:bg-[#CC6A00] transition-colors disabled:opacity-50 font-medium">
                 {generateAI.isPending ? "Generating..." : "Generate Document"}
               </button>
               {generateAI.error && <p className="text-sm text-red-400 self-center">{generateAI.error.message}</p>}
@@ -108,7 +108,7 @@ export default function AdminLegal() {
                     <Save size={12} /> Save & Publish
                   </button>
                 </div>
-                <div className="bg-[rgba(27,40,56,0.9)] rounded border border-[rgba(255,149,0,0.15)] p-4 max-h-96 overflow-y-auto">
+                <div className="bg-[rgba(37,54,75,0.9)] rounded border border-[rgba(255,149,0,0.15)] p-4 max-h-96 overflow-y-auto">
                   <pre className="text-sm text-[#C9B99A] whitespace-pre-wrap font-mono">{aiResult}</pre>
                 </div>
               </div>
@@ -125,12 +125,12 @@ export default function AdminLegal() {
             </div>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input type="text" placeholder="Title *" required value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} className="bg-[rgba(27,40,56,0.8)] border border-[rgba(255,149,0,0.2)] rounded px-4 py-2 text-[#F0EBE1]" />
-                <input type="text" placeholder="Slug *" required value={form.slug} onChange={e => setForm({ ...form, slug: e.target.value.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") })} className="bg-[rgba(27,40,56,0.8)] border border-[rgba(255,149,0,0.2)] rounded px-4 py-2 text-[#F0EBE1] font-mono text-sm" />
+                <input type="text" placeholder="Title *" required value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} className="bg-[rgba(37,54,75,0.8)] border border-[rgba(255,149,0,0.2)] rounded px-4 py-2 text-[#F0EBE1]" />
+                <input type="text" placeholder="Slug *" required value={form.slug} onChange={e => setForm({ ...form, slug: e.target.value.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "") })} className="bg-[rgba(37,54,75,0.8)] border border-[rgba(255,149,0,0.2)] rounded px-4 py-2 text-[#F0EBE1] font-mono text-sm" />
               </div>
-              <textarea placeholder="Description *" required value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={3} className="w-full bg-[rgba(27,40,56,0.8)] border border-[rgba(255,149,0,0.2)] rounded px-4 py-2 text-[#F0EBE1]" />
-              <textarea placeholder="Document content (or leave blank if uploading PDF)" value={form.content} onChange={e => setForm({ ...form, content: e.target.value })} rows={6} className="w-full bg-[rgba(27,40,56,0.8)] border border-[rgba(255,149,0,0.2)] rounded px-4 py-2 text-[#F0EBE1] font-mono text-sm" />
-              <button type="submit" disabled={createForm.isPending} className="px-6 py-2 bg-[#FF9500] text-[#1B2838] rounded hover:bg-[#CC6A00] transition-colors disabled:opacity-50 font-medium">
+              <textarea placeholder="Description *" required value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} rows={3} className="w-full bg-[rgba(37,54,75,0.8)] border border-[rgba(255,149,0,0.2)] rounded px-4 py-2 text-[#F0EBE1]" />
+              <textarea placeholder="Document content (or leave blank if uploading PDF)" value={form.content} onChange={e => setForm({ ...form, content: e.target.value })} rows={6} className="w-full bg-[rgba(37,54,75,0.8)] border border-[rgba(255,149,0,0.2)] rounded px-4 py-2 text-[#F0EBE1] font-mono text-sm" />
+              <button type="submit" disabled={createForm.isPending} className="px-6 py-2 bg-[#FF9500] text-[#25364B] rounded hover:bg-[#CC6A00] transition-colors disabled:opacity-50 font-medium">
                 {createForm.isPending ? "Saving..." : "Save Form"}
               </button>
             </form>

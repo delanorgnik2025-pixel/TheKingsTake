@@ -25,7 +25,7 @@ export default function PanIndigenousMap() {
   }, [selectedRegion])
 
   return (
-    <div className="relative w-full bg-[#0A0F1A] min-h-[600px]">
+    <div className="relative w-full bg-[#14202E] min-h-[600px]">
       {/* Ambient glow */}
       <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse at 50% 0%, rgba(255,149,0,0.04) 0%, transparent 50%)' }} />
 
@@ -47,7 +47,7 @@ export default function PanIndigenousMap() {
             value={search}
             onChange={e => { setSearch(e.target.value); setSelectedRegion(null); setSelectedNation(null) }}
             placeholder="Search nations, peoples, or countries..."
-            className="w-full bg-[rgba(27,40,56,0.4)] border border-[rgba(255,149,0,0.12)] rounded-lg pl-9 pr-4 py-2.5 text-sm text-[#F0EBE1] placeholder-[#C9B99A]/30 focus:outline-none focus:border-[rgba(255,149,0,0.4)] transition-colors"
+            className="w-full bg-[rgba(37,54,75,0.4)] border border-[rgba(255,149,0,0.12)] rounded-lg pl-9 pr-4 py-2.5 text-sm text-[#F0EBE1] placeholder-[#C9B99A]/30 focus:outline-none focus:border-[rgba(255,149,0,0.4)] transition-colors"
           />
           {search && (
             <button onClick={() => { setSearch(''); setSelectedRegion(null) }} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#C9B99A]/40 hover:text-[#FF9500]">
@@ -84,7 +84,7 @@ export default function PanIndigenousMap() {
                   className={`relative p-4 rounded-xl border text-left transition-all duration-300 cursor-pointer ${
                     selectedRegion === region.id
                       ? 'bg-[rgba(255,149,0,0.12)] border-[rgba(255,149,0,0.4)]'
-                      : 'bg-[rgba(27,40,56,0.3)] border-[rgba(255,149,0,0.08)] hover:border-[rgba(255,149,0,0.2)]'
+                      : 'bg-[rgba(37,54,75,0.3)] border-[rgba(255,149,0,0.08)] hover:border-[rgba(255,149,0,0.2)]'
                   }`}
                 >
                   <div className="flex items-center gap-2 mb-1">
@@ -147,7 +147,7 @@ function NationCard({ nation, onClick }: { nation: IndigenousNation; onClick: ()
   return (
     <button
       onClick={onClick}
-      className="group text-left bg-[rgba(27,40,56,0.4)] border border-[rgba(255,149,0,0.08)] rounded-xl p-4 hover:border-[rgba(255,149,0,0.3)] hover:bg-[rgba(27,40,56,0.6)] transition-all duration-300 cursor-pointer"
+      className="group text-left bg-[rgba(37,54,75,0.4)] border border-[rgba(255,149,0,0.08)] rounded-xl p-4 hover:border-[rgba(255,149,0,0.3)] hover:bg-[rgba(37,54,75,0.6)] transition-all duration-300 cursor-pointer"
     >
       <div className="flex items-start justify-between gap-2">
         <div>
@@ -183,7 +183,7 @@ function NationDetail({ nation, onClose }: { nation: IndigenousNation; onClose: 
         exit={{ opacity: 0, scale: 0.95, y: 20 }}
         transition={{ duration: 0.25 }}
         onClick={e => e.stopPropagation()}
-        className="relative w-full max-w-lg max-h-[85vh] overflow-y-auto bg-[#0A0F1A] border border-[rgba(255,149,0,0.2)] rounded-2xl p-6 shadow-[0_0_60px_rgba(255,149,0,0.08)]"
+        className="relative w-full max-w-lg max-h-[85vh] overflow-y-auto bg-[#14202E] border border-[rgba(255,149,0,0.2)] rounded-2xl p-6 shadow-[0_0_60px_rgba(255,149,0,0.08)]"
         style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,149,0,0.2) transparent' }}
       >
         {/* Close */}

@@ -6,7 +6,7 @@ export default function LoadingScreen() {
   if (loaded) return null
 
   return (
-    <div className="fixed inset-0 z-[200] bg-[#0a0f1a] flex flex-col items-center justify-center transition-opacity duration-1000">
+    <div className="fixed inset-0 z-[200] bg-[#14202E] flex flex-col items-center justify-center transition-opacity duration-1000">
       <div className="w-20 h-20 mx-auto mb-8 relative">
         <div className="absolute inset-0 border border-[rgba(255,149,0,0.2)] rotate-45" />
         <div className="absolute inset-2 border border-[rgba(255,149,0,0.3)] rotate-12" />

@@ -316,7 +316,7 @@ function TribalMap() {
       {/* Map Container */}
       <div className="relative rounded border border-[rgba(255,149,0,0.2)] overflow-hidden" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
         {mapError ? (
-          <div className="bg-[#1B2838] h-[400px] md:h-[500px] flex items-center justify-center p-6">
+          <div className="bg-[#25364B] h-[400px] md:h-[500px] flex items-center justify-center p-6">
             <div className="text-center">
               <Map size={48} className="text-[#FF9500] mx-auto mb-4" />
               <p className="text-[#F0EBE1] text-lg mb-2">Tribal Land Map</p>
@@ -340,7 +340,7 @@ function TribalMap() {
             className={`text-xs py-2 px-3 rounded border transition-all text-left ${
               selectedState === state
                 ? 'bg-[rgba(255,149,0,0.2)] border-[rgba(255,149,0,0.5)] text-[#FF9500]'
-                : 'bg-[rgba(27,40,56,0.6)] border-[rgba(255,149,0,0.1)] text-[#C9B99A] hover:border-[rgba(255,149,0,0.3)]'
+                : 'bg-[rgba(37,54,75,0.6)] border-[rgba(255,149,0,0.1)] text-[#C9B99A] hover:border-[rgba(255,149,0,0.3)]'
             }`}
           >
             {state}
@@ -355,7 +355,7 @@ function TribalMap() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="bg-[rgba(27,40,56,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.3)] p-6"
+            className="bg-[rgba(37,54,75,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.3)] p-6"
             style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.4)', borderLeft: '3px solid #FF9500' }}
           >
             <div className="flex items-center justify-between mb-4">
@@ -404,7 +404,7 @@ export default function IndigenousHeritagePage() {
       {/* HERO */}
       <section className="relative min-h-[70vh] flex items-center px-6 md:px-12 pt-24 pb-16 overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/bg-services.jpg)' }} />
-        <div className="absolute inset-0 bg-[#1B2838]/88" />
+        <div className="absolute inset-0 bg-[#25364B]/88" />
 
         <div className="relative z-10 max-w-7xl mx-auto w-full">
           <Link to="/" className="inline-flex items-center gap-2 text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors mb-8">
@@ -447,7 +447,7 @@ export default function IndigenousHeritagePage() {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 + i * 0.1 }}
-                    className="bg-[rgba(27,40,56,0.7)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.15)] p-4 text-center"
+                    className="bg-[rgba(37,54,75,0.7)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.15)] p-4 text-center"
                   >
                     <Icon size={24} className="text-[#FF9500] mx-auto mb-2" strokeWidth={1.5} />
                     <p className="text-2xl md:text-3xl text-[#FF9500] font-medium">{stat.value}</p>
@@ -461,7 +461,7 @@ export default function IndigenousHeritagePage() {
           <ScrollReveal delay={0.5}>
             <button
               onClick={() => document.getElementById('tribal-map')?.scrollIntoView({ behavior: 'smooth' })}
-              className="inline-flex items-center gap-2 rounded-full h-12 px-8 text-sm bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-['Newsreader'] tracking-[0.02em]"
+              className="inline-flex items-center gap-2 rounded-full h-12 px-8 text-sm bg-[#FF9500] text-[#25364B] hover:bg-[#CC6A00] transition-colors font-['Newsreader'] tracking-[0.02em]"
               style={{ boxShadow: "0 4px 16px rgba(255,149,0,0.25)" }}
             >
               <Map size={16} /> Explore the Tribal Land Map
@@ -473,7 +473,7 @@ export default function IndigenousHeritagePage() {
       <MarqueeDivider text="#AllegedlyAfrican — The Truth Is In The Land — 574 Sovereign Nations — Who Was Here Before You" />
 
       {/* TRIBAL LAND MAP */}
-      <section id="tribal-map" className="relative py-16 md:py-24 px-6 md:px-12 bg-[#0C1520]">
+      <section id="tribal-map" className="relative py-16 md:py-24 px-6 md:px-12 bg-[#182635]">
         <div className="max-w-7xl mx-auto">
           <ScrollReveal>
             <div className="flex items-center gap-3 mb-4">
@@ -508,7 +508,7 @@ export default function IndigenousHeritagePage() {
       <MarqueeDivider text="574 Sovereign Nations — 300,000+ Years — The Truth Cannot Be Buried" />
 
       {/* TABS SECTION */}
-      <section className="relative py-16 md:py-24 px-6 md:px-12 bg-[#0C1520]">
+      <section className="relative py-16 md:py-24 px-6 md:px-12 bg-[#182635]">
         <div className="max-w-7xl mx-auto">
           {/* Tab Navigation */}
           <ScrollReveal>
@@ -527,7 +527,7 @@ export default function IndigenousHeritagePage() {
                     className={`flex items-center gap-2 px-5 py-2.5 rounded border text-sm uppercase tracking-[0.04em] transition-all ${
                       activeTab === tab.key
                         ? 'bg-[rgba(255,149,0,0.15)] border-[rgba(255,149,0,0.4)] text-[#FF9500]'
-                        : 'bg-[rgba(27,40,56,0.5)] border-[rgba(255,149,0,0.1)] text-[#C9B99A] hover:border-[rgba(255,149,0,0.3)]'
+                        : 'bg-[rgba(37,54,75,0.5)] border-[rgba(255,149,0,0.1)] text-[#C9B99A] hover:border-[rgba(255,149,0,0.3)]'
                     }`}
                   >
                     <Icon size={14} /> {tab.label}
@@ -560,7 +560,7 @@ export default function IndigenousHeritagePage() {
                       viewport={{ once: true }}
                       variants={cardVariants}
                       transition={{ delay: i * 0.08 }}
-                      className="bg-[rgba(27,40,56,0.7)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.15)] p-5 hover:border-[rgba(255,149,0,0.4)] transition-all group"
+                      className="bg-[rgba(37,54,75,0.7)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.15)] p-5 hover:border-[rgba(255,149,0,0.4)] transition-all group"
                       style={{ boxShadow: '0 4px 16px rgba(0,0,0,0.2)' }}
                     >
                       <div className="flex items-start gap-4">
@@ -594,7 +594,7 @@ export default function IndigenousHeritagePage() {
 
               {/* Alternative Tribal Names */}
               <ScrollReveal delay={0.1}>
-                <div className="mb-8 bg-[rgba(27,40,56,0.6)] rounded border border-[rgba(255,149,0,0.15)] p-5">
+                <div className="mb-8 bg-[rgba(37,54,75,0.6)] rounded border border-[rgba(255,149,0,0.15)] p-5">
                   <h4 className="text-xs text-[#FF9500] uppercase tracking-[0.08em] mb-3">Alternative Tribal Names</h4>
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                     {TRIBAL_NAMES.map((name) => (
@@ -620,7 +620,7 @@ export default function IndigenousHeritagePage() {
                     >
                       <button
                         onClick={() => setExpandedRoll(isExpanded ? null : roll.name)}
-                        className="w-full flex items-center justify-between p-4 bg-[rgba(27,40,56,0.7)] rounded border border-[rgba(255,149,0,0.15)] hover:border-[rgba(255,149,0,0.4)] transition-all"
+                        className="w-full flex items-center justify-between p-4 bg-[rgba(37,54,75,0.7)] rounded border border-[rgba(255,149,0,0.15)] hover:border-[rgba(255,149,0,0.4)] transition-all"
                       >
                         <div className="flex items-center gap-3">
                           <span className="text-xs text-[#FF9500] font-medium">{roll.year}</span>
@@ -632,7 +632,7 @@ export default function IndigenousHeritagePage() {
                         <motion.div
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: 'auto' }}
-                          className="p-4 bg-[rgba(27,40,56,0.5)] rounded-b border border-t-0 border-[rgba(255,149,0,0.15)]"
+                          className="p-4 bg-[rgba(37,54,75,0.5)] rounded-b border border-t-0 border-[rgba(255,149,0,0.15)]"
                         >
                           <p className="text-sm text-[#C9B99A] mb-3">{roll.desc}</p>
                           <a
@@ -683,7 +683,7 @@ export default function IndigenousHeritagePage() {
                     viewport={{ once: true }}
                     variants={cardVariants}
                     transition={{ delay: i * 0.1 }}
-                    className="bg-[rgba(27,40,56,0.7)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.15)] p-5 hover:border-[rgba(255,149,0,0.4)] transition-all"
+                    className="bg-[rgba(37,54,75,0.7)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.15)] p-5 hover:border-[rgba(255,149,0,0.4)] transition-all"
                     style={{ boxShadow: '0 4px 16px rgba(0,0,0,0.2)', borderLeft: '3px solid #FF9500' }}
                   >
                     <div className="flex items-center gap-3 mb-3">
@@ -717,7 +717,7 @@ export default function IndigenousHeritagePage() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.06 }}
-                    className="flex items-start gap-4 bg-[rgba(27,40,56,0.6)] rounded border border-[rgba(255,149,0,0.1)] p-4"
+                    className="flex items-start gap-4 bg-[rgba(37,54,75,0.6)] rounded border border-[rgba(255,149,0,0.1)] p-4"
                   >
                     <span className="text-lg text-[#FF9500] font-medium shrink-0 w-8">{(i + 1).toString().padStart(2, '0')}</span>
                     <p className="text-sm text-[#F0EBE1] leading-relaxed">{point}</p>

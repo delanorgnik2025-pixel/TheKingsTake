@@ -109,7 +109,7 @@ export default function WritingMarketSection() {
   return (
     <section id="writing-market" className="relative py-24 md:py-32 px-6 md:px-12 overflow-hidden">
       <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/bg-services.jpg)' }} />
-      <div className="absolute inset-0 bg-[#1B2838]/90" />
+      <div className="absolute inset-0 bg-[#25364B]/90" />
 
       <div className="relative z-10 max-w-7xl mx-auto">
 
@@ -157,7 +157,7 @@ export default function WritingMarketSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.35 + i * 0.08, duration: 0.5 }}
-                className="bg-[rgba(27,40,56,0.7)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.15)] p-5 hover:border-[rgba(255,149,0,0.4)] transition-all group"
+                className="bg-[rgba(37,54,75,0.7)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.15)] p-5 hover:border-[rgba(255,149,0,0.4)] transition-all group"
               >
                 <Icon size={22} className="text-[#FF9500] mb-3 group-hover:text-[#FFB840] transition-colors" strokeWidth={1.5} />
                 <p className="text-2xl md:text-3xl text-[#FF9500] font-medium mb-1">{stat.value}</p>
@@ -179,7 +179,7 @@ export default function WritingMarketSection() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3, duration: 0.6 }}
-            className="bg-[rgba(27,40,56,0.75)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.2)] p-6 md:p-8"
+            className="bg-[rgba(37,54,75,0.75)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.2)] p-6 md:p-8"
             style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.4)' }}
           >
             <div className="flex items-center gap-2 mb-4">
@@ -228,7 +228,7 @@ export default function WritingMarketSection() {
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 to="/writing-services"
-                className="inline-flex items-center justify-center gap-2 rounded-full h-12 px-8 text-sm bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-['Newsreader'] tracking-[0.02em] font-medium"
+                className="inline-flex items-center justify-center gap-2 rounded-full h-12 px-8 text-sm bg-[#FF9500] text-[#25364B] hover:bg-[#CC6A00] transition-colors font-['Newsreader'] tracking-[0.02em] font-medium"
               >
                 <Sparkles size={16} /> Hire Me to Write
               </Link>
@@ -260,7 +260,7 @@ export default function WritingMarketSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.4 + i * 0.08, duration: 0.5 }}
-                className="bg-[rgba(27,40,56,0.7)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.15)] p-5 hover:border-[rgba(255,149,0,0.4)] hover:-translate-y-0.5 transition-all group"
+                className="bg-[rgba(37,54,75,0.7)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.15)] p-5 hover:border-[rgba(255,149,0,0.4)] hover:-translate-y-0.5 transition-all group"
               >
                 <div className="flex items-center justify-between mb-3">
                   <Icon size={24} className="text-[#FF9500]" strokeWidth={1.5} />
@@ -287,7 +287,7 @@ export default function WritingMarketSection() {
             </p>
             <Link
               to="/writing-services"
-              className="inline-flex items-center justify-center gap-2 rounded-full h-14 px-10 text-base bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-['Newsreader'] tracking-[0.02em] font-medium"
+              className="inline-flex items-center justify-center gap-2 rounded-full h-14 px-10 text-base bg-[#FF9500] text-[#25364B] hover:bg-[#CC6A00] transition-colors font-['Newsreader'] tracking-[0.02em] font-medium"
               style={{ boxShadow: "0 4px 16px rgba(255,149,0,0.25)" }}
             >
               <PenTool size={18} className="mr-1" /> Explore All Writing Services

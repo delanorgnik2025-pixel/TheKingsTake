@@ -49,7 +49,7 @@ export default function NationResearchPage() {
   return (
     <div className="min-h-screen bg-[#05080e]">
       {/* Sticky Header */}
-      <header className="sticky top-0 z-50 bg-[#0A0F1A]/95 backdrop-blur-md border-b border-[rgba(255,149,0,0.1)]">
+      <header className="sticky top-0 z-50 bg-[#14202E]/95 backdrop-blur-md border-b border-[rgba(255,149,0,0.1)]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
           <button
             onClick={() => navigate(-1)}
@@ -170,7 +170,7 @@ export default function NationResearchPage() {
               <Scroll size={14} className="text-[#FF9500]" />
               <h3 className="text-xs uppercase tracking-[0.15em] text-[#FF9500]">Sources & References</h3>
             </div>
-            <div className="bg-[rgba(27,40,56,0.3)] border border-[rgba(255,149,0,0.08)] rounded-xl p-4 sm:p-5">
+            <div className="bg-[rgba(37,54,75,0.3)] border border-[rgba(255,149,0,0.08)] rounded-xl p-4 sm:p-5">
               <ul className="space-y-2.5">
                 {nation.researchDocument.sources.map((source, i) => (
                   <li key={i} className="flex items-start gap-2.5 text-[12px] text-[#C9B99A]/60 leading-relaxed">
@@ -237,7 +237,7 @@ export default function NationResearchPage() {
 
 function FactPill({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <div className="bg-[rgba(27,40,56,0.4)] border border-[rgba(255,149,0,0.08)] rounded-lg p-3">
+    <div className="bg-[rgba(37,54,75,0.4)] border border-[rgba(255,149,0,0.08)] rounded-lg p-3">
       <div className="flex items-center gap-1.5 mb-1 text-[#FF9500]/50">
         {icon}
         <span className="text-[9px] uppercase tracking-wider">{label}</span>

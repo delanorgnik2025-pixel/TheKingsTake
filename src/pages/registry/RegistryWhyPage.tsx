@@ -172,7 +172,7 @@ export default function RegistryWhyPage() {
               className="inline-flex items-center gap-2 px-10 py-4 rounded-xl text-sm font-medium tracking-wide cursor-pointer"
               style={{
                 background: 'linear-gradient(135deg, rgba(255,149,0,0.9), rgba(255,149,0,0.7))',
-                color: '#0A0F1A',
+                color: '#14202E',
                 boxShadow: '0 4px 24px rgba(255,149,0,0.25)',
               }}
             >

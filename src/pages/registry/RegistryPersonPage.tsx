@@ -210,7 +210,7 @@ export default function RegistryPersonPage() {
                 <button
                   onClick={handleSave}
                   className="px-4 py-2 rounded-lg text-sm font-medium cursor-pointer"
-                  style={{ background: 'rgba(255,149,0,0.8)', color: '#0A0F1A' }}
+                  style={{ background: 'rgba(255,149,0,0.8)', color: '#14202E' }}
                 >
                   Save Changes
                 </button>

@@ -134,7 +134,7 @@ export default function MapSearchBar({ onSelectTerritory, onAutoSelect }: Props)
             }
           }}
           placeholder="Search nations, tribes, or territories..."
-          className="w-full bg-[rgba(27,40,56,0.7)] border border-[rgba(255,149,0,0.2)] rounded-xl pl-10 pr-20 py-3 text-sm text-[#F0EBE1] placeholder:text-[#C9B99A]/30 focus:outline-none focus:border-[rgba(255,149,0,0.5)] transition-colors"
+          className="w-full bg-[rgba(37,54,75,0.7)] border border-[rgba(255,149,0,0.2)] rounded-xl pl-10 pr-20 py-3 text-sm text-[#F0EBE1] placeholder:text-[#C9B99A]/30 focus:outline-none focus:border-[rgba(255,149,0,0.5)] transition-colors"
         />
         <div className="absolute right-2 flex items-center gap-1">
           {query && (

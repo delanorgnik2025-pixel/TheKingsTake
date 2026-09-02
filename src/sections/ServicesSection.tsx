@@ -101,7 +101,7 @@ export default function ServicesSection() {
   return (
     <section id="services" className="relative py-24 md:py-32 px-6 md:px-12 overflow-hidden">
       <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/bg-services.jpg)' }} />
-      <div className="absolute inset-0 bg-[#1B2838]/80" />
+      <div className="absolute inset-0 bg-[#25364B]/80" />
 
       <div className="relative z-10 max-w-7xl mx-auto">
         <ScrollReveal>
@@ -131,7 +131,7 @@ export default function ServicesSection() {
                 viewport={{ once: true, amount: 0.2 }}
                 variants={cardVariants}
                 transition={{ delay: 0.3 + i * 0.1 }}
-                className="group bg-[rgba(27,40,56,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.25)] p-8 transition-all duration-400 hover:border-[rgba(255,149,0,0.5)] hover:-translate-y-1"
+                className="group bg-[rgba(37,54,75,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.25)] p-8 transition-all duration-400 hover:border-[rgba(255,149,0,0.5)] hover:-translate-y-1"
                 style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}
               >
                 <h3 className="text-lg text-[#F0EBE1] uppercase tracking-[0.04em]">{service.name}</h3>

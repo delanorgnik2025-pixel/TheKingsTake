@@ -25,7 +25,7 @@ export default function LegalHubPage() {
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: "url(/images/bg-legal.jpg)" }}
       />
-      <div className="absolute inset-0 bg-[#1B2838]/80" />
+      <div className="absolute inset-0 bg-[#25364B]/80" />
 
       <div className="relative z-10 max-w-6xl mx-auto">
         <Link to="/" className="inline-flex items-center gap-2 text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors mb-8">
@@ -40,7 +40,7 @@ export default function LegalHubPage() {
           Free legal forms and motions for informational purposes. These are tools to help you understand the system — not a substitute for licensed legal counsel.
         </p>
 
-        <div className="bg-[rgba(27,40,56,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.3)] p-6 mb-12" style={{ borderLeft: "3px solid #FF9500" }}>
+        <div className="bg-[rgba(37,54,75,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.3)] p-6 mb-12" style={{ borderLeft: "3px solid #FF9500" }}>
           <p className="text-sm text-[#C9B99A]">
             <strong className="text-[#FF9500]">Important:</strong> These forms are provided for informational and educational purposes only. They do not constitute legal advice. Always consult with a licensed attorney regarding your specific situation. #TheKingsTake and AASOTU Media Group LLC are not law firms.
           </p>
@@ -53,7 +53,7 @@ export default function LegalHubPage() {
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.08, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className="group bg-[rgba(27,40,56,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.2)] p-6 hover:border-[rgba(255,149,0,0.5)] transition-all"
+              className="group bg-[rgba(37,54,75,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.2)] p-6 hover:border-[rgba(255,149,0,0.5)] transition-all"
             >
               <div className="flex items-center gap-3 mb-3">
                 <FileText size={20} className="text-[#FF9500]" />

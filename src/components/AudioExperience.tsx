@@ -129,12 +129,12 @@ function EntranceOverlay({ onEnter, onEnterWithSound }: { onEnter: () => void; o
       initial={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.8, ease: 'easeInOut' }}
-      className="fixed inset-0 z-[100] bg-[#0a0f1a] flex items-center justify-center"
+      className="fixed inset-0 z-[100] bg-[#14202E] flex items-center justify-center"
       style={{ touchAction: 'manipulation' }}
     >
       {/* Cosmic background effect */}
       <div className="absolute inset-0 bg-cover bg-center opacity-30" style={{ backgroundImage: 'url(/images/cosmic-bg.jpg)' }} />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1a]/60 via-transparent to-[#0a0f1a]/90" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#14202E]/60 via-transparent to-[#14202E]/90" />
 
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -180,7 +180,7 @@ function EntranceOverlay({ onEnter, onEnterWithSound }: { onEnter: () => void; o
           <button
             onClick={handleQuiet}
             onTouchEnd={(e) => { e.preventDefault(); handleQuiet() }}
-            className="flex items-center justify-center gap-2 bg-[rgba(27,40,56,0.6)] border border-[rgba(255,149,0,0.15)] text-[#C9B99A] rounded-xl px-6 py-4 min-h-[52px] hover:border-[rgba(255,149,0,0.3)] hover:text-[#F0EBE1] transition-all active:scale-95 select-none"
+            className="flex items-center justify-center gap-2 bg-[rgba(37,54,75,0.6)] border border-[rgba(255,149,0,0.15)] text-[#C9B99A] rounded-xl px-6 py-4 min-h-[52px] hover:border-[rgba(255,149,0,0.3)] hover:text-[#F0EBE1] transition-all active:scale-95 select-none"
             style={{ touchAction: 'manipulation', WebkitTapHighlightColor: 'transparent' }}
           >
             <span className="text-base">Enter Quietly</span>

@@ -261,3 +261,33 @@ export const recordSearches = mysqlTable("recordSearches", {
   notes: text("notes"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
+
+
+// ─── Feed (The King's Take — Facebook-style wall) ───────────────────────────
+export const feedPosts = mysqlTable("feed_posts", {
+  id: serial("id").primaryKey(),
+  body: text("body").notNull(),
+  linkUrl: varchar("link_url", { length: 1024 }),
+  linkTitle: varchar("link_title", { length: 500 }),
+  imageUrl: text("image_url"),
+  videoUrl: text("video_url"),
+  videoType: mysqlEnum("video_type", ["upload", "embed", "mux"]).default("upload"),
+  muxPlaybackId: varchar("mux_playback_id", { length: 255 }),
+  pinned: boolean("pinned").default(false).notNull(),
+  likesCount: int("likes_count").default(0).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull().$onUpdate(() => new Date()),
+});
+
+// ─── Live Streams (Mux) ─────────────────────────────────────────────────────
+export const liveStreams = mysqlTable("live_streams", {
+  id: serial("id").primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  muxStreamId: varchar("mux_stream_id", { length: 255 }),
+  muxPlaybackId: varchar("mux_playback_id", { length: 255 }),
+  streamKey: varchar("stream_key", { length: 255 }),
+  status: mysqlEnum("status", ["idle", "active", "ended"]).default("idle").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  startedAt: timestamp("started_at"),
+  endedAt: timestamp("ended_at"),
+});

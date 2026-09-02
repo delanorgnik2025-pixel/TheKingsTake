@@ -190,10 +190,10 @@ export default function WorkWithMe() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0C1520]">
+    <div className="min-h-screen bg-[#182635]">
       {/* Background */}
       <div className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-[0.15]" style={{ backgroundImage: 'url(/images/bg-hero.jpg)' }} />
-      <div className="fixed inset-0 bg-gradient-to-b from-[#0C1520]/95 via-[#0C1520]/90 to-[#0C1520]/95" />
+      <div className="fixed inset-0 bg-gradient-to-b from-[#182635]/95 via-[#182635]/90 to-[#182635]/95" />
 
       <div className="relative z-10">
         {/* Header */}
@@ -326,7 +326,7 @@ export default function WorkWithMe() {
                 { icon: '6', title: 'Reparations for Systemic Legal Injustice', desc: 'The United States was built on 256 years of enslaved African labor. When slavery ended, no reparations were paid. Jim Crow, mass incarceration, and the modern legal system ensured Black families remained at the bottom. We demand reparations in the form of community legal centers, education funding, and direct investment in Black neighborhoods.' },
               ].map((demand, i) => (
                 <div key={i} className="flex gap-4 p-5 bg-white/[0.03] border border-[#FF9500]/20 hover:border-[#FF9500]/40 transition-colors">
-                  <div className="w-8 h-8 bg-[#FF9500] text-[#0C1520] flex items-center justify-center text-sm font-bold shrink-0 rounded-sm">
+                  <div className="w-8 h-8 bg-[#FF9500] text-[#182635] flex items-center justify-center text-sm font-bold shrink-0 rounded-sm">
                     {demand.icon}
                   </div>
                   <div>
@@ -385,7 +385,7 @@ export default function WorkWithMe() {
                   <label className="block text-xs tracking-[0.15em] text-[#C9B99A]/60 uppercase mb-2">Message of Support</label>
                   <textarea rows={4} value={joinForm.message} onChange={e => setJoinForm({...joinForm, message: e.target.value})} className="w-full bg-white/[0.03] border border-white/[0.08] text-[#F0EBE1] px-4 py-3 text-sm focus:border-[#FF9500]/50 focus:outline-none resize-none" placeholder="Why are you joining the movement? What does justice mean to you?" />
                 </div>
-                <button type="submit" disabled={signPetition.isPending} className="w-full h-12 bg-[#FF9500] text-[#0C1520] font-medium text-sm tracking-[0.05em] uppercase hover:bg-[#FF9500]/90 transition-colors flex items-center justify-center gap-2 disabled:opacity-50">
+                <button type="submit" disabled={signPetition.isPending} className="w-full h-12 bg-[#FF9500] text-[#182635] font-medium text-sm tracking-[0.05em] uppercase hover:bg-[#FF9500]/90 transition-colors flex items-center justify-center gap-2 disabled:opacity-50">
                   <Send size={16} />
                   {signPetition.isPending ? 'Signing...' : 'Sign the Petition'}
                 </button>
@@ -460,11 +460,11 @@ export default function WorkWithMe() {
                 <div>
                   <label className="block text-xs tracking-[0.15em] text-[#C9B99A]/60 uppercase mb-2">Service Interest *</label>
                   <select required value={storyForm.serviceType} onChange={e => setStoryForm({...storyForm, serviceType: e.target.value})} className="w-full h-12 bg-white/[0.03] border border-white/[0.08] text-[#F0EBE1] px-4 text-sm focus:border-[#FF9500]/50 focus:outline-none appearance-none">
-                    <option value="" className="bg-[#0C1520]">Select a service type...</option>
-                    {SERVICE_OPTIONS.map(opt => <option key={opt} value={opt} className="bg-[#0C1520]">{opt}</option>)}
+                    <option value="" className="bg-[#182635]">Select a service type...</option>
+                    {SERVICE_OPTIONS.map(opt => <option key={opt} value={opt} className="bg-[#182635]">{opt}</option>)}
                   </select>
                 </div>
-                <button type="submit" disabled={submitStory.isPending} className="w-full h-12 bg-[#FF9500] text-[#0C1520] font-medium text-sm tracking-[0.05em] uppercase hover:bg-[#FF9500]/90 transition-colors flex items-center justify-center gap-2 disabled:opacity-50">
+                <button type="submit" disabled={submitStory.isPending} className="w-full h-12 bg-[#FF9500] text-[#182635] font-medium text-sm tracking-[0.05em] uppercase hover:bg-[#FF9500]/90 transition-colors flex items-center justify-center gap-2 disabled:opacity-50">
                   <Send size={16} />
                   {submitStory.isPending ? 'Submitting...' : 'Submit Your Story'}
                 </button>
@@ -481,7 +481,7 @@ export default function WorkWithMe() {
               <Link to="/" className="inline-flex items-center justify-center gap-2 h-12 px-8 border border-[#FF9500] text-[#FF9500] text-sm tracking-[0.05em] uppercase hover:bg-[#FF9500]/10 transition-colors">
                 <ArrowLeft size={16} /> Back to Home
               </Link>
-              <Link to="/news" className="inline-flex items-center justify-center gap-2 h-12 px-8 bg-[#FF9500] text-[#0C1520] text-sm tracking-[0.05em] uppercase hover:bg-[#FF9500]/90 transition-colors">
+              <Link to="/news" className="inline-flex items-center justify-center gap-2 h-12 px-8 bg-[#FF9500] text-[#182635] text-sm tracking-[0.05em] uppercase hover:bg-[#FF9500]/90 transition-colors">
                 Read the News
               </Link>
             </div>

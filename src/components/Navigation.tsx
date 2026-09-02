@@ -42,7 +42,7 @@ export default function Navigation({ onMenuToggle, onNavClick }: NavigationProps
   ]
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-[100] h-16 flex items-center justify-between px-6 md:px-12" style={{ background: 'rgba(27,40,56,0.85)', backdropFilter: 'blur(12px)' }}>
+    <nav className="fixed top-0 left-0 right-0 z-[100] h-16 flex items-center justify-between px-6 md:px-12" style={{ background: 'rgba(37,54,75,0.85)', backdropFilter: 'blur(12px)' }}>
       <div className="flex items-center gap-3">
         <div className="hidden md:flex gap-1">
           {[0, 1, 2, 3].map(i => <div key={i} className="w-[2px] h-[2px] rounded-full bg-[#C9B99A]" />)}
@@ -51,7 +51,7 @@ export default function Navigation({ onMenuToggle, onNavClick }: NavigationProps
       </div>
 
       <div className="hidden md:flex items-center gap-6">
-        <Link to="/news" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200">Blog</Link>
+        <Link to="/feed" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200">The Feed</Link>
 
         {/* Writing Services Dropdown */}
         <div className="relative" ref={dropdownRef}>
@@ -68,7 +68,7 @@ export default function Navigation({ onMenuToggle, onNavClick }: NavigationProps
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.2 }}
-                className="absolute top-full left-0 mt-2 w-64 bg-[#1B2838]/95 backdrop-blur-xl rounded border border-[rgba(255,149,0,0.2)] overflow-hidden"
+                className="absolute top-full left-0 mt-2 w-64 bg-[#25364B]/95 backdrop-blur-xl rounded border border-[rgba(255,149,0,0.2)] overflow-hidden"
                 style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}
               >
                 {writingDropdownItems.map((item, i) => (
@@ -115,8 +115,8 @@ export default function Navigation({ onMenuToggle, onNavClick }: NavigationProps
       <AnimatePresence>
         {mobileOpen && (
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-            className="absolute top-16 left-0 right-0 bg-[#1B2838]/95 backdrop-blur-xl p-6 md:hidden" style={{ borderTop: '1px solid rgba(255,149,0,0.15)' }}>
-            <Link to="/news" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Blog</Link>
+            className="absolute top-16 left-0 right-0 bg-[#25364B]/95 backdrop-blur-xl p-6 md:hidden" style={{ borderTop: '1px solid rgba(255,149,0,0.15)' }}>
+            <Link to="/feed" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">The Feed</Link>
 
             {/* Writing Services Mobile */}
             <Link to="/writing-services" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Writing Services</Link>

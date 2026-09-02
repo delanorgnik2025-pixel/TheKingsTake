@@ -11,6 +11,8 @@ import { storyRouter } from "./story-router";
 import { conversionsRouter } from "./conversions-router";
 import { genealogyRouter } from "./routers/genealogy";
 import { videoRouter } from "./video-router";
+import { feedRouter } from "./feed-router";
+import { liveRouter } from "./live-router";
 import { createRouter, publicQuery } from "./middleware";
 
 export const appRouter = createRouter({
@@ -28,6 +30,8 @@ export const appRouter = createRouter({
   conversions: conversionsRouter,
   genealogy: genealogyRouter,
   video: videoRouter,
+  feed: feedRouter,
+  live: liveRouter,
 });
 
 export type AppRouter = typeof appRouter;

@@ -12,7 +12,7 @@ const socialLinks = [
 
 export default function Footer({ onNavClick }: FooterProps) {
   return (
-    <footer className="bg-[#2A3A4A] pt-20 pb-12 px-6 md:px-12">
+    <footer className="bg-[#3A4E64] pt-20 pb-12 px-6 md:px-12">
       <div className="max-w-7xl mx-auto">
         {/* Brand */}
         <div className="mb-10">
@@ -27,7 +27,7 @@ export default function Footer({ onNavClick }: FooterProps) {
           <Link to="/civics" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">Civics</Link>
           <a href="/#heritage" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">Heritage</a>
           <button onClick={() => onNavClick('services')} className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200 cursor-pointer">Services</button>
-          <Link to="/news" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">Blog</Link>
+          <Link to="/feed" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">The Feed</Link>
           <button onClick={() => onNavClick('contact')} className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200 cursor-pointer">Contact</button>
           <Link to="/privacy-policy" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">Privacy Policy</Link>
         </div>

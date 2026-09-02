@@ -20,7 +20,7 @@ interface InvestigationMapProps {
 
 export default function InvestigationMap({ locations, currentLocation, onNavigate }: InvestigationMapProps) {
   return (
-    <div className="bg-[rgba(12,21,32,0.95)] border-r border-[rgba(255,149,0,0.1)] h-full">
+    <div className="bg-[rgba(24,38,53,0.95)] border-r border-[rgba(255,149,0,0.1)] h-full">
       <div className="p-4 border-b border-[rgba(255,149,0,0.1)]">
         <p className="text-[10px] uppercase tracking-[0.2em] text-[#FF9500]/60">Investigation Map</p>
         <p className="text-[10px] text-[#C9B99A]/40 mt-0.5">The Beach Homicide — Case #001</p>
@@ -53,7 +53,7 @@ export default function InvestigationMap({ locations, currentLocation, onNavigat
               <div className={`w-7 h-7 rounded-md flex items-center justify-center shrink-0 ${
                 isComplete ? 'bg-green-500/10 text-green-400' :
                 isCurrent ? 'bg-[rgba(255,149,0,0.2)] text-[#FF9500]' :
-                isLocked ? 'bg-[#1B2838] text-[#C9B99A]/20' :
+                isLocked ? 'bg-[#25364B] text-[#C9B99A]/20' :
                 'bg-[rgba(255,149,0,0.08)] text-[#C9B99A]/50'
               }`}>
                 {isLocked ? <Lock size={12} /> : isComplete ? <CheckCircle size={12} /> : <Icon size={12} />}
@@ -78,7 +78,7 @@ export default function InvestigationMap({ locations, currentLocation, onNavigat
           <span className="text-[#C9B99A]/40">Overall Progress</span>
           <span className="text-[#FF9500]">{locations.filter(l => l.status === 'complete').length}/{locations.length}</span>
         </div>
-        <div className="w-full h-1 bg-[#1B2838] rounded-full overflow-hidden">
+        <div className="w-full h-1 bg-[#25364B] rounded-full overflow-hidden">
           <div
             className="h-full bg-[#FF9500] rounded-full transition-all duration-500"
             style={{ width: `${(locations.filter(l => l.status === 'complete').length / locations.length) * 100}%` }}

@@ -14,17 +14,17 @@ import ScrollReveal from './ScrollReveal'
 // ============================================
 const CAT_STYLE: Record<string, { bg: string; text: string }> = {
   BREAKING:   { bg: '#DC143C', text: '#FFFFFF' },
-  ADVOCACY:   { bg: '#FF9500', text: '#1B2838' },
+  ADVOCACY:   { bg: '#FF9500', text: '#25364B' },
   LEGAL:      { bg: '#4169E1', text: '#FFFFFF' },
   COMMUNITY:  { bg: '#228B22', text: '#FFFFFF' },
   VOICE:      { bg: '#FF69B4', text: '#FFFFFF' },
-  HISTORY:    { bg: '#DAA520', text: '#1B2838' },
-  AASOTU:     { bg: '#FF9500', text: '#1B2838' },
+  HISTORY:    { bg: '#DAA520', text: '#25364B' },
+  AASOTU:     { bg: '#FF9500', text: '#25364B' },
   POLITICS:   { bg: '#8B4513', text: '#FFFFFF' },
   HERITAGE:   { bg: '#9932CC', text: '#FFFFFF' },
 }
 
-function catStyle(cat: string) { return CAT_STYLE[cat] ?? { bg: '#FF9500', text: '#1B2838' } }
+function catStyle(cat: string) { return CAT_STYLE[cat] ?? { bg: '#FF9500', text: '#25364B' } }
 
 // ============================================
 // MARQUEE TICKER
@@ -39,7 +39,7 @@ function Ticker() {
     "Pre-Order: The African American State of the Union — $19.99",
   ]
   return (
-    <div className="w-full bg-[#0A0F1A] overflow-hidden py-2 border-b border-[rgba(255,149,0,0.15)]">
+    <div className="w-full bg-[#14202E] overflow-hidden py-2 border-b border-[rgba(255,149,0,0.15)]">
       <div className="flex whitespace-nowrap animate-marquee">
         {[...items, ...items, ...items].map((item, i) => (
           <span key={i} className="text-[10px] md:text-xs font-bold text-[#FF9500] uppercase tracking-wider mx-5 flex items-center gap-2 shrink-0">
@@ -62,7 +62,7 @@ function HeroCard({ article }: { article: Article }) {
     <Link to={`/article/${article.slug}`} className="group block relative rounded-2xl overflow-hidden border border-[rgba(0,0,0,0.08)] hover:border-[rgba(255,149,0,0.4)] transition-all shadow-sm hover:shadow-xl bg-white">
       <div className="relative h-[280px] md:h-[380px]">
         <img src={article.coverImage} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0F1A] via-[#0A0F1A]/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#14202E] via-[#14202E]/30 to-transparent" />
         <div className="absolute top-4 left-4">
           <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-wider font-bold text-white rounded-full px-3 py-1.5" style={{ backgroundColor: style.bg }}>
             {article.category === 'BREAKING' && <Radio size={10} className="animate-pulse" />}
@@ -99,10 +99,10 @@ function SideCard({ article }: { article: Article }) {
         <span className="text-[9px] uppercase tracking-wider font-bold rounded px-1.5 py-0.5 mb-1 inline-block" style={{ backgroundColor: `${style.bg}15`, color: style.bg }}>
           {article.category}
         </span>
-        <h4 className="text-xs text-[#1B2838] leading-snug line-clamp-2 group-hover:text-[#FF9500] transition-colors font-medium">
+        <h4 className="text-xs text-[#25364B] leading-snug line-clamp-2 group-hover:text-[#FF9500] transition-colors font-medium">
           {article.title}
         </h4>
-        <div className="flex items-center gap-2 mt-1 text-[9px] text-[#1B2838]/25">
+        <div className="flex items-center gap-2 mt-1 text-[9px] text-[#25364B]/25">
           <Clock size={7} /> {article.readTime}
         </div>
       </div>
@@ -122,13 +122,13 @@ function GridCard({ article }: { article: Article }) {
         <span className="text-[9px] uppercase tracking-wider font-bold rounded px-2 py-0.5 mb-2 inline-block" style={{ backgroundColor: `${style.bg}15`, color: style.bg }}>
           {article.category}
         </span>
-        <h4 className="text-sm text-[#1B2838] leading-snug mb-2 line-clamp-2 group-hover:text-[#FF9500] transition-colors font-medium">
+        <h4 className="text-sm text-[#25364B] leading-snug mb-2 line-clamp-2 group-hover:text-[#FF9500] transition-colors font-medium">
           {article.title}
         </h4>
-        <p className="text-[11px] text-[#1B2838]/35 line-clamp-2 leading-relaxed">{article.excerpt}</p>
-        <div className="flex items-center gap-2 mt-3 text-[9px] text-[#1B2838]/20">
+        <p className="text-[11px] text-[#25364B]/35 line-clamp-2 leading-relaxed">{article.excerpt}</p>
+        <div className="flex items-center gap-2 mt-3 text-[9px] text-[#25364B]/20">
           <Clock size={7} /> {article.readTime}
-          <span className="text-[#1B2838]/10">|</span>
+          <span className="text-[#25364B]/10">|</span>
           <Eye size={7} /> {Math.floor(Math.random() * 5000 + 500).toLocaleString()}
         </div>
       </div>
@@ -141,7 +141,7 @@ function MiniItem({ article }: { article: Article }) {
   return (
     <Link to={`/article/${article.slug}`} className="group flex items-start gap-3 py-3 border-b border-[rgba(0,0,0,0.04)] last:border-b-0 hover:bg-[rgba(255,149,0,0.02)] px-2 -mx-2 rounded-lg transition-colors">
       <span className="text-[10px] text-[#FF9500]/40 font-bold mt-0.5 shrink-0 w-5">{article.readTime}</span>
-      <p className="text-xs text-[#1B2838]/70 leading-snug group-hover:text-[#FF9500] transition-colors line-clamp-2">
+      <p className="text-xs text-[#25364B]/70 leading-snug group-hover:text-[#FF9500] transition-colors line-clamp-2">
         {article.title}
       </p>
     </Link>
@@ -164,7 +164,7 @@ function VideoSection() {
   const playlist = videos.slice(1)
 
   return (
-    <div className="bg-[#0A0F1A] rounded-2xl overflow-hidden border border-[rgba(255,149,0,0.1)]">
+    <div className="bg-[#14202E] rounded-2xl overflow-hidden border border-[rgba(255,149,0,0.1)]">
       <div className="p-3 border-b border-[rgba(255,149,0,0.08)] flex items-center gap-2">
         <Video size={12} className="text-[#FF9500]" />
         <span className="text-[10px] uppercase tracking-[0.12em] text-[#FF9500] font-semibold">AASOTU Broadcast</span>
@@ -179,10 +179,10 @@ function VideoSection() {
         ) : (
           <div className="w-full h-full flex items-center justify-center relative">
             <img src={featured.thumb} alt={featured.title} className="absolute inset-0 w-full h-full object-cover opacity-40" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0A0F1A] via-transparent to-[#0A0F1A]/40" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#14202E] via-transparent to-[#14202E]/40" />
             <div className="relative z-10 text-center p-4">
               <button className="w-14 h-14 rounded-full bg-[#FF9500] hover:bg-[#FFB840] flex items-center justify-center mx-auto mb-3 transition-all hover:scale-110" style={{ boxShadow: '0 0 30px rgba(255,149,0,0.4)' }}>
-                <Play size={24} className="text-[#1B2838] ml-1" />
+                <Play size={24} className="text-[#25364B] ml-1" />
               </button>
               <p className="text-xs text-[#F0EBE1] font-medium">{featured.title}</p>
               <p className="text-[10px] text-[#C9B99A]/40 mt-1">{featured.desc}</p>
@@ -246,12 +246,12 @@ export default function NewsHub() {
                   <span className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.15em] text-white font-bold bg-[#DC143C] rounded-full px-3 py-1">
                     <Radio size={10} className="animate-pulse" /> LIVE FEED
                   </span>
-                  <span className="text-[10px] uppercase tracking-[0.1em] text-[#1B2838]/20">AASOTU Media Group LLC</span>
+                  <span className="text-[10px] uppercase tracking-[0.1em] text-[#25364B]/20">AASOTU Media Group LLC</span>
                 </div>
-                <h2 className="text-4xl md:text-5xl lg:text-6xl text-[#1B2838] font-semibold tracking-[-0.02em] leading-[1.05]">
+                <h2 className="text-4xl md:text-5xl lg:text-6xl text-[#25364B] font-semibold tracking-[-0.02em] leading-[1.05]">
                   The People's Voice
                 </h2>
-                <p className="text-sm text-[#1B2838]/35 mt-2 max-w-lg">
+                <p className="text-sm text-[#25364B]/35 mt-2 max-w-lg">
                   Real news. Real facts. Zero dead ends. Every story leads somewhere.
                 </p>
               </div>
@@ -272,8 +272,8 @@ export default function NewsHub() {
                     onClick={() => setActiveCategory(cat)}
                     className={`text-[10px] uppercase tracking-wider font-bold rounded-full px-3 py-1.5 transition-all border ${
                       active
-                        ? 'bg-[#0A0F1A] text-white border-[#0A0F1A]'
-                        : 'bg-white text-[#1B2838]/40 border-[rgba(0,0,0,0.08)] hover:border-[rgba(255,149,0,0.3)] hover:text-[#FF9500]'
+                        ? 'bg-[#14202E] text-white border-[#14202E]'
+                        : 'bg-white text-[#25364B]/40 border-[rgba(0,0,0,0.08)] hover:border-[rgba(255,149,0,0.3)] hover:text-[#FF9500]'
                     }`}
                   >
                     {cat}
@@ -307,9 +307,9 @@ export default function NewsHub() {
               <div className="border-t border-[rgba(0,0,0,0.06)] pt-6">
                 <div className="flex items-center gap-3 mb-5">
                   <Zap size={16} className="text-[#FF9500]" />
-                  <h3 className="text-xs uppercase tracking-[0.15em] text-[#1B2838]/40 font-semibold">Latest Stories</h3>
+                  <h3 className="text-xs uppercase tracking-[0.15em] text-[#25364B]/40 font-semibold">Latest Stories</h3>
                   <div className="flex-1 h-px bg-[rgba(0,0,0,0.06)]" />
-                  <span className="text-[10px] text-[#1B2838]/20">{filtered.length} stories</span>
+                  <span className="text-[10px] text-[#25364B]/20">{filtered.length} stories</span>
                 </div>
 
                 {/* Filtered article grid */}
@@ -342,13 +342,13 @@ export default function NewsHub() {
                           }}>
                             {post.category}
                           </span>
-                          {post.source && <span className="text-[9px] text-[#1B2838]/20">{post.source}</span>}
+                          {post.source && <span className="text-[9px] text-[#25364B]/20">{post.source}</span>}
                         </div>
-                        <p className="text-xs text-[#1B2838] leading-snug group-hover:text-[#00CED1] transition-colors font-medium line-clamp-1">
+                        <p className="text-xs text-[#25364B] leading-snug group-hover:text-[#00CED1] transition-colors font-medium line-clamp-1">
                           {post.title}
                         </p>
                       </div>
-                      <span className="text-[9px] text-[#1B2838]/15 shrink-0">{new Date(post.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+                      <span className="text-[9px] text-[#25364B]/15 shrink-0">{new Date(post.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
                     </Link>
                   ))}
                 </div>
@@ -368,7 +368,7 @@ export default function NewsHub() {
                 <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.06)] p-4">
                   <div className="flex items-center gap-2 mb-4">
                     <TrendingUp size={14} className="text-[#FF9500]" />
-                    <h3 className="text-xs uppercase tracking-[0.12em] text-[#1B2838]/40 font-semibold">Trending</h3>
+                    <h3 className="text-xs uppercase tracking-[0.12em] text-[#25364B]/40 font-semibold">Trending</h3>
                   </div>
                   {[
                     { t: 'Reparations', v: '2.4K' },
@@ -381,10 +381,10 @@ export default function NewsHub() {
                     <div key={i} className="flex items-center justify-between py-2.5 border-b border-[rgba(0,0,0,0.03)] last:border-b-0">
                       <div className="flex items-center gap-2">
                         <span className="text-[10px] text-[#FF9500]/30 font-bold w-4">{i + 1}</span>
-                        <Hash size={9} className="text-[#1B2838]/10" />
-                        <span className="text-xs text-[#1B2838]/70 hover:text-[#FF9500] transition-colors cursor-pointer">{item.t}</span>
+                        <Hash size={9} className="text-[#25364B]/10" />
+                        <span className="text-xs text-[#25364B]/70 hover:text-[#FF9500] transition-colors cursor-pointer">{item.t}</span>
                       </div>
-                      <span className="text-[9px] text-[#1B2838]/15">{item.v}</span>
+                      <span className="text-[9px] text-[#25364B]/15">{item.v}</span>
                     </div>
                   ))}
                 </div>
@@ -395,7 +395,7 @@ export default function NewsHub() {
                 <div className="bg-white rounded-xl border border-[rgba(0,0,0,0.06)] p-4">
                   <div className="flex items-center gap-2 mb-4">
                     <User size={14} className="text-[#FF9500]" />
-                    <h3 className="text-xs uppercase tracking-[0.12em] text-[#1B2838]/40 font-semibold">From the Author</h3>
+                    <h3 className="text-xs uppercase tracking-[0.12em] text-[#25364B]/40 font-semibold">From the Author</h3>
                   </div>
                   <div className="space-y-0">
                     {authorPosts.slice(0, 5).map(a => <MiniItem key={a.slug} article={a} />)}
@@ -405,7 +405,7 @@ export default function NewsHub() {
 
               {/* QUICK LINKS */}
               <ScrollReveal delay={0.3}>
-                <div className="bg-gradient-to-br from-[#0A0F1A] to-[#15202B] rounded-xl border border-[rgba(255,149,0,0.1)] p-5 text-center">
+                <div className="bg-gradient-to-br from-[#14202E] to-[#15202B] rounded-xl border border-[rgba(255,149,0,0.1)] p-5 text-center">
                   <Star size={18} className="text-[#FF9500] mx-auto mb-2" />
                   <p className="text-sm text-[#F0EBE1] font-medium mb-1">Support Independent Media</p>
                   <p className="text-[10px] text-[#C9B99A]/40 mb-3 leading-relaxed">

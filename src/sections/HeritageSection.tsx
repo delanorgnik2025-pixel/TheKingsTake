@@ -156,7 +156,7 @@ function TerritoryDetailPanel({
       {/* Content */}
       <div className="p-4 md:p-5 space-y-5 max-h-[70vh] overflow-y-auto" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,149,0,0.3) transparent' }}>
         {/* Description */}
-        <div className="bg-[rgba(27,40,56,0.5)] rounded-lg border border-[rgba(255,149,0,0.12)] p-4">
+        <div className="bg-[rgba(37,54,75,0.5)] rounded-lg border border-[rgba(255,149,0,0.12)] p-4">
           <h4 className="text-xs text-[#FF9500] uppercase tracking-[0.04em] mb-2 flex items-center gap-2">
             <Info size={14} /> About {territory.name}
           </h4>
@@ -166,7 +166,7 @@ function TerritoryDetailPanel({
         {/* Indigenous Nations */}
         {'type' in nationData && nationData.type === 'territory' ? (
           // Territory-level data (no full nation objects)
-          <div className="bg-[rgba(27,40,56,0.5)] rounded-lg border border-[rgba(255,149,0,0.12)] p-4">
+          <div className="bg-[rgba(37,54,75,0.5)] rounded-lg border border-[rgba(255,149,0,0.12)] p-4">
             <h4 className="text-xs text-[#FF9500] uppercase tracking-[0.04em] mb-3 flex items-center gap-2">
               <Dna size={14} /> Indigenous Nations of {territory.name}
             </h4>
@@ -198,7 +198,7 @@ function TerritoryDetailPanel({
                 key={nation.id}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="bg-[rgba(27,40,56,0.5)] rounded-lg border border-[rgba(255,149,0,0.12)] p-4"
+                className="bg-[rgba(37,54,75,0.5)] rounded-lg border border-[rgba(255,149,0,0.12)] p-4"
               >
                 <div className="flex items-start justify-between gap-3 mb-2">
                   <div>
@@ -270,7 +270,7 @@ function TerritoryDetailPanel({
                     </p>
                     <div className="space-y-2">
                       {nation.researchDocument.sections?.slice(0, 3).map((section: any, i: number) => (
-                        <div key={i} className="bg-[rgba(12,21,32,0.4)] rounded p-2.5 border border-[rgba(255,149,0,0.06)]">
+                        <div key={i} className="bg-[rgba(24,38,53,0.4)] rounded p-2.5 border border-[rgba(255,149,0,0.06)]">
                           <p className="text-[10px] text-[#FF9500] font-medium mb-1">{section.heading}</p>
                           <p className="text-[11px] text-[#C9B99A] leading-relaxed">{section.content}</p>
                         </div>
@@ -305,7 +305,7 @@ function TerritoryDetailPanel({
         )}
 
         {/* Coordinates */}
-        <div className="bg-[rgba(27,40,56,0.3)] rounded-lg border border-[rgba(255,149,0,0.08)] p-3">
+        <div className="bg-[rgba(37,54,75,0.3)] rounded-lg border border-[rgba(255,149,0,0.08)] p-3">
           <p className="text-[10px] text-[#C9B99A]/40 flex items-center gap-2">
             <MapPin size={10} />
             Coordinates: {territory.coords[1].toFixed(4)}, {territory.coords[0].toFixed(4)} —
@@ -323,7 +323,7 @@ function TerritoryDetailPanel({
 function TribeDetailPanel({ tribeName, onClose }: { tribeName: string; onClose: () => void }) {
   const tribe = TRIBE_DB[tribeName] as TribeDetail | undefined
   if (!tribe) return (
-    <div className="bg-[rgba(27,40,56,0.7)] rounded border border-[rgba(255,149,0,0.15)] p-5">
+    <div className="bg-[rgba(37,54,75,0.7)] rounded border border-[rgba(255,149,0,0.15)] p-5">
       <div className="flex items-center justify-between mb-2">
         <p className="text-sm text-[#F0EBE1]">{tribeName}</p>
         <button onClick={onClose} className="text-[#C9B99A] hover:text-[#FF9500]"><ChevronUp size={18} /></button>
@@ -337,7 +337,7 @@ function TribeDetailPanel({ tribeName, onClose }: { tribeName: string; onClose: 
       initial={{ opacity: 0, height: 0 }}
       animate={{ opacity: 1, height: 'auto' }}
       exit={{ opacity: 0, height: 0 }}
-      className="bg-[rgba(27,40,56,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.3)] p-5 md:p-6 space-y-4"
+      className="bg-[rgba(37,54,75,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.3)] p-5 md:p-6 space-y-4"
       style={{ borderLeft: '3px solid #FF9500' }}
     >
       <div className="flex items-center justify-between">
@@ -405,7 +405,7 @@ function TreatyExpand({ stateKey, treatyIndex }: { stateKey: string; treatyIndex
         {isOpen && (
           <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.3 }} className="mt-2 space-y-2 overflow-hidden">
             <p className="text-xs text-[#FF9500] uppercase tracking-[0.04em]">Full Details</p>
-            <div className="bg-[rgba(12,21,32,0.6)] rounded p-3 border border-[rgba(255,149,0,0.1)]">
+            <div className="bg-[rgba(24,38,53,0.6)] rounded p-3 border border-[rgba(255,149,0,0.1)]">
               <p className="text-sm text-[#C9B99A] leading-relaxed whitespace-pre-line">{treaty.fullText}</p>
             </div>
             {treaty.signatories.length > 0 && (
@@ -451,7 +451,7 @@ function StateDetailModal({ stateKey, onClose }: { stateKey: string; onClose: ()
           </button>
         </div>
         <div className="p-4 md:p-5 space-y-4">
-          <div className="bg-[rgba(27,40,56,0.5)] rounded-lg border border-[rgba(255,149,0,0.12)] p-4">
+          <div className="bg-[rgba(37,54,75,0.5)] rounded-lg border border-[rgba(255,149,0,0.12)] p-4">
             <h4 className="text-xs text-[#FF9500] uppercase tracking-[0.04em] mb-3 flex items-center gap-2">
               <Dna size={14} /> Indigenous Nations — Tap to Explore
             </h4>
@@ -472,7 +472,7 @@ function StateDetailModal({ stateKey, onClose }: { stateKey: string; onClose: ()
             </AnimatePresence>
           </div>
           {stateData.laws.length > 0 && (
-            <div className="bg-[rgba(27,40,56,0.5)] rounded-lg border border-[rgba(255,149,0,0.12)] p-4">
+            <div className="bg-[rgba(37,54,75,0.5)] rounded-lg border border-[rgba(255,149,0,0.12)] p-4">
               <h4 className="text-xs text-[#FF9500] uppercase tracking-[0.04em] mb-3 flex items-center gap-2"><Landmark size={14} /> Laws & Policies</h4>
               <div className="space-y-3">
                 {stateData.laws.map((law, i) => (
@@ -488,14 +488,14 @@ function StateDetailModal({ stateKey, onClose }: { stateKey: string; onClose: ()
             </div>
           )}
           {stateData.treaties.length > 0 && (
-            <div className="bg-[rgba(27,40,56,0.5)] rounded-lg border border-[rgba(255,149,0,0.12)] p-4">
+            <div className="bg-[rgba(37,54,75,0.5)] rounded-lg border border-[rgba(255,149,0,0.12)] p-4">
               <h4 className="text-xs text-[#FF9500] uppercase tracking-[0.04em] mb-3 flex items-center gap-2"><Scroll size={14} /> Treaties & Agreements</h4>
               <div className="space-y-3">
                 {stateData.treaties.map((_, i) => (<TreatyExpand key={i} stateKey={stateKey} treatyIndex={i} />))}
               </div>
             </div>
           )}
-          <div className="bg-[rgba(27,40,56,0.5)] rounded-lg border border-[rgba(255,149,0,0.12)] p-4">
+          <div className="bg-[rgba(37,54,75,0.5)] rounded-lg border border-[rgba(255,149,0,0.12)] p-4">
             <h4 className="text-xs text-[#FF9500] uppercase tracking-[0.04em] mb-3 flex items-center gap-2"><FileText size={14} /> Vital Records & Genealogy Resources</h4>
             <div className="space-y-2 text-sm">
               <div className="flex items-start gap-2"><Landmark size={14} className="text-[#C9B99A] shrink-0 mt-0.5" /><div><p className="text-[#F0EBE1]">{stateData.vitalRecords.office}</p><p className="text-xs text-[#C9B99A]">{stateData.vitalRecords.address}</p></div></div>
@@ -772,7 +772,7 @@ function HeritageMap({
     <div className="space-y-6">
       <div className="relative -mx-6 md:-mx-12 rounded-none border-y border-[rgba(255,149,0,0.2)] overflow-hidden" style={{ boxShadow: '0 4px 30px rgba(0,0,0,0.6)' }}>
         {mapError ? (
-          <div className="bg-[#1B2838] h-[300px] md:h-[450px] flex items-center justify-center p-6 text-center rounded-xl">
+          <div className="bg-[#25364B] h-[300px] md:h-[450px] flex items-center justify-center p-6 text-center rounded-xl">
             <div><Map size={48} className="text-[#FF9500] mx-auto mb-4" /><p className="text-lg text-[#F0EBE1] mb-2">Tribal Land Map</p><p className="text-sm text-[#C9B99A] max-w-md">{mapError}</p></div>
           </div>
         ) : (
@@ -783,7 +783,7 @@ function HeritageMap({
               <button onClick={zoomOut} className="w-9 h-9 flex items-center justify-center rounded-lg bg-[#15202B]/90 backdrop-blur border border-[rgba(255,149,0,0.25)] text-[#C9B99A] hover:text-[#FF9500] transition-all"><Minus size={16} /></button>
               <button onClick={resetMapView} className="w-9 h-9 flex items-center justify-center rounded-lg bg-[#15202B]/90 backdrop-blur border border-[rgba(255,149,0,0.25)] text-[#C9B99A] hover:text-[#FF9500] transition-all"><Maximize2 size={14} /></button>
             </div>
-            <div className="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-[#0a0f1a] via-[#0a0f1a]/90 to-transparent pt-8 pb-3 px-4">
+            <div className="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-[#14202E] via-[#14202E]/90 to-transparent pt-8 pb-3 px-4">
               <div className="flex items-center justify-center gap-4 md:gap-6 flex-wrap">
                 <div className="flex items-center gap-1.5 text-[10px] md:text-xs text-[#C9B99A]/70"><MousePointerClick size={12} className="text-[#FF9500]/60" /><span>Click a territory marker to explore</span></div>
                 <span className="hidden md:inline text-[#C9B99A]/20">|</span>
@@ -808,7 +808,7 @@ function HeritageMap({
         <div className="flex flex-wrap gap-2">
           {POPULAR_STATES.filter(s => STATE_DATA[s]).map((state) => (
             <button key={state} onClick={() => { setSelectedState(state); onStateSelect(state) }}
-              className={`text-xs py-2 px-4 rounded-full border transition-all ${selectedState === state ? 'bg-[rgba(255,149,0,0.2)] border-[rgba(255,149,0,0.5)] text-[#FF9500]' : 'bg-[rgba(27,40,56,0.6)] border-[rgba(255,149,0,0.15)] text-[#C9B99A] hover:border-[rgba(255,149,0,0.3)]'}`}>
+              className={`text-xs py-2 px-4 rounded-full border transition-all ${selectedState === state ? 'bg-[rgba(255,149,0,0.2)] border-[rgba(255,149,0,0.5)] text-[#FF9500]' : 'bg-[rgba(37,54,75,0.6)] border-[rgba(255,149,0,0.15)] text-[#C9B99A] hover:border-[rgba(255,149,0,0.3)]'}`}>
               {state}
             </button>
           ))}
@@ -821,7 +821,7 @@ function HeritageMap({
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
           {allStates.map((state) => (
             <button key={state} onClick={() => { setSelectedState(state); onStateSelect(state) }}
-              className={`text-xs py-2 px-3 rounded-lg border transition-all text-left ${selectedState === state ? 'bg-[rgba(255,149,0,0.2)] border-[rgba(255,149,0,0.5)] text-[#FF9500]' : 'bg-[rgba(27,40,56,0.5)] border-[rgba(255,149,0,0.1)] text-[#C9B99A] hover:border-[rgba(255,149,0,0.3)]'}`}>
+              className={`text-xs py-2 px-3 rounded-lg border transition-all text-left ${selectedState === state ? 'bg-[rgba(255,149,0,0.2)] border-[rgba(255,149,0,0.5)] text-[#FF9500]' : 'bg-[rgba(37,54,75,0.5)] border-[rgba(255,149,0,0.1)] text-[#C9B99A] hover:border-[rgba(255,149,0,0.3)]'}`}>
               {state}
             </button>
           ))}
@@ -996,7 +996,7 @@ export default function HeritageSection() {
   return (
     <section id="heritage" ref={sectionRef} className="relative py-24 md:py-32 px-6 md:px-12 overflow-hidden">
       <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/cosmic-bg.jpg)' }} />
-      <div className="absolute inset-0 bg-[#0a0f1a]/75" />
+      <div className="absolute inset-0 bg-[#14202E]/75" />
 
       <div className="relative z-10 max-w-7xl mx-auto">
         <ScrollReveal>
@@ -1025,15 +1025,15 @@ export default function HeritageSection() {
         <ScrollReveal delay={0.2}>
           <div className="flex flex-wrap gap-3 mb-6">
             <span className="flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.08)] border border-[rgba(255,149,0,0.2)] rounded-full px-4 py-2"><Dna size={12} /> 275+ Nations Documented</span>
-            <span className="flex items-center gap-2 text-xs text-[#C9B99A] bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.15)] rounded-full px-4 py-2"><FileText size={12} /> Vital Records Access</span>
-            <span className="flex items-center gap-2 text-xs text-[#C9B99A] bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.15)] rounded-full px-4 py-2"><Landmark size={12} /> Laws & Treaties</span>
-            <span className="flex items-center gap-2 text-xs text-[#C9B99A] bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.15)] rounded-full px-4 py-2"><Globe size={12} /> 51 States + {ALL_TERRITORIES.length} Territories</span>
+            <span className="flex items-center gap-2 text-xs text-[#C9B99A] bg-[rgba(37,54,75,0.6)] border border-[rgba(201,185,154,0.15)] rounded-full px-4 py-2"><FileText size={12} /> Vital Records Access</span>
+            <span className="flex items-center gap-2 text-xs text-[#C9B99A] bg-[rgba(37,54,75,0.6)] border border-[rgba(201,185,154,0.15)] rounded-full px-4 py-2"><Landmark size={12} /> Laws & Treaties</span>
+            <span className="flex items-center gap-2 text-xs text-[#C9B99A] bg-[rgba(37,54,75,0.6)] border border-[rgba(201,185,154,0.15)] rounded-full px-4 py-2"><Globe size={12} /> 51 States + {ALL_TERRITORIES.length} Territories</span>
           </div>
         </ScrollReveal>
 
         {/* How It Works */}
         <ScrollReveal delay={0.25}>
-          <div className="bg-[rgba(27,40,56,0.4)] rounded-xl border border-[rgba(255,149,0,0.12)] p-4 md:p-5 mb-10 md:mb-14">
+          <div className="bg-[rgba(37,54,75,0.4)] rounded-xl border border-[rgba(255,149,0,0.12)] p-4 md:p-5 mb-10 md:mb-14">
             <p className="text-[10px] uppercase tracking-[0.12em] text-[#FF9500] mb-3">How It Works</p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div className="flex items-start gap-3 bg-[rgba(21,32,43,0.5)] rounded-lg p-3">
@@ -1093,7 +1093,7 @@ export default function HeritageSection() {
               onFocus={() => searchResults.length > 0 && setIsDropdownOpen(true)}
               onKeyDown={(e) => { if (e.key === 'Enter' && searchResults.length > 0) handleSearchSelect(searchResults[0]) }}
               placeholder="Search nations, tribes, territories, or US states..."
-              className="w-full bg-[rgba(27,40,56,0.7)] border border-[rgba(255,149,0,0.2)] rounded-xl pl-10 pr-20 py-3 text-sm text-[#F0EBE1] placeholder:text-[#C9B99A]/30 focus:outline-none focus:border-[rgba(255,149,0,0.5)] transition-colors"
+              className="w-full bg-[rgba(37,54,75,0.7)] border border-[rgba(255,149,0,0.2)] rounded-xl pl-10 pr-20 py-3 text-sm text-[#F0EBE1] placeholder:text-[#C9B99A]/30 focus:outline-none focus:border-[rgba(255,149,0,0.5)] transition-colors"
             />
             <div className="absolute right-2 flex items-center gap-1">
               {searchQuery && (

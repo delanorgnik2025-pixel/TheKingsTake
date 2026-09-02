@@ -30,7 +30,7 @@ export default function SitePasswordGate({ children }: { children: React.ReactNo
 
   if (checking) {
     return (
-      <div className="min-h-screen bg-[#0C1520] flex items-center justify-center">
+      <div className="min-h-screen bg-[#182635] flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-[#FF9500] border-t-transparent rounded-full animate-spin" />
       </div>
     )
@@ -41,10 +41,10 @@ export default function SitePasswordGate({ children }: { children: React.ReactNo
   }
 
   return (
-    <div className="min-h-screen bg-[#0C1520] relative flex items-center justify-center px-6">
+    <div className="min-h-screen bg-[#182635] relative flex items-center justify-center px-6">
       {/* Background */}
       <div className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-[0.12]" style={{ backgroundImage: 'url(/images/bg-hero.jpg)' }} />
-      <div className="fixed inset-0 bg-gradient-to-b from-[#0C1520]/95 via-[#0C1520]/90 to-[#0C1520]/95" />
+      <div className="fixed inset-0 bg-gradient-to-b from-[#182635]/95 via-[#182635]/90 to-[#182635]/95" />
 
       <div className="relative z-10 w-full max-w-[380px]">
         <div className="text-center mb-8">
@@ -78,7 +78,7 @@ export default function SitePasswordGate({ children }: { children: React.ReactNo
             )}
             <button
               type="submit"
-              className="w-full h-12 bg-[#FF9500] text-[#0C1520] font-medium text-sm tracking-[0.05em] uppercase rounded hover:bg-[#CC6A00] transition-colors"
+              className="w-full h-12 bg-[#FF9500] text-[#182635] font-medium text-sm tracking-[0.05em] uppercase rounded hover:bg-[#CC6A00] transition-colors"
             >
               Enter
             </button>

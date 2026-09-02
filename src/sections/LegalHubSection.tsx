@@ -32,7 +32,7 @@ export default function LegalHubSection() {
   return (
     <section id="legal-hub" className="relative py-24 md:py-32 px-6 md:px-12 overflow-hidden">
       <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/bg-legal.jpg)' }} />
-      <div className="absolute inset-0 bg-[#1B2838]/80" />
+      <div className="absolute inset-0 bg-[#25364B]/80" />
 
       <div className="relative z-10 max-w-7xl mx-auto">
         <ScrollReveal>
@@ -46,7 +46,7 @@ export default function LegalHubSection() {
         </ScrollReveal>
 
         <ScrollReveal delay={0.25}>
-          <div className="bg-[rgba(27,40,56,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.3)] p-6 md:p-8 mb-16"
+          <div className="bg-[rgba(37,54,75,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.3)] p-6 md:p-8 mb-16"
             style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.5)', borderLeft: '3px solid #FF9500' }}>
             <div className="flex gap-1 mb-3">
               {[0, 1, 2].map(i => <div key={i} className="w-[3px] h-[3px] rounded-full bg-[#FFB840]" />)}
@@ -76,7 +76,7 @@ export default function LegalHubSection() {
               viewport={{ once: true, amount: 0.2 }}
               variants={cardVariants}
               transition={{ delay: 0.3 + i * 0.12 }}
-              className="group bg-[rgba(27,40,56,0.75)] rounded border border-[rgba(255,149,0,0.2)] p-6 transition-all duration-400 hover:border-[rgba(255,149,0,0.5)] hover:-translate-y-1"
+              className="group bg-[rgba(37,54,75,0.75)] rounded border border-[rgba(255,149,0,0.2)] p-6 transition-all duration-400 hover:border-[rgba(255,149,0,0.5)] hover:-translate-y-1"
               style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.4)' }}
             >
               <div className="flex items-center gap-2 mb-3">

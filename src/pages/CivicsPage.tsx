@@ -108,7 +108,7 @@ export default function CivicsPage() {
       {/* Hero Section */}
       <section className="relative min-h-[60vh] flex items-center px-6 md:px-12 pt-24 pb-16 overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/bg-legal.jpg)' }} />
-        <div className="absolute inset-0 bg-[#1B2838]/85" />
+        <div className="absolute inset-0 bg-[#25364B]/85" />
 
         <div className="relative z-10 max-w-7xl mx-auto w-full">
           <Link to="/" className="inline-flex items-center gap-2 text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors mb-8">
@@ -139,7 +139,7 @@ export default function CivicsPage() {
               <div className="inline-flex items-center gap-2 text-xs text-[#FF9500] bg-[rgba(255,149,0,0.08)] border border-[rgba(255,149,0,0.2)] rounded px-3 py-1.5">
                 <ExternalLink size={12} /> All links open external sites
               </div>
-              <div className="inline-flex items-center gap-2 text-xs text-[#C9B99A] bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.15)] rounded px-3 py-1.5">
+              <div className="inline-flex items-center gap-2 text-xs text-[#C9B99A] bg-[rgba(37,54,75,0.6)] border border-[rgba(201,185,154,0.15)] rounded px-3 py-1.5">
                 <Shield size={12} /> Verified organizations
               </div>
             </div>
@@ -150,10 +150,10 @@ export default function CivicsPage() {
       <MarqueeDivider text="#TheKingsTake — Know Your Rights — Access Real Legal Help — Justice. Truth. Power." />
 
       {/* UPL Awareness Banner */}
-      <section className="relative py-12 px-6 md:px-12 bg-[#0C1520]">
+      <section className="relative py-12 px-6 md:px-12 bg-[#182635]">
         <div className="max-w-7xl mx-auto">
           <ScrollReveal>
-            <div className="bg-[rgba(27,40,56,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.3)] p-6 md:p-8"
+            <div className="bg-[rgba(37,54,75,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.3)] p-6 md:p-8"
               style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.5)', borderLeft: '3px solid #FF9500' }}>
               <div className="flex items-start gap-4">
                 <AlertTriangle size={24} className="text-[#FF9500] shrink-0 mt-0.5" />
@@ -170,7 +170,7 @@ export default function CivicsPage() {
       </section>
 
       {/* Resource Categories */}
-      <section className="relative py-16 md:py-24 px-6 md:px-12 bg-[#0C1520]">
+      <section className="relative py-16 md:py-24 px-6 md:px-12 bg-[#182635]">
         <div className="max-w-7xl mx-auto">
           <div className="space-y-6">
             {RESOURCE_CATEGORIES.map((category, catIdx) => {
@@ -188,7 +188,7 @@ export default function CivicsPage() {
                   {/* Category Header */}
                   <button
                     onClick={() => setExpandedCategory(isExpanded ? null : category.id)}
-                    className="w-full flex items-center justify-between p-5 md:p-6 bg-[rgba(27,40,56,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.2)] hover:border-[rgba(255,149,0,0.4)] transition-all duration-300 group"
+                    className="w-full flex items-center justify-between p-5 md:p-6 bg-[rgba(37,54,75,0.85)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.2)] hover:border-[rgba(255,149,0,0.4)] transition-all duration-300 group"
                     style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }}
                   >
                     <div className="flex items-center gap-4">
@@ -224,7 +224,7 @@ export default function CivicsPage() {
                           initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: resIdx * 0.05 }}
-                          className="group block p-5 bg-[rgba(27,40,56,0.7)] rounded border border-[rgba(255,149,0,0.15)] hover:border-[rgba(255,149,0,0.5)] hover:-translate-y-0.5 transition-all duration-300"
+                          className="group block p-5 bg-[rgba(37,54,75,0.7)] rounded border border-[rgba(255,149,0,0.15)] hover:border-[rgba(255,149,0,0.5)] hover:-translate-y-0.5 transition-all duration-300"
                           style={{ boxShadow: '0 4px 16px rgba(0,0,0,0.2)' }}
                         >
                           <div className="flex items-start justify-between mb-2">

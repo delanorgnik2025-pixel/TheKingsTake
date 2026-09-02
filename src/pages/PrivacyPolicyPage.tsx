@@ -9,7 +9,7 @@ export default function PrivacyPolicyPage() {
       {/* Hero */}
       <section className="relative min-h-[40vh] flex items-center px-6 md:px-12 pt-24 pb-12 overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/bg-book.jpg)' }} />
-        <div className="absolute inset-0 bg-[#1B2838]/85" />
+        <div className="absolute inset-0 bg-[#25364B]/85" />
 
         <div className="relative z-10 max-w-7xl mx-auto w-full">
           <Link to="/" className="inline-flex items-center gap-2 text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors mb-8">
@@ -46,7 +46,7 @@ export default function PrivacyPolicyPage() {
       <MarqueeDivider text="#TheKingsTake — Privacy & Protection — AASOTU Media Group — Your Data. Your Trust." />
 
       {/* Policy Content */}
-      <section className="relative py-16 md:py-24 px-6 md:px-12 bg-[#0C1520]">
+      <section className="relative py-16 md:py-24 px-6 md:px-12 bg-[#182635]">
         <div className="max-w-4xl mx-auto">
 
           {/* Section 1 */}
@@ -257,7 +257,7 @@ export default function PrivacyPolicyPage() {
 
           {/* Section 8 - Contact */}
           <ScrollReveal>
-            <div className="mb-12 bg-[rgba(27,40,56,0.75)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.2)] p-6 md:p-8" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.4)' }}>
+            <div className="mb-12 bg-[rgba(37,54,75,0.75)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.2)] p-6 md:p-8" style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.4)' }}>
               <div className="flex items-center gap-2 mb-4">
                 <div className="flex gap-1">
                   {[0, 1, 2].map(i => <div key={i} className="w-[3px] h-[3px] rounded-full bg-[#FFB840]" />)}

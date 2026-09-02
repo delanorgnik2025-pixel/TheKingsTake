@@ -37,7 +37,7 @@ export default function BlogPreviewSection() {
   return (
     <section id="blog" className="relative py-24 md:py-32 px-6 md:px-12 overflow-hidden">
       <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/bg-blog.jpg)' }} />
-      <div className="absolute inset-0 bg-[#1B2838]/80" />
+      <div className="absolute inset-0 bg-[#25364B]/80" />
 
       <div className="relative z-10 max-w-7xl mx-auto">
         <ScrollReveal>
@@ -58,7 +58,7 @@ export default function BlogPreviewSection() {
         </div>
 
         <div ref={scrollRef} className="flex gap-6 overflow-x-auto pb-6 snap-x snap-mandatory"
-          style={{ scrollbarWidth: 'thin', scrollbarColor: '#FF9500 #2A3A4A', cursor: 'grab' }}>
+          style={{ scrollbarWidth: 'thin', scrollbarColor: '#FF9500 #3A4E64', cursor: 'grab' }}>
           {displayPosts.map((post, i) => (
             <motion.div
               key={post.id}
@@ -74,7 +74,7 @@ export default function BlogPreviewSection() {
                     className="w-full h-[180px] md:h-[200px] object-cover group-hover:scale-105 transition-transform duration-600"
                     draggable={false} />
                 </div>
-                <div className="bg-[rgba(27,40,56,0.85)] backdrop-blur-lg rounded-b-lg p-6 border border-t-0 border-[rgba(255,149,0,0.15)]">
+                <div className="bg-[rgba(37,54,75,0.85)] backdrop-blur-lg rounded-b-lg p-6 border border-t-0 border-[rgba(255,149,0,0.15)]">
                   <p className="text-xs uppercase tracking-[0.08em] text-[#FF9500] mb-2">{post.category}</p>
                   <h3 className="text-lg text-[#F0EBE1] leading-snug mb-2 line-clamp-2 group-hover:text-[#FFB840] transition-colors">{post.title}</h3>
                   <p className="text-xs text-dimmed mb-3">

@@ -7,18 +7,27 @@ import AboutSection from '../sections/AboutSection'
 import ServicesSection from '../sections/ServicesSection'
 import WritingMarketSection from '../sections/WritingMarketSection'
 import MarqueeDivider from '../components/MarqueeDivider'
+import NewsTicker from '../components/NewsTicker'
+import FeedSection from '../sections/FeedSection'
 
 import ContactSection from '../sections/ContactSection'
 
 export default function HomePage() {
   return (
     <main>
+      {/* 0. Live news ticker — feed headlines */}
+      <NewsTicker />
+
       {/* 1. Ronald's Cosmic Portrait — Indigenous Aboriginal Royal American */}
       <HeroPortraitSection />
 
       {/* 2. Book Promo + Blog Feed + Video Box */}
       <MarqueeDivider text="#TheKingsTake — From the Loins of the Beast — The African American State of the Union — Pre-Order Now" />
       <HeroSection />
+
+      {/* 2.5 The Feed — news, posts & live broadcasts */}
+      <MarqueeDivider text="#TheKingsTake — The Feed — News. Commentary. Live Broadcasts. — Straight From the Source" />
+      <FeedSection />
 
       {/* 3. Indigenous Soul Tribe Map — Cosmic aesthetic continues */}
       <MarqueeDivider text="#TheKingsTake — We Were Here Before Anybody — Discover Your Roots — 225+ Nations Documented — The Land Remembers" />

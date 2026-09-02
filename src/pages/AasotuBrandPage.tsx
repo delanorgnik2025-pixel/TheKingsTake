@@ -117,7 +117,7 @@ const PLATFORMS = [
 // ============================================
 export default function AasotuBrandPage() {
   return (
-    <main className="min-h-screen bg-[#0a0f1a]">
+    <main className="min-h-screen bg-[#14202E]">
       {/* ======================================== */}
       {/* HERO */}
       {/* ======================================== */}
@@ -129,8 +129,8 @@ export default function AasotuBrandPage() {
             className="w-full h-full object-cover object-top"
             style={{ filter: 'brightness(0.55)' }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1a] via-[#0a0f1a]/50 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0a0f1a]/70 via-transparent to-[#0a0f1a]/50" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#14202E] via-[#14202E]/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#14202E]/70 via-transparent to-[#14202E]/50" />
         </div>
 
         <div className="relative z-10 w-full px-6 md:px-12 pb-16 md:pb-24 pt-32">
@@ -144,10 +144,10 @@ export default function AasotuBrandPage() {
                 <span className="text-[10px] uppercase tracking-[0.15em] text-[#FF9500] bg-[rgba(255,149,0,0.1)] border border-[rgba(255,149,0,0.2)] rounded-full px-4 py-1.5">
                   The People's Voice
                 </span>
-                <span className="text-[10px] uppercase tracking-[0.15em] text-[#C9B99A] bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.15)] rounded-full px-4 py-1.5">
+                <span className="text-[10px] uppercase tracking-[0.15em] text-[#C9B99A] bg-[rgba(37,54,75,0.6)] border border-[rgba(201,185,154,0.15)] rounded-full px-4 py-1.5">
                   Independent Media
                 </span>
-                <span className="text-[10px] uppercase tracking-[0.15em] text-[#C9B99A] bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.15)] rounded-full px-4 py-1.5">
+                <span className="text-[10px] uppercase tracking-[0.15em] text-[#C9B99A] bg-[rgba(37,54,75,0.6)] border border-[rgba(201,185,154,0.15)] rounded-full px-4 py-1.5">
                   Est. 2023
                 </span>
               </div>
@@ -175,7 +175,7 @@ export default function AasotuBrandPage() {
                 <Link to="/pre-order" className="inline-flex items-center gap-2 text-sm bg-[rgba(255,149,0,0.15)] text-[#FF9500] border border-[rgba(255,149,0,0.35)] rounded-lg px-6 py-3 hover:bg-[rgba(255,149,0,0.25)] transition-all">
                   <BookOpen size={15} /> Pre-Order the Book
                 </Link>
-                <a href="#services" className="inline-flex items-center gap-2 text-sm bg-[rgba(27,40,56,0.6)] text-[#C9B99A] border border-[rgba(201,185,154,0.15)] rounded-lg px-6 py-3 hover:border-[rgba(255,149,0,0.3)] hover:text-[#FF9500] transition-all">
+                <a href="#services" className="inline-flex items-center gap-2 text-sm bg-[rgba(37,54,75,0.6)] text-[#C9B99A] border border-[rgba(201,185,154,0.15)] rounded-lg px-6 py-3 hover:border-[rgba(255,149,0,0.3)] hover:text-[#FF9500] transition-all">
                   <Sparkles size={15} /> Our Services
                 </a>
               </div>
@@ -208,7 +208,7 @@ export default function AasotuBrandPage() {
       {/* ======================================== */}
       {/* THE BOOK — FLAGSHIP PRODUCT */}
       {/* ======================================== */}
-      <section className="py-16 md:py-24 px-6 md:px-12 bg-[rgba(27,40,56,0.3)]">
+      <section className="py-16 md:py-24 px-6 md:px-12 bg-[rgba(37,54,75,0.3)]">
         <div className="max-w-6xl mx-auto">
           <ScrollReveal>
             <div className="mb-4">
@@ -255,7 +255,7 @@ export default function AasotuBrandPage() {
                 </div>
 
                 <div className="flex flex-wrap gap-3 pt-4">
-                  <Link to="/pre-order" className="inline-flex items-center gap-2 text-sm bg-[#FF9500] text-[#1B2838] rounded-lg px-6 py-3 hover:bg-[#CC6A00] transition-all font-medium">
+                  <Link to="/pre-order" className="inline-flex items-center gap-2 text-sm bg-[#FF9500] text-[#25364B] rounded-lg px-6 py-3 hover:bg-[#CC6A00] transition-all font-medium">
                     <BookOpen size={15} /> Pre-Order Now — $19.99
                   </Link>
                 </div>
@@ -312,7 +312,7 @@ export default function AasotuBrandPage() {
       {/* ======================================== */}
       {/* SERVICES */}
       {/* ======================================== */}
-      <section id="services" className="py-16 md:py-24 px-6 md:px-12 bg-[rgba(27,40,56,0.3)]">
+      <section id="services" className="py-16 md:py-24 px-6 md:px-12 bg-[rgba(37,54,75,0.3)]">
         <div className="max-w-7xl mx-auto">
           <ScrollReveal>
             <div className="mb-12 md:mb-16">
@@ -332,7 +332,7 @@ export default function AasotuBrandPage() {
               const Icon = service.icon
               return (
                 <ScrollReveal key={index} delay={index * 0.06}>
-                  <div className="bg-[rgba(27,40,56,0.4)] rounded-xl border border-[rgba(255,149,0,0.08)] hover:border-[rgba(255,149,0,0.25)] p-5 md:p-6 transition-all h-full flex flex-col">
+                  <div className="bg-[rgba(37,54,75,0.4)] rounded-xl border border-[rgba(255,149,0,0.08)] hover:border-[rgba(255,149,0,0.25)] p-5 md:p-6 transition-all h-full flex flex-col">
                     <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-[rgba(255,149,0,0.08)] border border-[rgba(255,149,0,0.15)] mb-4">
                       <Icon size={18} className="text-[#FF9500]" />
                     </div>
@@ -378,7 +378,7 @@ export default function AasotuBrandPage() {
                 <ScrollReveal key={index} delay={index * 0.08}>
                   <Link
                     to={platform.link}
-                    className="group block bg-[rgba(27,40,56,0.4)] rounded-xl border border-[rgba(255,149,0,0.08)] hover:border-[rgba(255,149,0,0.3)] p-5 md:p-6 transition-all h-full"
+                    className="group block bg-[rgba(37,54,75,0.4)] rounded-xl border border-[rgba(255,149,0,0.08)] hover:border-[rgba(255,149,0,0.3)] p-5 md:p-6 transition-all h-full"
                   >
                     <div className="flex items-start justify-between mb-4">
                       <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: `${platform.color}15`, border: `1px solid ${platform.color}25` }}>
@@ -401,7 +401,7 @@ export default function AasotuBrandPage() {
       {/* ======================================== */}
       {/* STAPLE HOUSE / BRAND IDENTITY */}
       {/* ======================================== */}
-      <section className="py-16 md:py-24 px-6 md:px-12 bg-[rgba(27,40,56,0.3)]">
+      <section className="py-16 md:py-24 px-6 md:px-12 bg-[rgba(37,54,75,0.3)]">
         <div className="max-w-5xl mx-auto">
           <ScrollReveal>
             <div className="text-center mb-12">
@@ -456,7 +456,7 @@ export default function AasotuBrandPage() {
           </ScrollReveal>
 
           <ScrollReveal delay={0.1}>
-            <div className="bg-[rgba(27,40,56,0.4)] rounded-xl border border-[rgba(255,149,0,0.12)] p-6 md:p-8 max-w-3xl mx-auto">
+            <div className="bg-[rgba(37,54,75,0.4)] rounded-xl border border-[rgba(255,149,0,0.12)] p-6 md:p-8 max-w-3xl mx-auto">
               <div className="flex flex-wrap justify-center gap-3 md:gap-4 mb-6">
                 {[
                   { label: 'The Book', icon: BookOpen, color: '#FF9500' },
@@ -492,7 +492,7 @@ export default function AasotuBrandPage() {
       {/* ======================================== */}
       {/* CTA */}
       {/* ======================================== */}
-      <section className="py-16 md:py-24 px-6 md:px-12 bg-[rgba(27,40,56,0.3)]">
+      <section className="py-16 md:py-24 px-6 md:px-12 bg-[rgba(37,54,75,0.3)]">
         <div className="max-w-4xl mx-auto text-center">
           <ScrollReveal>
             <div className="flex justify-center gap-1 mb-6">
@@ -512,7 +512,7 @@ export default function AasotuBrandPage() {
               <Link to="/pre-order" className="inline-flex items-center gap-2 text-sm bg-[rgba(255,149,0,0.15)] text-[#FF9500] border border-[rgba(255,149,0,0.35)] rounded-lg px-8 py-3 hover:bg-[rgba(255,149,0,0.25)] transition-all">
                 <BookOpen size={15} /> Pre-Order the Book
               </Link>
-              <Link to="/work-with-us" className="inline-flex items-center gap-2 text-sm bg-[rgba(27,40,56,0.6)] text-[#C9B99A] border border-[rgba(201,185,154,0.15)] rounded-lg px-8 py-3 hover:border-[rgba(255,149,0,0.3)] hover:text-[#FF9500] transition-all">
+              <Link to="/work-with-us" className="inline-flex items-center gap-2 text-sm bg-[rgba(37,54,75,0.6)] text-[#C9B99A] border border-[rgba(201,185,154,0.15)] rounded-lg px-8 py-3 hover:border-[rgba(255,149,0,0.3)] hover:text-[#FF9500] transition-all">
                 <Feather size={15} /> Work With Us
               </Link>
             </div>

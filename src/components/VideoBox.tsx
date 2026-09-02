@@ -91,7 +91,7 @@ export default function VideoBox({ videos = DEFAULT_VIDEOS, title, subtitle }: P
           {/* Main Player */}
           <div className="lg:col-span-2">
             <ScrollReveal delay={0.1}>
-              <div className="relative bg-[#0A0F1A] rounded-xl border border-[rgba(255,149,0,0.12)] overflow-hidden aspect-video">
+              <div className="relative bg-[#14202E] rounded-xl border border-[rgba(255,149,0,0.12)] overflow-hidden aspect-video">
                 {activeVideo?.youtubeId ? (
                   <iframe
                     src={`https://www.youtube.com/embed/${activeVideo.youtubeId}?autoplay=1`}
@@ -108,7 +108,7 @@ export default function VideoBox({ videos = DEFAULT_VIDEOS, title, subtitle }: P
                       alt={activeVideo?.title ?? featured.title}
                       className="absolute inset-0 w-full h-full object-cover opacity-40"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0A0F1A] via-[#0A0F1A]/50 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#14202E] via-[#14202E]/50 to-transparent" />
                     <div className="relative z-10 text-center px-6">
                       {featured.isLive && (
                         <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-red-400 bg-red-400/10 border border-red-400/20 rounded-full px-3 py-1 mb-3">
@@ -123,7 +123,7 @@ export default function VideoBox({ videos = DEFAULT_VIDEOS, title, subtitle }: P
                         className="w-16 h-16 rounded-full bg-[rgba(255,149,0,0.9)] hover:bg-[#FF9500] flex items-center justify-center mx-auto mb-4 transition-all hover:scale-110"
                         style={{ boxShadow: '0 0 30px rgba(255,149,0,0.3)' }}
                       >
-                        <Play size={28} className="text-[#1B2838] ml-1" />
+                        <Play size={28} className="text-[#25364B] ml-1" />
                       </button>
                       <h3 className="text-lg text-[#F0EBE1] font-medium mb-1">
                         {activeVideo?.title ?? featured.title}
@@ -174,7 +174,7 @@ export default function VideoBox({ videos = DEFAULT_VIDEOS, title, subtitle }: P
           {/* Playlist Sidebar */}
           <div className="lg:col-span-1">
             <ScrollReveal delay={0.2}>
-              <div className="bg-[rgba(27,40,56,0.3)] border border-[rgba(255,149,0,0.08)] rounded-xl overflow-hidden h-full max-h-[360px] overflow-y-auto" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,149,0,0.3) transparent' }}>
+              <div className="bg-[rgba(37,54,75,0.3)] border border-[rgba(255,149,0,0.08)] rounded-xl overflow-hidden h-full max-h-[360px] overflow-y-auto" style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(255,149,0,0.3) transparent' }}>
                 <div className="p-3 border-b border-[rgba(255,149,0,0.06)]">
                   <p className="text-[10px] uppercase tracking-wider text-[#C9B99A]/40">More Videos</p>
                 </div>
@@ -186,7 +186,7 @@ export default function VideoBox({ videos = DEFAULT_VIDEOS, title, subtitle }: P
                       activeVideo?.id === video.id ? 'bg-[rgba(255,149,0,0.08)]' : ''
                     }`}
                   >
-                    <div className="w-16 h-10 rounded overflow-hidden shrink-0 relative bg-[#0A0F1A]">
+                    <div className="w-16 h-10 rounded overflow-hidden shrink-0 relative bg-[#14202E]">
                       <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover" />
                       <div className="absolute inset-0 flex items-center justify-center bg-black/30">
                         <Play size={10} className="text-white/80" />

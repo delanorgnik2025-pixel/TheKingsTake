@@ -43,7 +43,7 @@ export default function SimulatorPreviewSection() {
   return (
     <section id="simulator" className="relative py-24 md:py-32 px-6 md:px-12 overflow-hidden">
       <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/bg-legal.jpg)' }} />
-      <div className="absolute inset-0 bg-[#1B2838]/90" />
+      <div className="absolute inset-0 bg-[#25364B]/90" />
 
       <div className="relative z-10 max-w-7xl mx-auto">
         
@@ -87,7 +87,7 @@ export default function SimulatorPreviewSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.35 + i * 0.08, duration: 0.5 }}
-                className="bg-[rgba(27,40,56,0.7)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.15)] p-5 hover:border-[rgba(255,149,0,0.4)] transition-all group"
+                className="bg-[rgba(37,54,75,0.7)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.15)] p-5 hover:border-[rgba(255,149,0,0.4)] transition-all group"
               >
                 <Icon size={24} className="text-[#FF9500] mb-3 group-hover:text-[#FFB840] transition-colors" strokeWidth={1.5} />
                 <h4 className="text-sm text-[#F0EBE1] uppercase tracking-[0.03em] mb-1">{feature.title}</h4>
@@ -113,12 +113,12 @@ export default function SimulatorPreviewSection() {
               className={`relative rounded border p-8 transition-all hover:-translate-y-1 ${
                 tier.highlight 
                   ? 'bg-[rgba(255,149,0,0.1)] border-[rgba(255,149,0,0.4)]' 
-                  : 'bg-[rgba(27,40,56,0.8)] border-[rgba(255,149,0,0.2)] hover:border-[rgba(255,149,0,0.4)]'
+                  : 'bg-[rgba(37,54,75,0.8)] border-[rgba(255,149,0,0.2)] hover:border-[rgba(255,149,0,0.4)]'
               }`}
               style={{ boxShadow: tier.highlight ? '0 8px 32px rgba(255,149,0,0.15)' : '0 8px 32px rgba(0,0,0,0.3)' }}
             >
               {tier.highlight && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#FF9500] text-[#1B2838] text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#FF9500] text-[#25364B] text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
                   Most Popular
                 </div>
               )}
@@ -143,7 +143,7 @@ export default function SimulatorPreviewSection() {
                 onClick={() => alert('Simulator coming soon! Subscribe to get notified when it launches.')}
                 className={`w-full flex items-center justify-center gap-2 rounded-full h-12 text-sm font-['Newsreader'] tracking-[0.02em] transition-colors ${
                   tier.highlight
-                    ? 'bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00]'
+                    ? 'bg-[#FF9500] text-[#25364B] hover:bg-[#CC6A00]'
                     : 'border border-[#FF9500] text-[#FF9500] hover:bg-[rgba(255,149,0,0.1)]'
                 }`}
               >

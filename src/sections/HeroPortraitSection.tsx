@@ -10,7 +10,7 @@ export default function HeroPortraitSection() {
         style={{ backgroundImage: 'url(/images/ronald-cosmic-portrait.jpg)', backgroundPosition: 'center top' }}
       />
       {/* Bottom gradient fade into next section */}
-      <div className="absolute inset-x-0 bottom-0 h-[200px] md:h-[300px] bg-gradient-to-t from-[#0a0f1a] via-[#0a0f1a]/80 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-[200px] md:h-[300px] bg-gradient-to-t from-[#14202E] via-[#14202E]/80 to-transparent" />
 
       {/* Scroll to map button */}
       <motion.button

@@ -41,14 +41,14 @@ interface VideoItem {
 // ============================================
 const CATEGORY_STYLES: Record<string, { bg: string; text: string }> = {
   BREAKING:   { bg: '#DC143C', text: '#FFFFFF' },
-  ADVOCACY:   { bg: '#FF9500', text: '#1B2838' },
+  ADVOCACY:   { bg: '#FF9500', text: '#25364B' },
   LEGAL:      { bg: '#4169E1', text: '#FFFFFF' },
   COMMUNITY:  { bg: '#228B22', text: '#FFFFFF' },
-  VOICE:      { bg: '#FF69B4', text: '#1B2838' },
-  HISTORY:    { bg: '#DAA520', text: '#1B2838' },
-  AASOTU:     { bg: '#FF9500', text: '#1B2838' },
-  BLOG:       { bg: '#C9B99A', text: '#1B2838' },
-  AI_WIRE:    { bg: '#00CED1', text: '#1B2838' },
+  VOICE:      { bg: '#FF69B4', text: '#25364B' },
+  HISTORY:    { bg: '#DAA520', text: '#25364B' },
+  AASOTU:     { bg: '#FF9500', text: '#25364B' },
+  BLOG:       { bg: '#C9B99A', text: '#25364B' },
+  AI_WIRE:    { bg: '#00CED1', text: '#25364B' },
   POLITICS:   { bg: '#8B4513', text: '#FFFFFF' },
   HERITAGE:   { bg: '#9932CC', text: '#FFFFFF' },
 }
@@ -222,7 +222,7 @@ function NewsTicker({ items }: { items: string[] }) {
     <div className="w-full bg-[#FF9500] overflow-hidden py-2">
       <div className="flex whitespace-nowrap animate-marquee">
         {[...items, ...items, ...items, ...items].map((item, i) => (
-          <span key={i} className="text-[11px] md:text-xs font-bold text-[#1B2838] uppercase tracking-wider mx-6 flex items-center gap-2 shrink-0">
+          <span key={i} className="text-[11px] md:text-xs font-bold text-[#25364B] uppercase tracking-wider mx-6 flex items-center gap-2 shrink-0">
             <Zap size={10} /> {item}
           </span>
         ))}
@@ -277,7 +277,7 @@ export default function NewsBroadcast({ wordPressUrl }: Props) {
       {/* Background */}
       <div className="absolute inset-0">
         <img src="/images/news-broadcast-bg.jpg" alt="" className="w-full h-full object-cover opacity-20" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0a0f1a] via-[#0a0f1a]/90 to-[#0a0f1a]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#14202E] via-[#14202E]/90 to-[#14202E]" />
       </div>
 
       {/* Ticker */}
@@ -324,10 +324,10 @@ export default function NewsBroadcast({ wordPressUrl }: Props) {
               {/* Featured Trending Story */}
               {trendingNews[0] && (
                 <ScrollReveal delay={0.05}>
-                  <Link to={`/blog/${trendingNews[0].slug}`} className="group block relative rounded-xl overflow-hidden border-2 border-[rgba(255,149,0,0.15)] hover:border-[rgba(255,149,0,0.5)] transition-all bg-[#0A0F1A]" onClick={(e) => { if (trendingNews[0].isAIGenerated) { e.preventDefault(); alert('Full article coming soon. AASOTU Media Group is building out this content.'); } }}>
+                  <Link to={`/blog/${trendingNews[0].slug}`} className="group block relative rounded-xl overflow-hidden border-2 border-[rgba(255,149,0,0.15)] hover:border-[rgba(255,149,0,0.5)] transition-all bg-[#14202E]" onClick={(e) => { if (trendingNews[0].isAIGenerated) { e.preventDefault(); alert('Full article coming soon. AASOTU Media Group is building out this content.'); } }}>
                     <div className="relative h-[200px] md:h-[280px]">
                       <img src={trendingNews[0].coverImage} alt={trendingNews[0].title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0A0F1A] via-[#0A0F1A]/50 to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#14202E] via-[#14202E]/50 to-transparent" />
                       <div className="absolute top-4 left-4 flex items-center gap-2">
                         <span className="flex items-center gap-1 text-[10px] uppercase tracking-wider font-bold text-white bg-red-600 rounded-full px-3 py-1">
                           <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" /> BREAKING
@@ -360,8 +360,8 @@ export default function NewsBroadcast({ wordPressUrl }: Props) {
                   const handleClick = post.isAIGenerated ? (e: React.MouseEvent) => { e.preventDefault(); alert('Full article coming soon. AASOTU Media Group is building out this content.'); } : undefined
                   return (
                     <ScrollReveal key={post.id} delay={0.1 + i * 0.05}>
-                      <Link to={`/blog/${post.slug}`} onClick={handleClick} className="group flex gap-3 p-3 rounded-xl border border-[rgba(255,149,0,0.08)] hover:border-[rgba(255,149,0,0.3)] bg-[rgba(27,40,56,0.4)] hover:bg-[rgba(27,40,56,0.6)] transition-all">
-                        <div className="w-20 h-20 rounded-lg overflow-hidden shrink-0 bg-[#0A0F1A]">
+                      <Link to={`/blog/${post.slug}`} onClick={handleClick} className="group flex gap-3 p-3 rounded-xl border border-[rgba(255,149,0,0.08)] hover:border-[rgba(255,149,0,0.3)] bg-[rgba(37,54,75,0.4)] hover:bg-[rgba(37,54,75,0.6)] transition-all">
+                        <div className="w-20 h-20 rounded-lg overflow-hidden shrink-0 bg-[#14202E]">
                           <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -392,7 +392,7 @@ export default function NewsBroadcast({ wordPressUrl }: Props) {
                   const style = getCategoryStyle(post.category)
                   return (
                     <ScrollReveal key={post.id} delay={i * 0.06}>
-                      <Link to={`/blog/${post.slug}`} className="group block rounded-xl overflow-hidden border border-[rgba(255,149,0,0.08)] hover:border-[rgba(255,149,0,0.3)] bg-[rgba(27,40,56,0.4)] hover:bg-[rgba(27,40,56,0.6)] transition-all">
+                      <Link to={`/blog/${post.slug}`} className="group block rounded-xl overflow-hidden border border-[rgba(255,149,0,0.08)] hover:border-[rgba(255,149,0,0.3)] bg-[rgba(37,54,75,0.4)] hover:bg-[rgba(37,54,75,0.6)] transition-all">
                         <div className="h-32 overflow-hidden">
                           <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                         </div>
@@ -457,7 +457,7 @@ export default function NewsBroadcast({ wordPressUrl }: Props) {
 
               {/* VIDEO BROADCAST */}
               <ScrollReveal delay={0.15}>
-                <div className="bg-[rgba(27,40,56,0.5)] border border-[rgba(255,149,0,0.12)] rounded-xl overflow-hidden">
+                <div className="bg-[rgba(37,54,75,0.5)] border border-[rgba(255,149,0,0.12)] rounded-xl overflow-hidden">
                   <div className="p-3 border-b border-[rgba(255,149,0,0.08)] flex items-center gap-2">
                     <Video size={12} className="text-[#FF9500]" />
                     <span className="text-[10px] uppercase tracking-[0.1em] text-[#FF9500] font-semibold">Broadcast</span>
@@ -467,17 +467,17 @@ export default function NewsBroadcast({ wordPressUrl }: Props) {
                       </span>
                     )}
                   </div>
-                  <div className="relative aspect-video bg-[#0A0F1A]">
+                  <div className="relative aspect-video bg-[#14202E]">
                     {activeVideo?.youtubeId ? (
                       <iframe src={`https://www.youtube.com/embed/${activeVideo.youtubeId}?autoplay=1`} title={activeVideo.title} className="w-full h-full" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center relative">
                         <img src={activeVideo?.thumbnail ?? featuredVideo.thumbnail} alt={activeVideo?.title ?? featuredVideo.title} className="absolute inset-0 w-full h-full object-cover opacity-50" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0F1A] via-transparent to-[#0A0F1A]/50" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#14202E] via-transparent to-[#14202E]/50" />
                         <button onClick={() => { if (featuredVideo.youtubeId) setActiveVideo(featuredVideo) }}
                           className="relative z-10 w-14 h-14 rounded-full bg-[#FF9500] hover:bg-[#FFB840] flex items-center justify-center transition-all hover:scale-110"
                           style={{ boxShadow: '0 0 30px rgba(255,149,0,0.4)' }}>
-                          <Play size={24} className="text-[#1B2838] ml-1" />
+                          <Play size={24} className="text-[#25364B] ml-1" />
                         </button>
                       </div>
                     )}
@@ -494,7 +494,7 @@ export default function NewsBroadcast({ wordPressUrl }: Props) {
                     {playlist.map((video) => (
                       <button key={video.id} onClick={() => setActiveVideo(video)}
                         className={`w-full flex items-start gap-2.5 p-2.5 text-left border-b border-[rgba(255,149,0,0.04)] last:border-b-0 hover:bg-[rgba(255,149,0,0.05)] transition-colors ${activeVideo?.id === video.id ? 'bg-[rgba(255,149,0,0.08)]' : ''}`}>
-                        <div className="w-14 h-9 rounded overflow-hidden shrink-0 relative bg-[#0A0F1A]">
+                        <div className="w-14 h-9 rounded overflow-hidden shrink-0 relative bg-[#14202E]">
                           <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover" />
                           <div className="absolute inset-0 flex items-center justify-center bg-black/30"><Play size={8} className="text-white/70" /></div>
                         </div>
@@ -510,7 +510,7 @@ export default function NewsBroadcast({ wordPressUrl }: Props) {
 
               {/* TRENDING TOPICS */}
               <ScrollReveal delay={0.2}>
-                <div className="bg-[rgba(27,40,56,0.4)] border border-[rgba(255,149,0,0.08)] rounded-xl p-4">
+                <div className="bg-[rgba(37,54,75,0.4)] border border-[rgba(255,149,0,0.08)] rounded-xl p-4">
                   <SectionHeader icon={TrendingUp} label="Trending Topics" />
                   <div className="space-y-0">
                     {[
@@ -550,7 +550,7 @@ export default function NewsBroadcast({ wordPressUrl }: Props) {
 
               {/* SOCIAL SHARE */}
               <ScrollReveal delay={0.3}>
-                <div className="bg-[rgba(27,40,56,0.3)] border border-[rgba(255,149,0,0.06)] rounded-xl p-4">
+                <div className="bg-[rgba(37,54,75,0.3)] border border-[rgba(255,149,0,0.06)] rounded-xl p-4">
                   <p className="text-[10px] text-[#C9B99A]/40 mb-3 text-center">Share stories directly to your platforms</p>
                   <div className="flex justify-center gap-3">
                     <button className="w-8 h-8 rounded-full bg-[rgba(255,149,0,0.08)] border border-[rgba(255,149,0,0.15)] flex items-center justify-center text-[#C9B99A]/40 hover:text-[#FF9500] hover:border-[rgba(255,149,0,0.4)] transition-all">

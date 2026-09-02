@@ -123,7 +123,7 @@ export default function AboutAuthorPage() {
   const [activeArc, setActiveArc] = useState<number | null>(null)
 
   return (
-    <main className="min-h-screen bg-[#0a0f1a]">
+    <main className="min-h-screen bg-[#14202E]">
       {/* ======================================== */}
       {/* HERO SECTION */}
       {/* ======================================== */}
@@ -136,8 +136,8 @@ export default function AboutAuthorPage() {
             className="w-full h-full object-cover object-top"
             style={{ filter: 'brightness(0.4)' }}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1a] via-[#0a0f1a]/60 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0a0f1a]/80 via-transparent to-[#0a0f1a]/60" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#14202E] via-[#14202E]/60 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#14202E]/80 via-transparent to-[#14202E]/60" />
         </div>
 
         {/* Content */}
@@ -156,7 +156,7 @@ export default function AboutAuthorPage() {
                 <span className="text-[10px] uppercase tracking-[0.15em] text-[#FF9500] bg-[rgba(255,149,0,0.1)] border border-[rgba(255,149,0,0.2)] rounded-full px-4 py-1.5">
                   Author / Researcher / Founder
                 </span>
-                <span className="text-[10px] uppercase tracking-[0.15em] text-[#C9B99A] bg-[rgba(27,40,56,0.6)] border border-[rgba(201,185,154,0.15)] rounded-full px-4 py-1.5">
+                <span className="text-[10px] uppercase tracking-[0.15em] text-[#C9B99A] bg-[rgba(37,54,75,0.6)] border border-[rgba(201,185,154,0.15)] rounded-full px-4 py-1.5">
                   AASOTU Media Group LLC
                 </span>
               </div>
@@ -193,7 +193,7 @@ export default function AboutAuthorPage() {
                 </Link>
                 <a
                   href="/#heritage"
-                  className="inline-flex items-center gap-2 text-sm bg-[rgba(27,40,56,0.6)] text-[#C9B99A] border border-[rgba(201,185,154,0.15)] rounded-lg px-6 py-3 hover:border-[rgba(255,149,0,0.3)] hover:text-[#FF9500] transition-all"
+                  className="inline-flex items-center gap-2 text-sm bg-[rgba(37,54,75,0.6)] text-[#C9B99A] border border-[rgba(201,185,154,0.15)] rounded-lg px-6 py-3 hover:border-[rgba(255,149,0,0.3)] hover:text-[#FF9500] transition-all"
                 >
                   <Globe size={15} /> Explore the Heritage Map
                 </a>
@@ -226,7 +226,7 @@ export default function AboutAuthorPage() {
       {/* ======================================== */}
       {/* THE STORY ARC */}
       {/* ======================================== */}
-      <section className="py-16 md:py-24 px-6 md:px-12 bg-[rgba(27,40,56,0.3)]">
+      <section className="py-16 md:py-24 px-6 md:px-12 bg-[rgba(37,54,75,0.3)]">
         <div className="max-w-5xl mx-auto">
           <ScrollReveal>
             <div className="mb-12 md:mb-16">
@@ -261,7 +261,7 @@ export default function AboutAuthorPage() {
                         className={`absolute left-2.5 md:left-6.5 w-4 h-4 rounded-full border-2 transition-all ${
                           arc.highlight
                             ? 'bg-[#FF9500] border-[#FF9500]'
-                            : 'bg-[#1B2838] border-[rgba(255,149,0,0.3)]'
+                            : 'bg-[#25364B] border-[rgba(255,149,0,0.3)]'
                         }`}
                         style={{ top: '4px' }}
                       />
@@ -333,7 +333,7 @@ export default function AboutAuthorPage() {
                 <ScrollReveal key={index} delay={index * 0.06}>
                   <Link
                     to={item.link}
-                    className="group block bg-[rgba(27,40,56,0.4)] rounded-xl border border-[rgba(255,149,0,0.08)] hover:border-[rgba(255,149,0,0.3)] p-5 md:p-6 transition-all h-full"
+                    className="group block bg-[rgba(37,54,75,0.4)] rounded-xl border border-[rgba(255,149,0,0.08)] hover:border-[rgba(255,149,0,0.3)] p-5 md:p-6 transition-all h-full"
                   >
                     <div className="flex items-start justify-between mb-4">
                       <div
@@ -374,7 +374,7 @@ export default function AboutAuthorPage() {
       {/* ======================================== */}
       {/* BY THE NUMBERS */}
       {/* ======================================== */}
-      <section className="py-16 md:py-24 px-6 md:px-12 bg-[rgba(27,40,56,0.3)]">
+      <section className="py-16 md:py-24 px-6 md:px-12 bg-[rgba(37,54,75,0.3)]">
         <div className="max-w-6xl mx-auto">
           <ScrollReveal>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
@@ -438,7 +438,7 @@ export default function AboutAuthorPage() {
               const Icon = item.icon
               return (
                 <ScrollReveal key={i} delay={i * 0.08}>
-                  <div className="bg-[rgba(27,40,56,0.4)] rounded-xl border border-[rgba(255,149,0,0.08)] p-5 md:p-6 hover:border-[rgba(255,149,0,0.2)] transition-all">
+                  <div className="bg-[rgba(37,54,75,0.4)] rounded-xl border border-[rgba(255,149,0,0.08)] p-5 md:p-6 hover:border-[rgba(255,149,0,0.2)] transition-all">
                     <Icon size={20} className="text-[#FF9500] mb-3" />
                     <h3 className="text-lg text-[#F0EBE1] font-medium mb-2">{item.title}</h3>
                     <p className="text-sm text-[#C9B99A] leading-relaxed">{item.text}</p>
@@ -453,7 +453,7 @@ export default function AboutAuthorPage() {
       {/* ======================================== */}
       {/* CTA SECTION */}
       {/* ======================================== */}
-      <section className="py-16 md:py-24 px-6 md:px-12 bg-[rgba(27,40,56,0.3)]">
+      <section className="py-16 md:py-24 px-6 md:px-12 bg-[rgba(37,54,75,0.3)]">
         <div className="max-w-4xl mx-auto text-center">
           <ScrollReveal>
             <div className="flex justify-center gap-1 mb-6">
@@ -479,7 +479,7 @@ export default function AboutAuthorPage() {
               </Link>
               <Link
                 to="/work-with-us"
-                className="inline-flex items-center gap-2 text-sm bg-[rgba(27,40,56,0.6)] text-[#C9B99A] border border-[rgba(201,185,154,0.15)] rounded-lg px-8 py-3 hover:border-[rgba(255,149,0,0.3)] hover:text-[#FF9500] transition-all"
+                className="inline-flex items-center gap-2 text-sm bg-[rgba(37,54,75,0.6)] text-[#C9B99A] border border-[rgba(201,185,154,0.15)] rounded-lg px-8 py-3 hover:border-[rgba(255,149,0,0.3)] hover:text-[#FF9500] transition-all"
               >
                 <Feather size={15} /> Work With Me
               </Link>

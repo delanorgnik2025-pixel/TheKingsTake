@@ -28,11 +28,11 @@ export default function AdminServices() {
     cancelled: "bg-[rgba(255,0,0,0.1)] text-red-400",
   };
 
-  if (isLoading) return <div className="min-h-screen flex items-center justify-center bg-[#1B2838]"><div className="w-8 h-8 border-2 border-[#FF9500] border-t-transparent rounded-full animate-spin" /></div>;
-  if (!isAdmin) return <div className="min-h-screen flex items-center justify-center bg-[#1B2838]"><div className="text-center"><h1 className="text-2xl text-[#F0EBE1]">Access Denied</h1><Link to="/" className="text-[#FF9500]">Home</Link></div></div>;
+  if (isLoading) return <div className="min-h-screen flex items-center justify-center bg-[#25364B]"><div className="w-8 h-8 border-2 border-[#FF9500] border-t-transparent rounded-full animate-spin" /></div>;
+  if (!isAdmin) return <div className="min-h-screen flex items-center justify-center bg-[#25364B]"><div className="text-center"><h1 className="text-2xl text-[#F0EBE1]">Access Denied</h1><Link to="/" className="text-[#FF9500]">Home</Link></div></div>;
 
   return (
-    <div className="min-h-screen pt-24 pb-16 px-6 md:px-12 bg-[#1B2838]">
+    <div className="min-h-screen pt-24 pb-16 px-6 md:px-12 bg-[#25364B]">
       <div className="max-w-5xl mx-auto">
         <div className="flex items-center gap-4 mb-8">
           <Link to="/admin/dashboard" className="text-sm text-[#C9B99A] hover:text-[#FF9500]"><ArrowLeft size={18} /></Link>

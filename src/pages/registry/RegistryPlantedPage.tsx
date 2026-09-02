@@ -112,7 +112,7 @@ export default function RegistryPlantedPage() {
             className="w-full p-4 rounded-xl flex items-center justify-center gap-2 text-sm font-medium cursor-pointer"
             style={{
               background: 'linear-gradient(135deg, rgba(255,149,0,0.9), rgba(255,149,0,0.7))',
-              color: '#0A0F1A',
+              color: '#14202E',
             }}
           >
             Enter My Registry <ArrowRight size={16} />

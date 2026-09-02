@@ -18,7 +18,7 @@ export default function CTAButton({
 }: CTAButtonProps) {
   const baseClasses = `inline-flex items-center justify-center rounded-full font-['Newsreader'] text-sm tracking-[0.02em] transition-colors duration-300 ${
     size === 'large' ? 'h-14 px-12 text-base' : 'h-12 px-8'
-  } bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] ${className}`
+  } bg-[#FF9500] text-[#25364B] hover:bg-[#CC6A00] ${className}`
 
   if (href) {
     return (

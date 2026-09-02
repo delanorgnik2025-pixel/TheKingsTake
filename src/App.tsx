@@ -12,8 +12,8 @@ import ScrollToTop from './components/ScrollToTop'
 // LAZY-LOADED PAGES — Prevents eager import crashes
 // ============================================
 const HomePage = lazy(() => import('./pages/Home'))
-const BlogPage = lazy(() => import('./pages/BlogPage'))
 const BlogPostPage = lazy(() => import('./pages/BlogPostPage'))
+const FeedPage = lazy(() => import('./pages/FeedPage'))
 const WritingServicesPage = lazy(() => import('./pages/WritingServicesPage'))
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
@@ -70,11 +70,12 @@ function AppRoutes() {
   return (
     <AppLayout>
       <ScrollToTop />
-      <Suspense fallback={<div className="min-h-screen bg-[#0a0f1a]" />}>
+      <Suspense fallback={<div className="min-h-screen bg-[#14202E]" />}>
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<HomePage />} />
-          <Route path="/blog" element={<BlogPage />} />
-          <Route path="/news" element={<Navigate to="/blog" replace />} />
+          <Route path="/feed" element={<FeedPage />} />
+          <Route path="/blog" element={<Navigate to="/feed" replace />} />
+          <Route path="/news" element={<Navigate to="/feed" replace />} />
           <Route path="/blog/:slug" element={<BlogPostPage />} />
           <Route path="/writing-services" element={<WritingServicesPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />

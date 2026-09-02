@@ -224,7 +224,7 @@ export default function RootsRegistryWizard() {
                     </div>
                     <div className="mt-2 flex items-center gap-2">
                       <input type="date" value={data.father.birthDate} onChange={e => update({ father: { ...data.father, birthDate: e.target.value } })}
-                        className="flex-1 bg-[rgba(27,40,56,0.4)] border border-[rgba(255,149,0,0.1)] rounded-lg px-3 py-2 text-[11px] text-[#F0EBE1]" />
+                        className="flex-1 bg-[rgba(37,54,75,0.4)] border border-[rgba(255,149,0,0.1)] rounded-lg px-3 py-2 text-[11px] text-[#F0EBE1]" />
                       <label className="flex items-center gap-1.5 text-[10px] text-[#C9B99A]/50 cursor-pointer">
                         <input type="checkbox" checked={data.father.deceased} onChange={e => update({ father: { ...data.father, deceased: e.target.checked } })}
                           className="accent-[#FF9500]" /> Deceased
@@ -246,7 +246,7 @@ export default function RootsRegistryWizard() {
                     </div>
                     <div className="mt-2 flex items-center gap-2">
                       <input type="date" value={data.mother.birthDate} onChange={e => update({ mother: { ...data.mother, birthDate: e.target.value } })}
-                        className="flex-1 bg-[rgba(27,40,56,0.4)] border border-[rgba(255,149,0,0.1)] rounded-lg px-3 py-2 text-[11px] text-[#F0EBE1]" />
+                        className="flex-1 bg-[rgba(37,54,75,0.4)] border border-[rgba(255,149,0,0.1)] rounded-lg px-3 py-2 text-[11px] text-[#F0EBE1]" />
                       <label className="flex items-center gap-1.5 text-[10px] text-[#C9B99A]/50 cursor-pointer">
                         <input type="checkbox" checked={data.mother.deceased} onChange={e => update({ mother: { ...data.mother, deceased: e.target.checked } })}
                           className="accent-[#FF9500]" /> Deceased
@@ -339,11 +339,11 @@ export default function RootsRegistryWizard() {
                       <input value={person.firstName} onChange={e => {
                         const updated = data.ancestors.people.map(p => p.id === person.id ? { ...p, firstName: e.target.value } : p)
                         update({ ancestors: { ...data.ancestors, people: updated } })
-                      }} placeholder="First name" className="bg-[rgba(27,40,56,0.4)] border border-[rgba(255,149,0,0.1)] rounded-lg px-3 py-2 text-[11px] text-[#F0EBE1] placeholder-[#C9B99A]/30 focus:outline-none focus:border-[rgba(255,149,0,0.3)]" />
+                      }} placeholder="First name" className="bg-[rgba(37,54,75,0.4)] border border-[rgba(255,149,0,0.1)] rounded-lg px-3 py-2 text-[11px] text-[#F0EBE1] placeholder-[#C9B99A]/30 focus:outline-none focus:border-[rgba(255,149,0,0.3)]" />
                       <input value={person.lastName} onChange={e => {
                         const updated = data.ancestors.people.map(p => p.id === person.id ? { ...p, lastName: e.target.value } : p)
                         update({ ancestors: { ...data.ancestors, people: updated } })
-                      }} placeholder="Last name" className="bg-[rgba(27,40,56,0.4)] border border-[rgba(255,149,0,0.1)] rounded-lg px-3 py-2 text-[11px] text-[#F0EBE1] placeholder-[#C9B99A]/30 focus:outline-none focus:border-[rgba(255,149,0,0.3)]" />
+                      }} placeholder="Last name" className="bg-[rgba(37,54,75,0.4)] border border-[rgba(255,149,0,0.1)] rounded-lg px-3 py-2 text-[11px] text-[#F0EBE1] placeholder-[#C9B99A]/30 focus:outline-none focus:border-[rgba(255,149,0,0.3)]" />
                     </div>
                   </div>
                 ))}
@@ -497,7 +497,7 @@ function Input({ label, value, onChange, placeholder = '', required = false, com
         value={value}
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full bg-[rgba(27,40,56,0.4)] border border-[rgba(255,149,0,0.12)] rounded-lg px-3.5 py-2.5 text-[13px] text-[#F0EBE1] placeholder-[#C9B99A]/25 focus:outline-none focus:border-[rgba(255,149,0,0.4)] transition-colors"
+        className="w-full bg-[rgba(37,54,75,0.4)] border border-[rgba(255,149,0,0.12)] rounded-lg px-3.5 py-2.5 text-[13px] text-[#F0EBE1] placeholder-[#C9B99A]/25 focus:outline-none focus:border-[rgba(255,149,0,0.4)] transition-colors"
       />
     </div>
   )
@@ -514,7 +514,7 @@ function TextArea({ label, value, onChange, placeholder = '', rows = 3 }: {
         onChange={e => onChange(e.target.value)}
         placeholder={placeholder}
         rows={rows}
-        className="w-full bg-[rgba(27,40,56,0.4)] border border-[rgba(255,149,0,0.12)] rounded-lg px-3.5 py-2.5 text-[13px] text-[#F0EBE1] placeholder-[#C9B99A]/25 focus:outline-none focus:border-[rgba(255,149,0,0.4)] transition-colors resize-none"
+        className="w-full bg-[rgba(37,54,75,0.4)] border border-[rgba(255,149,0,0.12)] rounded-lg px-3.5 py-2.5 text-[13px] text-[#F0EBE1] placeholder-[#C9B99A]/25 focus:outline-none focus:border-[rgba(255,149,0,0.4)] transition-colors resize-none"
       />
     </div>
   )
@@ -529,7 +529,7 @@ function Select({ label, value, onChange, options }: {
       <select
         value={value}
         onChange={e => onChange(e.target.value)}
-        className="w-full bg-[rgba(27,40,56,0.4)] border border-[rgba(255,149,0,0.12)] rounded-lg px-3.5 py-2.5 text-[13px] text-[#F0EBE1] focus:outline-none focus:border-[rgba(255,149,0,0.4)] transition-colors appearance-none"
+        className="w-full bg-[rgba(37,54,75,0.4)] border border-[rgba(255,149,0,0.12)] rounded-lg px-3.5 py-2.5 text-[13px] text-[#F0EBE1] focus:outline-none focus:border-[rgba(255,149,0,0.4)] transition-colors appearance-none"
       >
         {options.map(o => <option key={o} value={o}>{o || 'Select...'}</option>)}
       </select>

@@ -24,9 +24,9 @@ export default function AdminSetup() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0C1520] relative">
+    <div className="min-h-screen bg-[#182635] relative">
       <div className="fixed inset-0 bg-cover bg-center bg-no-repeat opacity-[0.15]" style={{ backgroundImage: 'url(/images/bg-hero.jpg)' }} />
-      <div className="fixed inset-0 bg-gradient-to-b from-[#0C1520]/95 via-[#0C1520]/90 to-[#0C1520]/95" />
+      <div className="fixed inset-0 bg-gradient-to-b from-[#182635]/95 via-[#182635]/90 to-[#182635]/95" />
 
       <div className="relative z-10">
         <div className="border-b border-white/[0.06]">
@@ -58,7 +58,7 @@ export default function AdminSetup() {
               </p>
               <Link
                 to="/admin/blog"
-                className="inline-flex items-center justify-center gap-2 h-12 px-8 bg-[#FF9500] text-[#0C1520] text-sm tracking-[0.05em] uppercase hover:bg-[#FF9500]/90 transition-colors mt-4"
+                className="inline-flex items-center justify-center gap-2 h-12 px-8 bg-[#FF9500] text-[#182635] text-sm tracking-[0.05em] uppercase hover:bg-[#FF9500]/90 transition-colors mt-4"
               >
                 Go to Blog Admin
               </Link>
@@ -102,7 +102,7 @@ export default function AdminSetup() {
               <button
                 onClick={handleMakeAdmin}
                 disabled={status === 'loading'}
-                className="w-full h-12 bg-[#FF9500] text-[#0C1520] font-medium text-sm tracking-[0.05em] uppercase hover:bg-[#FF9500]/90 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full h-12 bg-[#FF9500] text-[#182635] font-medium text-sm tracking-[0.05em] uppercase hover:bg-[#FF9500]/90 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 <Crown size={16} />
                 {status === 'loading' ? 'Activating...' : 'Make Me Admin'}

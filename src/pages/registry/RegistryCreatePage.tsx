@@ -293,7 +293,7 @@ export default function RegistryCreatePage() {
                   className="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-medium cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
                   style={{
                     background: canProceed ? 'linear-gradient(135deg, rgba(255,149,0,0.9), rgba(255,149,0,0.7))' : 'rgba(201,185,154,0.1)',
-                    color: canProceed ? '#0A0F1A' : '#C9B99A/50',
+                    color: canProceed ? '#14202E' : '#C9B99A/50',
                   }}
                 >
                   {isLast ? (

@@ -195,7 +195,7 @@ export default function WorkWithUsPage() {
   return (
     <div className="min-h-screen bg-[#05080e]">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-[#0A0F1A]/95 backdrop-blur-md border-b border-[rgba(255,149,0,0.1)]">
+      <header className="sticky top-0 z-50 bg-[#14202E]/95 backdrop-blur-md border-b border-[rgba(255,149,0,0.1)]">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 text-xs text-[#C9B99A] hover:text-[#FF9500] transition-colors">
             <ArrowLeft size={14} /> Back to Home
@@ -242,7 +242,7 @@ export default function WorkWithUsPage() {
               >
                 <button
                   onClick={() => setExpandedRole(isExpanded ? null : role.id)}
-                  className="w-full flex items-center justify-between p-5 md:p-6 bg-[rgba(27,40,56,0.85)] backdrop-blur-lg rounded-xl border border-[rgba(255,149,0,0.2)] hover:border-[rgba(255,149,0,0.4)] transition-all duration-300 group text-left"
+                  className="w-full flex items-center justify-between p-5 md:p-6 bg-[rgba(37,54,75,0.85)] backdrop-blur-lg rounded-xl border border-[rgba(255,149,0,0.2)] hover:border-[rgba(255,149,0,0.4)] transition-all duration-300 group text-left"
                   style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.3)' }}
                 >
                   <div className="flex items-center gap-4">
@@ -271,7 +271,7 @@ export default function WorkWithUsPage() {
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     transition={{ duration: 0.3 }}
-                    className="mt-3 p-5 md:p-6 bg-[rgba(27,40,56,0.6)] rounded-xl border border-[rgba(255,149,0,0.15)]"
+                    className="mt-3 p-5 md:p-6 bg-[rgba(37,54,75,0.6)] rounded-xl border border-[rgba(255,149,0,0.15)]"
                   >
                     <p className="text-sm text-[#C9B99A] leading-relaxed mb-5">{role.description}</p>
 
@@ -317,7 +317,7 @@ export default function WorkWithUsPage() {
                           setApplication({ ...application, role: role.title })
                           document.getElementById('apply-form')?.scrollIntoView({ behavior: 'smooth' })
                         }}
-                        className="inline-flex items-center gap-2 text-sm bg-[#FF9500] text-[#0C1520] px-5 py-2 rounded-lg hover:bg-[#CC6A00] transition-colors font-medium"
+                        className="inline-flex items-center gap-2 text-sm bg-[#FF9500] text-[#182635] px-5 py-2 rounded-lg hover:bg-[#CC6A00] transition-colors font-medium"
                       >
                         Apply for This Role
                       </button>
@@ -331,7 +331,7 @@ export default function WorkWithUsPage() {
 
         {/* Application Form */}
         <ScrollReveal delay={0.1}>
-          <div id="apply-form" className="bg-gradient-to-br from-[rgba(27,40,56,0.8)] to-[rgba(27,40,56,0.4)] border border-[rgba(255,149,0,0.2)] rounded-xl p-6 md:p-8 mb-16">
+          <div id="apply-form" className="bg-gradient-to-br from-[rgba(37,54,75,0.8)] to-[rgba(37,54,75,0.4)] border border-[rgba(255,149,0,0.2)] rounded-xl p-6 md:p-8 mb-16">
             <div className="text-center mb-8">
               <div className="inline-flex items-center gap-2 bg-[rgba(255,149,0,0.1)] border border-[rgba(255,149,0,0.2)] rounded-full px-4 py-1.5 mb-4">
                 <Send size={12} className="text-[#FF9500]" />
@@ -411,7 +411,7 @@ export default function WorkWithUsPage() {
                 <button
                   type="submit"
                   disabled={sending || !application.name || !application.email || !application.role}
-                  className="w-full flex items-center justify-center gap-2 rounded-full h-12 bg-[#FF9500] text-[#1B2838] hover:bg-[#CC6A00] transition-colors font-medium disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="w-full flex items-center justify-center gap-2 rounded-full h-12 bg-[#FF9500] text-[#25364B] hover:bg-[#CC6A00] transition-colors font-medium disabled:opacity-30 disabled:cursor-not-allowed"
                   style={{ boxShadow: '0 4px 16px rgba(255,149,0,0.25)' }}
                 >
                   <Send size={16} />
