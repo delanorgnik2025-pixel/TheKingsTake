@@ -1,3 +1,6 @@
+[variables]
+NODE_OPTIONS = "--max-old-space-size=4096"
+
 [phases.build]
 cmds = ["npx vite build"]
 
