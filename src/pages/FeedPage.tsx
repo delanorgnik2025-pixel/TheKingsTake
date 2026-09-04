@@ -8,6 +8,8 @@ import {
 } from 'lucide-react'
 import { trpc } from '@/providers/trpc'
 import NewsTicker from '@/components/NewsTicker'
+import TrendingRail from '@/components/TrendingRail'
+import FeedBackdrop from '@/components/FeedBackdrop'
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 function timeAgo(date: Date | string): string {
@@ -85,28 +87,44 @@ export default function FeedPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#182635]">
-      <div className="pt-16">
+    <div className="min-h-screen bg-[#182635] relative">
+      <FeedBackdrop />
+
+      <div className="relative z-10 pt-16">
         <NewsTicker />
       </div>
 
       {/* Header */}
-      <div className="max-w-2xl mx-auto px-4 pt-10 pb-6">
-        <Link to="/" className="inline-flex items-center gap-2 text-[#C9B99A] text-xs uppercase tracking-[0.2em] hover:text-[#FF9500] transition-colors mb-6">
+      <div className="relative z-10 max-w-5xl mx-auto px-4 pt-10 pb-8 text-center">
+        <Link to="/" className="inline-flex items-center gap-2 text-[#C9B99A] text-xs uppercase tracking-[0.2em] hover:text-[#FF9500] transition-colors mb-8">
           <ArrowLeft size={14} /> Home
         </Link>
-        <div className="flex items-center gap-3">
-          <Crown className="text-[#FF9500]" size={28} />
-          <div>
-            <h1 className="text-3xl text-[#F0EBE1]" style={{ fontFamily: 'Newsreader, serif' }}>The Feed</h1>
-            <p className="text-[#C9B99A] text-sm">Dispatches from #TheKingsTake — news, commentary, and live broadcasts.</p>
+        <div className="flex flex-col items-center gap-3">
+          <div className="relative">
+            <Crown className="text-[#FF9500]" size={40} />
+            <div className="absolute inset-0 blur-xl bg-[rgba(255,149,0,0.45)] -z-10 rounded-full" />
           </div>
+          <h1
+            className="text-4xl sm:text-5xl text-[#F0EBE1]"
+            style={{ fontFamily: 'Newsreader, serif', textShadow: '0 0 40px rgba(255,149,0,0.35)' }}
+          >
+            The Feed
+          </h1>
+          <p className="text-[#C9B99A] text-sm sm:text-base max-w-xl">
+            Dispatches from <span className="text-[#FFB840] font-semibold">#TheKingsTake</span> — news, commentary, and live broadcasts. No algorithm in between.
+          </p>
+          <div className="h-px w-40 mt-2 bg-gradient-to-r from-transparent via-[#FF9500] to-transparent" />
         </div>
+      </div>
+
+      {/* Trending rail */}
+      <div className="relative z-10">
+        <TrendingRail />
       </div>
 
       {/* Live broadcast */}
       {liveStatus.data?.live && liveStatus.data.playbackId && (
-        <div className="max-w-2xl mx-auto px-4 mb-6">
+        <div className="relative z-10 max-w-2xl mx-auto px-4 mb-6">
           <div className="rounded-lg overflow-hidden border border-[rgba(255,60,60,0.4)] bg-[#25364B]" style={{ boxShadow: '0 0 40px rgba(255,60,60,0.15)' }}>
             <div className="flex items-center gap-2 px-4 py-2.5 bg-[rgba(255,60,60,0.1)]">
               <span className="relative flex h-2.5 w-2.5">
@@ -129,14 +147,14 @@ export default function FeedPage() {
 
       {/* Admin composer + go live */}
       {isAdmin && (
-        <div className="max-w-2xl mx-auto px-4 mb-6 space-y-4">
+        <div className="relative z-10 max-w-2xl mx-auto px-4 mb-6 space-y-4">
           <FeedComposer onPosted={refresh} />
           <GoLivePanel />
         </div>
       )}
 
       {/* Timeline */}
-      <div className="max-w-2xl mx-auto px-4 pb-20 space-y-5">
+      <div className="relative z-10 max-w-2xl mx-auto px-4 pb-20 space-y-5">
         {isLoading && offset === 0 && (
           <div className="text-center py-16 text-[#C9B99A]"><Loader2 className="animate-spin inline-block mr-2" size={18} />Loading the feed…</div>
         )}
@@ -452,7 +470,8 @@ function PostCard({ post, isAdmin, onChanged }: { post: FeedPost; isAdmin: boole
     <motion.article
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`rounded-lg border bg-[#25364B] p-4 ${post.pinned ? 'border-[rgba(255,149,0,0.5)]' : 'border-[rgba(255,149,0,0.18)]'}`}
+      className={`rounded-lg border p-4 backdrop-blur-sm ${post.pinned ? 'border-[rgba(255,149,0,0.5)] shadow-[0_0_30px_rgba(255,149,0,0.08)]' : 'border-[rgba(255,149,0,0.18)]'}`}
+      style={{ background: 'linear-gradient(165deg, rgba(37,54,75,0.88), rgba(24,38,53,0.92))' }}
     >
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
