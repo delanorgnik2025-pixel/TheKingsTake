@@ -2,33 +2,17 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { LogIn, Crown, AlertTriangle, ArrowLeft } from 'lucide-react'
 import { Link } from 'react-router'
+import { trpc } from '@/providers/trpc'
 
-// ============================================
-// ⚠️ DEVELOPMENT-ONLY AUTHENTICATION ⚠️
-// This is NOT secure for production use.
-// It exists only for development and demo purposes.
-// A production system MUST use server-side sessions with
-// database-backed credentials and proper session management.
-// TODO: Replace with server-side auth before handling sensitive data.
-// ============================================
-
-// SHA-256 hash placeholder — NOT a real security mechanism
-// In production, use bcrypt/Argon2 on the server with database storage
-const ADMIN_PASSWORD_HASH_DEV = 'a7f5c3d9e8b214067f8e4c2a1d0b9536c7e4f8a2b1d0c5e3f7a9b2c4d6e8f0a1b3c5d7e9f1a3b5c7d9e1f3a5b7c9d1e3f5a7b9c1d3e5f7a9b1c3d5e7f9a1b3'
-
-// SHA-256 — client-side only, NOT cryptographically secure for auth
-async function sha256(message: string): Promise<string> {
-  const msgBuffer = new TextEncoder().encode(message)
-  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer)
-  const hashArray = Array.from(new Uint8Array(hashBuffer))
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
-}
+// Server-side admin login — password lives only in the ADMIN_PASSWORD
+// environment variable on the server, never in client code.
 
 export default function AdminLogin() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
+  const adminLogin = trpc.auth.adminLogin.useMutation()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -42,21 +26,15 @@ export default function AdminLogin() {
     }
 
     try {
-      const hash = await sha256(password)
-
-      // ⚠️ DEV ONLY: Client-side hash comparison is NOT secure
-      // Production MUST use server-side bcrypt with database lookup
-      if (hash === ADMIN_PASSWORD_HASH_DEV) {
-        // Generate a simple session token
-        // Server middleware expects admin tokens to start with "admin_"
-        const token = 'admin_' + btoa(hash + Date.now())
-        localStorage.setItem('adminToken', token)
+      const res = await adminLogin.mutateAsync({ password })
+      if (res?.success && res.token) {
+        localStorage.setItem('adminToken', res.token)
         navigate('/admin/dashboard')
       } else {
         setError('Invalid password. Please try again.')
       }
     } catch (err) {
-      setError('An error occurred. Please try again.')
+      setError('Invalid password. Please try again.')
     } finally {
       setLoading(false)
     }
