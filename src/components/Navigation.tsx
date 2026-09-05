@@ -108,9 +108,18 @@ export default function Navigation({ onMenuToggle, onNavClick }: NavigationProps
         <button onClick={onMenuToggle} className="text-[#F0EBE1] text-sm uppercase tracking-[0.04em] hover:text-[#FF9500] transition-colors duration-200 cursor-pointer">MENU</button>
       </div>
 
-      <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden text-[#F0EBE1] cursor-pointer">
-        {mobileOpen ? <X size={24} /> : <Menu size={24} />}
-      </button>
+      <div className="flex items-center gap-3 md:hidden">
+        <Link
+          to={isAdmin ? "/admin/dashboard" : "/admin/login"}
+          className="flex items-center justify-center w-9 h-9 rounded-full border border-[rgba(255,149,0,0.4)] bg-[rgba(255,149,0,0.12)] text-[#FF9500] hover:bg-[rgba(255,149,0,0.25)] transition-colors"
+          aria-label={isAdmin ? "Admin dashboard" : "Admin log in"}
+        >
+          {isAdmin ? <LayoutDashboard size={17} /> : <LogIn size={17} />}
+        </Link>
+        <button onClick={() => setMobileOpen(!mobileOpen)} className="text-[#F0EBE1] cursor-pointer">
+          {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </div>
 
       <AnimatePresence>
         {mobileOpen && (
