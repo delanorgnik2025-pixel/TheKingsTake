@@ -36,7 +36,7 @@ function Ticker() {
     "$15M in Federal Grants for Indigenous Language Preservation",
     "EEOC Reports 23% Surge in Discrimination Complaints by Black Workers",
     "National Archives Completes Dawes Rolls Digitization — 250K Records",
-    "Pre-Order: The African American State of the Union — $19.99",
+    "Pre-Order: The African American State of the Union — Hardcover $39.99 — Out 9/11/2026",
   ]
   return (
     <div className="w-full bg-[#14202E] overflow-hidden py-2 border-b border-[rgba(255,149,0,0.15)]">
@@ -412,7 +412,7 @@ export default function NewsHub() {
                     Every pre-order funds the expansion of truth-telling platforms for our community.
                   </p>
                   <Link to="/pre-order" className="inline-flex items-center gap-1.5 text-[10px] text-[#FF9500] bg-[rgba(255,149,0,0.1)] border border-[rgba(255,149,0,0.25)] rounded-full px-4 py-2 hover:bg-[rgba(255,149,0,0.2)] transition-all font-medium">
-                    Pre-Order $19.99 <ChevronRight size={10} />
+                    Pre-Order $39.99 <ChevronRight size={10} />
                   </Link>
                 </div>
               </ScrollReveal>

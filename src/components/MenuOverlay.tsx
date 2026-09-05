@@ -20,7 +20,7 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
     { label: 'AASOTU Media', href: '/aasotu', icon: <Sparkles size={16} />, desc: 'Media group & brand' },
     { label: 'About', href: '/about-author', icon: <Users size={16} />, desc: 'Ronald Lee King' },
     { label: 'Heritage Map', href: '/#heritage', icon: <Globe size={16} />, desc: 'Explore territories' },
-    { label: 'Pre-Order Book', href: '/pre-order', icon: <ScrollText size={16} />, desc: '$19.99 early access' },
+    { label: 'Pre-Order Book', href: '/pre-order', icon: <ScrollText size={16} />, desc: '$39.99 hardcover — releases 9/11/2026' },
   ]
 
   const isActive = (href: string) => {

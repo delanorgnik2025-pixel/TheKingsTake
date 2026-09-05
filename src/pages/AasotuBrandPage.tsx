@@ -256,7 +256,7 @@ export default function AasotuBrandPage() {
 
                 <div className="flex flex-wrap gap-3 pt-4">
                   <Link to="/pre-order" className="inline-flex items-center gap-2 text-sm bg-[#FF9500] text-[#25364B] rounded-lg px-6 py-3 hover:bg-[#CC6A00] transition-all font-medium">
-                    <BookOpen size={15} /> Pre-Order Now — $19.99
+                    <BookOpen size={15} /> Pre-Order Now — $39.99
                   </Link>
                 </div>
               </div>

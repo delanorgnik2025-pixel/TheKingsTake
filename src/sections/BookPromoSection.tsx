@@ -31,7 +31,7 @@ function PreOrderButton() {
       style={{ boxShadow: '0 4px 16px rgba(255,149,0,0.25)' }}
     >
       <Sparkles size={18} />
-      Pre-Order Now — $19.99
+      Pre-Order Now — $39.99
     </button>
   )
 }
@@ -72,13 +72,13 @@ export default function BookPromoSection() {
                 </div>
 
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-3xl text-[#FF9500] font-medium">$19.99</span>
+                  <span className="text-3xl text-[#FF9500] font-medium">$39.99</span>
                   <div className="flex gap-1">
                     {[1,2,3,4,5].map(i => <Star key={i} size={14} className="text-[#FF9500] fill-[#FF9500]" />)}
                   </div>
                 </div>
-                <p className="text-xs text-[#C9B99A] mb-2">Digital Edition — Pre-Order</p>
-                <p className="text-[10px] text-[#C9B99A]/60 mb-4">Paperback ($24.99) &amp; Signed Edition ($49.99) coming soon</p>
+                <p className="text-xs text-[#C9B99A] mb-2">Hardcover Edition — Pre-Order</p>
+                <p className="text-[10px] text-[#C9B99A]/60 mb-4">Jacketed hardcover · Release date: September 11, 2026 · Ships on publication</p>
                 <PreOrderButton />
 
                 {/* Pre-order guarantees */}

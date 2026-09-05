@@ -7,7 +7,7 @@ function PreOrderButton({ className }: { className?: string }) {
   return (
     <Link to="/pre-order" className={className}>
       <BookOpen size={20} />
-      Pre-Order — $19.99
+      Pre-Order — $39.99
     </Link>
   )
 }

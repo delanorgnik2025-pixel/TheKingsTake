@@ -76,13 +76,13 @@ export default function PreOrderPage() {
             <div className="bg-[rgba(37,54,75,0.6)] border border-[rgba(255,149,0,0.15)] rounded-xl p-6">
               <div className="flex items-baseline justify-between mb-4">
                 <div>
-                  <span className="text-4xl text-[#FF9500] font-medium">$19.99</span>
-                  <span className="text-xs text-[#C9B99A]/50 ml-2 line-through">$24.99</span>
+                  <span className="text-4xl text-[#FF9500] font-medium">$39.99</span>
+                  
                 </div>
-                <span className="text-[10px] uppercase tracking-wider text-[#FF9500] bg-[rgba(255,149,0,0.1)] border border-[rgba(255,149,0,0.2)] rounded-full px-3 py-1">Save 20%</span>
+                <span className="text-[10px] uppercase tracking-wider text-[#FF9500] bg-[rgba(255,149,0,0.1)] border border-[rgba(255,149,0,0.2)] rounded-full px-3 py-1">Release 9/11/2026</span>
               </div>
 
-              <p className="text-sm text-[#C9B99A] mb-6">Digital Edition (PDF + ePub). Pre-order customers receive the book 48 hours before public release.</p>
+              <p className="text-sm text-[#C9B99A] mb-6">Jacketed hardcover, 6×9, 362 pages. Pre-orders ship on publication day — September 11, 2026.</p>
 
               {/* Agreement */}
               <label className="flex items-start gap-3 mb-6 cursor-pointer">
@@ -91,7 +91,7 @@ export default function PreOrderPage() {
                 </div>
                 <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="sr-only" />
                 <span className="text-[11px] text-[#C9B99A]/60 leading-relaxed">
-                  I understand this is a pre-order. The book is still in final production. I will receive my digital copy upon release. I can request a full refund anytime before release.
+                  I understand this is a pre-order. The book releases September 11, 2026 and my copy will ship on publication day. I can request a full refund anytime before release.
                 </span>
               </label>
 
@@ -100,7 +100,7 @@ export default function PreOrderPage() {
                 className="w-full flex items-center justify-center gap-2 rounded-full h-12 bg-[#FF9500] text-[#25364B] hover:bg-[#CC6A00] transition-colors font-medium disabled:opacity-30 disabled:cursor-not-allowed"
                 style={{ boxShadow: '0 4px 16px rgba(255,149,0,0.25)' }}>
                 <Sparkles size={18} />
-                Pre-Order — $19.99
+                Pre-Order — $39.99
               </button>
 
               <div className="flex items-center justify-center gap-1.5 mt-3">
@@ -161,12 +161,12 @@ export default function PreOrderPage() {
           </h2>
           <div className="space-y-3 mb-16">
             {[
-              { q: 'When will I receive my digital copy?', a: 'Pre-order customers will receive their digital copy (PDF + ePub) 48 hours before the public release. Target release is 2026.' },
+              { q: 'When will I receive my copy?', a: 'Pre-order copies ship on publication day — September 11, 2026 — direct from the printer. Delivery time depends on your location.' },
               { q: 'Can I get a refund?', a: 'Yes. You can request a full refund at any time before the book is released. After release, standard digital goods policies apply.' },
-              { q: 'What formats will I receive?', a: 'You will receive both PDF (for computers and printing) and ePub (for e-readers like Kindle, Nook, and Apple Books).' },
-              { q: 'Will there be a paperback version?', a: 'Yes. A paperback edition ($24.99) and a signed edition ($49.99) are planned for release after the digital edition. Pre-order customers will be notified first.' },
+              { q: 'What edition is this?', a: 'The first edition jacketed hardcover — 6×9 inches, 362 pages, matte finish, ISBN 979-8-234-19970-6, printed and distributed by IngramSpark. Paperback and digital editions will follow.' },
+              { q: 'Will there be a paperback version?', a: 'Yes. A paperback edition is planned after the hardcover release. Pre-order customers will be notified first.' },
               { q: 'Is my payment secure?', a: 'All payments are processed through Stripe, the same payment platform used by major companies worldwide. Your card information is never stored on our servers.' },
-              { q: 'Why pre-order instead of waiting?', a: 'Pre-order customers get the lowest price ($19.99 vs $24.99 at release), early access, exclusive updates from the author, and founding reader acknowledgment in the book.' },
+              { q: 'Why pre-order instead of waiting?', a: 'Pre-order customers are first in line on September 11, 2026, get exclusive updates from the author, and receive founding reader acknowledgment. First-edition hardcovers are printed to demand — pre-ordering guarantees your copy.' },
             ].map((faq, i) => (
               <div key={i} className="bg-[rgba(37,54,75,0.3)] border border-[rgba(255,149,0,0.06)] rounded-lg p-4">
                 <p className="text-sm text-[#F0EBE1] font-medium mb-1">{faq.q}</p>
@@ -183,7 +183,7 @@ export default function PreOrderPage() {
               className="inline-flex items-center gap-2 rounded-full h-12 bg-[#FF9500] text-[#25364B] hover:bg-[#CC6A00] transition-colors font-medium px-8 disabled:opacity-30 disabled:cursor-not-allowed"
               style={{ boxShadow: '0 4px 16px rgba(255,149,0,0.25)' }}>
               <Sparkles size={18} />
-              Pre-Order Your Copy — $19.99
+              Pre-Order Your Copy — $39.99
             </button>
             <p className="text-[10px] text-[#C9B99A]/30 mt-3">Secure checkout via Stripe. Full refund guarantee before release.</p>
           </div>
