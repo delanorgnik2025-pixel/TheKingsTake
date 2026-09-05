@@ -7,7 +7,7 @@ import ScrollReveal from '../components/ScrollReveal'
 // ============================================
 // STRIPE PAYMENT LINK — Direct redirect, no API keys needed
 // ============================================
-const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/5kQbIU0Ii2vc2du4IHf7i01'
+const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/dRm6oA62Cc5M19q0srf7i02'
 
 const benefits = [
   { icon: <FileText size={16} />, title: 'Digital Edition', desc: 'PDF + ePub formats for all devices' },
