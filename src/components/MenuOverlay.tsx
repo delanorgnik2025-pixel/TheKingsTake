@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, ArrowUpRight, Users, Globe, Newspaper, PenTool, ScrollText, Shield, Sparkles } from 'lucide-react'
+import { X, ArrowUpRight, Users, Globe, Newspaper, PenTool, ScrollText, Shield, Sparkles, Crown, MapPin } from 'lucide-react'
 
 interface MenuOverlayProps {
   isOpen: boolean
@@ -20,6 +20,8 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
     { label: 'AASOTU Media', href: '/aasotu', icon: <Sparkles size={16} />, desc: 'Media group & brand' },
     { label: 'About', href: '/about-author', icon: <Users size={16} />, desc: 'Ronald Lee King' },
     { label: 'Heritage Map', href: '/#heritage', icon: <Globe size={16} />, desc: 'Explore territories' },
+    { label: 'Deep Roots Pass', href: '/deep-roots', icon: <Crown size={16} />, desc: 'Premium research membership — $12/mo' },
+    { label: 'Land & History Report', href: '/land-report', icon: <MapPin size={16} />, desc: 'Custom research on your family\'s land — from $99' },
     { label: 'Pre-Order Book', href: '/pre-order', icon: <ScrollText size={16} />, desc: '$39.99 hardcover — releases 9/11/2026' },
   ]
 
