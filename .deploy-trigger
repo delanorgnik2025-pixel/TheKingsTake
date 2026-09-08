@@ -1,1 +1,4 @@
-# Deploy trigger 2026-09-09T02:00:00Z
+# Auto-deploy trigger
+# Created: 2026-09-08 21:18:06 UTC
+# Status: ready for Railway webhook reconnect
+# Action: Railway should auto-deploy on next push
