@@ -1,4 +1,4 @@
-# Auto-deploy trigger v2
-# Created: 2026-09-09 01:50:01 UTC
-# Change: Dockerfile cache-bust added
-# Expected: Railway Docker builder invalidates all cached layers
+# Auto-deploy trigger v3
+# Created: 2026-09-09 05:09:12 UTC
+# Change: Dockerfile cache-bust + clean build
+# Expected: Railway Docker builder invalidates all cached layers and rebuilds fresh
