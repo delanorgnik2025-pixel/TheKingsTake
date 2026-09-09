@@ -6,6 +6,8 @@ COPY package.json ./
 RUN npm install --no-audit --prefer-offline
 
 FROM deps AS build
+# Cache-bust: always copy fresh source, never reuse stale layers
+ARG CACHE_BUST=1
 COPY . .
 RUN npx vite build
 

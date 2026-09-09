@@ -1,4 +1,4 @@
-# Auto-deploy trigger
-# Created: 2026-09-08 21:18:06 UTC
-# Status: ready for Railway webhook reconnect
-# Action: Railway should auto-deploy on next push
+# Auto-deploy trigger v2
+# Created: 2026-09-09 01:50:01 UTC
+# Change: Dockerfile cache-bust added
+# Expected: Railway Docker builder invalidates all cached layers
