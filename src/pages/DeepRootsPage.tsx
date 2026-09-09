@@ -6,12 +6,9 @@ import {
   Check, ChevronDown, ArrowLeft, Sparkles, Shield,
 } from 'lucide-react'
 import ScrollReveal from '@/components/ScrollReveal'
+import { STRIPE_LINKS, isPlaceholder } from '@/config/stripe'
 
-// ─── payment links (v1 — simple checkout, manual fulfillment) ────────────────
-const PAYMENT_LINKS = {
-  monthly: 'https://buy.stripe.com/PLACEHOLDER_MONTHLY', // replace with live Stripe link
-  yearly: 'https://buy.stripe.com/PLACEHOLDER_YEARLY',
-}
+
 
 const PERKS = [
   {
@@ -118,10 +115,20 @@ export default function DeepRootsPage() {
               <p className="text-[11px] uppercase tracking-[0.25em] text-[#C9B99A] mb-3">Monthly</p>
               <p className="text-4xl text-[#FF9500] font-medium mb-1" style={{ fontFamily: 'Newsreader, serif' }}>$12</p>
               <p className="text-[#C9B99A] text-sm mb-5">per month · cancel anytime</p>
-              <a href={PAYMENT_LINKS.monthly} target="_blank" rel="noopener noreferrer"
-                className="block w-full py-3 rounded-full bg-[#FF9500] text-[#182635] font-semibold text-sm hover:bg-[#FFB840] transition-colors">
-                Join Monthly
-              </a>
+              {isPlaceholder(STRIPE_LINKS.deepRootsMonthly) ? (
+                <div className="space-y-2">
+                  <p className="text-[#FFB840] text-xs">Stripe link being set up — pay now via:</p>
+                  <a href="https://cash.app/$AASOTU" target="_blank" rel="noopener noreferrer"
+                    className="block w-full py-2.5 rounded-full border border-[#FF9500] text-[#FFB840] text-sm hover:bg-[rgba(255,149,0,0.1)] transition-colors">
+                    Cash App — $AASOTU
+                  </a>
+                </div>
+              ) : (
+                <a href={STRIPE_LINKS.deepRootsMonthly} target="_blank" rel="noopener noreferrer"
+                  className="block w-full py-3 rounded-full bg-[#FF9500] text-[#182635] font-semibold text-sm hover:bg-[#FFB840] transition-colors">
+                  Join Monthly
+                </a>
+              )}
             </div>
             {/* yearly */}
             <div className="relative rounded-xl border-2 border-[#FF9500] p-6 text-center" style={{ background: 'linear-gradient(165deg, rgba(37,54,75,0.95), rgba(24,38,53,1))', boxShadow: '0 0 40px rgba(255,149,0,0.12)' }}>
@@ -131,10 +138,20 @@ export default function DeepRootsPage() {
               <p className="text-[11px] uppercase tracking-[0.25em] text-[#C9B99A] mb-3">Yearly</p>
               <p className="text-4xl text-[#FF9500] font-medium mb-1" style={{ fontFamily: 'Newsreader, serif' }}>$99</p>
               <p className="text-[#C9B99A] text-sm mb-5">per year · <span className="text-[#FFB840]">save $45</span></p>
-              <a href={PAYMENT_LINKS.yearly} target="_blank" rel="noopener noreferrer"
-                className="block w-full py-3 rounded-full bg-[#FF9500] text-[#182635] font-semibold text-sm hover:bg-[#FFB840] transition-colors">
-                Join Yearly
-              </a>
+              {isPlaceholder(STRIPE_LINKS.deepRootsYearly) ? (
+                <div className="space-y-2">
+                  <p className="text-[#FFB840] text-xs">Stripe link being set up — pay now via:</p>
+                  <a href="https://cash.app/$AASOTU" target="_blank" rel="noopener noreferrer"
+                    className="block w-full py-2.5 rounded-full border border-[#FF9500] text-[#FFB840] text-sm hover:bg-[rgba(255,149,0,0.1)] transition-colors">
+                    Cash App — $AASOTU (note: "Yearly Pass")
+                  </a>
+                </div>
+              ) : (
+                <a href={STRIPE_LINKS.deepRootsYearly} target="_blank" rel="noopener noreferrer"
+                  className="block w-full py-3 rounded-full bg-[#FF9500] text-[#182635] font-semibold text-sm hover:bg-[#FFB840] transition-colors">
+                  Join Yearly
+                </a>
+              )}
             </div>
           </div>
         </ScrollReveal>

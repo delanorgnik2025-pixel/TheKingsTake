@@ -5,12 +5,9 @@ import {
 } from 'lucide-react'
 import ScrollReveal from '@/components/ScrollReveal'
 import { trpc } from '@/providers/trpc'
+import { STRIPE_LINKS, isPlaceholder } from '@/config/stripe'
 
-// ─── payment links (v1 — simple checkout, manual fulfillment) ────────────────
-const PAYMENT_LINKS = {
-  basic: 'https://buy.stripe.com/PLACEHOLDER_BASIC99',
-  deep: 'https://buy.stripe.com/PLACEHOLDER_DEEP250',
-}
+
 
 const TIERS = [
   {
@@ -177,10 +174,23 @@ export default function LandReportPage() {
                 <p className="text-[#C9B99A] text-sm mb-5 max-w-md mx-auto">
                   Last step — complete payment to put your report in the research queue. Your details are saved and matched by your email.
                 </p>
-                <a href={PAYMENT_LINKS[form.tier]} target="_blank" rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-[#FF9500] text-[#182635] font-semibold text-sm hover:bg-[#FFB840] transition-colors">
-                  Pay {form.tier === 'basic' ? '$99 — Foundation' : '$250 — Deep Roots'} via Stripe
-                </a>
+                {(() => {
+                  const link = form.tier === 'basic' ? STRIPE_LINKS.landReportFoundation : STRIPE_LINKS.landReportDeepRoots
+                  return isPlaceholder(link) ? (
+                    <div className="space-y-2">
+                      <p className="text-[#FFB840] text-xs">Stripe link being set up — pay now via:</p>
+                      <a href={`https://cash.app/$AASOTU`} target="_blank" rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-8 py-3 rounded-full border border-[#FF9500] text-[#FFB840] font-semibold text-sm hover:bg-[rgba(255,149,0,0.1)] transition-colors">
+                        Cash App — $AASOTU (note: "{form.tier === 'basic' ? 'Foundation Report' : 'Deep Roots Report'}")
+                      </a>
+                    </div>
+                  ) : (
+                    <a href={link} target="_blank" rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-[#FF9500] text-[#182635] font-semibold text-sm hover:bg-[#FFB840] transition-colors">
+                      Pay {form.tier === 'basic' ? '$99 — Foundation' : '$250 — Deep Roots'} via Stripe
+                    </a>
+                  )
+                })()}
                 <p className="text-[#C9B99A]/50 text-[11px] mt-3">Cash App & PayPal also accepted — include your email in the memo.</p>
               </div>
             ) : (
