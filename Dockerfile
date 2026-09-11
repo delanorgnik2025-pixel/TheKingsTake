@@ -3,9 +3,7 @@ WORKDIR /app
 
 FROM base AS deps
 COPY package.json package-lock.json ./
-# Force cache invalidation on every build — critical for Railway Docker layer caching
-ARG CACHE_BUST=1
-RUN npm cache clean --force && npm ci --no-audit
+RUN npm ci --no-audit
 
 FROM deps AS build
 COPY . .
