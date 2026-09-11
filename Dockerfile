@@ -2,14 +2,12 @@ FROM node:20-alpine AS base
 WORKDIR /app
 
 FROM base AS deps
-COPY package.json package-lock.json* ./
-RUN npm ci --no-audit
+COPY package.json package-lock.json ./
+# Force cache invalidation on every build — critical for Railway Docker layer caching
+ARG CACHE_BUST=1
+RUN npm cache clean --force && npm ci --no-audit
 
 FROM deps AS build
-# Force cache invalidation on every build
-ARG RAILWAY_GIT_COMMIT_SHA=unknown
-ARG BUILD_TIMESTAMP=unknown
-RUN echo "Building commit: $RAILWAY_GIT_COMMIT_SHA at $BUILD_TIMESTAMP"
 COPY . .
 # Clean build — remove any stale dist first
 RUN rm -rf dist && npx vite build
