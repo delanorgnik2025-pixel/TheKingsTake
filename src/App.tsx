@@ -30,6 +30,7 @@ const ContactPage = lazy(() => import('./pages/ContactPage'))
 const WorkWithUsPage = lazy(() => import('./pages/WorkWithUsPage'))
 const DeepRootsPage = lazy(() => import('./pages/DeepRootsPage'))
 const LandReportPage = lazy(() => import('./pages/LandReportPage'))
+const FoundationalBlackAmericanPage = lazy(() => import('./pages/FoundationalBlackAmericanPage'))
 // Ancestor Root Registry & Ancestor Realm pages retained in repo for future development; routes currently offline.
 
 function AppLayout({ children }: { children: React.ReactNode }) {
@@ -96,6 +97,7 @@ function AppRoutes() {
           <Route path="/work-with-us" element={<WorkWithUsPage />} />
           <Route path="/deep-roots" element={<DeepRootsPage />} />
           <Route path="/land-report" element={<LandReportPage />} />
+          <Route path="/fba" element={<FoundationalBlackAmericanPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>

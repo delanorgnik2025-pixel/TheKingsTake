@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, ArrowUpRight, Users, Globe, Newspaper, PenTool, ScrollText, Shield, Sparkles, Crown, MapPin } from 'lucide-react'
+import { X, ArrowUpRight, Users, Globe, Newspaper, PenTool, ScrollText, Shield, Sparkles, Crown, MapPin, Landmark } from 'lucide-react'
 
 interface MenuOverlayProps {
   isOpen: boolean
@@ -22,6 +22,7 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
     { label: 'Heritage Map', href: '/#heritage', icon: <Globe size={16} />, desc: 'Explore territories' },
     { label: 'Deep Roots Pass', href: '/deep-roots', icon: <Crown size={16} />, desc: 'Premium research membership — $12/mo' },
     { label: 'Land & History Report', href: '/land-report', icon: <MapPin size={16} />, desc: 'Custom research on your family\'s land — from $99' },
+    { label: 'Foundational Black American', href: '/fba', icon: <Landmark size={16} />, desc: 'Our lineage, our history, our story' },
     { label: 'Pre-Order Book', href: '/pre-order', icon: <ScrollText size={16} />, desc: '$39.99 hardcover — releases 9/11/2026' },
   ]
 

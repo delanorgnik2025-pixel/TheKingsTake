@@ -1,4 +1,3 @@
-# Auto-deploy trigger v3
-# Created: 2026-09-09 05:09:12 UTC
-# Change: Dockerfile cache-bust + clean build
-# Expected: Railway Docker builder invalidates all cached layers and rebuilds fresh
+# Auto-deploy trigger v4
+# Created: 2026-09-11 00:00:55 UTC
+# Change: FBA page + NewsletterSignup + route + menu
