@@ -3,7 +3,7 @@ WORKDIR /app
 
 FROM base AS deps
 COPY package.json package-lock.json* ./
-RUN npm ci --no-audit --prefer-offline
+RUN npm ci --no-audit
 
 FROM deps AS build
 # Force cache invalidation on every build
