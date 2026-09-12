@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, ArrowUpRight, Users, Globe, Newspaper, PenTool, ScrollText, Shield, Sparkles, Crown, MapPin } from 'lucide-react'
+import { X, ArrowUpRight, Users, Globe, Newspaper, PenTool, ScrollText, Shield, Sparkles, Crown, MapPin, Flame, Calendar, Landmark } from 'lucide-react'
 
 interface MenuOverlayProps {
   isOpen: boolean
@@ -14,6 +14,9 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
 
   const menuItems = [
     { label: 'Home', href: '/', icon: null, desc: 'Main page' },
+    { label: 'Sign the Petition', href: '/petition', icon: <Flame size={16} />, desc: 'Demand FBA federal recognition', highlight: true },
+    { label: 'Book Consultation', href: '/consultation', icon: <Calendar size={16} />, desc: 'One-on-one with Ronald Lee King', highlight: true },
+    { label: 'Foundational Black American', href: '/fba', icon: <Landmark size={16} />, desc: 'Our lineage, identity, and claim' },
     { label: 'The Feed', href: '/feed', icon: <Newspaper size={16} />, desc: 'News, posts & live broadcasts' },
     { label: 'Writing Services', href: '/writing-services', icon: <PenTool size={16} />, desc: 'All writing offerings' },
     { label: 'Civics', href: '/civics', icon: <Shield size={16} />, desc: 'Know your rights' },
@@ -69,7 +72,7 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
                   )}
                   <div className="flex-1 min-w-0">
                     <span className={`text-base font-medium tracking-wide transition-colors ${
-                      isActive(item.href) ? 'text-[#FF9500]' : 'text-[#F0EBE1] group-hover:text-[#FF9500]'
+                      isActive(item.href) ? 'text-[#FF9500]' : item.highlight ? 'text-[#FFB840] group-hover:text-[#FF9500]' : 'text-[#F0EBE1] group-hover:text-[#FF9500]'
                     }`}>
                       {item.label}
                     </span>

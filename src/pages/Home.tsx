@@ -11,6 +11,7 @@ import NewsTicker from '../components/NewsTicker'
 import FeedSection from '../sections/FeedSection'
 
 import ContactSection from '../sections/ContactSection'
+import ActionCTASection from '../sections/ActionCTASection'
 
 export default function HomePage() {
   return (
@@ -20,6 +21,9 @@ export default function HomePage() {
 
       {/* 1. Ronald's Cosmic Portrait — Indigenous Aboriginal Royal American */}
       <HeroPortraitSection />
+
+      {/* 1.5 Action CTAs — Petition + Consultation (elevated importance) */}
+      <ActionCTASection />
 
       {/* 2. Book Promo + Blog Feed + Video Box */}
       <MarqueeDivider text="#TheKingsTake — From the Loins of the Beast — The African American State of the Union — Pre-Order Now" />
