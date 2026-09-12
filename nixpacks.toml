@@ -3,13 +3,13 @@ NODE_OPTIONS = "--max-old-space-size=4096"
 NPM_CONFIG_PRODUCTION = "false"
 
 [phases.install]
-cmds = ["npm ci"]
+cmds = ["npm ci --no-optional --prefer-offline"]
 
 [phases.build]
 cmds = ["npx vite build"]
 
 [phases.setup]
-nixPkgs = ["nodejs_20"]
+nixPkgs = ["nodejs_22"]
 
 [start]
 cmd = "npm run start:server"
