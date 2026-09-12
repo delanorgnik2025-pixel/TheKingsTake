@@ -1,6 +1,9 @@
 [variables]
 NODE_OPTIONS = "--max-old-space-size=4096"
 
+[phases.install]
+cmds = ["npm ci"]
+
 [phases.build]
 cmds = ["npx vite build"]
 
