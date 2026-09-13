@@ -4,8 +4,8 @@ import { TRPCError } from "@trpc/server";
 import { SignJWT, jwtVerify } from "jose";
 import { createHash, randomBytes } from "crypto";
 import { createRouter, publicQuery } from "./middleware";
-import { db } from "../db";
-import { members, feedComments, feedLikes, feedPosts } from "../db/schema";
+import { getDb } from "./queries/connection";
+import { members, feedComments, feedLikes, feedPosts } from "@db/schema";
 
 const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || process.env.ADMIN_PASSWORD || "thekingstake-member-secret"
@@ -48,7 +48,7 @@ async function getMemberFromRequest(req: Request) {
   if (!token) return null;
   const payload = await verifyMemberToken(token);
   if (!payload) return null;
-  const rows = await db.select().from(members).where(eq(members.id, payload.memberId)).limit(1);
+  const rows = await getDb().select().from(members).where(eq(members.id, payload.memberId)).limit(1);
   if (rows.length === 0 || !rows[0].isActive) return null;
   return rows[0];
 }
@@ -77,7 +77,7 @@ export const memberRouter = createRouter({
       const { hash, salt } = hashPassword(input.password);
       const passwordHash = `${salt}:${hash}`;
 
-      const result = await db.insert(members).values({
+      const result = await getDb().insert(members).values({
         name: input.name,
         email: input.email,
         passwordHash,
@@ -192,7 +192,7 @@ export const memberRouter = createRouter({
         throw new TRPCError({ code: "UNAUTHORIZED", message: "Members only. Please log in." });
       }
 
-      const result = await db.insert(feedPosts).values({
+      const result = await getDb().insert(feedPosts).values({
         body: input.body,
         imageUrl: input.imageUrl || null,
       });
@@ -214,7 +214,7 @@ export const memberRouter = createRouter({
         throw new TRPCError({ code: "UNAUTHORIZED", message: "Members only. Please log in." });
       }
 
-      await db.insert(feedComments).values({
+      await getDb().insert(feedComments).values({
         postId: input.postId,
         memberId: member.id,
         content: input.content,
@@ -272,7 +272,7 @@ export const memberRouter = createRouter({
         return { liked: false };
       } else {
         // Like
-        await db.insert(feedLikes).values({
+        await getDb().insert(feedLikes).values({
           postId: input.postId,
           memberId: member.id,
         });
