@@ -1,6 +1,6 @@
 [variables]
 NODE_OPTIONS = "--max-old-space-size=2048"
-NPM_CONFIG_PRODUCTION = "true"
+NPM_CONFIG_PRODUCTION = "false"
 
 [phases.install]
 cmds = ["npm ci --prefer-offline"]
