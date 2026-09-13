@@ -279,6 +279,47 @@ export const feedPosts = mysqlTable("feed_posts", {
   updatedAt: timestamp("updated_at").defaultNow().notNull().$onUpdate(() => new Date()),
 });
 
+// ─── Members (Community / Subscriber Access) ────────────────────────────────
+export const members = mysqlTable("members", {
+  id: serial("id").primaryKey(),
+  email: varchar("email", { length: 320 }).notNull().unique(),
+  passwordHash: varchar("password_hash", { length: 255 }).notNull(),
+  name: varchar("name", { length: 255 }).notNull(),
+  avatar: text("avatar"),
+  facebookSubscribed: boolean("facebook_subscribed").default(false).notNull(),
+  isActive: boolean("is_active").default(true).notNull(),
+  role: mysqlEnum("role", ["member", "moderator", "admin"]).default("member").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull().$onUpdate(() => new Date()),
+});
+
+export type Member = typeof members.$inferSelect;
+export type InsertMember = typeof members.$inferInsert;
+
+// ─── Feed Comments ──────────────────────────────────────────────────────────
+export const feedComments = mysqlTable("feed_comments", {
+  id: serial("id").primaryKey(),
+  postId: bigint("post_id", { mode: "number", unsigned: true }).notNull(),
+  memberId: bigint("member_id", { mode: "number", unsigned: true }).notNull(),
+  content: text("content").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull().$onUpdate(() => new Date()),
+});
+
+export type FeedComment = typeof feedComments.$inferSelect;
+export type InsertFeedComment = typeof feedComments.$inferInsert;
+
+// ─── Feed Likes ─────────────────────────────────────────────────────────────
+export const feedLikes = mysqlTable("feed_likes", {
+  id: serial("id").primaryKey(),
+  postId: bigint("post_id", { mode: "number", unsigned: true }).notNull(),
+  memberId: bigint("member_id", { mode: "number", unsigned: true }).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type FeedLike = typeof feedLikes.$inferSelect;
+export type InsertFeedLike = typeof feedLikes.$inferInsert;
+
 // ─── Live Streams (Mux) ─────────────────────────────────────────────────────
 export const liveStreams = mysqlTable("live_streams", {
   id: serial("id").primaryKey(),

@@ -14,8 +14,12 @@ const trpcClient = trpc.createClient({
       url: "/api/trpc",
       transformer: superjson,
       headers() {
-        const token = localStorage.getItem("adminToken");
-        return token ? { "x-admin-token": token } : {};
+        const adminToken = localStorage.getItem("adminToken");
+        const memberToken = localStorage.getItem("memberToken");
+        const headers: Record<string, string> = {};
+        if (adminToken) headers["x-admin-token"] = adminToken;
+        if (memberToken) headers["x-member-token"] = memberToken;
+        return headers;
       },
       fetch(input, init) {
         return globalThis.fetch(input, {

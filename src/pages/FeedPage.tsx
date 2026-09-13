@@ -1,12 +1,16 @@
 import { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import MuxPlayer from '@mux/mux-player-react'
 import {
   Crown, Heart, Link2, Image as ImageIcon, Video, Radio, Pin, PinOff, Trash2,
   Send, Copy, Check, Loader2, Square, ArrowLeft, ExternalLink, RefreshCw,
+  MessageCircle, User, LogIn, LogOut, Lock, Users, BookOpen, Star,
+  Flame, Calendar, Landmark, ChevronDown, ChevronUp,
 } from 'lucide-react'
 import { trpc } from '@/providers/trpc'
+import { useMember } from '@/providers/MemberProvider'
+import MemberAuthModal from '@/components/MemberAuthModal'
 import NewsTicker from '@/components/NewsTicker'
 import TrendingRail from '@/components/TrendingRail'
 import FeedBackdrop from '@/components/FeedBackdrop'
@@ -60,7 +64,9 @@ export default function FeedPage() {
   const [isAdmin, setIsAdmin] = useState(false)
   const [offset, setOffset] = useState(0)
   const [allPosts, setAllPosts] = useState<FeedPost[]>([])
+  const [showAuth, setShowAuth] = useState(false)
   const PAGE = 10
+  const { member, logout } = useMember()
 
   useEffect(() => {
     setIsAdmin(!!localStorage.getItem('adminToken'))
@@ -90,12 +96,15 @@ export default function FeedPage() {
     <div className="min-h-screen bg-[#182635] relative">
       <FeedBackdrop />
 
+      {/* Auth Modal */}
+      <MemberAuthModal isOpen={showAuth} onClose={() => setShowAuth(false)} />
+
       <div className="relative z-10 pt-16">
         <NewsTicker />
       </div>
 
       {/* Header */}
-      <div className="relative z-10 max-w-5xl mx-auto px-4 pt-10 pb-8 text-center">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 pt-10 pb-8 text-center">
         <Link to="/" className="inline-flex items-center gap-2 text-[#C9B99A] text-xs uppercase tracking-[0.2em] hover:text-[#FF9500] transition-colors mb-8">
           <ArrowLeft size={14} /> Home
         </Link>
@@ -124,7 +133,7 @@ export default function FeedPage() {
 
       {/* Live broadcast */}
       {liveStatus.data?.live && liveStatus.data.playbackId && (
-        <div className="relative z-10 max-w-2xl mx-auto px-4 mb-6">
+        <div className="relative z-10 max-w-6xl mx-auto px-4 mb-6">
           <div className="rounded-lg overflow-hidden border border-[rgba(255,60,60,0.4)] bg-[#25364B]" style={{ boxShadow: '0 0 40px rgba(255,60,60,0.15)' }}>
             <div className="flex items-center gap-2 px-4 py-2.5 bg-[rgba(255,60,60,0.1)]">
               <span className="relative flex h-2.5 w-2.5">
@@ -145,37 +154,238 @@ export default function FeedPage() {
         </div>
       )}
 
-      {/* Admin composer + go live */}
-      {isAdmin && (
-        <div className="relative z-10 max-w-2xl mx-auto px-4 mb-6 space-y-4">
-          <FeedComposer onPosted={refresh} />
-          <GoLivePanel />
+      {/* Main content: Feed + Sidebar */}
+      <div className="relative z-10 max-w-6xl mx-auto px-4 pb-20 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
+        {/* Left column: Composer + Feed */}
+        <div className="space-y-5">
+          {/* Member bar */}
+          <div className="rounded-lg border border-[rgba(255,149,0,0.18)] bg-[#25364B]/80 backdrop-blur-sm p-3 flex items-center justify-between">
+            {member ? (
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-[rgba(255,149,0,0.15)] border border-[rgba(255,149,0,0.4)] flex items-center justify-center">
+                  {member.avatar ? (
+                    <img src={member.avatar} alt="" className="w-full h-full rounded-full object-cover" />
+                  ) : (
+                    <User size={16} className="text-[#FF9500]" />
+                  )}
+                </div>
+                <div>
+                  <p className="text-[#F0EBE1] text-sm font-medium">{member.name}</p>
+                  <p className="text-[#C9B99A] text-[10px] uppercase tracking-wider">Royal Member</p>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-full bg-[#182635] border border-[rgba(255,149,0,0.2)] flex items-center justify-center">
+                  <Lock size={16} className="text-[#C9B99A]/50" />
+                </div>
+                <div>
+                  <p className="text-[#F0EBE1] text-sm font-medium">Guest</p>
+                  <p className="text-[#C9B99A] text-[10px]">Sign in to post & comment</p>
+                </div>
+              </div>
+            )}
+            {member ? (
+              <button
+                onClick={logout}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-[#C9B99A] hover:text-red-400 border border-[rgba(255,149,0,0.15)] rounded hover:border-red-400/30 transition-colors"
+              >
+                <LogOut size={13} /> Sign Out
+              </button>
+            ) : (
+              <button
+                onClick={() => setShowAuth(true)}
+                className="flex items-center gap-1.5 px-4 py-1.5 bg-[#FF9500] text-[#182635] text-xs font-bold rounded hover:bg-[#CC6A00] transition-colors"
+              >
+                <LogIn size={13} /> Join / Log In
+              </button>
+            )}
+          </div>
+
+          {/* Admin composer */}
+          {isAdmin && (
+            <div className="space-y-4">
+              <FeedComposer onPosted={refresh} />
+              <GoLivePanel />
+            </div>
+          )}
+
+          {/* Member composer */}
+          {member && <MemberComposer onPosted={refresh} />}
+
+          {/* Timeline */}
+          {isLoading && offset === 0 && (
+            <div className="text-center py-16 text-[#C9B99A]"><Loader2 className="animate-spin inline-block mr-2" size={18} />Loading the feed…</div>
+          )}
+          {!isLoading && allPosts.length === 0 && (
+            <div className="text-center py-16 border border-dashed border-[rgba(255,149,0,0.25)] rounded-lg">
+              <Crown className="mx-auto text-[#FF9500] mb-3" size={32} />
+              <p className="text-[#F0EBE1] text-lg" style={{ fontFamily: 'Newsreader, serif' }}>The feed opens soon.</p>
+              <p className="text-[#C9B99A] text-sm mt-1">The first dispatch is being prepared. Check back shortly.</p>
+            </div>
+          )}
+          {allPosts.map((post) => (
+            <PostCard key={post.id} post={post} isAdmin={isAdmin} onChanged={refresh} />
+          ))}
+          {allPosts.length > 0 && allPosts.length % PAGE === 0 && (
+            <button
+              onClick={() => setOffset(allPosts.length)}
+              className="w-full py-3 rounded border border-[rgba(255,149,0,0.3)] text-[#FFB840] text-sm uppercase tracking-[0.15em] hover:bg-[rgba(255,149,0,0.08)] transition-colors"
+            >
+              Load older posts
+            </button>
+          )}
         </div>
+
+        {/* Right column: Sidebar */}
+        <aside className="hidden lg:block space-y-5">
+          {/* Subscribe CTA */}
+          <div className="rounded-xl border border-[rgba(255,149,0,0.25)] bg-gradient-to-b from-[#25364B] to-[#1A2A3D] p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <Crown size={20} className="text-[#FF9500]" />
+              <h3 className="text-[#F0EBE1] font-bold text-sm">Join the Royal Circle</h3>
+            </div>
+            <p className="text-[#C9B99A] text-xs leading-relaxed mb-4">
+              Become a member to post on the feed, comment, like, and access exclusive educational content.
+            </p>
+            <div className="space-y-2 mb-4">
+              {[
+                { icon: MessageCircle, text: "Post to the community feed" },
+                { icon: Heart, text: "Like and comment on posts" },
+                { icon: BookOpen, text: "Exclusive educational series" },
+                { icon: Calendar, text: "Live Q&A session access" },
+                { icon: Landmark, text: "FBA research & history docs" },
+              ].map(({ icon: Icon, text }) => (
+                <div key={text} className="flex items-center gap-2 text-xs text-[#C9B99A]">
+                  <Icon size={12} className="text-[#FF9500] shrink-0" />
+                  <span>{text}</span>
+                </div>
+              ))}
+            </div>
+            <button
+              onClick={() => setShowAuth(true)}
+              className="w-full py-2.5 bg-[#FF9500] text-[#182635] text-xs font-bold rounded-lg hover:bg-[#CC6A00] transition-colors"
+            >
+              Join Free — Become a Member
+            </button>
+            <a
+              href="https://www.facebook.com/thekingstake"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-1.5 mt-2 text-[10px] text-[#C9B99A]/60 hover:text-[#FF9500] transition-colors"
+            >
+              <ExternalLink size={10} /> Also subscribe on Facebook
+            </a>
+          </div>
+
+          {/* Quick Links */}
+          <div className="rounded-xl border border-[rgba(255,149,0,0.15)] bg-[#25364B]/60 p-5">
+            <h3 className="text-[#F0EBE1] font-bold text-sm mb-3 flex items-center gap-2">
+              <Flame size={16} className="text-[#FF9500]" /> Take Action
+            </h3>
+            <div className="space-y-2">
+              <Link to="/petition" className="flex items-center gap-2 p-2.5 rounded-lg bg-[#182635] border border-[rgba(255,149,0,0.1)] hover:border-[#FF9500]/30 transition-colors group">
+                <Landmark size={14} className="text-[#FF9500]" />
+                <span className="text-xs text-[#C9B99A] group-hover:text-[#F0EBE1] transition-colors">Sign the FBA Petition</span>
+              </Link>
+              <Link to="/consultation" className="flex items-center gap-2 p-2.5 rounded-lg bg-[#182635] border border-[rgba(255,149,0,0.1)] hover:border-[#FF9500]/30 transition-colors group">
+                <Calendar size={14} className="text-[#FF9500]" />
+                <span className="text-xs text-[#C9B99A] group-hover:text-[#F0EBE1] transition-colors">Book a Consultation</span>
+              </Link>
+              <Link to="/fba" className="flex items-center gap-2 p-2.5 rounded-lg bg-[#182635] border border-[rgba(255,149,0,0.1)] hover:border-[#FF9500]/30 transition-colors group">
+                <Star size={14} className="text-[#FF9500]" />
+                <span className="text-xs text-[#C9B99A] group-hover:text-[#F0EBE1] transition-colors">Foundational Black American</span>
+              </Link>
+            </div>
+          </div>
+
+          {/* Members Online */}
+          <div className="rounded-xl border border-[rgba(255,149,0,0.15)] bg-[#25364B]/60 p-5">
+            <h3 className="text-[#F0EBE1] font-bold text-sm mb-3 flex items-center gap-2">
+              <Users size={16} className="text-[#FF9500]" /> Community
+            </h3>
+            <p className="text-[#C9B99A] text-xs leading-relaxed">
+              Connect with others reclaiming our history. Share your lineage, ask questions, and build together.
+            </p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  )
+}
+
+// ─── member composer ──────────────────────────────────────────────────────────
+function MemberComposer({ onPosted }: { onPosted: () => void }) {
+  const [body, setBody] = useState('')
+  const [imageUrl, setImageUrl] = useState('')
+  const [showImage, setShowImage] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const createMutation = trpc.member.createFeedPost.useMutation()
+
+  const submit = async () => {
+    const text = body.trim()
+    if (!text) return
+    setLoading(true)
+    try {
+      await createMutation.mutateAsync({
+        body: text,
+        imageUrl: imageUrl.trim() || '',
+      })
+      setBody('')
+      setImageUrl('')
+      setShowImage(false)
+      onPosted()
+    } catch (err: any) {
+      alert(err?.message || 'Could not post')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="rounded-lg border border-[rgba(255,149,0,0.2)] bg-[#25364B]/80 backdrop-blur-sm p-4">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-9 h-9 rounded-full bg-[rgba(255,149,0,0.15)] border border-[rgba(255,149,0,0.4)] flex items-center justify-center">
+          <Crown size={16} className="text-[#FF9500]" />
+        </div>
+        <div>
+          <p className="text-[#F0EBE1] text-sm font-medium">Share with the Community</p>
+          <p className="text-[#C9B99A] text-[10px] uppercase tracking-wider">Post text or images</p>
+        </div>
+      </div>
+
+      <textarea
+        value={body}
+        onChange={(e) => setBody(e.target.value)}
+        placeholder="What's on your mind, Royal?"
+        rows={2}
+        className="w-full bg-[#182635] border border-[rgba(255,149,0,0.15)] rounded px-3 py-2.5 text-[#F0EBE1] text-sm placeholder-[#C9B99A]/40 focus:outline-none focus:border-[#FF9500] resize-y"
+      />
+
+      {showImage && (
+        <input
+          value={imageUrl}
+          onChange={(e) => setImageUrl(e.target.value)}
+          placeholder="Image URL (https://...)"
+          className="mt-2 w-full bg-[#182635] border border-[rgba(255,149,0,0.15)] rounded px-3 py-2 text-[#F0EBE1] text-sm placeholder-[#C9B99A]/40 focus:outline-none focus:border-[#FF9500]"
+        />
       )}
 
-      {/* Timeline */}
-      <div className="relative z-10 max-w-2xl mx-auto px-4 pb-20 space-y-5">
-        {isLoading && offset === 0 && (
-          <div className="text-center py-16 text-[#C9B99A]"><Loader2 className="animate-spin inline-block mr-2" size={18} />Loading the feed…</div>
-        )}
-        {!isLoading && allPosts.length === 0 && (
-          <div className="text-center py-16 border border-dashed border-[rgba(255,149,0,0.25)] rounded-lg">
-            <Crown className="mx-auto text-[#FF9500] mb-3" size={32} />
-            <p className="text-[#F0EBE1] text-lg" style={{ fontFamily: 'Newsreader, serif' }}>The feed opens soon.</p>
-            <p className="text-[#C9B99A] text-sm mt-1">The first dispatch is being prepared. Check back shortly.</p>
-          </div>
-        )}
-        {allPosts.map((post) => (
-          <PostCard key={post.id} post={post} isAdmin={isAdmin} onChanged={refresh} />
-        ))}
-        {allPosts.length > 0 && allPosts.length % PAGE === 0 && (
-          <button
-            onClick={() => setOffset(allPosts.length)}
-            className="w-full py-3 rounded border border-[rgba(255,149,0,0.3)] text-[#FFB840] text-sm uppercase tracking-[0.15em] hover:bg-[rgba(255,149,0,0.08)] transition-colors"
-          >
-            Load older posts
-          </button>
-        )}
+      <div className="flex items-center justify-between mt-3 pt-3 border-t border-[rgba(240,235,225,0.06)]">
+        <button
+          onClick={() => setShowImage(!showImage)}
+          className={`p-2 rounded transition-colors ${showImage ? 'text-[#FF9500] bg-[rgba(255,149,0,0.12)]' : 'text-[#C9B99A] hover:text-[#FF9500]'}`}
+          title="Add image"
+        >
+          <ImageIcon size={17} />
+        </button>
+        <button
+          onClick={submit}
+          disabled={loading || !body.trim()}
+          className="flex items-center gap-2 px-4 py-2 bg-[#FF9500] text-[#182635] text-xs font-bold rounded hover:bg-[#CC6A00] transition-colors disabled:opacity-40"
+        >
+          {loading ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />} Post
+        </button>
       </div>
     </div>
   )
@@ -231,7 +441,6 @@ function FeedComposer({ onPosted }: { onPosted: () => void }) {
     if (!text) return
     setStatus('')
 
-    // Retry path for a previously uploaded video
     if (pendingRef.current && videoMode === 'file') {
       await finishMuxPost(pendingRef.current.uploadId, text)
       return
@@ -453,86 +662,179 @@ function GoLivePanel() {
 
 // ─── post card ────────────────────────────────────────────────────────────────
 function PostCard({ post, isAdmin, onChanged }: { post: FeedPost; isAdmin: boolean; onChanged: () => void }) {
-  const [likes, setLikes] = useState(post.likesCount)
-  const [liked, setLiked] = useState(false)
-  const likeMutation = trpc.feed.like.useMutation()
+  const [showComments, setShowComments] = useState(false)
+  const [commentText, setCommentText] = useState('')
+  const [showAuth, setShowAuth] = useState(false)
+  const { member } = useMember()
+
+  const likeMutation = trpc.member.likePost.useMutation()
+  const isLikedQuery = trpc.member.isLiked.useQuery({ postId: post.id }, { enabled: !!member })
+  const commentsQuery = trpc.member.listComments.useQuery({ postId: post.id }, { enabled: showComments })
+  const createComment = trpc.member.createComment.useMutation()
   const deleteMutation = trpc.feed.delete.useMutation({ onSuccess: onChanged })
   const pinMutation = trpc.feed.togglePin.useMutation({ onSuccess: onChanged })
+  const utils = trpc.useUtils()
 
-  const like = () => {
-    if (liked) return
-    setLiked(true)
-    setLikes((n) => n + 1)
-    likeMutation.mutate({ id: post.id })
+  const handleLike = async () => {
+    if (!member) {
+      setShowAuth(true)
+      return
+    }
+    await likeMutation.mutateAsync({ postId: post.id })
+    utils.member.isLiked.invalidate({ postId: post.id })
+    utils.feed.list.invalidate()
+  }
+
+  const handleComment = async () => {
+    if (!member) {
+      setShowAuth(true)
+      return
+    }
+    if (!commentText.trim()) return
+    await createComment.mutateAsync({ postId: post.id, content: commentText.trim() })
+    setCommentText('')
+    utils.member.listComments.invalidate({ postId: post.id })
+    utils.feed.list.invalidate()
   }
 
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      className={`rounded-lg border p-4 backdrop-blur-sm ${post.pinned ? 'border-[rgba(255,149,0,0.5)] shadow-[0_0_30px_rgba(255,149,0,0.08)]' : 'border-[rgba(255,149,0,0.18)]'}`}
-      style={{ background: 'linear-gradient(165deg, rgba(37,54,75,0.88), rgba(24,38,53,0.92))' }}
-    >
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-[rgba(255,149,0,0.15)] border border-[rgba(255,149,0,0.4)] flex items-center justify-center shrink-0">
-            <Crown size={18} className="text-[#FF9500]" />
+    <>
+      <MemberAuthModal isOpen={showAuth} onClose={() => setShowAuth(false)} />
+      <motion.article
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        className={`rounded-lg border p-4 backdrop-blur-sm ${post.pinned ? 'border-[rgba(255,149,0,0.5)] shadow-[0_0_30px_rgba(255,149,0,0.08)]' : 'border-[rgba(255,149,0,0.18)]'}`}
+        style={{ background: 'linear-gradient(165deg, rgba(37,54,75,0.88), rgba(24,38,53,0.92))' }}
+      >
+        <div className="flex items-start justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-[rgba(255,149,0,0.15)] border border-[rgba(255,149,0,0.4)] flex items-center justify-center shrink-0">
+              <Crown size={18} className="text-[#FF9500]" />
+            </div>
+            <div>
+              <p className="text-[#F0EBE1] text-sm font-medium">Ronald Lee King <span className="text-[#FF9500]">· #TheKingsTake</span></p>
+              <p className="text-[#C9B99A] text-[11px]">{timeAgo(post.createdAt)}{post.pinned && <span className="text-[#FFB840] ml-2">· Pinned</span>}</p>
+            </div>
           </div>
-          <div>
-            <p className="text-[#F0EBE1] text-sm font-medium">Ronald Lee King <span className="text-[#FF9500]">· #TheKingsTake</span></p>
-            <p className="text-[#C9B99A] text-[11px]">{timeAgo(post.createdAt)}{post.pinned && <span className="text-[#FFB840] ml-2">· Pinned</span>}</p>
-          </div>
+          {isAdmin && (
+            <div className="flex gap-1 shrink-0">
+              <button title={post.pinned ? 'Unpin' : 'Pin to top'} onClick={() => pinMutation.mutate({ id: post.id })}
+                className="p-1.5 text-[#C9B99A] hover:text-[#FFB840] transition-colors">
+                {post.pinned ? <PinOff size={15} /> : <Pin size={15} />}
+              </button>
+              <button title="Delete post" onClick={() => { if (confirm('Delete this post?')) deleteMutation.mutate({ id: post.id }) }}
+                className="p-1.5 text-[#C9B99A] hover:text-red-400 transition-colors">
+                <Trash2 size={15} />
+              </button>
+            </div>
+          )}
         </div>
-        {isAdmin && (
-          <div className="flex gap-1 shrink-0">
-            <button title={post.pinned ? 'Unpin' : 'Pin to top'} onClick={() => pinMutation.mutate({ id: post.id })}
-              className="p-1.5 text-[#C9B99A] hover:text-[#FFB840] transition-colors">
-              {post.pinned ? <PinOff size={15} /> : <Pin size={15} />}
-            </button>
-            <button title="Delete post" onClick={() => { if (confirm('Delete this post?')) deleteMutation.mutate({ id: post.id }) }}
-              className="p-1.5 text-[#C9B99A] hover:text-red-400 transition-colors">
-              <Trash2 size={15} />
-            </button>
+
+        <p className="text-[#F0EBE1] text-[15px] leading-relaxed mt-3 whitespace-pre-wrap">{linkify(post.body)}</p>
+
+        {post.linkUrl && (
+          <a href={post.linkUrl} target="_blank" rel="noopener noreferrer"
+            className="mt-3 flex items-center gap-3 bg-[#182635] border border-[rgba(255,149,0,0.2)] rounded px-4 py-3 hover:border-[#FF9500] transition-colors group">
+            <ExternalLink size={16} className="text-[#FF9500] shrink-0" />
+            <div className="min-w-0">
+              <p className="text-[#F0EBE1] text-sm group-hover:text-[#FFB840] transition-colors truncate">{post.linkTitle || post.linkUrl}</p>
+              <p className="text-[#C9B99A] text-xs truncate">{new URL(post.linkUrl).hostname}</p>
+            </div>
+          </a>
+        )}
+
+        {post.imageUrl && (
+          <img src={post.imageUrl} alt="" className="mt-3 rounded w-full object-cover max-h-[480px] border border-[rgba(255,149,0,0.15)]" loading="lazy" />
+        )}
+
+        {post.muxPlaybackId && (
+          <div className="mt-3 rounded overflow-hidden border border-[rgba(255,149,0,0.15)]">
+            <MuxPlayer playbackId={post.muxPlaybackId} accentColor="#FF9500" style={{ width: '100%', aspectRatio: '16/9' }} />
           </div>
         )}
-      </div>
-
-      <p className="text-[#F0EBE1] text-[15px] leading-relaxed mt-3 whitespace-pre-wrap">{linkify(post.body)}</p>
-
-      {post.linkUrl && (
-        <a href={post.linkUrl} target="_blank" rel="noopener noreferrer"
-          className="mt-3 flex items-center gap-3 bg-[#182635] border border-[rgba(255,149,0,0.2)] rounded px-4 py-3 hover:border-[#FF9500] transition-colors group">
-          <ExternalLink size={16} className="text-[#FF9500] shrink-0" />
-          <div className="min-w-0">
-            <p className="text-[#F0EBE1] text-sm group-hover:text-[#FFB840] transition-colors truncate">{post.linkTitle || post.linkUrl}</p>
-            <p className="text-[#C9B99A] text-xs truncate">{new URL(post.linkUrl).hostname}</p>
+        {!post.muxPlaybackId && post.videoUrl && post.videoType === 'embed' && (
+          <div className="mt-3 rounded overflow-hidden border border-[rgba(255,149,0,0.15)]" style={{ aspectRatio: '16/9' }}>
+            <iframe src={embedUrl(post.videoUrl)} className="w-full h-full" allowFullScreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" />
           </div>
-        </a>
-      )}
+        )}
+        {!post.muxPlaybackId && post.videoUrl && post.videoType === 'upload' && (
+          <video src={post.videoUrl} controls className="mt-3 rounded w-full border border-[rgba(255,149,0,0.15)]" />
+        )}
 
-      {post.imageUrl && (
-        <img src={post.imageUrl} alt="" className="mt-3 rounded w-full object-cover max-h-[480px] border border-[rgba(255,149,0,0.15)]" loading="lazy" />
-      )}
-
-      {post.muxPlaybackId && (
-        <div className="mt-3 rounded overflow-hidden border border-[rgba(255,149,0,0.15)]">
-          <MuxPlayer playbackId={post.muxPlaybackId} accentColor="#FF9500" style={{ width: '100%', aspectRatio: '16/9' }} />
+        {/* Actions */}
+        <div className="mt-3 pt-3 border-t border-[rgba(240,235,225,0.08)] flex items-center gap-4">
+          <button onClick={handleLike} className={`flex items-center gap-1.5 text-sm transition-colors ${isLikedQuery.data?.liked ? 'text-[#FF9500]' : 'text-[#C9B99A] hover:text-[#FF9500]'}`}>
+            <Heart size={16} fill={isLikedQuery.data?.liked ? '#FF9500' : 'none'} /> {post.likesCount > 0 ? post.likesCount : ''} Like
+          </button>
+          <button onClick={() => setShowComments(!showComments)} className="flex items-center gap-1.5 text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors">
+            <MessageCircle size={16} /> Comments
+          </button>
         </div>
-      )}
-      {!post.muxPlaybackId && post.videoUrl && post.videoType === 'embed' && (
-        <div className="mt-3 rounded overflow-hidden border border-[rgba(255,149,0,0.15)]" style={{ aspectRatio: '16/9' }}>
-          <iframe src={embedUrl(post.videoUrl)} className="w-full h-full" allowFullScreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" />
-        </div>
-      )}
-      {!post.muxPlaybackId && post.videoUrl && post.videoType === 'upload' && (
-        <video src={post.videoUrl} controls className="mt-3 rounded w-full border border-[rgba(255,149,0,0.15)]" />
-      )}
 
-      <div className="mt-3 pt-3 border-t border-[rgba(240,235,225,0.08)]">
-        <button onClick={like} className={`flex items-center gap-1.5 text-sm transition-colors ${liked ? 'text-[#FF9500]' : 'text-[#C9B99A] hover:text-[#FF9500]'}`}>
-          <Heart size={16} fill={liked ? '#FF9500' : 'none'} /> {likes > 0 ? likes : ''} {liked || likes > 0 ? (likes === 1 ? 'Like' : 'Likes') : 'Like'}
-        </button>
-      </div>
-    </motion.article>
+        {/* Comments */}
+        <AnimatePresence>
+          {showComments && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="overflow-hidden"
+            >
+              <div className="mt-3 pt-3 border-t border-[rgba(240,235,225,0.06)] space-y-3">
+                {/* Comment form */}
+                {member ? (
+                  <div className="flex gap-2">
+                    <input
+                      value={commentText}
+                      onChange={(e) => setCommentText(e.target.value)}
+                      placeholder="Write a comment..."
+                      onKeyDown={(e) => e.key === 'Enter' && handleComment()}
+                      className="flex-1 bg-[#182635] border border-[rgba(255,149,0,0.15)] rounded-lg px-3 py-2 text-sm text-[#F0EBE1] placeholder-[#C9B99A]/40 focus:outline-none focus:border-[#FF9500]"
+                    />
+                    <button
+                      onClick={handleComment}
+                      disabled={!commentText.trim() || createComment.isPending}
+                      className="px-3 py-2 bg-[#FF9500] text-[#182635] text-xs font-bold rounded-lg hover:bg-[#CC6A00] transition-colors disabled:opacity-40"
+                    >
+                      <Send size={14} />
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setShowAuth(true)}
+                    className="w-full py-2 text-xs text-[#C9B99A] border border-dashed border-[rgba(255,149,0,0.2)] rounded-lg hover:text-[#FF9500] hover:border-[#FF9500]/30 transition-colors"
+                  >
+                    Log in to comment
+                  </button>
+                )}
+
+                {/* Comment list */}
+                {commentsQuery.isLoading && (
+                  <div className="text-center py-2"><Loader2 size={14} className="animate-spin inline text-[#C9B99A]" /></div>
+                )}
+                {commentsQuery.data?.map((comment) => (
+                  <div key={comment.id} className="flex gap-2.5">
+                    <div className="w-7 h-7 rounded-full bg-[rgba(255,149,0,0.12)] border border-[rgba(255,149,0,0.3)] flex items-center justify-center shrink-0">
+                      {comment.memberAvatar ? (
+                        <img src={comment.memberAvatar} alt="" className="w-full h-full rounded-full object-cover" />
+                      ) : (
+                        <User size={12} className="text-[#FF9500]" />
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[#F0EBE1] text-xs font-medium">{comment.memberName || 'Member'}</span>
+                        <span className="text-[#C9B99A]/50 text-[10px]">{timeAgo(comment.createdAt)}</span>
+                      </div>
+                      <p className="text-[#C9B99A] text-xs leading-relaxed mt-0.5">{comment.content}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.article>
+    </>
   )
 }

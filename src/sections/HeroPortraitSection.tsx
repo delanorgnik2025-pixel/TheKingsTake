@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
-import { ChevronDown } from 'lucide-react'
+import { Link } from 'react-router'
+import { ChevronDown, Flame } from 'lucide-react'
 
 export default function HeroPortraitSection() {
   return (
@@ -24,6 +25,23 @@ export default function HeroPortraitSection() {
         <span className="text-[10px] uppercase tracking-[0.15em] text-[#C9B99A]/60 hover:text-[#FF9500] transition-colors">Explore the Map</span>
         <ChevronDown size={20} className="text-[#FF9500]/70 hover:text-[#FF9500] transition-colors" />
       </motion.button>
+
+      {/* Petition CTA — floating badge */}
+      <motion.div
+        initial={{ opacity: 0, x: 30 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 1.2, duration: 0.6 }}
+        className="absolute bottom-6 right-4 md:right-8 z-10"
+      >
+        <Link
+          to="/petition"
+          className="group flex items-center gap-2 px-4 py-2.5 bg-[#FF9500] text-[#182635] text-sm font-bold rounded-full shadow-lg shadow-[#FF9500]/20 hover:bg-[#CC6A00] hover:scale-105 transition-all"
+        >
+          <Flame size={16} className="group-hover:animate-pulse" />
+          <span className="hidden sm:inline">Sign the Petition</span>
+          <span className="sm:hidden">Sign</span>
+        </Link>
+      </motion.div>
     </section>
   )
 }

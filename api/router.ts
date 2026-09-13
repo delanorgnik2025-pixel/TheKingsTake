@@ -13,6 +13,7 @@ import { genealogyRouter } from "./routers/genealogy";
 import { videoRouter } from "./video-router";
 import { feedRouter } from "./feed-router";
 import { liveRouter } from "./live-router";
+import { memberRouter } from "./member-router";
 import { createRouter, publicQuery } from "./middleware";
 
 export const appRouter = createRouter({
@@ -32,6 +33,7 @@ export const appRouter = createRouter({
   video: videoRouter,
   feed: feedRouter,
   live: liveRouter,
+  member: memberRouter,
 });
 
 export type AppRouter = typeof appRouter;
