@@ -24,8 +24,18 @@ export default function FeedSection() {
   const isLive = liveStatus.data?.live && liveStatus.data.playbackId
 
   return (
-    <section className="relative py-20 px-6 md:px-12" id="feed">
-      <div className="max-w-[1200px] mx-auto">
+    <section className="relative py-20 px-6 md:px-12 overflow-hidden" id="feed">
+      {/* Rich layered background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-[#0B0F17] via-[#0F1725] to-[#0B0F17]" />
+      <div className="absolute inset-0 opacity-[0.06]" style={{
+        backgroundImage: `url("data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23FF9500' fill-opacity='0.5'%3E%3Cpath d='M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21-1.79 4-4 4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6-2.686 6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6 0-2.21 1.79-4 4-4 3.314 0 6 2.686 6 6 0 2.21-1.79 4-4 4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4v2c0 2.21-1.79 4-4 4-3.314 0-6-2.686-6-6 0-2.21 1.79-4 4-4 3.314 0 6 2.686 6 6 0 2.21-1.79 4-4 4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21-1.79 4-4 4v2c0 2.21-1.79 4-4 4-3.314 0-6-2.686-6-6 0-2.21 1.79-4 4-4 3.314 0 6 2.686 6 6 0 2.21-1.79 4-4 4-3.314 0-6-2.686-6-6h2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+      }} />
+      <div className="absolute inset-0 opacity-20" style={{
+        backgroundImage: 'radial-gradient(ellipse at 20% 30%, rgba(255,149,0,0.12) 0%, transparent 50%), radial-gradient(ellipse at 80% 70%, rgba(255,149,0,0.08) 0%, transparent 50%)'
+      }} />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#FF9500]/15 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#FF9500]/15 to-transparent" />
+      <div className="max-w-[1200px] mx-auto relative">
         <ScrollReveal>
           <div className="flex items-end justify-between mb-10">
             <div>
