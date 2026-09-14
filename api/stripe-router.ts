@@ -10,7 +10,7 @@ const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 async function getStripe() {
   if (!stripeSecretKey) return null;
   const { default: Stripe } = await import("stripe");
-  return new Stripe(stripeSecretKey, { apiVersion: "2024-12-18.acacia" });
+  return new Stripe(stripeSecretKey, { apiVersion: "2026-08-26.dahlia" });
 }
 
 export const stripeRouter = createRouter({
