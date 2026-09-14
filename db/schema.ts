@@ -8,6 +8,7 @@ import {
   int,
   boolean,
   bigint,
+  uniqueIndex,
 } from "drizzle-orm/mysql-core";
 
 // ─── Users (Auth) ──────────────────────────────────────────
@@ -315,7 +316,9 @@ export const feedLikes = mysqlTable("feed_likes", {
   postId: bigint("post_id", { mode: "number", unsigned: true }).notNull(),
   memberId: bigint("member_id", { mode: "number", unsigned: true }).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+}, (table) => [
+  uniqueIndex("feed_likes_member_post_unique").on(table.memberId, table.postId),
+]);
 
 export type FeedLike = typeof feedLikes.$inferSelect;
 export type InsertFeedLike = typeof feedLikes.$inferInsert;

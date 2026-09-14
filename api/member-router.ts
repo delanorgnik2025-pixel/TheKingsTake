@@ -1,46 +1,10 @@
 import { z } from "zod";
 import { eq, and, desc, sql } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
-import { SignJWT, jwtVerify } from "jose";
-import { createHash, randomBytes } from "crypto";
 import { createRouter, publicQuery } from "./middleware";
 import { getDb } from "./queries/connection";
 import { members, feedComments, feedLikes, feedPosts } from "@db/schema";
-
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || process.env.ADMIN_PASSWORD || "thekingstake-member-secret"
-);
-
-function hashPassword(password: string, salt?: string) {
-  const s = salt || randomBytes(16).toString("hex");
-  const hash = createHash("sha256").update(password + s).digest("hex");
-  return { hash, salt: s };
-}
-
-function verifyPassword(password: string, salt: string, hash: string) {
-  const { hash: computed } = hashPassword(password, salt);
-  return computed === hash;
-}
-
-async function createMemberToken(memberId: number, email: string) {
-  return new SignJWT({ memberId, email, type: "member" })
-    .setProtectedHeader({ alg: "HS256" })
-    .setExpirationTime("30d")
-    .sign(JWT_SECRET);
-}
-
-export async function verifyMemberToken(token: string) {
-  try {
-    const { payload } = await jwtVerify(token, JWT_SECRET, { clockTolerance: 60 });
-    if (payload.type !== "member") return null;
-    return {
-      memberId: payload.memberId as number,
-      email: payload.email as string,
-    };
-  } catch {
-    return null;
-  }
-}
+import { createMemberToken, hashPassword, verifyMemberToken, verifyPassword } from "./security/auth";
 
 // ── Helper: get member from request ─────────────────────────────
 async function getMemberFromRequest(req: Request) {
@@ -64,34 +28,38 @@ export const memberRouter = createRouter({
       })
     )
     .mutation(async ({ input }) => {
+      const db = getDb();
+      const email = input.email.trim().toLowerCase();
       const existing = await db
         .select()
         .from(members)
-        .where(eq(members.email, input.email))
+        .where(eq(members.email, email))
         .limit(1);
 
       if (existing.length > 0) {
         throw new TRPCError({ code: "CONFLICT", message: "Email already registered." });
       }
 
-      const { hash, salt } = hashPassword(input.password);
-      const passwordHash = `${salt}:${hash}`;
+      const passwordHash = await hashPassword(input.password);
 
-      const result = await getDb().insert(members).values({
-        name: input.name,
-        email: input.email,
+      const result = await db.insert(members).values({
+        name: input.name.trim(),
+        email,
         passwordHash,
       });
 
       const memberId = Number(result[0].insertId);
-      const token = await createMemberToken(memberId, input.email);
+      const token = await createMemberToken(memberId, email);
 
       return {
         token,
         member: {
           id: memberId,
-          name: input.name,
-          email: input.email,
+          name: input.name.trim(),
+          email,
+          avatar: null,
+          role: "member" as const,
+          facebookSubscribed: false,
         },
       };
     }),
@@ -105,10 +73,11 @@ export const memberRouter = createRouter({
       })
     )
     .mutation(async ({ input }) => {
+      const db = getDb();
       const rows = await db
         .select()
         .from(members)
-        .where(eq(members.email, input.email))
+        .where(eq(members.email, input.email.trim().toLowerCase()))
         .limit(1);
 
       if (rows.length === 0) {
@@ -116,10 +85,15 @@ export const memberRouter = createRouter({
       }
 
       const member = rows[0];
-      const [salt, hash] = member.passwordHash.split(":");
-
-      if (!verifyPassword(input.password, salt, hash)) {
+      const password = await verifyPassword(input.password, member.passwordHash);
+      if (!password.valid || !member.isActive) {
         throw new TRPCError({ code: "UNAUTHORIZED", message: "Invalid email or password." });
+      }
+
+      if (password.needsRehash) {
+        await db.update(members)
+          .set({ passwordHash: await hashPassword(input.password), updatedAt: new Date() })
+          .where(eq(members.id, member.id));
       }
 
       const token = await createMemberToken(member.id, member.email);
@@ -132,6 +106,7 @@ export const memberRouter = createRouter({
           email: member.email,
           avatar: member.avatar,
           role: member.role,
+          facebookSubscribed: member.facebookSubscribed,
         },
       };
     }),
@@ -165,7 +140,7 @@ export const memberRouter = createRouter({
         throw new TRPCError({ code: "UNAUTHORIZED", message: "Not logged in." });
       }
 
-      await db
+      await getDb()
         .update(members)
         .set({
           ...(input.name && { name: input.name }),
@@ -227,7 +202,7 @@ export const memberRouter = createRouter({
   listComments: publicQuery
     .input(z.object({ postId: z.number() }))
     .query(async ({ input }) => {
-      const rows = await db
+      const rows = await getDb()
         .select({
           id: feedComments.id,
           postId: feedComments.postId,
@@ -254,34 +229,34 @@ export const memberRouter = createRouter({
         throw new TRPCError({ code: "UNAUTHORIZED", message: "Members only. Please log in." });
       }
 
-      const existing = await db
-        .select()
-        .from(feedLikes)
-        .where(and(eq(feedLikes.postId, input.postId), eq(feedLikes.memberId, member.id)))
-        .limit(1);
+      return getDb().transaction(async (tx) => {
+        // Lock the post so concurrent toggles serialize before checking the like row.
+        const post = await tx.select({ id: feedPosts.id })
+          .from(feedPosts)
+          .where(eq(feedPosts.id, input.postId))
+          .limit(1)
+          .for("update");
+        if (!post[0]) throw new TRPCError({ code: "NOT_FOUND", message: "Post not found." });
 
-      if (existing.length > 0) {
-        // Unlike
-        await db
-          .delete(feedLikes)
-          .where(and(eq(feedLikes.postId, input.postId), eq(feedLikes.memberId, member.id)));
-        await db
-          .update(feedPosts)
-          .set({ likesCount: sql`${feedPosts.likesCount} - 1` })
-          .where(eq(feedPosts.id, input.postId));
-        return { liked: false };
-      } else {
-        // Like
-        await getDb().insert(feedLikes).values({
-          postId: input.postId,
-          memberId: member.id,
-        });
-        await db
-          .update(feedPosts)
+        const existing = await tx.select({ id: feedLikes.id })
+          .from(feedLikes)
+          .where(and(eq(feedLikes.postId, input.postId), eq(feedLikes.memberId, member.id)))
+          .limit(1);
+
+        if (existing[0]) {
+          await tx.delete(feedLikes).where(eq(feedLikes.id, existing[0].id));
+          await tx.update(feedPosts)
+            .set({ likesCount: sql`greatest(${feedPosts.likesCount} - 1, 0)` })
+            .where(eq(feedPosts.id, input.postId));
+          return { liked: false };
+        }
+
+        await tx.insert(feedLikes).values({ postId: input.postId, memberId: member.id });
+        await tx.update(feedPosts)
           .set({ likesCount: sql`${feedPosts.likesCount} + 1` })
           .where(eq(feedPosts.id, input.postId));
         return { liked: true };
-      }
+      });
     }),
 
   // ── Feed: Check if liked ─────────────────────────────────────
@@ -291,7 +266,7 @@ export const memberRouter = createRouter({
       const member = await getMemberFromRequest(ctx.req);
       if (!member) return { liked: false };
 
-      const rows = await db
+      const rows = await getDb()
         .select()
         .from(feedLikes)
         .where(and(eq(feedLikes.postId, input.postId), eq(feedLikes.memberId, member.id)))

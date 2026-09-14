@@ -1,11 +1,10 @@
 import * as cookie from "cookie";
 import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 import { Session } from "@contracts/constants";
 import { getSessionCookieOptions } from "./lib/cookies";
 import { createRouter, publicQuery, authedQuery } from "./middleware";
-
-// Admin password — use environment variable or default
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "AASOTU2025!";
+import { createAdminToken, verifyAdminPassword, verifyAdminToken } from "./security/auth";
 
 export const authRouter = createRouter({
   me: authedQuery.query((opts) => opts.ctx.user),
@@ -29,10 +28,14 @@ export const authRouter = createRouter({
       password: z.string(),
     }))
     .mutation(async ({ input }) => {
-      if (input.password !== ADMIN_PASSWORD) {
-        throw new Error("Invalid admin password");
+      if (!verifyAdminPassword(input.password)) {
+        throw new TRPCError({ code: "UNAUTHORIZED", message: "Invalid admin password" });
       }
-      const token = "admin_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2);
+      const token = await createAdminToken();
       return { success: true, token };
     }),
+  adminSession: publicQuery.query(async ({ ctx }) => {
+    const token = ctx.req.headers.get("x-admin-token");
+    return { valid: Boolean(token && await verifyAdminToken(token)) };
+  }),
 });

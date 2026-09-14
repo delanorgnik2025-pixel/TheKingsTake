@@ -2,6 +2,7 @@ import { ErrorMessages } from "@contracts/constants";
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import type { TrpcContext } from "./context";
+import { verifyAdminToken } from "./security/auth";
 
 const t = initTRPC.context<TrpcContext>().create({
   transformer: superjson,
@@ -34,7 +35,7 @@ function requireRole(role: string) {
 
     // Check if admin token is provided in header (password login)
     const adminToken = ctx.req.headers.get("x-admin-token");
-    if (adminToken && adminToken.startsWith("admin_")) {
+    if (adminToken && await verifyAdminToken(adminToken)) {
       return next({ ctx: { ...ctx, user: { id: 0, name: "Admin", email: "admin@aasotu.com", role: "admin" } as any } });
     }
 

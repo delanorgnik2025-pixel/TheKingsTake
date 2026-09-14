@@ -7,8 +7,6 @@ import {
   Calendar, Megaphone, Crown, Radio
 } from 'lucide-react'
 
-const ADMIN_PASSWORD = 'AASOTU2025!'
-
 // ─── Sidebar navigation items ───
 const NAV_ITEMS = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
