@@ -6,7 +6,7 @@ import {
   Crown, Heart, Link2, Image as ImageIcon, Video, Radio, Pin, PinOff, Trash2,
   Send, Copy, Check, Loader2, Square, ArrowLeft, ExternalLink, RefreshCw,
   MessageCircle, User, LogIn, LogOut, Lock, Users, BookOpen, Star,
-  Flame, Calendar, Landmark, ChevronDown, ChevronUp,
+  Flame, Calendar, Landmark, ChevronDown, ChevronUp, Share2,
 } from 'lucide-react'
 import { trpc } from '@/providers/trpc'
 import { useMember } from '@/providers/MemberProvider'
@@ -57,6 +57,9 @@ type FeedPost = {
   pinned: boolean
   likesCount: number
   createdAt: Date | string
+  memberId: number | null
+  memberName: string | null
+  memberAvatar: string | null
 }
 
 // ─── page ─────────────────────────────────────────────────────────────────────
@@ -246,7 +249,7 @@ export default function FeedPage() {
               <h3 className="text-[#F0EBE1] font-bold text-sm">Join the Royal Circle</h3>
             </div>
             <p className="text-[#C9B99A] text-xs leading-relaxed mb-4">
-              Become a member to post on the feed, comment, like, and access exclusive educational content.
+              Membership is invitation-only. Approved subscribers can post on the feed, comment, like, and access exclusive educational content.
             </p>
             <div className="space-y-2 mb-4">
               {[
@@ -266,7 +269,7 @@ export default function FeedPage() {
               onClick={() => setShowAuth(true)}
               className="w-full py-2.5 bg-[#FF9500] text-[#182635] text-xs font-bold rounded-lg hover:bg-[#CC6A00] transition-colors"
             >
-              Join Free — Become a Member
+              Enter Member Access Code
             </button>
             <a
               href="https://www.facebook.com/thekingstake"
@@ -320,19 +323,36 @@ function MemberComposer({ onPosted }: { onPosted: () => void }) {
   const [imageUrl, setImageUrl] = useState('')
   const [showImage, setShowImage] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [imageFile, setImageFile] = useState<File | null>(null)
   const createMutation = trpc.member.createFeedPost.useMutation()
+  const imageSignature = trpc.member.createImageUploadSignature.useMutation()
 
   const submit = async () => {
     const text = body.trim()
     if (!text) return
     setLoading(true)
     try {
+      let uploadedImageUrl = imageUrl.trim()
+      if (imageFile) {
+        const signed = await imageSignature.mutateAsync()
+        const form = new FormData()
+        form.append('file', imageFile)
+        form.append('api_key', signed.apiKey)
+        form.append('timestamp', String(signed.timestamp))
+        form.append('folder', signed.folder)
+        form.append('signature', signed.signature)
+        const response = await fetch(`https://api.cloudinary.com/v1_1/${signed.cloudName}/image/upload`, { method: 'POST', body: form })
+        if (!response.ok) throw new Error('Image upload failed')
+        const uploaded = await response.json() as { secure_url: string }
+        uploadedImageUrl = uploaded.secure_url
+      }
       await createMutation.mutateAsync({
         body: text,
-        imageUrl: imageUrl.trim() || '',
+        imageUrl: uploadedImageUrl || '',
       })
       setBody('')
       setImageUrl('')
+      setImageFile(null)
       setShowImage(false)
       onPosted()
     } catch (err: any) {
@@ -363,12 +383,14 @@ function MemberComposer({ onPosted }: { onPosted: () => void }) {
       />
 
       {showImage && (
-        <input
-          value={imageUrl}
-          onChange={(e) => setImageUrl(e.target.value)}
-          placeholder="Image URL (https://...)"
-          className="mt-2 w-full bg-[#182635] border border-[rgba(255,149,0,0.15)] rounded px-3 py-2 text-[#F0EBE1] text-sm placeholder-[#C9B99A]/40 focus:outline-none focus:border-[#FF9500]"
-        />
+        <div className="mt-2 space-y-2">
+          <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(e) => {
+            const file = e.target.files?.[0] || null
+            if (file && file.size > 10 * 1024 * 1024) { alert('Images must be 10 MB or smaller'); e.target.value = ''; return }
+            setImageFile(file)
+          }} className="w-full text-xs text-[#C9B99A] file:mr-3 file:rounded file:border-0 file:bg-[#FF9500] file:px-3 file:py-2 file:text-[#182635]" />
+          <input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="Or paste an image URL" className="w-full bg-[#182635] border border-[rgba(255,149,0,0.15)] rounded px-3 py-2 text-[#F0EBE1] text-sm placeholder-[#C9B99A]/40 focus:outline-none focus:border-[#FF9500]" />
+        </div>
       )}
 
       <div className="flex items-center justify-between mt-3 pt-3 border-t border-[rgba(240,235,225,0.06)]">
@@ -685,6 +707,16 @@ function PostCard({ post, isAdmin, onChanged }: { post: FeedPost; isAdmin: boole
     utils.feed.list.invalidate()
   }
 
+  const handleShare = async () => {
+    const url = `${window.location.origin}/feed#post-${post.id}`
+    const data = { title: '#TheKingsTake', text: post.body.slice(0, 180), url }
+    if (navigator.share) await navigator.share(data).catch(() => undefined)
+    else {
+      await navigator.clipboard.writeText(url)
+      alert('Post link copied')
+    }
+  }
+
   const handleComment = async () => {
     if (!member) {
       setShowAuth(true)
@@ -700,7 +732,7 @@ function PostCard({ post, isAdmin, onChanged }: { post: FeedPost; isAdmin: boole
   return (
     <>
       <MemberAuthModal isOpen={showAuth} onClose={() => setShowAuth(false)} />
-      <motion.article
+      <motion.article id={`post-${post.id}`}
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         className={`rounded-lg border p-4 backdrop-blur-sm ${post.pinned ? 'border-[rgba(255,149,0,0.5)] shadow-[0_0_30px_rgba(255,149,0,0.08)]' : 'border-[rgba(255,149,0,0.18)]'}`}
@@ -712,7 +744,7 @@ function PostCard({ post, isAdmin, onChanged }: { post: FeedPost; isAdmin: boole
               <Crown size={18} className="text-[#FF9500]" />
             </div>
             <div>
-              <p className="text-[#F0EBE1] text-sm font-medium">Ronald Lee King <span className="text-[#FF9500]">· #TheKingsTake</span></p>
+              <p className="text-[#F0EBE1] text-sm font-medium">{post.memberName || 'Ronald Lee King'} <span className="text-[#FF9500]">· {post.memberId ? 'Royal Member' : '#TheKingsTake'}</span></p>
               <p className="text-[#C9B99A] text-[11px]">{timeAgo(post.createdAt)}{post.pinned && <span className="text-[#FFB840] ml-2">· Pinned</span>}</p>
             </div>
           </div>
@@ -768,6 +800,9 @@ function PostCard({ post, isAdmin, onChanged }: { post: FeedPost; isAdmin: boole
           </button>
           <button onClick={() => setShowComments(!showComments)} className="flex items-center gap-1.5 text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors">
             <MessageCircle size={16} /> Comments
+          </button>
+          <button onClick={handleShare} className="flex items-center gap-1.5 text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors">
+            <Share2 size={16} /> Share
           </button>
         </div>
 

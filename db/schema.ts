@@ -267,6 +267,7 @@ export const recordSearches = mysqlTable("recordSearches", {
 // ─── Feed (The King's Take — Facebook-style wall) ───────────────────────────
 export const feedPosts = mysqlTable("feed_posts", {
   id: serial("id").primaryKey(),
+  memberId: bigint("member_id", { mode: "number", unsigned: true }),
   body: text("body").notNull(),
   linkUrl: varchar("link_url", { length: 1024 }),
   linkTitle: varchar("link_title", { length: 500 }),
@@ -296,6 +297,22 @@ export const members = mysqlTable("members", {
 
 export type Member = typeof members.$inferSelect;
 export type InsertMember = typeof members.$inferInsert;
+
+// ─── One-time Member Invitations ───────────────────────────────────────────
+export const memberAccessCodes = mysqlTable("member_access_codes", {
+  id: serial("id").primaryKey(),
+  codeHash: varchar("code_hash", { length: 64 }).notNull().unique(),
+  codePreview: varchar("code_preview", { length: 16 }).notNull(),
+  label: varchar("label", { length: 255 }),
+  invitedEmail: varchar("invited_email", { length: 320 }),
+  expiresAt: timestamp("expires_at"),
+  usedAt: timestamp("used_at"),
+  usedByMemberId: bigint("used_by_member_id", { mode: "number", unsigned: true }),
+  revokedAt: timestamp("revoked_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type MemberAccessCode = typeof memberAccessCodes.$inferSelect;
 
 // ─── Feed Comments ──────────────────────────────────────────────────────────
 export const feedComments = mysqlTable("feed_comments", {

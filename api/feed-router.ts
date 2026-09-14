@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { createRouter, publicQuery, adminQuery } from "./middleware";
 import { getDb } from "./queries/connection";
-import { feedPosts } from "@db/schema";
+import { feedPosts, members } from "@db/schema";
 import { eq, desc, sql } from "drizzle-orm";
 import { createDirectUpload, getUpload, getAsset, muxConfigured } from "./mux";
 
@@ -19,8 +19,15 @@ export const feedRouter = createRouter({
       const limit = input?.limit ?? 20;
       const offset = input?.offset ?? 0;
       const rows = await db
-        .select()
+        .select({
+          id: feedPosts.id, memberId: feedPosts.memberId, body: feedPosts.body,
+          linkUrl: feedPosts.linkUrl, linkTitle: feedPosts.linkTitle, imageUrl: feedPosts.imageUrl,
+          videoUrl: feedPosts.videoUrl, videoType: feedPosts.videoType, muxPlaybackId: feedPosts.muxPlaybackId,
+          pinned: feedPosts.pinned, likesCount: feedPosts.likesCount, createdAt: feedPosts.createdAt,
+          updatedAt: feedPosts.updatedAt, memberName: members.name, memberAvatar: members.avatar,
+        })
         .from(feedPosts)
+        .leftJoin(members, eq(members.id, feedPosts.memberId))
         .orderBy(desc(feedPosts.pinned), desc(feedPosts.createdAt))
         .limit(limit)
         .offset(offset);
