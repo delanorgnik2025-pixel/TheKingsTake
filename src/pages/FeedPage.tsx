@@ -6,7 +6,7 @@ import {
   Crown, Heart, Link2, Image as ImageIcon, Video, Radio, Pin, PinOff, Trash2,
   Send, Copy, Check, Loader2, Square, ArrowLeft, ExternalLink, RefreshCw,
   MessageCircle, User, LogIn, LogOut, Lock, Users, BookOpen, Star,
-  Flame, Calendar, Landmark, ChevronDown, ChevronUp, Share2,
+  Flame, Calendar, Landmark, ChevronDown, ChevronUp, Share2, X,
 } from 'lucide-react'
 import { trpc } from '@/providers/trpc'
 import { useMember } from '@/providers/MemberProvider'
@@ -320,20 +320,68 @@ export default function FeedPage() {
 // ─── member composer ──────────────────────────────────────────────────────────
 function MemberComposer({ onPosted }: { onPosted: () => void }) {
   const [body, setBody] = useState('')
-  const [imageUrl, setImageUrl] = useState('')
-  const [showImage, setShowImage] = useState(false)
   const [loading, setLoading] = useState(false)
   const [imageFile, setImageFile] = useState<File | null>(null)
+  const [videoFile, setVideoFile] = useState<File | null>(null)
+  const [uploadPct, setUploadPct] = useState<number | null>(null)
+  const [status, setStatus] = useState('')
+  const imageInputRef = useRef<HTMLInputElement>(null)
+  const videoInputRef = useRef<HTMLInputElement>(null)
   const createMutation = trpc.member.createFeedPost.useMutation()
   const imageSignature = trpc.member.createImageUploadSignature.useMutation()
+  const videoUpload = trpc.member.createVideoUpload.useMutation()
+  const confirmVideo = trpc.member.confirmVideoUpload.useMutation()
+  const previewFile = imageFile || videoFile
+  const [previewUrl, setPreviewUrl] = useState('')
+
+  useEffect(() => {
+    if (!previewFile) { setPreviewUrl(''); return }
+    const url = URL.createObjectURL(previewFile)
+    setPreviewUrl(url)
+    return () => URL.revokeObjectURL(url)
+  }, [previewFile])
+
+  const reset = () => {
+    setBody(''); setImageFile(null); setVideoFile(null); setUploadPct(null); setStatus('')
+    if (imageInputRef.current) imageInputRef.current.value = ''
+    if (videoInputRef.current) videoInputRef.current.value = ''
+  }
+
+  const finishVideoPost = async (uploadId: string, text: string) => {
+    for (let attempt = 0; attempt < 20; attempt++) {
+      setStatus(attempt ? `Processing video… (${attempt + 1})` : 'Processing video…')
+      const result = await confirmVideo.mutateAsync({ uploadId, body: text })
+      if (result.ready) { reset(); onPosted(); return }
+      await new Promise(resolve => setTimeout(resolve, 4000))
+    }
+    throw new Error('The video is still processing. Please try posting again shortly.')
+  }
 
   const submit = async () => {
     const text = body.trim()
-    if (!text) return
+    if (!text && !imageFile && !videoFile) return
     setLoading(true)
+    setStatus('')
     try {
-      let uploadedImageUrl = imageUrl.trim()
+      if (videoFile) {
+        setStatus('Preparing video…')
+        const { uploadId, uploadUrl } = await videoUpload.mutateAsync({ corsOrigin: window.location.origin })
+        await new Promise<void>((resolve, reject) => {
+          const xhr = new XMLHttpRequest()
+          xhr.open('PUT', uploadUrl)
+          xhr.setRequestHeader('Content-Type', videoFile.type || 'application/octet-stream')
+          xhr.upload.onprogress = e => e.lengthComputable && setUploadPct(Math.round((e.loaded / e.total) * 100))
+          xhr.onload = () => xhr.status >= 200 && xhr.status < 300 ? resolve() : reject(new Error(`Upload failed (${xhr.status})`))
+          xhr.onerror = () => reject(new Error('Video upload failed — check your connection.'))
+          xhr.send(videoFile)
+        })
+        await finishVideoPost(uploadId, text)
+        return
+      }
+
+      let uploadedImageUrl = ''
       if (imageFile) {
+        setStatus('Uploading image…')
         const signed = await imageSignature.mutateAsync()
         const form = new FormData()
         form.append('file', imageFile)
@@ -350,10 +398,7 @@ function MemberComposer({ onPosted }: { onPosted: () => void }) {
         body: text,
         imageUrl: uploadedImageUrl || '',
       })
-      setBody('')
-      setImageUrl('')
-      setImageFile(null)
-      setShowImage(false)
+      reset()
       onPosted()
     } catch (err: any) {
       alert(err?.message || 'Could not post')
@@ -370,7 +415,7 @@ function MemberComposer({ onPosted }: { onPosted: () => void }) {
         </div>
         <div>
           <p className="text-[#F0EBE1] text-sm font-medium">Share with the Community</p>
-          <p className="text-[#C9B99A] text-[10px] uppercase tracking-wider">Post text or images</p>
+          <p className="text-[#C9B99A] text-[10px] uppercase tracking-wider">Post text, photos, or videos</p>
         </div>
       </div>
 
@@ -382,28 +427,33 @@ function MemberComposer({ onPosted }: { onPosted: () => void }) {
         className="w-full bg-[#182635] border border-[rgba(255,149,0,0.15)] rounded px-3 py-2.5 text-[#F0EBE1] text-sm placeholder-[#C9B99A]/40 focus:outline-none focus:border-[#FF9500] resize-y"
       />
 
-      {showImage && (
-        <div className="mt-2 space-y-2">
-          <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={(e) => {
-            const file = e.target.files?.[0] || null
-            if (file && file.size > 10 * 1024 * 1024) { alert('Images must be 10 MB or smaller'); e.target.value = ''; return }
-            setImageFile(file)
-          }} className="w-full text-xs text-[#C9B99A] file:mr-3 file:rounded file:border-0 file:bg-[#FF9500] file:px-3 file:py-2 file:text-[#182635]" />
-          <input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="Or paste an image URL" className="w-full bg-[#182635] border border-[rgba(255,149,0,0.15)] rounded px-3 py-2 text-[#F0EBE1] text-sm placeholder-[#C9B99A]/40 focus:outline-none focus:border-[#FF9500]" />
+      <input ref={imageInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={(e) => {
+        const file = e.target.files?.[0] || null
+        if (file && file.size > 10 * 1024 * 1024) { alert('Images must be 10 MB or smaller'); e.target.value = ''; return }
+        setImageFile(file); setVideoFile(null)
+      }} />
+      <input ref={videoInputRef} type="file" accept="video/*" className="hidden" onChange={(e) => {
+        const file = e.target.files?.[0] || null
+        if (file && file.size > 500 * 1024 * 1024) { alert('Videos must be 500 MB or smaller'); e.target.value = ''; return }
+        setVideoFile(file); setImageFile(null)
+      }} />
+      {previewUrl && (
+        <div className="relative mt-3 overflow-hidden rounded-lg border border-[rgba(255,149,0,0.2)] bg-black/30">
+          {imageFile ? <img src={previewUrl} alt="Selected upload preview" className="max-h-80 w-full object-contain" /> : <video src={previewUrl} controls className="max-h-80 w-full" />}
+          <button onClick={() => { setImageFile(null); setVideoFile(null) }} className="absolute right-2 top-2 rounded-full bg-black/70 p-1.5 text-white" title="Remove selected media"><X size={14} /></button>
         </div>
       )}
+      {uploadPct !== null && <div className="mt-3"><div className="h-1.5 overflow-hidden rounded bg-[#182635]"><div className="h-full bg-[#FF9500]" style={{ width: `${uploadPct}%` }} /></div><p className="mt-1 text-xs text-[#C9B99A]">Uploading… {uploadPct}%</p></div>}
+      {status && <p className="mt-2 text-xs text-[#FFB840]">{status}</p>}
 
       <div className="flex items-center justify-between mt-3 pt-3 border-t border-[rgba(240,235,225,0.06)]">
-        <button
-          onClick={() => setShowImage(!showImage)}
-          className={`p-2 rounded transition-colors ${showImage ? 'text-[#FF9500] bg-[rgba(255,149,0,0.12)]' : 'text-[#C9B99A] hover:text-[#FF9500]'}`}
-          title="Add image"
-        >
-          <ImageIcon size={17} />
-        </button>
+        <div className="flex gap-1">
+          <button onClick={() => imageInputRef.current?.click()} className={`p-2 rounded transition-colors ${imageFile ? 'text-[#FF9500] bg-[rgba(255,149,0,0.12)]' : 'text-[#C9B99A] hover:text-[#FF9500]'}`} title="Choose a photo"><ImageIcon size={17} /></button>
+          <button onClick={() => videoInputRef.current?.click()} className={`p-2 rounded transition-colors ${videoFile ? 'text-[#FF9500] bg-[rgba(255,149,0,0.12)]' : 'text-[#C9B99A] hover:text-[#FF9500]'}`} title="Choose a video"><Video size={17} /></button>
+        </div>
         <button
           onClick={submit}
-          disabled={loading || !body.trim()}
+          disabled={loading || (!body.trim() && !imageFile && !videoFile)}
           className="flex items-center gap-2 px-4 py-2 bg-[#FF9500] text-[#182635] text-xs font-bold rounded hover:bg-[#CC6A00] transition-colors disabled:opacity-40"
         >
           {loading ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />} Post
@@ -419,6 +469,7 @@ function FeedComposer({ onPosted }: { onPosted: () => void }) {
   const [linkUrl, setLinkUrl] = useState('')
   const [linkTitle, setLinkTitle] = useState('')
   const [imageUrl, setImageUrl] = useState('')
+  const [imageFile, setImageFile] = useState<File | null>(null)
   const [videoMode, setVideoMode] = useState<'none' | 'embed' | 'file'>('none')
   const [embedVideoUrl, setEmbedVideoUrl] = useState('')
   const [videoFile, setVideoFile] = useState<File | null>(null)
@@ -427,18 +478,22 @@ function FeedComposer({ onPosted }: { onPosted: () => void }) {
   const [showExtras, setShowExtras] = useState<'none' | 'link' | 'image' | 'video'>('none')
   const pendingRef = useRef<{ uploadId: string } | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const imageInputRef = useRef<HTMLInputElement>(null)
 
   const createMutation = trpc.feed.create.useMutation()
+  const imageSignature = trpc.feed.createImageUploadSignature.useMutation()
   const uploadUrlMutation = trpc.feed.createVideoUpload.useMutation()
   const confirmMutation = trpc.feed.confirmVideoUpload.useMutation()
 
-  const busy = createMutation.isPending || uploadUrlMutation.isPending || confirmMutation.isPending || uploadPct !== null
+  const busy = createMutation.isPending || imageSignature.isPending || uploadUrlMutation.isPending || confirmMutation.isPending || uploadPct !== null
 
   const reset = () => {
-    setBody(''); setLinkUrl(''); setLinkTitle(''); setImageUrl('')
+    setBody(''); setLinkUrl(''); setLinkTitle(''); setImageUrl(''); setImageFile(null)
     setVideoMode('none'); setEmbedVideoUrl(''); setVideoFile(null)
     setUploadPct(null); setStatus(''); setShowExtras('none')
     pendingRef.current = null
+    if (imageInputRef.current) imageInputRef.current.value = ''
+    if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
   const finishMuxPost = async (uploadId: string, text: string) => {
@@ -460,7 +515,7 @@ function FeedComposer({ onPosted }: { onPosted: () => void }) {
 
   const submit = async () => {
     const text = body.trim()
-    if (!text) return
+    if (!text && !imageFile && !videoFile && !linkUrl.trim() && !embedVideoUrl.trim()) return
     setStatus('')
 
     if (pendingRef.current && videoMode === 'file') {
@@ -493,11 +548,26 @@ function FeedComposer({ onPosted }: { onPosted: () => void }) {
     }
 
     try {
+      let uploadedImageUrl = ''
+      if (imageFile) {
+        setStatus('Uploading image…')
+        const signed = await imageSignature.mutateAsync()
+        const form = new FormData()
+        form.append('file', imageFile)
+        form.append('api_key', signed.apiKey)
+        form.append('timestamp', String(signed.timestamp))
+        form.append('folder', signed.folder)
+        form.append('signature', signed.signature)
+        const response = await fetch(`https://api.cloudinary.com/v1_1/${signed.cloudName}/image/upload`, { method: 'POST', body: form })
+        if (!response.ok) throw new Error('Image upload failed')
+        const uploaded = await response.json() as { secure_url: string }
+        uploadedImageUrl = uploaded.secure_url
+      }
       await createMutation.mutateAsync({
         body: text,
         linkUrl: linkUrl.trim() || '',
         linkTitle: linkTitle.trim() || undefined,
-        imageUrl: imageUrl.trim() || '',
+        imageUrl: uploadedImageUrl || imageUrl.trim() || '',
         videoUrl: videoMode === 'embed' ? embedVideoUrl.trim() : '',
         videoType: videoMode === 'embed' ? 'embed' : 'upload',
       })
@@ -537,8 +607,16 @@ function FeedComposer({ onPosted }: { onPosted: () => void }) {
         </div>
       )}
       {showExtras === 'image' && (
-        <input value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} placeholder="Image URL (https://…)"
-          className="mt-2 w-full bg-[#182635] border border-[rgba(255,149,0,0.2)] rounded px-3 py-2 text-[#F0EBE1] text-sm focus:outline-none focus:border-[#FF9500]" />
+        <div className="mt-2">
+          <input ref={imageInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={(e) => {
+            const file = e.target.files?.[0] || null
+            if (file && file.size > 10 * 1024 * 1024) { alert('Images must be 10 MB or smaller'); e.target.value = ''; return }
+            setImageFile(file)
+          }} />
+          <button onClick={() => imageInputRef.current?.click()} className="w-full rounded border border-dashed border-[rgba(255,149,0,0.35)] py-2.5 text-sm text-[#C9B99A] transition-colors hover:border-[#FF9500] hover:text-[#FFB840]">
+            {imageFile ? `${imageFile.name} (${(imageFile.size / 1024 / 1024).toFixed(1)} MB)` : 'Choose a photo from this device'}
+          </button>
+        </div>
       )}
       {showExtras === 'video' && (
         <div className="mt-2 space-y-2">
@@ -586,7 +664,7 @@ function FeedComposer({ onPosted }: { onPosted: () => void }) {
         </div>
         <button
           onClick={submit}
-          disabled={busy || !body.trim()}
+          disabled={busy || (!body.trim() && !imageFile && !videoFile && !linkUrl.trim() && !embedVideoUrl.trim())}
           className="flex items-center gap-2 px-5 py-2 bg-[#FF9500] text-[#182635] text-sm font-semibold rounded hover:bg-[#FFB840] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
         >
           {busy ? <Loader2 size={15} className="animate-spin" /> : <Send size={15} />} Post

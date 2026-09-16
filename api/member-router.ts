@@ -7,6 +7,7 @@ import { getDb } from "./queries/connection";
 import { members, memberAccessCodes, feedComments, feedLikes, feedPosts } from "@db/schema";
 import { createMemberToken, hashPassword, verifyMemberToken, verifyPassword } from "./security/auth";
 import { generateAccessCode, hashAccessCode } from "./security/access-codes";
+import { createDirectUpload, getAsset, getUpload } from "./mux";
 
 // ── Helper: get member from request ─────────────────────────────
 async function getMemberFromRequest(req: Request) {
@@ -192,9 +193,9 @@ export const memberRouter = createRouter({
   createFeedPost: publicQuery
     .input(
       z.object({
-        body: z.string().min(1).max(2000),
+        body: z.string().max(2000),
         imageUrl: z.string().url().optional().or(z.literal("")),
-      })
+      }).refine((value) => value.body.trim() || value.imageUrl, { message: "Add a message or image." })
     )
     .mutation(async ({ input, ctx }) => {
       const member = await getMemberFromRequest(ctx.req);
@@ -204,11 +205,40 @@ export const memberRouter = createRouter({
 
       const result = await getDb().insert(feedPosts).values({
         memberId: member.id,
-        body: input.body,
+        body: input.body.trim(),
         imageUrl: input.imageUrl || null,
       });
 
       return { success: true, id: Number(result[0].insertId) };
+    }),
+
+  createVideoUpload: publicQuery
+    .input(z.object({ corsOrigin: z.string().max(500).default("*") }).optional())
+    .mutation(async ({ input, ctx }) => {
+      const member = await getMemberFromRequest(ctx.req);
+      if (!member) throw new TRPCError({ code: "UNAUTHORIZED", message: "Members only." });
+      const upload = await createDirectUpload(input?.corsOrigin || "*");
+      return { uploadId: upload.id, uploadUrl: upload.url };
+    }),
+
+  confirmVideoUpload: publicQuery
+    .input(z.object({ uploadId: z.string().min(1), body: z.string().max(2000) }))
+    .mutation(async ({ input, ctx }) => {
+      const member = await getMemberFromRequest(ctx.req);
+      if (!member) throw new TRPCError({ code: "UNAUTHORIZED", message: "Members only." });
+      const upload = await getUpload(input.uploadId);
+      if (!upload.asset_id) return { ready: false as const };
+      const asset = await getAsset(upload.asset_id);
+      const playbackId = asset.playback_ids?.[0]?.id;
+      if (!playbackId) return { ready: false as const };
+      const result = await getDb().insert(feedPosts).values({
+        memberId: member.id,
+        body: input.body.trim(),
+        videoType: "mux",
+        muxPlaybackId: playbackId,
+        videoUrl: `https://stream.mux.com/${playbackId}.m3u8`,
+      });
+      return { ready: true as const, id: Number(result[0].insertId), playbackId };
     }),
 
   // ── Feed: Comment ────────────────────────────────────────────
