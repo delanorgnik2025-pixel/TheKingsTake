@@ -14,12 +14,28 @@ export default function MemberAuthModal({ isOpen, onClose }: Props) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [accessCode, setAccessCode] = useState("");
+  const [inviteVerified, setInviteVerified] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { login } = useMember();
 
   const loginMutation = trpc.member.login.useMutation();
   const registerMutation = trpc.member.register.useMutation();
+  const validateCodeMutation = trpc.member.validateAccessCode.useMutation();
+
+  const verifyInvite = async () => {
+    setError("");
+    try {
+      const result = await validateCodeMutation.mutateAsync({ code: accessCode });
+      if (result.valid) {
+        setInviteVerified(true);
+        if (result.invitedEmail) setEmail(result.invitedEmail);
+      }
+    } catch (err: any) {
+      setError(err.message || "Invalid access code.");
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,7 +52,8 @@ export default function MemberAuthModal({ isOpen, onClose }: Props) {
           setLoading(false);
           return;
         }
-        const res = await registerMutation.mutateAsync({ name, email, password });
+        if (!inviteVerified) throw new Error("Verify your access code first.");
+        const res = await registerMutation.mutateAsync({ name, email, password, accessCode });
         login(res.token, res.member);
       }
       onClose();
@@ -84,6 +101,19 @@ export default function MemberAuthModal({ isOpen, onClose }: Props) {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
+              {mode === "register" && !inviteVerified && (
+                <div className="space-y-3">
+                  <label className="block text-xs uppercase tracking-wider text-[#C9B99A]/60">One-Time Access Code</label>
+                  <input value={accessCode} onChange={(e) => setAccessCode(e.target.value.toUpperCase())}
+                    className="w-full bg-[#182635] border border-[#C9B99A]/10 rounded-lg px-3 py-2.5 text-sm tracking-[0.2em] text-[#F5F1E8] focus:outline-none focus:border-[#FF9500]/50"
+                    placeholder="XXXX-XXXX-XXXX" />
+                  <button type="button" onClick={verifyInvite} disabled={validateCodeMutation.isPending || accessCode.length < 8}
+                    className="w-full bg-[#FF9500] text-[#182635] font-bold py-2.5 rounded-lg disabled:opacity-50">
+                    {validateCodeMutation.isPending ? "Checking…" : "Verify Invitation"}
+                  </button>
+                </div>
+              )}
+              {(mode === "login" || inviteVerified) && <>
               {mode === "register" && (
                 <div>
                   <label className="block text-xs uppercase tracking-wider text-[#C9B99A]/60 mb-1.5">
@@ -149,14 +179,15 @@ export default function MemberAuthModal({ isOpen, onClose }: Props) {
               >
                 {loading ? "Please wait..." : mode === "login" ? "Log In" : "Create Account"}
               </button>
+              </>}
             </form>
 
             <div className="mt-4 text-center">
               <button
-                onClick={() => { setMode(mode === "login" ? "register" : "login"); setError(""); }}
+                onClick={() => { setMode(mode === "login" ? "register" : "login"); setError(""); setInviteVerified(false); }}
                 className="text-xs text-[#FF9500] hover:underline"
               >
-                {mode === "login" ? "Don't have an account? Join" : "Already a member? Log in"}
+                {mode === "login" ? "Have an invitation code? Join" : "Already a member? Log in"}
               </button>
             </div>
 

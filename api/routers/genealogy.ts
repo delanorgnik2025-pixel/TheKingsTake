@@ -84,7 +84,7 @@ export const genealogyRouter = createRouter({
       position: z.string(),
       parentPosition: z.string().optional(),
       status: z.enum(["unknown", "researching", "confirmed", "verified"]).optional(),
-      recordsChecked: z.record(z.boolean()).optional(),
+      recordsChecked: z.record(z.string(), z.boolean()).optional(),
     }))
     .mutation(async ({ input }) => addPerson(input)),
 

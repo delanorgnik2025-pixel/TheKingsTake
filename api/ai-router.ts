@@ -29,8 +29,10 @@ async function callOpenAI(systemPrompt: string, userPrompt: string): Promise<str
     throw new Error(`OpenAI API error: ${error}`);
   }
 
-  const data = await response.json();
-  return data.choices[0]?.message?.content ?? "No response generated.";
+  const data = await response.json() as {
+    choices?: Array<{ message?: { content?: string } }>;
+  };
+  return data.choices?.[0]?.message?.content ?? "No response generated.";
 }
 
 async function callGoogleAI(systemPrompt: string, userPrompt: string): Promise<string> {
@@ -57,8 +59,10 @@ async function callGoogleAI(systemPrompt: string, userPrompt: string): Promise<s
     throw new Error(`Google AI API error: ${error}`);
   }
 
-  const data = await response.json();
-  return data.candidates[0]?.content?.parts[0]?.text ?? "No response generated.";
+  const data = await response.json() as {
+    candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+  };
+  return data.candidates?.[0]?.content?.parts?.[0]?.text ?? "No response generated.";
 }
 
 export const aiRouter = createRouter({

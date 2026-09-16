@@ -1,9 +1,10 @@
 import { z } from "zod";
 import { createRouter, publicQuery, adminQuery } from "./middleware";
 import { getDb } from "./queries/connection";
-import { feedPosts } from "@db/schema";
+import { feedPosts, members } from "@db/schema";
 import { eq, desc, sql } from "drizzle-orm";
 import { createDirectUpload, getUpload, getAsset, muxConfigured } from "./mux";
+import { createHash } from "node:crypto";
 
 export const feedRouter = createRouter({
   // Public: list feed posts — pinned first, then newest. Simple cursor paging.
@@ -19,8 +20,15 @@ export const feedRouter = createRouter({
       const limit = input?.limit ?? 20;
       const offset = input?.offset ?? 0;
       const rows = await db
-        .select()
+        .select({
+          id: feedPosts.id, memberId: feedPosts.memberId, body: feedPosts.body,
+          linkUrl: feedPosts.linkUrl, linkTitle: feedPosts.linkTitle, imageUrl: feedPosts.imageUrl,
+          videoUrl: feedPosts.videoUrl, videoType: feedPosts.videoType, muxPlaybackId: feedPosts.muxPlaybackId,
+          pinned: feedPosts.pinned, likesCount: feedPosts.likesCount, createdAt: feedPosts.createdAt,
+          updatedAt: feedPosts.updatedAt, memberName: members.name, memberAvatar: members.avatar,
+        })
         .from(feedPosts)
+        .leftJoin(members, eq(members.id, feedPosts.memberId))
         .orderBy(desc(feedPosts.pinned), desc(feedPosts.createdAt))
         .limit(limit)
         .offset(offset);
@@ -43,19 +51,19 @@ export const feedRouter = createRouter({
   create: adminQuery
     .input(
       z.object({
-        body: z.string().min(1),
+        body: z.string().max(10000),
         linkUrl: z.string().url().optional().or(z.literal("")),
         linkTitle: z.string().max(500).optional(),
         imageUrl: z.string().url().optional().or(z.literal("")),
         videoUrl: z.string().url().optional().or(z.literal("")),
         videoType: z.enum(["upload", "embed", "mux"]).default("upload"),
         muxPlaybackId: z.string().optional(),
-      })
+      }).refine((value) => value.body.trim() || value.linkUrl || value.imageUrl || value.videoUrl || value.muxPlaybackId, { message: "Add text or media." })
     )
     .mutation(async ({ input }) => {
       const db = getDb();
       const result = await db.insert(feedPosts).values({
-        body: input.body,
+        body: input.body.trim(),
         linkUrl: input.linkUrl || null,
         linkTitle: input.linkTitle || null,
         imageUrl: input.imageUrl || null,
@@ -65,6 +73,19 @@ export const feedRouter = createRouter({
       });
       return { success: true, id: Number(result[0].insertId) };
     }),
+
+  createImageUploadSignature: adminQuery.mutation(() => {
+    const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+    const apiKey = process.env.CLOUDINARY_API_KEY;
+    const apiSecret = process.env.CLOUDINARY_API_SECRET;
+    if (!cloudName || !apiKey || !apiSecret) {
+      throw new Error("Image uploads are not configured.");
+    }
+    const timestamp = Math.floor(Date.now() / 1000);
+    const folder = "thekingstake/feed";
+    const signature = createHash("sha1").update(`folder=${folder}&timestamp=${timestamp}${apiSecret}`).digest("hex");
+    return { cloudName, apiKey, timestamp, folder, signature };
+  }),
 
   // Admin: delete a post
   delete: adminQuery
@@ -101,7 +122,7 @@ export const feedRouter = createRouter({
     .input(
       z.object({
         uploadId: z.string(),
-        body: z.string().min(1),
+        body: z.string().max(10000),
       })
     )
     .mutation(async ({ input }) => {

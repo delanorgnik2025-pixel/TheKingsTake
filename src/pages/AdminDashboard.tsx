@@ -4,10 +4,8 @@ import { trpc } from '@/providers/trpc'
 import {
   LayoutDashboard, ShoppingCart, Users,
   ScrollText, Settings, LogOut, X, ChevronRight, BarChart3,
-  Calendar, Megaphone, Crown, Radio
+  Calendar, Megaphone, Crown, Radio, KeyRound, Copy, Mail
 } from 'lucide-react'
-
-const ADMIN_PASSWORD = 'AASOTU2025!'
 
 // ─── Sidebar navigation items ───
 const NAV_ITEMS = [
@@ -17,6 +15,8 @@ const NAV_ITEMS = [
   { id: 'bookings', label: 'Consultations', icon: Calendar },
   { id: 'services', label: 'Services', icon: Megaphone },
   { id: 'contacts', label: 'Contacts', icon: Users },
+  { id: 'access-codes', label: 'Member Access Codes', icon: KeyRound },
+  { id: 'audience', label: 'Audience & Leads', icon: Mail },
   { id: 'settings', label: 'Settings', icon: Settings },
 ]
 
@@ -145,6 +145,86 @@ function SettingsModule({ onLogout }: { onLogout: () => void }) {
   )
 }
 
+function AccessCodesModule() {
+  const [label, setLabel] = useState('')
+  const [email, setEmail] = useState('')
+  const [newCode, setNewCode] = useState('')
+  const utils = trpc.useUtils()
+  const codes = trpc.member.adminListAccessCodes.useQuery()
+  const members = trpc.member.adminListMembers.useQuery()
+  const generate = trpc.member.adminGenerateAccessCode.useMutation({
+    onSuccess: data => {
+      setNewCode(data.code)
+      setLabel('')
+      setEmail('')
+      utils.member.adminListAccessCodes.invalidate()
+    },
+  })
+  const revoke = trpc.member.adminRevokeAccessCode.useMutation({
+    onSuccess: () => utils.member.adminListAccessCodes.invalidate(),
+  })
+  const setMemberActive = trpc.member.adminSetMemberActive.useMutation({
+    onSuccess: () => utils.member.adminListMembers.invalidate(),
+  })
+
+  return (
+    <div>
+      <h3 className="text-xl text-[#F0EBE1] mb-2" style={{ fontFamily: 'Newsreader, serif' }}>Exclusive Member Access</h3>
+      <p className="text-sm text-[#C9B99A]/70 mb-6">Generate a one-time code for an approved Facebook subscriber. The full code is shown only once.</p>
+      <div className="grid sm:grid-cols-2 gap-3 mb-4">
+        <input value={label} onChange={e => setLabel(e.target.value)} placeholder="Subscriber name or note" className="bg-white/[0.03] border border-white/[0.08] rounded px-3 py-2 text-[#F0EBE1]" />
+        <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Optional locked email" type="email" className="bg-white/[0.03] border border-white/[0.08] rounded px-3 py-2 text-[#F0EBE1]" />
+      </div>
+      <button onClick={() => generate.mutate({ label: label || undefined, invitedEmail: email, expiresInDays: 30 })} disabled={generate.isPending} className="bg-[#FF9500] text-[#182635] font-bold rounded px-4 py-2 disabled:opacity-50">Generate One-Time Code</button>
+      {newCode && (
+        <div className="mt-4 p-4 border border-[#FF9500]/40 bg-[#FF9500]/10 rounded flex items-center justify-between">
+          <div><p className="text-xs text-[#C9B99A] mb-1">Copy now—this full code will not be shown again.</p><code className="text-xl tracking-widest text-[#F0EBE1]">{newCode}</code></div>
+          <button onClick={() => navigator.clipboard.writeText(newCode)} className="text-[#FF9500] p-2" title="Copy code"><Copy size={18}/></button>
+        </div>
+      )}
+      <div className="mt-6 space-y-2">
+        {codes.data?.map(code => {
+          const status = code.usedAt ? 'Redeemed' : code.revokedAt ? 'Revoked' : code.expiresAt && new Date(code.expiresAt) < new Date() ? 'Expired' : 'Available'
+          return <div key={code.id} className="p-3 bg-white/[0.03] border border-white/[0.06] rounded flex items-center gap-3">
+            <code className="text-[#FFB840]">{code.codePreview}</code>
+            <div className="flex-1"><p className="text-sm text-[#F0EBE1]">{code.label || code.invitedEmail || 'Unassigned invitation'}</p><p className="text-xs text-[#C9B99A]/50">{status}</p></div>
+            {status === 'Available' && <button onClick={() => revoke.mutate({ id: code.id })} className="text-xs text-red-400">Revoke</button>}
+          </div>
+        })}
+      </div>
+      <h4 className="text-lg text-[#F0EBE1] mt-8 mb-3" style={{ fontFamily: 'Newsreader, serif' }}>Members</h4>
+      <div className="space-y-2">
+        {members.data?.map(member => (
+          <div key={member.id} className="p-3 bg-white/[0.03] border border-white/[0.06] rounded flex items-center gap-3">
+            <div className="flex-1"><p className="text-sm text-[#F0EBE1]">{member.name}</p><p className="text-xs text-[#C9B99A]/50">{member.email} · {member.isActive ? 'Active' : 'Disabled'}</p></div>
+            <button onClick={() => setMemberActive.mutate({ id: member.id, isActive: !member.isActive })} className={member.isActive ? 'text-xs text-red-400' : 'text-xs text-green-400'}>
+              {member.isActive ? 'Disable' : 'Reactivate'}
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function AudienceModule() {
+  const { data, isLoading } = trpc.engagement.adminOverview.useQuery(undefined, { refetchInterval: 30_000 })
+  if (isLoading) return <p className="text-[#C9B99A]">Loading audience activity…</p>
+  return <div>
+    <h3 className="text-xl text-[#F0EBE1] mb-2" style={{ fontFamily: 'Newsreader, serif' }}>Audience & Leads</h3>
+    <p className="text-sm text-[#C9B99A]/70 mb-6">Anonymous visitors are counted without exposing their identity. Contact information appears only after voluntary submission.</p>
+    <div className="grid sm:grid-cols-3 gap-3 mb-8">
+      <div className="rounded border border-white/10 p-4"><p className="text-2xl text-[#FF9500]">{data?.activeVisitors || 0}</p><p className="text-xs text-[#C9B99A]">Active in last 5 minutes</p></div>
+      <div className="rounded border border-white/10 p-4"><p className="text-2xl text-[#FF9500]">{data?.subscribers.length || 0}</p><p className="text-xs text-[#C9B99A]">Recent subscribers</p></div>
+      <div className="rounded border border-white/10 p-4"><p className="text-2xl text-[#FF9500]">{data?.leads.length || 0}</p><p className="text-xs text-[#C9B99A]">Recent leads</p></div>
+    </div>
+    <h4 className="text-[#F0EBE1] mb-3">Lead requests</h4>
+    <div className="space-y-2 mb-8">{data?.leads.map(lead => <div key={lead.id} className="rounded border border-white/10 p-3"><p className="text-sm text-[#F0EBE1]">{lead.name || 'Visitor'} · {lead.interest}</p><a href={`mailto:${lead.email}`} className="text-xs text-[#FFB840]">{lead.email}</a>{lead.message && <p className="mt-1 text-xs text-[#C9B99A]">{lead.message}</p>}</div>)}</div>
+    <h4 className="text-[#F0EBE1] mb-3">Newsletter subscribers</h4>
+    <div className="space-y-2">{data?.subscribers.map(subscriber => <div key={subscriber.id} className="rounded border border-white/10 p-3 text-sm text-[#C9B99A]">{subscriber.name || 'Subscriber'} · {subscriber.email}</div>)}</div>
+  </div>
+}
+
 // ─── Main Dashboard ───
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard')
@@ -169,6 +249,8 @@ export default function AdminDashboard() {
       case 'bookings': return <PlaceholderModule title="Consultation Requests" message="Booking requests will appear here." />
       case 'services': return <PlaceholderModule title="Services" message="Service management coming soon." />
       case 'contacts': return <PlaceholderModule title="Contacts" message="Contact submissions will appear here." />
+      case 'access-codes': return <AccessCodesModule />
+      case 'audience': return <AudienceModule />
       case 'settings': return <SettingsModule onLogout={handleLogout} />
       default: return <DashboardHome />
     }
