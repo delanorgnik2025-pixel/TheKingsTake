@@ -81,6 +81,7 @@ function AppRoutes() {
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<HomePage />} />
           <Route path="/feed" element={<FeedPage />} />
+          <Route path="/feed/post/:postId/:authorSlug?" element={<FeedPage />} />
           <Route path="/blog" element={<Navigate to="/feed" replace />} />
           <Route path="/news" element={<Navigate to="/feed" replace />} />
           <Route path="/blog/:slug" element={<BlogPostPage />} />

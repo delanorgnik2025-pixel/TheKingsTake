@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Link } from 'react-router'
+import { Link, useParams } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
 import MuxPlayer from '@mux/mux-player-react'
 import {
@@ -45,6 +45,26 @@ function embedUrl(url: string): string {
   return url
 }
 
+function authorSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '') || 'member'
+}
+
+function postShareUrl(post: FeedPost): string {
+  const author = post.memberName || 'Ronald Lee King'
+  return `${window.location.origin}/feed/post/${post.id}/${authorSlug(author)}`
+}
+
+function postPreviewImage(post: FeedPost): string {
+  if (post.imageUrl) return post.imageUrl
+  if (post.muxPlaybackId) return `https://image.mux.com/${post.muxPlaybackId}/thumbnail.jpg?time=0`
+  return `${window.location.origin}/images/og-image.jpg`
+}
+
 type FeedPost = {
   id: number
   body: string
@@ -64,6 +84,8 @@ type FeedPost = {
 
 // ─── page ─────────────────────────────────────────────────────────────────────
 export default function FeedPage() {
+  const { postId } = useParams<{ postId?: string }>()
+  const sharedPostId = postId && /^\d+$/.test(postId) ? Number(postId) : null
   const [isAdmin, setIsAdmin] = useState(false)
   const [offset, setOffset] = useState(0)
   const [allPosts, setAllPosts] = useState<FeedPost[]>([])
@@ -77,6 +99,10 @@ export default function FeedPage() {
 
   const utils = trpc.useUtils()
   const { data, isLoading } = trpc.feed.list.useQuery({ limit: PAGE, offset })
+  const sharedPostQuery = trpc.feed.getById.useQuery(
+    { id: sharedPostId || 1 },
+    { enabled: sharedPostId !== null },
+  )
   const liveStatus = trpc.live.status.useQuery(undefined, { refetchInterval: 15000 })
 
   useEffect(() => {
@@ -88,6 +114,16 @@ export default function FeedPage() {
       })
     }
   }, [data])
+
+  useEffect(() => {
+    const sharedPost = sharedPostQuery.data?.post as FeedPost | null | undefined
+    if (!sharedPost) return
+    setAllPosts((prev) => [sharedPost, ...prev.filter((post) => post.id !== sharedPost.id)])
+    const timer = window.setTimeout(() => {
+      document.getElementById(`post-${sharedPost.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }, 250)
+    return () => window.clearTimeout(timer)
+  }, [sharedPostQuery.data])
 
   const refresh = () => {
     setOffset(0)
@@ -779,6 +815,8 @@ function PostCard({ post, isAdmin, onChanged }: { post: FeedPost; isAdmin: boole
   const [showComments, setShowComments] = useState(false)
   const [commentText, setCommentText] = useState('')
   const [showAuth, setShowAuth] = useState(false)
+  const [showShare, setShowShare] = useState(false)
+  const [copiedShare, setCopiedShare] = useState(false)
   const { member } = useMember()
 
   const likeMutation = trpc.member.likePost.useMutation()
@@ -800,13 +838,20 @@ function PostCard({ post, isAdmin, onChanged }: { post: FeedPost; isAdmin: boole
   }
 
   const handleShare = async () => {
-    const url = `${window.location.origin}/feed#post-${post.id}`
-    const data = { title: '#TheKingsTake', text: post.body.slice(0, 180), url }
-    if (navigator.share) await navigator.share(data).catch(() => undefined)
-    else {
-      await navigator.clipboard.writeText(url)
-      alert('Post link copied')
+    const author = post.memberName || 'Ronald Lee King'
+    const url = postShareUrl(post)
+    const data = { title: `${author} on #TheKingsTake`, text: post.body.slice(0, 180), url }
+    if (navigator.share) {
+      await navigator.share(data).catch(() => undefined)
+      return
     }
+    setShowShare(true)
+  }
+
+  const copyShareLink = async () => {
+    await navigator.clipboard.writeText(postShareUrl(post))
+    setCopiedShare(true)
+    window.setTimeout(() => setCopiedShare(false), 1800)
   }
 
   const handleComment = async () => {
@@ -824,6 +869,47 @@ function PostCard({ post, isAdmin, onChanged }: { post: FeedPost; isAdmin: boole
   return (
     <>
       <MemberAuthModal isOpen={showAuth} onClose={() => setShowAuth(false)} />
+      <AnimatePresence>
+        {showShare && (
+          <motion.div
+            className="fixed inset-0 z-[90] flex items-center justify-center bg-black/70 px-4 backdrop-blur-sm"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            onClick={() => setShowShare(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 16, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.98 }}
+              onClick={(event) => event.stopPropagation()}
+              className="w-full max-w-md overflow-hidden rounded-xl border border-[rgba(255,149,0,0.35)] bg-[#182635] shadow-2xl"
+            >
+              <div className="relative aspect-[1.91/1] bg-[#0f1924]">
+                <img src={postPreviewImage(post)} alt="Post preview" className="h-full w-full object-cover" />
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#101a26] to-transparent px-4 pb-3 pt-12">
+                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#FFB840]">#TheKingsTake</p>
+                </div>
+                <button onClick={() => setShowShare(false)} className="absolute right-3 top-3 rounded-full bg-black/60 p-1.5 text-white hover:bg-black/80" aria-label="Close share window">
+                  <X size={16} />
+                </button>
+              </div>
+              <div className="p-4">
+                <h3 className="text-lg text-[#F0EBE1]" style={{ fontFamily: 'Newsreader, serif' }}>
+                  {post.memberName || 'Ronald Lee King'} on #TheKingsTake
+                </h3>
+                <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-[#C9B99A]">
+                  {post.body || 'A community post from TheKingsTake.com'}
+                </p>
+                <div className="mt-4 grid grid-cols-2 gap-2">
+                  <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(postShareUrl(post))}`} target="_blank" rel="noopener noreferrer" className="rounded-lg bg-[#1877F2] px-3 py-2.5 text-center text-xs font-semibold text-white">Facebook</a>
+                  <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`${post.memberName || 'Ronald Lee King'} on #TheKingsTake`)}&url=${encodeURIComponent(postShareUrl(post))}`} target="_blank" rel="noopener noreferrer" className="rounded-lg bg-black px-3 py-2.5 text-center text-xs font-semibold text-white">X / Twitter</a>
+                  <a href={`https://wa.me/?text=${encodeURIComponent(`${post.memberName || 'Ronald Lee King'} on #TheKingsTake ${postShareUrl(post)}`)}`} target="_blank" rel="noopener noreferrer" className="rounded-lg bg-[#25D366] px-3 py-2.5 text-center text-xs font-semibold text-[#102018]">WhatsApp</a>
+                  <button onClick={copyShareLink} className="flex items-center justify-center gap-1.5 rounded-lg border border-[rgba(255,149,0,0.35)] px-3 py-2.5 text-xs font-semibold text-[#FFB840]">
+                    {copiedShare ? <Check size={14} /> : <Copy size={14} />} {copiedShare ? 'Copied' : 'Copy link'}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <motion.article id={`post-${post.id}`}
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
