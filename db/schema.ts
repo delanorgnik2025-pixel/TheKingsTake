@@ -8,6 +8,7 @@ import {
   int,
   boolean,
   bigint,
+  uniqueIndex,
 } from "drizzle-orm/mysql-core";
 
 // ─── Users (Auth) ──────────────────────────────────────────
@@ -266,6 +267,7 @@ export const recordSearches = mysqlTable("recordSearches", {
 // ─── Feed (The King's Take — Facebook-style wall) ───────────────────────────
 export const feedPosts = mysqlTable("feed_posts", {
   id: serial("id").primaryKey(),
+  memberId: bigint("member_id", { mode: "number", unsigned: true }),
   body: text("body").notNull(),
   linkUrl: varchar("link_url", { length: 1024 }),
   linkTitle: varchar("link_title", { length: 500 }),
@@ -296,6 +298,22 @@ export const members = mysqlTable("members", {
 export type Member = typeof members.$inferSelect;
 export type InsertMember = typeof members.$inferInsert;
 
+// ─── One-time Member Invitations ───────────────────────────────────────────
+export const memberAccessCodes = mysqlTable("member_access_codes", {
+  id: serial("id").primaryKey(),
+  codeHash: varchar("code_hash", { length: 64 }).notNull().unique(),
+  codePreview: varchar("code_preview", { length: 16 }).notNull(),
+  label: varchar("label", { length: 255 }),
+  invitedEmail: varchar("invited_email", { length: 320 }),
+  expiresAt: timestamp("expires_at"),
+  usedAt: timestamp("used_at"),
+  usedByMemberId: bigint("used_by_member_id", { mode: "number", unsigned: true }),
+  revokedAt: timestamp("revoked_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type MemberAccessCode = typeof memberAccessCodes.$inferSelect;
+
 // ─── Feed Comments ──────────────────────────────────────────────────────────
 export const feedComments = mysqlTable("feed_comments", {
   id: serial("id").primaryKey(),
@@ -315,10 +333,46 @@ export const feedLikes = mysqlTable("feed_likes", {
   postId: bigint("post_id", { mode: "number", unsigned: true }).notNull(),
   memberId: bigint("member_id", { mode: "number", unsigned: true }).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+}, (table) => [
+  uniqueIndex("feed_likes_member_post_unique").on(table.memberId, table.postId),
+]);
 
 export type FeedLike = typeof feedLikes.$inferSelect;
 export type InsertFeedLike = typeof feedLikes.$inferInsert;
+
+// ─── Audience, Newsletter & Consent-Based Leads ────────────────────────────
+export const newsletterSubscribers = mysqlTable("newsletter_subscribers", {
+  id: serial("id").primaryKey(),
+  email: varchar("email", { length: 320 }).notNull().unique(),
+  name: varchar("name", { length: 255 }),
+  sourcePage: varchar("source_page", { length: 500 }),
+  interests: text("interests"),
+  status: mysqlEnum("status", ["subscribed", "unsubscribed"]).default("subscribed").notNull(),
+  consentedAt: timestamp("consented_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull().$onUpdate(() => new Date()),
+});
+
+export const siteLeads = mysqlTable("site_leads", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }),
+  email: varchar("email", { length: 320 }).notNull(),
+  phone: varchar("phone", { length: 50 }),
+  interest: varchar("interest", { length: 100 }).notNull(),
+  message: text("message"),
+  sourcePage: varchar("source_page", { length: 500 }),
+  consentedAt: timestamp("consented_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const siteVisitorSessions = mysqlTable("site_visitor_sessions", {
+  id: serial("id").primaryKey(),
+  sessionId: varchar("session_id", { length: 64 }).notNull().unique(),
+  lastPath: varchar("last_path", { length: 500 }).notNull(),
+  referrer: varchar("referrer", { length: 1000 }),
+  firstSeenAt: timestamp("first_seen_at").defaultNow().notNull(),
+  lastSeenAt: timestamp("last_seen_at").defaultNow().notNull(),
+});
 
 // ─── Live Streams (Mux) ─────────────────────────────────────────────────────
 export const liveStreams = mysqlTable("live_streams", {

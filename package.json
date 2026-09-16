@@ -12,6 +12,8 @@
     "start": "npx serve dist/public -l 3000 -s",
     "start:server": "npx tsx api/boot.ts",
     "check": "tsc -b",
+    "check:server": "tsc -p tsconfig.server.json",
+    "validate": "npm run check:server && npm test && npm run build",
     "format": "prettier --write .",
     "test": "vitest run",
     "db:generate": "drizzle-kit generate",

@@ -1,4 +1,3 @@
-import { z } from "zod";
 import { eq, and, sql } from "drizzle-orm";
 import { getDb } from "./queries/connection";
 import { familyTrees, genealogyPeople, recordSearches } from "@db/schema";
@@ -192,7 +191,9 @@ export const updatePerson = async (personId: number, data: Partial<{
   status: string;
   recordsChecked: string;
 }>) => {
-  await getDb().update(genealogyPeople).set(data).where(eq(genealogyPeople.id, personId));
+  await getDb().update(genealogyPeople)
+    .set(data as Partial<typeof genealogyPeople.$inferInsert>)
+    .where(eq(genealogyPeople.id, personId));
 
   const [person] = await getDb().select().from(genealogyPeople).where(eq(genealogyPeople.id, personId)).limit(1);
   return person;
@@ -238,7 +239,9 @@ export const getRecordSearches = async (personId: number) => {
 };
 
 export const updateRecordSearch = async (searchId: number, data: { result?: string; notes?: string }) => {
-  await getDb().update(recordSearches).set(data).where(eq(recordSearches.id, searchId));
+  await getDb().update(recordSearches)
+    .set(data as Partial<typeof recordSearches.$inferInsert>)
+    .where(eq(recordSearches.id, searchId));
 };
 
 // ─── TREE STATS ───────────────────────────────────────────

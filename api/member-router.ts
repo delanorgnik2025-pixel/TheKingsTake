@@ -1,46 +1,13 @@
 import { z } from "zod";
 import { eq, and, desc, sql } from "drizzle-orm";
+import { createHash } from "node:crypto";
 import { TRPCError } from "@trpc/server";
-import { SignJWT, jwtVerify } from "jose";
-import { createHash, randomBytes } from "crypto";
-import { createRouter, publicQuery } from "./middleware";
+import { adminQuery, createRouter, publicQuery } from "./middleware";
 import { getDb } from "./queries/connection";
-import { members, feedComments, feedLikes, feedPosts } from "@db/schema";
-
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || process.env.ADMIN_PASSWORD || "thekingstake-member-secret"
-);
-
-function hashPassword(password: string, salt?: string) {
-  const s = salt || randomBytes(16).toString("hex");
-  const hash = createHash("sha256").update(password + s).digest("hex");
-  return { hash, salt: s };
-}
-
-function verifyPassword(password: string, salt: string, hash: string) {
-  const { hash: computed } = hashPassword(password, salt);
-  return computed === hash;
-}
-
-async function createMemberToken(memberId: number, email: string) {
-  return new SignJWT({ memberId, email, type: "member" })
-    .setProtectedHeader({ alg: "HS256" })
-    .setExpirationTime("30d")
-    .sign(JWT_SECRET);
-}
-
-export async function verifyMemberToken(token: string) {
-  try {
-    const { payload } = await jwtVerify(token, JWT_SECRET, { clockTolerance: 60 });
-    if (payload.type !== "member") return null;
-    return {
-      memberId: payload.memberId as number,
-      email: payload.email as string,
-    };
-  } catch {
-    return null;
-  }
-}
+import { members, memberAccessCodes, feedComments, feedLikes, feedPosts } from "@db/schema";
+import { createMemberToken, hashPassword, verifyMemberToken, verifyPassword } from "./security/auth";
+import { generateAccessCode, hashAccessCode } from "./security/access-codes";
+import { createDirectUpload, getAsset, getUpload } from "./mux";
 
 // ── Helper: get member from request ─────────────────────────────
 async function getMemberFromRequest(req: Request) {
@@ -54,6 +21,23 @@ async function getMemberFromRequest(req: Request) {
 }
 
 export const memberRouter = createRouter({
+  validateAccessCode: publicQuery
+    .input(z.object({ code: z.string().min(8).max(32) }))
+    .mutation(async ({ input }) => {
+      const [invite] = await getDb().select({
+        id: memberAccessCodes.id,
+        invitedEmail: memberAccessCodes.invitedEmail,
+        expiresAt: memberAccessCodes.expiresAt,
+        usedAt: memberAccessCodes.usedAt,
+        revokedAt: memberAccessCodes.revokedAt,
+      }).from(memberAccessCodes)
+        .where(eq(memberAccessCodes.codeHash, hashAccessCode(input.code)))
+        .limit(1);
+      const valid = Boolean(invite && !invite.usedAt && !invite.revokedAt && (!invite.expiresAt || invite.expiresAt > new Date()));
+      if (!valid) throw new TRPCError({ code: "UNAUTHORIZED", message: "This access code is invalid, expired, or already used." });
+      return { valid: true, invitedEmail: invite?.invitedEmail ?? null };
+    }),
+
   // ── Register ─────────────────────────────────────────────────
   register: publicQuery
     .input(
@@ -61,37 +45,42 @@ export const memberRouter = createRouter({
         name: z.string().min(2).max(100),
         email: z.string().email().max(320),
         password: z.string().min(6).max(100),
+        accessCode: z.string().min(8).max(32),
       })
     )
     .mutation(async ({ input }) => {
-      const existing = await db
-        .select()
-        .from(members)
-        .where(eq(members.email, input.email))
-        .limit(1);
-
-      if (existing.length > 0) {
-        throw new TRPCError({ code: "CONFLICT", message: "Email already registered." });
-      }
-
-      const { hash, salt } = hashPassword(input.password);
-      const passwordHash = `${salt}:${hash}`;
-
-      const result = await getDb().insert(members).values({
-        name: input.name,
-        email: input.email,
-        passwordHash,
+      const db = getDb();
+      const email = input.email.trim().toLowerCase();
+      const memberId = await db.transaction(async (tx) => {
+        const [invite] = await tx.select().from(memberAccessCodes)
+          .where(eq(memberAccessCodes.codeHash, hashAccessCode(input.accessCode)))
+          .limit(1).for("update");
+        if (!invite || invite.usedAt || invite.revokedAt || (invite.expiresAt && invite.expiresAt <= new Date())) {
+          throw new TRPCError({ code: "UNAUTHORIZED", message: "This access code is invalid, expired, or already used." });
+        }
+        if (invite.invitedEmail && invite.invitedEmail.toLowerCase() !== email) {
+          throw new TRPCError({ code: "FORBIDDEN", message: "This code was issued for a different email address." });
+        }
+        const existing = await tx.select({ id: members.id }).from(members).where(eq(members.email, email)).limit(1);
+        if (existing[0]) throw new TRPCError({ code: "CONFLICT", message: "Email already registered." });
+        const result = await tx.insert(members).values({
+          name: input.name.trim(), email, passwordHash: await hashPassword(input.password), facebookSubscribed: true,
+        });
+        const id = Number(result[0].insertId);
+        await tx.update(memberAccessCodes).set({ usedAt: new Date(), usedByMemberId: id }).where(eq(memberAccessCodes.id, invite.id));
+        return id;
       });
-
-      const memberId = Number(result[0].insertId);
-      const token = await createMemberToken(memberId, input.email);
+      const token = await createMemberToken(memberId, email);
 
       return {
         token,
         member: {
           id: memberId,
-          name: input.name,
-          email: input.email,
+          name: input.name.trim(),
+          email,
+          avatar: null,
+          role: "member" as const,
+          facebookSubscribed: true,
         },
       };
     }),
@@ -105,10 +94,11 @@ export const memberRouter = createRouter({
       })
     )
     .mutation(async ({ input }) => {
+      const db = getDb();
       const rows = await db
         .select()
         .from(members)
-        .where(eq(members.email, input.email))
+        .where(eq(members.email, input.email.trim().toLowerCase()))
         .limit(1);
 
       if (rows.length === 0) {
@@ -116,10 +106,15 @@ export const memberRouter = createRouter({
       }
 
       const member = rows[0];
-      const [salt, hash] = member.passwordHash.split(":");
-
-      if (!verifyPassword(input.password, salt, hash)) {
+      const password = await verifyPassword(input.password, member.passwordHash);
+      if (!password.valid || !member.isActive) {
         throw new TRPCError({ code: "UNAUTHORIZED", message: "Invalid email or password." });
+      }
+
+      if (password.needsRehash) {
+        await db.update(members)
+          .set({ passwordHash: await hashPassword(input.password), updatedAt: new Date() })
+          .where(eq(members.id, member.id));
       }
 
       const token = await createMemberToken(member.id, member.email);
@@ -132,6 +127,7 @@ export const memberRouter = createRouter({
           email: member.email,
           avatar: member.avatar,
           role: member.role,
+          facebookSubscribed: member.facebookSubscribed,
         },
       };
     }),
@@ -165,7 +161,7 @@ export const memberRouter = createRouter({
         throw new TRPCError({ code: "UNAUTHORIZED", message: "Not logged in." });
       }
 
-      await db
+      await getDb()
         .update(members)
         .set({
           ...(input.name && { name: input.name }),
@@ -179,12 +175,27 @@ export const memberRouter = createRouter({
     }),
 
   // ── Feed: Post as Member ─────────────────────────────────────
+  createImageUploadSignature: publicQuery.mutation(async ({ ctx }) => {
+    const member = await getMemberFromRequest(ctx.req);
+    if (!member) throw new TRPCError({ code: "UNAUTHORIZED", message: "Members only." });
+    const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+    const apiKey = process.env.CLOUDINARY_API_KEY;
+    const apiSecret = process.env.CLOUDINARY_API_SECRET;
+    if (!cloudName || !apiKey || !apiSecret) {
+      throw new TRPCError({ code: "PRECONDITION_FAILED", message: "Image uploads are not configured." });
+    }
+    const timestamp = Math.floor(Date.now() / 1000);
+    const folder = "thekingstake/member-feed";
+    const signature = createHash("sha1").update(`folder=${folder}&timestamp=${timestamp}${apiSecret}`).digest("hex");
+    return { cloudName, apiKey, timestamp, folder, signature };
+  }),
+
   createFeedPost: publicQuery
     .input(
       z.object({
-        body: z.string().min(1).max(2000),
+        body: z.string().max(2000),
         imageUrl: z.string().url().optional().or(z.literal("")),
-      })
+      }).refine((value) => value.body.trim() || value.imageUrl, { message: "Add a message or image." })
     )
     .mutation(async ({ input, ctx }) => {
       const member = await getMemberFromRequest(ctx.req);
@@ -193,11 +204,41 @@ export const memberRouter = createRouter({
       }
 
       const result = await getDb().insert(feedPosts).values({
-        body: input.body,
+        memberId: member.id,
+        body: input.body.trim(),
         imageUrl: input.imageUrl || null,
       });
 
       return { success: true, id: Number(result[0].insertId) };
+    }),
+
+  createVideoUpload: publicQuery
+    .input(z.object({ corsOrigin: z.string().max(500).default("*") }).optional())
+    .mutation(async ({ input, ctx }) => {
+      const member = await getMemberFromRequest(ctx.req);
+      if (!member) throw new TRPCError({ code: "UNAUTHORIZED", message: "Members only." });
+      const upload = await createDirectUpload(input?.corsOrigin || "*");
+      return { uploadId: upload.id, uploadUrl: upload.url };
+    }),
+
+  confirmVideoUpload: publicQuery
+    .input(z.object({ uploadId: z.string().min(1), body: z.string().max(2000) }))
+    .mutation(async ({ input, ctx }) => {
+      const member = await getMemberFromRequest(ctx.req);
+      if (!member) throw new TRPCError({ code: "UNAUTHORIZED", message: "Members only." });
+      const upload = await getUpload(input.uploadId);
+      if (!upload.asset_id) return { ready: false as const };
+      const asset = await getAsset(upload.asset_id);
+      const playbackId = asset.playback_ids?.[0]?.id;
+      if (!playbackId) return { ready: false as const };
+      const result = await getDb().insert(feedPosts).values({
+        memberId: member.id,
+        body: input.body.trim(),
+        videoType: "mux",
+        muxPlaybackId: playbackId,
+        videoUrl: `https://stream.mux.com/${playbackId}.m3u8`,
+      });
+      return { ready: true as const, id: Number(result[0].insertId), playbackId };
     }),
 
   // ── Feed: Comment ────────────────────────────────────────────
@@ -227,7 +268,7 @@ export const memberRouter = createRouter({
   listComments: publicQuery
     .input(z.object({ postId: z.number() }))
     .query(async ({ input }) => {
-      const rows = await db
+      const rows = await getDb()
         .select({
           id: feedComments.id,
           postId: feedComments.postId,
@@ -254,34 +295,34 @@ export const memberRouter = createRouter({
         throw new TRPCError({ code: "UNAUTHORIZED", message: "Members only. Please log in." });
       }
 
-      const existing = await db
-        .select()
-        .from(feedLikes)
-        .where(and(eq(feedLikes.postId, input.postId), eq(feedLikes.memberId, member.id)))
-        .limit(1);
+      return getDb().transaction(async (tx) => {
+        // Lock the post so concurrent toggles serialize before checking the like row.
+        const post = await tx.select({ id: feedPosts.id })
+          .from(feedPosts)
+          .where(eq(feedPosts.id, input.postId))
+          .limit(1)
+          .for("update");
+        if (!post[0]) throw new TRPCError({ code: "NOT_FOUND", message: "Post not found." });
 
-      if (existing.length > 0) {
-        // Unlike
-        await db
-          .delete(feedLikes)
-          .where(and(eq(feedLikes.postId, input.postId), eq(feedLikes.memberId, member.id)));
-        await db
-          .update(feedPosts)
-          .set({ likesCount: sql`${feedPosts.likesCount} - 1` })
-          .where(eq(feedPosts.id, input.postId));
-        return { liked: false };
-      } else {
-        // Like
-        await getDb().insert(feedLikes).values({
-          postId: input.postId,
-          memberId: member.id,
-        });
-        await db
-          .update(feedPosts)
+        const existing = await tx.select({ id: feedLikes.id })
+          .from(feedLikes)
+          .where(and(eq(feedLikes.postId, input.postId), eq(feedLikes.memberId, member.id)))
+          .limit(1);
+
+        if (existing[0]) {
+          await tx.delete(feedLikes).where(eq(feedLikes.id, existing[0].id));
+          await tx.update(feedPosts)
+            .set({ likesCount: sql`greatest(${feedPosts.likesCount} - 1, 0)` })
+            .where(eq(feedPosts.id, input.postId));
+          return { liked: false };
+        }
+
+        await tx.insert(feedLikes).values({ postId: input.postId, memberId: member.id });
+        await tx.update(feedPosts)
           .set({ likesCount: sql`${feedPosts.likesCount} + 1` })
           .where(eq(feedPosts.id, input.postId));
         return { liked: true };
-      }
+      });
     }),
 
   // ── Feed: Check if liked ─────────────────────────────────────
@@ -291,12 +332,68 @@ export const memberRouter = createRouter({
       const member = await getMemberFromRequest(ctx.req);
       if (!member) return { liked: false };
 
-      const rows = await db
+      const rows = await getDb()
         .select()
         .from(feedLikes)
         .where(and(eq(feedLikes.postId, input.postId), eq(feedLikes.memberId, member.id)))
         .limit(1);
 
       return { liked: rows.length > 0 };
+    }),
+
+  adminGenerateAccessCode: adminQuery
+    .input(z.object({
+      label: z.string().max(255).optional(),
+      invitedEmail: z.string().email().optional().or(z.literal("")),
+      expiresInDays: z.number().int().min(1).max(365).default(30),
+    }))
+    .mutation(async ({ input }) => {
+      const code = generateAccessCode();
+      const expiresAt = new Date(Date.now() + input.expiresInDays * 86_400_000);
+      await getDb().insert(memberAccessCodes).values({
+        codeHash: hashAccessCode(code),
+        codePreview: `••••-${code.slice(-4)}`,
+        label: input.label?.trim() || null,
+        invitedEmail: input.invitedEmail?.trim().toLowerCase() || null,
+        expiresAt,
+      });
+      return { code, expiresAt };
+    }),
+
+  adminListAccessCodes: adminQuery.query(async () => {
+    return getDb().select({
+      id: memberAccessCodes.id,
+      codePreview: memberAccessCodes.codePreview,
+      label: memberAccessCodes.label,
+      invitedEmail: memberAccessCodes.invitedEmail,
+      expiresAt: memberAccessCodes.expiresAt,
+      usedAt: memberAccessCodes.usedAt,
+      revokedAt: memberAccessCodes.revokedAt,
+      createdAt: memberAccessCodes.createdAt,
+      usedByMemberId: memberAccessCodes.usedByMemberId,
+    }).from(memberAccessCodes).orderBy(desc(memberAccessCodes.createdAt));
+  }),
+
+  adminRevokeAccessCode: adminQuery
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ input }) => {
+      await getDb().update(memberAccessCodes).set({ revokedAt: new Date() })
+        .where(and(eq(memberAccessCodes.id, input.id), sql`${memberAccessCodes.usedAt} is null`));
+      return { success: true };
+    }),
+
+  adminListMembers: adminQuery.query(async () => {
+    return getDb().select({
+      id: members.id, name: members.name, email: members.email,
+      facebookSubscribed: members.facebookSubscribed, isActive: members.isActive,
+      role: members.role, createdAt: members.createdAt,
+    }).from(members).orderBy(desc(members.createdAt));
+  }),
+
+  adminSetMemberActive: adminQuery
+    .input(z.object({ id: z.number().int().positive(), isActive: z.boolean() }))
+    .mutation(async ({ input }) => {
+      await getDb().update(members).set({ isActive: input.isActive }).where(eq(members.id, input.id));
+      return { success: true };
     }),
 });

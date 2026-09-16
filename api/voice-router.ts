@@ -165,7 +165,9 @@ export const voiceRouter = createRouter({
         );
 
         if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
+          const errorData = await response.json().catch(() => ({})) as {
+            detail?: { message?: string };
+          };
           return {
             success: false,
             error: errorData.detail?.message || `Eleven Labs API error: ${response.status}`,
