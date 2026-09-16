@@ -41,6 +41,8 @@ function renderSharedPostHtml(template: string, post: {
     || (post.muxPlaybackId ? `https://image.mux.com/${post.muxPlaybackId}/thumbnail.jpg?time=0` : null)
     || "https://thekingstake.com/images/og-image.jpg";
   const canonicalUrl = new URL(requestUrl);
+  canonicalUrl.protocol = "https:";
+  canonicalUrl.host = "thekingstake.com";
   canonicalUrl.search = "";
   canonicalUrl.hash = "";
 
