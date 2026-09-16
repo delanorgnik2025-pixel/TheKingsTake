@@ -422,6 +422,13 @@ function MemberComposer({ onPosted }: { onPosted: () => void }) {
       <textarea
         value={body}
         onChange={(e) => setBody(e.target.value)}
+        onPaste={(e) => {
+          const file = Array.from(e.clipboardData.items).find(item => item.type.startsWith('image/'))?.getAsFile()
+          if (!file) return
+          e.preventDefault()
+          if (file.size > 10 * 1024 * 1024) { alert('Images must be 10 MB or smaller'); return }
+          setImageFile(file); setVideoFile(null)
+        }}
         placeholder="What's on your mind, Royal?"
         rows={2}
         className="w-full bg-[#182635] border border-[rgba(255,149,0,0.15)] rounded px-3 py-2.5 text-[#F0EBE1] text-sm placeholder-[#C9B99A]/40 focus:outline-none focus:border-[#FF9500] resize-y"
@@ -593,6 +600,13 @@ function FeedComposer({ onPosted }: { onPosted: () => void }) {
       <textarea
         value={body}
         onChange={(e) => setBody(e.target.value)}
+        onPaste={(e) => {
+          const file = Array.from(e.clipboardData.items).find(item => item.type.startsWith('image/'))?.getAsFile()
+          if (!file) return
+          e.preventDefault()
+          if (file.size > 10 * 1024 * 1024) { alert('Images must be 10 MB or smaller'); return }
+          setImageFile(file); setShowExtras('image')
+        }}
         placeholder="What's the take today? Share news, a link, a video…"
         rows={3}
         className="w-full bg-[#182635] border border-[rgba(255,149,0,0.2)] rounded px-3 py-2.5 text-[#F0EBE1] text-sm placeholder-[#C9B99A]/40 focus:outline-none focus:border-[#FF9500] resize-y"
