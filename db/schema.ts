@@ -340,6 +340,40 @@ export const feedLikes = mysqlTable("feed_likes", {
 export type FeedLike = typeof feedLikes.$inferSelect;
 export type InsertFeedLike = typeof feedLikes.$inferInsert;
 
+// ─── Audience, Newsletter & Consent-Based Leads ────────────────────────────
+export const newsletterSubscribers = mysqlTable("newsletter_subscribers", {
+  id: serial("id").primaryKey(),
+  email: varchar("email", { length: 320 }).notNull().unique(),
+  name: varchar("name", { length: 255 }),
+  sourcePage: varchar("source_page", { length: 500 }),
+  interests: text("interests"),
+  status: mysqlEnum("status", ["subscribed", "unsubscribed"]).default("subscribed").notNull(),
+  consentedAt: timestamp("consented_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull().$onUpdate(() => new Date()),
+});
+
+export const siteLeads = mysqlTable("site_leads", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }),
+  email: varchar("email", { length: 320 }).notNull(),
+  phone: varchar("phone", { length: 50 }),
+  interest: varchar("interest", { length: 100 }).notNull(),
+  message: text("message"),
+  sourcePage: varchar("source_page", { length: 500 }),
+  consentedAt: timestamp("consented_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const siteVisitorSessions = mysqlTable("site_visitor_sessions", {
+  id: serial("id").primaryKey(),
+  sessionId: varchar("session_id", { length: 64 }).notNull().unique(),
+  lastPath: varchar("last_path", { length: 500 }).notNull(),
+  referrer: varchar("referrer", { length: 1000 }),
+  firstSeenAt: timestamp("first_seen_at").defaultNow().notNull(),
+  lastSeenAt: timestamp("last_seen_at").defaultNow().notNull(),
+});
+
 // ─── Live Streams (Mux) ─────────────────────────────────────────────────────
 export const liveStreams = mysqlTable("live_streams", {
   id: serial("id").primaryKey(),

@@ -4,7 +4,7 @@ import { trpc } from '@/providers/trpc'
 import {
   LayoutDashboard, ShoppingCart, Users,
   ScrollText, Settings, LogOut, X, ChevronRight, BarChart3,
-  Calendar, Megaphone, Crown, Radio, KeyRound, Copy
+  Calendar, Megaphone, Crown, Radio, KeyRound, Copy, Mail
 } from 'lucide-react'
 
 // ─── Sidebar navigation items ───
@@ -16,6 +16,7 @@ const NAV_ITEMS = [
   { id: 'services', label: 'Services', icon: Megaphone },
   { id: 'contacts', label: 'Contacts', icon: Users },
   { id: 'access-codes', label: 'Member Access Codes', icon: KeyRound },
+  { id: 'audience', label: 'Audience & Leads', icon: Mail },
   { id: 'settings', label: 'Settings', icon: Settings },
 ]
 
@@ -206,6 +207,24 @@ function AccessCodesModule() {
   )
 }
 
+function AudienceModule() {
+  const { data, isLoading } = trpc.engagement.adminOverview.useQuery(undefined, { refetchInterval: 30_000 })
+  if (isLoading) return <p className="text-[#C9B99A]">Loading audience activity…</p>
+  return <div>
+    <h3 className="text-xl text-[#F0EBE1] mb-2" style={{ fontFamily: 'Newsreader, serif' }}>Audience & Leads</h3>
+    <p className="text-sm text-[#C9B99A]/70 mb-6">Anonymous visitors are counted without exposing their identity. Contact information appears only after voluntary submission.</p>
+    <div className="grid sm:grid-cols-3 gap-3 mb-8">
+      <div className="rounded border border-white/10 p-4"><p className="text-2xl text-[#FF9500]">{data?.activeVisitors || 0}</p><p className="text-xs text-[#C9B99A]">Active in last 5 minutes</p></div>
+      <div className="rounded border border-white/10 p-4"><p className="text-2xl text-[#FF9500]">{data?.subscribers.length || 0}</p><p className="text-xs text-[#C9B99A]">Recent subscribers</p></div>
+      <div className="rounded border border-white/10 p-4"><p className="text-2xl text-[#FF9500]">{data?.leads.length || 0}</p><p className="text-xs text-[#C9B99A]">Recent leads</p></div>
+    </div>
+    <h4 className="text-[#F0EBE1] mb-3">Lead requests</h4>
+    <div className="space-y-2 mb-8">{data?.leads.map(lead => <div key={lead.id} className="rounded border border-white/10 p-3"><p className="text-sm text-[#F0EBE1]">{lead.name || 'Visitor'} · {lead.interest}</p><a href={`mailto:${lead.email}`} className="text-xs text-[#FFB840]">{lead.email}</a>{lead.message && <p className="mt-1 text-xs text-[#C9B99A]">{lead.message}</p>}</div>)}</div>
+    <h4 className="text-[#F0EBE1] mb-3">Newsletter subscribers</h4>
+    <div className="space-y-2">{data?.subscribers.map(subscriber => <div key={subscriber.id} className="rounded border border-white/10 p-3 text-sm text-[#C9B99A]">{subscriber.name || 'Subscriber'} · {subscriber.email}</div>)}</div>
+  </div>
+}
+
 // ─── Main Dashboard ───
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard')
@@ -231,6 +250,7 @@ export default function AdminDashboard() {
       case 'services': return <PlaceholderModule title="Services" message="Service management coming soon." />
       case 'contacts': return <PlaceholderModule title="Contacts" message="Contact submissions will appear here." />
       case 'access-codes': return <AccessCodesModule />
+      case 'audience': return <AudienceModule />
       case 'settings': return <SettingsModule onLogout={handleLogout} />
       default: return <DashboardHome />
     }

@@ -1,5 +1,7 @@
-import { Link } from 'react-router'
+import { FormEvent, useState } from 'react'
+import { Link, useLocation } from 'react-router'
 import { Facebook, Instagram } from 'lucide-react'
+import { trpc } from '@/providers/trpc'
 
 interface FooterProps {
   onNavClick: (id: string) => void
@@ -11,6 +13,15 @@ const socialLinks = [
 ]
 
 export default function Footer({ onNavClick }: FooterProps) {
+  const location = useLocation()
+  const [email, setEmail] = useState('')
+  const [subscribed, setSubscribed] = useState(false)
+  const subscribe = trpc.engagement.subscribe.useMutation()
+  const submitNewsletter = async (event: FormEvent) => {
+    event.preventDefault()
+    await subscribe.mutateAsync({ email, sourcePage: location.pathname, interests: ['book', 'community', 'news'], consent: true })
+    setSubscribed(true); setEmail('')
+  }
   return (
     <footer className="bg-[#3A4E64] pt-20 pb-12 px-6 md:px-12">
       <div className="max-w-7xl mx-auto">
@@ -18,6 +29,16 @@ export default function Footer({ onNavClick }: FooterProps) {
         <div className="mb-10">
           <h3 className="text-2xl text-[#F0EBE1] mb-2">#TheKingsTake</h3>
           <p className="text-xs text-[#C9B99A]">The People's Voice | AASOTU Media Group LLC</p>
+        </div>
+
+        <div className="mb-10 max-w-xl rounded-xl border border-[#FF9500]/20 bg-[#182635]/40 p-5">
+          <h4 className="mb-1 text-lg text-[#F0EBE1]">The King's Dispatch</h4>
+          <p className="mb-3 text-xs leading-relaxed text-[#C9B99A]">Book updates, community strategy, major investigations, and selected releases from #TheKingsTake.</p>
+          {subscribed ? <p className="text-sm text-emerald-300">You are on the list. Welcome.</p> : <form onSubmit={submitNewsletter} className="flex flex-col gap-2 sm:flex-row">
+            <input required type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Your email address" className="min-w-0 flex-1 rounded-lg bg-[#0f1b29] px-3 py-2 text-sm text-white outline-none"/>
+            <button disabled={subscribe.isPending} className="rounded-lg bg-[#FF9500] px-4 py-2 text-sm font-bold text-[#182635]">Join the Newsletter</button>
+          </form>}
+          <p className="mt-2 text-[10px] text-[#C9B99A]/60">By joining, you consent to receive email updates. Unsubscribe links will be included in every newsletter.</p>
         </div>
 
         {/* Navigation */}

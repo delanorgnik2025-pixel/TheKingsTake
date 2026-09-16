@@ -7,6 +7,7 @@ import Footer from './components/Footer'
 import CustomCursor from './components/CustomCursor'
 import AudioExperience from './components/AudioExperience'
 import ScrollToTop from './components/ScrollToTop'
+import VisitorAssistant from './components/VisitorAssistant'
 
 // ============================================
 // LAZY-LOADED PAGES — Prevents eager import crashes
@@ -64,6 +65,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
       {!hideNav && <Navigation onMenuToggle={() => setMenuOpen(true)} onNavClick={scrollToSection} />}
       <MenuOverlay isOpen={menuOpen} onClose={() => setMenuOpen(false)} onNavClick={scrollToSection} />
       {children}
+      <VisitorAssistant />
       {!hideNav && <Footer onNavClick={scrollToSection} />}
     </>
   )

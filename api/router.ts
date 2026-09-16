@@ -14,6 +14,7 @@ import { videoRouter } from "./video-router";
 import { feedRouter } from "./feed-router";
 import { liveRouter } from "./live-router";
 import { memberRouter } from "./member-router";
+import { engagementRouter } from "./engagement-router";
 import { createRouter, publicQuery } from "./middleware";
 
 export const appRouter = createRouter({
@@ -34,6 +35,7 @@ export const appRouter = createRouter({
   feed: feedRouter,
   live: liveRouter,
   member: memberRouter,
+  engagement: engagementRouter,
 });
 
 export type AppRouter = typeof appRouter;
