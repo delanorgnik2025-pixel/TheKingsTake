@@ -7,6 +7,26 @@ import { createDirectUpload, getUpload, getAsset, muxConfigured } from "./mux";
 import { createHash } from "node:crypto";
 
 export const feedRouter = createRouter({
+  // Public: retrieve one post for permanent share links.
+  getById: publicQuery
+    .input(z.object({ id: z.number().int().positive() }))
+    .query(async ({ input }) => {
+      const db = getDb();
+      const rows = await db
+        .select({
+          id: feedPosts.id, memberId: feedPosts.memberId, body: feedPosts.body,
+          linkUrl: feedPosts.linkUrl, linkTitle: feedPosts.linkTitle, imageUrl: feedPosts.imageUrl,
+          videoUrl: feedPosts.videoUrl, videoType: feedPosts.videoType, muxPlaybackId: feedPosts.muxPlaybackId,
+          pinned: feedPosts.pinned, likesCount: feedPosts.likesCount, createdAt: feedPosts.createdAt,
+          updatedAt: feedPosts.updatedAt, memberName: members.name, memberAvatar: members.avatar,
+        })
+        .from(feedPosts)
+        .leftJoin(members, eq(members.id, feedPosts.memberId))
+        .where(eq(feedPosts.id, input.id))
+        .limit(1);
+      return { post: rows[0] ?? null, muxConfigured: muxConfigured() };
+    }),
+
   // Public: list feed posts — pinned first, then newest. Simple cursor paging.
   list: publicQuery
     .input(
