@@ -4,9 +4,9 @@ import { motion, AnimatePresence } from 'framer-motion'
 import MuxPlayer from '@mux/mux-player-react'
 import {
   Crown, Heart, Link2, Image as ImageIcon, Video, Radio, Pin, PinOff, Trash2,
-  Send, Copy, Check, Loader2, Square, ArrowLeft, ExternalLink, RefreshCw,
+  Send, Copy, Check, Loader2, Square, ArrowLeft, ExternalLink,
   MessageCircle, User, LogIn, LogOut, Lock, Users, BookOpen, Star,
-  Flame, Calendar, Landmark, ChevronDown, ChevronUp, Share2, X,
+  Flame, Calendar, Landmark, Share2, X,
 } from 'lucide-react'
 import { trpc } from '@/providers/trpc'
 import { useMember } from '@/providers/MemberProvider'
@@ -65,6 +65,11 @@ function postPreviewImage(post: FeedPost): string {
   return `${window.location.origin}/images/og-image.jpg`
 }
 
+function isAdminPermissionError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error || '')
+  return /insufficient permissions|forbidden|unauthorized/i.test(message)
+}
+
 type FeedPost = {
   id: number
   body: string
@@ -86,24 +91,39 @@ type FeedPost = {
 export default function FeedPage() {
   const { postId } = useParams<{ postId?: string }>()
   const sharedPostId = postId && /^\d+$/.test(postId) ? Number(postId) : null
-  const [isAdmin, setIsAdmin] = useState(false)
+  const [adminToken, setAdminToken] = useState<string | null>(() => (
+    typeof window !== 'undefined' ? localStorage.getItem('adminToken') : null
+  ))
+  const [adminSessionExpired, setAdminSessionExpired] = useState(false)
   const [offset, setOffset] = useState(0)
   const [allPosts, setAllPosts] = useState<FeedPost[]>([])
   const [showAuth, setShowAuth] = useState(false)
   const PAGE = 10
   const { member, logout } = useMember()
 
-  useEffect(() => {
-    setIsAdmin(!!localStorage.getItem('adminToken'))
-  }, [])
-
   const utils = trpc.useUtils()
+  const adminSession = trpc.auth.adminSession.useQuery(undefined, {
+    enabled: !!adminToken,
+    retry: false,
+  })
+  const isAdmin = !!adminToken && adminSession.data?.valid === true
+  const storedAdminSessionRejected = !!adminToken && adminSession.data?.valid === false
   const { data, isLoading } = trpc.feed.list.useQuery({ limit: PAGE, offset })
   const sharedPostQuery = trpc.feed.getById.useQuery(
     { id: sharedPostId || 1 },
     { enabled: sharedPostId !== null },
   )
   const liveStatus = trpc.live.status.useQuery(undefined, { refetchInterval: 15000 })
+
+  const expireAdminSession = () => {
+    localStorage.removeItem('adminToken')
+    setAdminToken(null)
+    setAdminSessionExpired(true)
+  }
+
+  useEffect(() => {
+    if (storedAdminSessionRejected) localStorage.removeItem('adminToken')
+  }, [storedAdminSessionRejected])
 
   useEffect(() => {
     if (data?.posts) {
@@ -241,11 +261,24 @@ export default function FeedPage() {
             )}
           </div>
 
+          {(adminSessionExpired || storedAdminSessionRejected) && (
+            <div className="rounded-lg border border-[#FF9500]/40 bg-[#FF9500]/10 p-4 text-sm text-[#F0EBE1]">
+              <p className="font-medium">Your admin session expired.</p>
+              <p className="mt-1 text-xs text-[#C9B99A]">Log in again once, then you can upload photos and videos directly from this device.</p>
+              <Link
+                to="/admin/login?returnTo=/feed"
+                className="mt-3 inline-flex items-center gap-2 rounded bg-[#FF9500] px-4 py-2 text-xs font-bold text-[#182635] hover:bg-[#FFB840]"
+              >
+                <LogIn size={14} /> Admin Login
+              </Link>
+            </div>
+          )}
+
           {/* Admin composer */}
           {isAdmin && (
             <div className="space-y-4">
-              <FeedComposer onPosted={refresh} />
-              <GoLivePanel />
+              <FeedComposer onPosted={refresh} onAdminSessionExpired={expireAdminSession} />
+              <GoLivePanel onAdminSessionExpired={expireAdminSession} />
             </div>
           )}
 
@@ -507,7 +540,7 @@ function MemberComposer({ onPosted }: { onPosted: () => void }) {
 }
 
 // ─── admin composer ───────────────────────────────────────────────────────────
-function FeedComposer({ onPosted }: { onPosted: () => void }) {
+function FeedComposer({ onPosted, onAdminSessionExpired }: { onPosted: () => void; onAdminSessionExpired: () => void }) {
   const [body, setBody] = useState('')
   const [linkUrl, setLinkUrl] = useState('')
   const [linkTitle, setLinkTitle] = useState('')
@@ -569,7 +602,7 @@ function FeedComposer({ onPosted }: { onPosted: () => void }) {
     if (videoMode === 'file' && videoFile) {
       try {
         setStatus('Preparing upload…')
-        const { uploadId, uploadUrl } = await uploadUrlMutation.mutateAsync({ corsOrigin: '*' })
+        const { uploadId, uploadUrl } = await uploadUrlMutation.mutateAsync({ corsOrigin: window.location.origin })
         await new Promise<void>((resolve, reject) => {
           const xhr = new XMLHttpRequest()
           xhr.open('PUT', uploadUrl)
@@ -584,6 +617,10 @@ function FeedComposer({ onPosted }: { onPosted: () => void }) {
         pendingRef.current = { uploadId }
         await finishMuxPost(uploadId, text)
       } catch (err: any) {
+        if (isAdminPermissionError(err)) {
+          onAdminSessionExpired()
+          return
+        }
         setStatus(err?.message || 'Upload failed')
         setUploadPct(null)
       }
@@ -617,6 +654,10 @@ function FeedComposer({ onPosted }: { onPosted: () => void }) {
       reset()
       onPosted()
     } catch (err: any) {
+      if (isAdminPermissionError(err)) {
+        onAdminSessionExpired()
+        return
+      }
       setStatus(err?.message || 'Could not publish post')
     }
   }
@@ -680,7 +721,11 @@ function FeedComposer({ onPosted }: { onPosted: () => void }) {
           )}
           {videoMode === 'file' && (
             <div>
-              <input ref={fileInputRef} type="file" accept="video/*" className="hidden" onChange={(e) => setVideoFile(e.target.files?.[0] ?? null)} />
+              <input ref={fileInputRef} type="file" accept="video/*" className="hidden" onChange={(e) => {
+                const file = e.target.files?.[0] || null
+                if (file && file.size > 500 * 1024 * 1024) { alert('Videos must be 500 MB or smaller'); e.target.value = ''; return }
+                setVideoFile(file)
+              }} />
               <button onClick={() => fileInputRef.current?.click()} className="w-full py-2.5 border border-dashed border-[rgba(255,149,0,0.35)] rounded text-[#C9B99A] text-sm hover:border-[#FF9500] hover:text-[#FFB840] transition-colors">
                 {videoFile ? `${videoFile.name} (${(videoFile.size / 1024 / 1024).toFixed(1)} MB)` : 'Choose a video from this device'}
               </button>
@@ -725,7 +770,7 @@ function FeedComposer({ onPosted }: { onPosted: () => void }) {
 }
 
 // ─── admin go-live panel ──────────────────────────────────────────────────────
-function GoLivePanel() {
+function GoLivePanel({ onAdminSessionExpired }: { onAdminSessionExpired: () => void }) {
   const [open, setOpen] = useState(false)
   const [title, setTitle] = useState('')
   const [keys, setKeys] = useState<{ rtmpUrl: string; streamKey: string } | null>(null)
@@ -749,15 +794,27 @@ function GoLivePanel() {
       setKeys({ rtmpUrl: res.rtmpUrl, streamKey: res.streamKey })
       utils.live.status.invalidate()
     } catch (err: any) {
+      if (isAdminPermissionError(err)) {
+        onAdminSessionExpired()
+        return
+      }
       setError(err?.message || 'Could not create live stream')
     }
   }
 
   const stop = async () => {
-    await endLive.mutateAsync({})
-    setKeys(null)
-    setTitle('')
-    utils.live.status.invalidate()
+    try {
+      await endLive.mutateAsync({})
+      setKeys(null)
+      setTitle('')
+      utils.live.status.invalidate()
+    } catch (err) {
+      if (isAdminPermissionError(err)) {
+        onAdminSessionExpired()
+        return
+      }
+      setError(err instanceof Error ? err.message : 'Could not end live stream')
+    }
   }
 
   return (

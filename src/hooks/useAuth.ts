@@ -30,6 +30,14 @@ export function useAuth(options?: UseAuthOptions) {
     retry: false,
   });
 
+  const {
+    data: adminSession,
+    isLoading: adminSessionLoading,
+  } = trpc.auth.adminSession.useQuery(undefined, {
+    enabled: !!adminToken,
+    retry: false,
+  });
+
   const logoutMutation = trpc.auth.logout.useMutation({
     onSuccess: async () => {
       await utils.invalidate();
@@ -45,28 +53,37 @@ export function useAuth(options?: UseAuthOptions) {
   }, [logoutMutation]);
 
   useEffect(() => {
-    if (redirectOnUnauthenticated && !isLoading && !user && !adminToken) {
+    if (adminToken && adminSession?.valid === false) {
+      localStorage.removeItem("adminToken");
+    }
+  }, [adminToken, adminSession?.valid]);
+
+  const isLoadingAuth = isLoading || (!!adminToken && adminSessionLoading);
+  const hasValidAdminToken = !!adminToken && adminSession?.valid === true;
+
+  useEffect(() => {
+    if (redirectOnUnauthenticated && !isLoadingAuth && !user && !hasValidAdminToken) {
       const currentPath = window.location.pathname;
       if (currentPath !== redirectPath) {
         navigate(redirectPath);
       }
     }
-  }, [redirectOnUnauthenticated, isLoading, user, adminToken, navigate, redirectPath]);
+  }, [redirectOnUnauthenticated, isLoadingAuth, user, hasValidAdminToken, navigate, redirectPath]);
 
-  // Admin if: (1) OAuth user with admin role, OR (2) password admin token exists
-  const isAdmin = user?.role === "admin" || !!adminToken;
-  const isAuthenticated = !!user || !!adminToken;
+  // A stored token is not proof of access; only a server-verified token is trusted.
+  const isAdmin = user?.role === "admin" || hasValidAdminToken;
+  const isAuthenticated = !!user || hasValidAdminToken;
 
   return useMemo(
     () => ({
       user: user ?? null,
       isAuthenticated,
       isAdmin,
-      isLoading: isLoading || logoutMutation.isPending,
+      isLoading: isLoadingAuth || logoutMutation.isPending,
       error,
       logout,
       refresh: refetch,
     }),
-    [user, isAuthenticated, isAdmin, isLoading, logoutMutation.isPending, error, logout, refetch],
+    [user, isAuthenticated, isAdmin, isLoadingAuth, logoutMutation.isPending, error, logout, refetch],
   );
 }
