@@ -26,7 +26,8 @@ export const archiveRouter = createRouter({
       url.searchParams.set("sp", String(input.page));
 
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 15_000);
+      // Cold Library of Congress searches can legitimately take longer than 15 seconds.
+      const timeout = setTimeout(() => controller.abort(), 35_000);
       try {
         const response = await fetch(url, {
           headers: { Accept: "application/json", "User-Agent": "TheKingsTake Archive Research/1.0" },
@@ -47,4 +48,3 @@ export const archiveRouter = createRouter({
       }
     }),
 });
-

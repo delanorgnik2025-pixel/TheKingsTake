@@ -38,5 +38,12 @@ describe("Library of Congress archive normalization", () => {
     expect(result.results[0].hasDigitalImage).toBe(false);
     expect(result.results[0].imageUrl).toBeNull();
   });
-});
 
+  it("upgrades trusted Library of Congress record links to HTTPS", () => {
+    const result = normalizeLibraryOfCongressResponse({
+      results: [{ id: "http://www.loc.gov/item/456/", title: "Trusted record" }],
+    });
+
+    expect(result.results[0].recordUrl).toBe("https://www.loc.gov/item/456/");
+  });
+});

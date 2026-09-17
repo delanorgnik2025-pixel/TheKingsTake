@@ -140,7 +140,7 @@ function PublicArchiveSearch({ stateName }: { stateName?: string }) {
   const [page, setPage] = useState(1)
   const effectiveQuery = [submittedQuery, stateName].filter(Boolean).join(' ')
   const archiveSearch = trpc.archive.searchLibraryOfCongress.useQuery(
-    { query: effectiveQuery || 'records', page, pageSize: 12 },
+    { query: effectiveQuery || 'records', page, pageSize: 8 },
     { enabled: submittedQuery.length >= 2, retry: false, placeholderData: (previous) => previous },
   )
 

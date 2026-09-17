@@ -41,7 +41,9 @@ function safeLocUrl(value: unknown, image = false): string | null {
     const url = new URL(text);
     const allowedImageHosts = ["loc.gov", "www.loc.gov", "tile.loc.gov", "cdn.loc.gov"];
     const allowedHosts = image ? allowedImageHosts : ["loc.gov", "www.loc.gov"];
-    if (url.protocol !== "https:" || !allowedHosts.includes(url.hostname)) return null;
+    if (!allowedHosts.includes(url.hostname.toLowerCase())) return null;
+    if (url.protocol === "http:") url.protocol = "https:";
+    if (url.protocol !== "https:") return null;
     return url.toString();
   } catch {
     return null;
@@ -92,4 +94,3 @@ export function normalizeLibraryOfCongressResponse(payload: unknown) {
     },
   };
 }
-
