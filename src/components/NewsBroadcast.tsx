@@ -168,12 +168,12 @@ const FALLBACK_TRENDING: NewsPost[] = [
     isAIGenerated: true,
   },
   {
-    id: 't5', slug: "dawes-rolls-digital-archive",
-    title: "National Archives Completes Digitization of Full Dawes Rolls Database",
-    excerpt: "Researchers and descendants can now search over 250,000 records online, a breakthrough for Indigenous genealogy and identity reclamation.",
+    id: 't5', slug: "dawes-rolls-digitization-complete-2025",
+    title: "How to Search Digitized Dawes Records Beyond the Index",
+    excerpt: "NARA offers searchable census cards and enrollment applications, but complete research requires comparing multiple record sets.",
     category: "HERITAGE", coverImage: "/images/book-cover.jpg",
-    createdAt: "2025-07-05", author: "AASOTU Wire", source: "NARA",
-    isAIGenerated: true,
+    createdAt: "2026-09-17", author: "AASOTU Wire", source: "National Archives",
+    isAIGenerated: false,
   },
 ]
 
