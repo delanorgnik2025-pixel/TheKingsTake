@@ -53,8 +53,9 @@ export const createTree = async (input: {
   return { tree, personId: person.id };
 };
 
-export const getTree = async (treeId: number) => {
-  const [tree] = await getDb().select().from(familyTrees).where(eq(familyTrees.id, treeId)).limit(1);
+export const getTree = async (treeId: number, userId: string) => {
+  const [tree] = await getDb().select().from(familyTrees)
+    .where(and(eq(familyTrees.id, treeId), eq(familyTrees.userId, userId))).limit(1);
   if (!tree) return null;
 
   const people = await getDb().select().from(genealogyPeople).where(eq(genealogyPeople.treeId, treeId));
@@ -76,16 +77,21 @@ export const listTreesByUser = async (userId: string) => {
   return getDb().select().from(familyTrees).where(eq(familyTrees.userId, userId));
 };
 
-export const updateTree = async (treeId: number, data: { treeName?: string; isPublic?: boolean }) => {
-  await getDb().update(familyTrees).set(data).where(eq(familyTrees.id, treeId));
-  return getTree(treeId);
+export const updateTree = async (treeId: number, userId: string, data: { treeName?: string; isPublic?: boolean }) => {
+  await getDb().update(familyTrees).set(data)
+    .where(and(eq(familyTrees.id, treeId), eq(familyTrees.userId, userId)));
+  return getTree(treeId, userId);
 };
 
-export const deleteTree = async (treeId: number) => {
+export const deleteTree = async (treeId: number, userId: string) => {
+  const tree = await getTree(treeId, userId);
+  if (!tree) return false;
   // Delete all people first
   await getDb().delete(genealogyPeople).where(eq(genealogyPeople.treeId, treeId));
   // Delete tree
-  await getDb().delete(familyTrees).where(eq(familyTrees.id, treeId));
+  await getDb().delete(familyTrees)
+    .where(and(eq(familyTrees.id, treeId), eq(familyTrees.userId, userId)));
+  return true;
 };
 
 // ─── PERSON OPERATIONS ────────────────────────────────────
@@ -119,9 +125,11 @@ export const addPerson = async (input: {
   generation: number;
   position: string;
   parentPosition?: string;
-  status?: string;
+  status?: typeof genealogyPeople.$inferInsert.status;
   recordsChecked?: Record<string, boolean>;
-}) => {
+}, userId: string) => {
+  const tree = await getTree(input.treeId, userId);
+  if (!tree) return null;
   const [person] = await getDb().insert(genealogyPeople).values({
     treeId: input.treeId,
     firstName: input.firstName,
@@ -151,7 +159,7 @@ export const addPerson = async (input: {
     generation: input.generation,
     position: input.position,
     parentPosition: input.parentPosition || null,
-    status: (input.status as any) || "unknown",
+    status: input.status || "unknown",
     recordsChecked: input.recordsChecked ? JSON.stringify(input.recordsChecked) : JSON.stringify({}),
   }).$returningId();
 
@@ -163,7 +171,7 @@ export const addPerson = async (input: {
   return person;
 };
 
-export const updatePerson = async (personId: number, data: Partial<{
+export const updatePerson = async (personId: number, userId: string, data: Partial<{
   firstName: string;
   lastName: string;
   middleName: string;
@@ -188,9 +196,11 @@ export const updatePerson = async (personId: number, data: Partial<{
   tribalAffiliation: string;
   censusRace: string;
   enrollmentNumber: string;
-  status: string;
+  status: typeof genealogyPeople.$inferInsert.status;
   recordsChecked: string;
 }>) => {
+  const [existing] = await getDb().select().from(genealogyPeople).where(eq(genealogyPeople.id, personId)).limit(1);
+  if (!existing || !await getTree(existing.treeId, userId)) return null;
   await getDb().update(genealogyPeople)
     .set(data as Partial<typeof genealogyPeople.$inferInsert>)
     .where(eq(genealogyPeople.id, personId));
@@ -199,42 +209,46 @@ export const updatePerson = async (personId: number, data: Partial<{
   return person;
 };
 
-export const deletePerson = async (personId: number, treeId: number) => {
+export const deletePerson = async (personId: number, userId: string) => {
+  const [person] = await getDb().select().from(genealogyPeople).where(eq(genealogyPeople.id, personId)).limit(1);
+  if (!person || !await getTree(person.treeId, userId)) return false;
   await getDb().delete(genealogyPeople).where(eq(genealogyPeople.id, personId));
   await getDb().update(familyTrees)
-    .set({ totalPeople: sql`${familyTrees.totalPeople} - 1` })
-    .where(eq(familyTrees.id, treeId));
+    .set({ totalPeople: sql`greatest(${familyTrees.totalPeople} - 1, 0)` })
+    .where(and(eq(familyTrees.id, person.treeId), eq(familyTrees.userId, userId)));
+  return true;
 };
 
 // ─── RECORD SEARCH OPERATIONS ─────────────────────────────
 
 export const addRecordSearch = async (input: {
   personId: number;
-  recordType: string;
+  recordType: typeof recordSearches.$inferInsert.recordType;
   sourceUrl?: string;
-  result?: string;
+  result?: typeof recordSearches.$inferInsert.result;
   notes?: string;
-}) => {
+}, userId: string) => {
+  const [person] = await getDb().select().from(genealogyPeople).where(eq(genealogyPeople.id, input.personId)).limit(1);
+  if (!person || !await getTree(person.treeId, userId)) return null;
   const [search] = await getDb().insert(recordSearches).values({
     personId: input.personId,
-    recordType: input.recordType as any,
+    recordType: input.recordType,
     sourceUrl: input.sourceUrl || null,
-    result: (input.result as any) || "pending",
+    result: input.result || "pending",
     notes: input.notes || null,
   }).$returningId();
 
   // Update tree records count
-  const [person] = await getDb().select().from(genealogyPeople).where(eq(genealogyPeople.id, input.personId)).limit(1);
-  if (person) {
-    await getDb().update(familyTrees)
-      .set({ totalRecordsFound: sql`${familyTrees.totalRecordsFound} + 1` })
-      .where(eq(familyTrees.id, person.treeId));
-  }
+  await getDb().update(familyTrees)
+    .set({ totalRecordsFound: sql`${familyTrees.totalRecordsFound} + 1` })
+    .where(and(eq(familyTrees.id, person.treeId), eq(familyTrees.userId, userId)));
 
   return search;
 };
 
-export const getRecordSearches = async (personId: number) => {
+export const getRecordSearches = async (personId: number, userId: string) => {
+  const [person] = await getDb().select().from(genealogyPeople).where(eq(genealogyPeople.id, personId)).limit(1);
+  if (!person || !await getTree(person.treeId, userId)) return [];
   return getDb().select().from(recordSearches).where(eq(recordSearches.personId, personId));
 };
 
@@ -246,8 +260,9 @@ export const updateRecordSearch = async (searchId: number, data: { result?: stri
 
 // ─── TREE STATS ───────────────────────────────────────────
 
-export const getTreeStats = async (treeId: number) => {
-  const [tree] = await getDb().select().from(familyTrees).where(eq(familyTrees.id, treeId)).limit(1);
+export const getTreeStats = async (treeId: number, userId: string) => {
+  const [tree] = await getDb().select().from(familyTrees)
+    .where(and(eq(familyTrees.id, treeId), eq(familyTrees.userId, userId))).limit(1);
   if (!tree) return null;
 
   const people = await getDb().select().from(genealogyPeople).where(eq(genealogyPeople.treeId, treeId));
