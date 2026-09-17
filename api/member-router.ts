@@ -5,20 +5,10 @@ import { TRPCError } from "@trpc/server";
 import { adminQuery, createRouter, publicQuery } from "./middleware";
 import { getDb } from "./queries/connection";
 import { members, memberAccessCodes, feedComments, feedLikes, feedPosts } from "@db/schema";
-import { createMemberToken, hashPassword, verifyMemberToken, verifyPassword } from "./security/auth";
+import { createMemberToken, hashPassword, verifyPassword } from "./security/auth";
 import { generateAccessCode, hashAccessCode } from "./security/access-codes";
 import { createDirectUpload, getAsset, getUpload } from "./mux";
-
-// ── Helper: get member from request ─────────────────────────────
-async function getMemberFromRequest(req: Request) {
-  const token = req.headers.get("x-member-token");
-  if (!token) return null;
-  const payload = await verifyMemberToken(token);
-  if (!payload) return null;
-  const rows = await getDb().select().from(members).where(eq(members.id, payload.memberId)).limit(1);
-  if (rows.length === 0 || !rows[0].isActive) return null;
-  return rows[0];
-}
+import { getActiveMemberFromRequest as getMemberFromRequest } from "./security/member-session";
 
 export const memberRouter = createRouter({
   validateAccessCode: publicQuery
