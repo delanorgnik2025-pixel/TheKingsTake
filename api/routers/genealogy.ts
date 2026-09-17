@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createRouter, publicQuery } from "../middleware";
+import { createRouter, memberQuery, publicQuery } from "../middleware";
 import {
   createTree, getTree, getTreeByShareToken, listTreesByUser,
   updateTree, deleteTree, addPerson, updatePerson, deletePerson,
@@ -8,10 +8,8 @@ import {
 
 export const genealogyRouter = createRouter({
   // ─── Trees ───────────────────────────────────────────
-  createTree: publicQuery
+  createTree: memberQuery
     .input(z.object({
-      userId: z.string().optional(),
-      userEmail: z.string().email().optional(),
       treeName: z.string().min(1).max(255),
       rootPerson: z.object({
         firstName: z.string().min(1),
@@ -23,37 +21,40 @@ export const genealogyRouter = createRouter({
         notes: z.string().optional(),
       }),
     }))
-    .mutation(async ({ input }) => createTree(input)),
+    .mutation(async ({ input, ctx }) => createTree({
+      ...input,
+      userId: String(ctx.member.id),
+      userEmail: ctx.member.email,
+    })),
 
-  getTree: publicQuery
+  getTree: memberQuery
     .input(z.object({ treeId: z.number() }))
-    .query(async ({ input }) => getTree(input.treeId)),
+    .query(async ({ input, ctx }) => getTree(input.treeId, String(ctx.member.id))),
 
   getTreeByShare: publicQuery
     .input(z.object({ token: z.string() }))
     .query(async ({ input }) => getTreeByShareToken(input.token)),
 
-  listTrees: publicQuery
-    .input(z.object({ userId: z.string() }))
-    .query(async ({ input }) => listTreesByUser(input.userId)),
+  listTrees: memberQuery
+    .query(async ({ ctx }) => listTreesByUser(String(ctx.member.id))),
 
-  updateTree: publicQuery
+  updateTree: memberQuery
     .input(z.object({
       treeId: z.number(),
       treeName: z.string().optional(),
       isPublic: z.boolean().optional(),
     }))
-    .mutation(async ({ input }) => updateTree(input.treeId, {
+    .mutation(async ({ input, ctx }) => updateTree(input.treeId, String(ctx.member.id), {
       treeName: input.treeName,
       isPublic: input.isPublic,
     })),
 
-  deleteTree: publicQuery
+  deleteTree: memberQuery
     .input(z.object({ treeId: z.number() }))
-    .mutation(async ({ input }) => deleteTree(input.treeId)),
+    .mutation(async ({ input, ctx }) => deleteTree(input.treeId, String(ctx.member.id))),
 
   // ─── People ──────────────────────────────────────────
-  addPerson: publicQuery
+  addPerson: memberQuery
     .input(z.object({
       treeId: z.number(),
       firstName: z.string().min(1),
@@ -86,9 +87,9 @@ export const genealogyRouter = createRouter({
       status: z.enum(["unknown", "researching", "confirmed", "verified"]).optional(),
       recordsChecked: z.record(z.string(), z.boolean()).optional(),
     }))
-    .mutation(async ({ input }) => addPerson(input)),
+    .mutation(async ({ input, ctx }) => addPerson(input, String(ctx.member.id))),
 
-  updatePerson: publicQuery
+  updatePerson: memberQuery
     .input(z.object({
       personId: z.number(),
       data: z.object({
@@ -120,29 +121,33 @@ export const genealogyRouter = createRouter({
         recordsChecked: z.string().optional(),
       }),
     }))
-    .mutation(async ({ input }) => updatePerson(input.personId, input.data)),
+    .mutation(async ({ input, ctx }) => updatePerson(input.personId, String(ctx.member.id), input.data)),
 
-  deletePerson: publicQuery
-    .input(z.object({ personId: z.number(), treeId: z.number() }))
-    .mutation(async ({ input }) => deletePerson(input.personId, input.treeId)),
+  deletePerson: memberQuery
+    .input(z.object({ personId: z.number() }))
+    .mutation(async ({ input, ctx }) => deletePerson(input.personId, String(ctx.member.id))),
 
   // ─── Record Searches ─────────────────────────────────
-  addRecordSearch: publicQuery
+  addRecordSearch: memberQuery
     .input(z.object({
       personId: z.number(),
-      recordType: z.string(),
-      sourceUrl: z.string().optional(),
-      result: z.string().optional(),
+      recordType: z.enum([
+        "dawes_rolls", "guion_miller", "baker_roll", "federal_census", "state_census",
+        "birth_record", "death_record", "marriage_record", "military_record", "land_record",
+        "freedmen_record", "church_record", "cemetery_record", "probate_record", "newspaper_record", "other",
+      ]),
+      sourceUrl: z.string().url().max(500).optional(),
+      result: z.enum(["found", "not_found", "pending", "inconclusive"]).optional(),
       notes: z.string().optional(),
     }))
-    .mutation(async ({ input }) => addRecordSearch(input)),
+    .mutation(async ({ input, ctx }) => addRecordSearch(input, String(ctx.member.id))),
 
-  getRecordSearches: publicQuery
+  getRecordSearches: memberQuery
     .input(z.object({ personId: z.number() }))
-    .query(async ({ input }) => getRecordSearches(input.personId)),
+    .query(async ({ input, ctx }) => getRecordSearches(input.personId, String(ctx.member.id))),
 
   // ─── Stats ───────────────────────────────────────────
-  getStats: publicQuery
+  getStats: memberQuery
     .input(z.object({ treeId: z.number() }))
-    .query(async ({ input }) => getTreeStats(input.treeId)),
+    .query(async ({ input, ctx }) => getTreeStats(input.treeId, String(ctx.member.id))),
 });
