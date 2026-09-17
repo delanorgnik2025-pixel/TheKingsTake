@@ -10,7 +10,7 @@ import {
   verifyMemberToken,
   verifyPassword,
 } from "./auth";
-import { adminQuery, createRouter } from "../middleware";
+import { adminQuery, createRouter, memberQuery } from "../middleware";
 
 const APP_SECRET = "test-secret-long-enough-for-authentication";
 
@@ -81,6 +81,15 @@ describe("authentication security", () => {
       resHeaders: new Headers(),
     });
     await expect(forgedCaller.protected()).rejects.toMatchObject({ code: "FORBIDDEN" });
+  });
+
+  it("rejects unauthenticated genealogy member procedures", async () => {
+    const router = createRouter({ protected: memberQuery.query(() => "authorized") });
+    const caller = router.createCaller({
+      req: new Request("https://thekingstake.com"),
+      resHeaders: new Headers(),
+    });
+    await expect(caller.protected()).rejects.toMatchObject({ code: "UNAUTHORIZED" });
   });
 
   it("rejects expired admin tokens", async () => {
