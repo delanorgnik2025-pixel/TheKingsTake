@@ -1,12 +1,13 @@
 import { useState, useMemo, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, BookOpen, Landmark, Scroll, X, ChevronDown, ChevronUp, ExternalLink, FileText, Users, ArrowRight, AlertTriangle, Database, Globe, Clock, Tag } from 'lucide-react'
+import { Search, BookOpen, Landmark, Scroll, X, ChevronDown, ChevronUp, ExternalLink, FileText, Users, ArrowRight, AlertTriangle, Database, Globe, Clock, Tag, Loader2, Image as ImageIcon } from 'lucide-react'
 import ScrollReveal from '../components/ScrollReveal'
 import { TRIBAL_ROLLS, ROLL_CATEGORIES } from '../data/tribalRolls'
 import { RECONCILIATION_LAWS_V2, LAW_CATEGORIES } from '../data/reclassificationLaws'
 import { ALTERNATIVE_TRIBAL_NAMES } from '../data/alternativeTribalNames'
 import { STATE_RECORD_MAP, getStateRecord } from '../data/stateRecordMap'
 import type { TribalRollRecord, LawPolicyRecord, AncestryFilterCategory } from '../types/ancestry'
+import { trpc } from '@/providers/trpc'
 
 // ============================================
 // URL PARAMS HELPER
@@ -133,11 +134,129 @@ function LawModal({ law, onClose }: { law: LawPolicyRecord; onClose: () => void 
   )
 }
 
+function PublicArchiveSearch({ stateName }: { stateName?: string }) {
+  const [query, setQuery] = useState('')
+  const [submittedQuery, setSubmittedQuery] = useState('')
+  const [page, setPage] = useState(1)
+  const effectiveQuery = [submittedQuery, stateName].filter(Boolean).join(' ')
+  const archiveSearch = trpc.archive.searchLibraryOfCongress.useQuery(
+    { query: effectiveQuery || 'records', page, pageSize: 12 },
+    { enabled: submittedQuery.length >= 2, retry: false, placeholderData: (previous) => previous },
+  )
+
+  const submit = (event: React.FormEvent) => {
+    event.preventDefault()
+    const cleaned = query.trim()
+    if (cleaned.length < 2) return
+    setSubmittedQuery(cleaned)
+    setPage(1)
+  }
+
+  return (
+    <div className="space-y-5">
+      <div className="rounded-xl border border-[rgba(255,149,0,0.2)] bg-[rgba(255,149,0,0.06)] p-4 md:p-5">
+        <div className="flex items-start gap-3">
+          <Database size={20} className="mt-0.5 shrink-0 text-[#FF9500]" />
+          <div>
+            <h3 className="text-base font-medium text-[#F0EBE1]">Search Public Archives</h3>
+            <p className="mt-1 text-xs leading-relaxed text-[#C9B99A]">
+              Search Library of Congress catalog records without leaving TheKingsTake. Results clearly distinguish digitized images from catalog descriptions. NARA search will join this tool after its free read-only API key is issued.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <form onSubmit={submit} className="flex flex-col gap-2 sm:flex-row">
+        <div className="relative flex-1">
+          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#C9B99A]/50" />
+          <input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Try a name, place, nation, Freedmen, census, or land record..."
+            className="w-full rounded-xl border border-[rgba(255,149,0,0.15)] bg-[rgba(37,54,75,0.6)] py-3 pl-11 pr-4 text-sm text-[#F0EBE1] placeholder-[#C9B99A]/40 focus:border-[rgba(255,149,0,0.4)] focus:outline-none"
+          />
+        </div>
+        <button type="submit" disabled={query.trim().length < 2 || archiveSearch.isFetching}
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-5 py-3 text-sm font-semibold text-[#182635] disabled:opacity-40">
+          {archiveSearch.isFetching ? <Loader2 size={15} className="animate-spin" /> : <Search size={15} />} Search Records
+        </button>
+      </form>
+
+      {stateName && <p className="text-xs text-[#FFB840]">Map filter included: {stateName}</p>}
+
+      {!submittedQuery && (
+        <div className="rounded-xl border border-dashed border-[rgba(255,149,0,0.2)] py-12 text-center">
+          <BookOpen size={28} className="mx-auto mb-3 text-[#FF9500]/60" />
+          <p className="text-sm text-[#C9B99A]">Enter a person, location, nation, or record type to begin.</p>
+        </div>
+      )}
+
+      {archiveSearch.error && (
+        <div className="rounded-xl border border-red-400/25 bg-red-400/10 p-4 text-sm text-red-200">
+          {archiveSearch.error.message}
+        </div>
+      )}
+
+      {submittedQuery && archiveSearch.data?.results.length === 0 && !archiveSearch.isFetching && (
+        <div className="rounded-xl border border-dashed border-[rgba(255,149,0,0.2)] py-10 text-center text-sm text-[#C9B99A]">
+          No public catalog records matched this search. Try fewer words or an alternate spelling.
+        </div>
+      )}
+
+      {archiveSearch.data && archiveSearch.data.results.length > 0 && (
+        <>
+          <div className="flex items-center justify-between text-xs text-[#C9B99A]">
+            <span>{archiveSearch.data.pagination.total.toLocaleString()} catalog matches</span>
+            <span>Page {archiveSearch.data.pagination.current}</span>
+          </div>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {archiveSearch.data.results.map((record) => (
+              <article key={record.id} className="overflow-hidden rounded-xl border border-[rgba(255,149,0,0.12)] bg-[rgba(37,54,75,0.5)]">
+                {record.imageUrl ? (
+                  <img src={record.imageUrl} alt="" loading="lazy" className="h-44 w-full bg-black/20 object-cover" />
+                ) : (
+                  <div className="flex h-28 items-center justify-center bg-[#15202B]/70"><FileText size={28} className="text-[#C9B99A]/30" /></div>
+                )}
+                <div className="space-y-3 p-4">
+                  <div className="flex flex-wrap gap-2">
+                    <span className="rounded-full bg-[rgba(255,149,0,0.1)] px-2 py-1 text-[10px] text-[#FFB840]">Library of Congress</span>
+                    <span className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-[10px] ${record.hasDigitalImage ? 'bg-emerald-400/10 text-emerald-300' : 'bg-white/5 text-[#C9B99A]'}`}>
+                      {record.hasDigitalImage ? <ImageIcon size={10} /> : <FileText size={10} />}
+                      {record.hasDigitalImage ? 'Digitized image' : 'Catalog metadata'}
+                    </span>
+                  </div>
+                  <h4 className="text-base font-medium leading-snug text-[#F0EBE1]">{record.title}</h4>
+                  {record.description && <p className="line-clamp-3 text-xs leading-relaxed text-[#C9B99A]/75">{record.description}</p>}
+                  <div className="flex flex-wrap gap-1.5 text-[10px] text-[#C9B99A]/60">
+                    {record.date && <span>{record.date}</span>}
+                    {record.format.slice(0, 2).map((format) => <span key={format} className="rounded bg-white/5 px-1.5 py-0.5">{format}</span>)}
+                  </div>
+                  {record.rights && <p className="line-clamp-2 text-[10px] leading-relaxed text-[#C9B99A]/50">Rights note: {record.rights}</p>}
+                  <a href={record.recordUrl} target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs font-medium text-[#FFB840] hover:text-[#FF9500]">
+                    View original record <ExternalLink size={11} />
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+          <div className="flex items-center justify-center gap-3">
+            <button onClick={() => setPage((current) => Math.max(1, current - 1))} disabled={page === 1 || archiveSearch.isFetching}
+              className="rounded-lg border border-[rgba(255,149,0,0.2)] px-4 py-2 text-xs text-[#C9B99A] disabled:opacity-30">Previous</button>
+            <button onClick={() => setPage((current) => current + 1)} disabled={!archiveSearch.data.pagination.next || archiveSearch.isFetching}
+              className="rounded-lg border border-[rgba(255,149,0,0.2)] px-4 py-2 text-xs text-[#C9B99A] disabled:opacity-30">Next</button>
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
 // ============================================
 // MAIN SECTION
 // ============================================
 export default function AncestryResearchSection() {
-  const [activeTab, setActiveTab] = useState<'rolls' | 'laws' | 'names' | 'guide'>('rolls')
+  const [activeTab, setActiveTab] = useState<'rolls' | 'laws' | 'names' | 'archives' | 'guide'>('rolls')
   const [rollCategory, setRollCategory] = useState('all')
   const [lawCategory, setLawCategory] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
@@ -282,7 +401,7 @@ export default function AncestryResearchSection() {
         <ScrollReveal delay={0.15}>
           <div className="space-y-4">
             {/* Search Bar */}
-            <div className="relative">
+            {activeTab !== 'archives' && <div className="relative">
               <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#C9B99A]/50" />
               <input
                 type="text"
@@ -291,7 +410,7 @@ export default function AncestryResearchSection() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-[rgba(37,54,75,0.6)] border border-[rgba(255,149,0,0.15)] rounded-xl pl-11 pr-4 py-3 text-sm text-[#F0EBE1] placeholder-[#C9B99A]/40 focus:outline-none focus:border-[rgba(255,149,0,0.4)] transition-colors"
               />
-            </div>
+            </div>}
 
             {/* Tabs */}
             <div className="flex flex-wrap gap-2">
@@ -299,6 +418,7 @@ export default function AncestryResearchSection() {
                 { id: 'rolls' as const, label: 'Tribal Rolls', icon: Scroll, count: filteredRolls.length },
                 { id: 'laws' as const, label: 'Laws & Policies', icon: Landmark, count: filteredLaws.length },
                 { id: 'names' as const, label: 'Tribal Names', icon: Users, count: filteredNames.length },
+                { id: 'archives' as const, label: 'Public Archives', icon: Database, count: null },
                 { id: 'guide' as const, label: 'Research Guide', icon: BookOpen, count: null },
               ].map(tab => (
                 <button key={tab.id} onClick={() => setActiveTab(tab.id)}
@@ -407,6 +527,13 @@ export default function AncestryResearchSection() {
                   </div>
                 ))}
               </div>
+            </motion.div>
+          )}
+
+          {/* GUIDE TAB */}
+          {activeTab === 'archives' && (
+            <motion.div key="archives" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+              <PublicArchiveSearch stateName={stateRecordInfo?.state} />
             </motion.div>
           )}
 
