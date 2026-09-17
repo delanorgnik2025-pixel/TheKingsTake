@@ -3,6 +3,8 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import type { TrpcContext } from "./context";
 import { verifyAdminToken } from "./security/auth";
+import { getActiveMemberFromRequest } from "./security/member-session";
+import type { User } from "@db/schema";
 
 const t = initTRPC.context<TrpcContext>().create({
   transformer: superjson,
@@ -24,6 +26,14 @@ const requireAuth = t.middleware(async (opts) => {
   return next({ ctx: { ...ctx, user: ctx.user } });
 });
 
+const requireMember = t.middleware(async ({ ctx, next }) => {
+  const member = await getActiveMemberFromRequest(ctx.req);
+  if (!member) {
+    throw new TRPCError({ code: "UNAUTHORIZED", message: "Members only. Please log in." });
+  }
+  return next({ ctx: { ...ctx, member } });
+});
+
 function requireRole(role: string) {
   return t.middleware(async (opts) => {
     const { ctx, next } = opts;
@@ -36,7 +46,19 @@ function requireRole(role: string) {
     // Check if admin token is provided in header (password login)
     const adminToken = ctx.req.headers.get("x-admin-token");
     if (adminToken && await verifyAdminToken(adminToken)) {
-      return next({ ctx: { ...ctx, user: { id: 0, name: "Admin", email: "admin@aasotu.com", role: "admin" } as any } });
+      const now = new Date();
+      const adminUser: User = {
+        id: 0,
+        unionId: "password-admin",
+        name: "Admin",
+        email: "admin@aasotu.com",
+        avatar: null,
+        role: "admin",
+        createdAt: now,
+        updatedAt: now,
+        lastSignInAt: now,
+      };
+      return next({ ctx: { ...ctx, user: adminUser } });
     }
 
     throw new TRPCError({
@@ -47,5 +69,6 @@ function requireRole(role: string) {
 }
 
 export const authedQuery = t.procedure.use(requireAuth);
+export const memberQuery = publicQuery.use(requireMember);
 // Admin query: checks OAuth admin OR password token. Does NOT require OAuth first.
 export const adminQuery = publicQuery.use(requireRole("admin"));
