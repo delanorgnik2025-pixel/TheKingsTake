@@ -58,6 +58,39 @@ async function notifyOwner(subject: string, text: string) {
   }).catch(() => undefined);
 }
 
+let lastVisitorAlertAt = 0;
+let queuedVisitorCount = 0;
+
+function safeReferrer(value?: string) {
+  if (!value) return "Direct visit";
+  try {
+    return new URL(value).hostname || "Direct visit";
+  } catch {
+    return "Unknown referral source";
+  }
+}
+
+async function notifyNewVisitor(path: string, referrer?: string) {
+  if (process.env.VISITOR_ALERTS_ENABLED !== "true") return;
+
+  queuedVisitorCount += 1;
+  const configuredCooldown = Number(process.env.VISITOR_ALERT_COOLDOWN_SECONDS || "60");
+  const cooldownSeconds = Number.isFinite(configuredCooldown)
+    ? Math.min(Math.max(configuredCooldown, 30), 3600)
+    : 60;
+  const now = Date.now();
+  if (now - lastVisitorAlertAt < cooldownSeconds * 1000) return;
+
+  const visitorCount = queuedVisitorCount;
+  queuedVisitorCount = 0;
+  lastVisitorAlertAt = now;
+  const entryPath = path.split("?")[0].slice(0, 500) || "/";
+  await notifyOwner(
+    visitorCount === 1 ? "New visitor on TheKingsTake.com" : `${visitorCount} new visitors on TheKingsTake.com`,
+    `New browsing session${visitorCount === 1 ? "" : "s"}: ${visitorCount}\nEntry page: ${entryPath}\nSource: ${safeReferrer(referrer)}\n\nOpen the Audience & Leads dashboard for current activity.`,
+  );
+}
+
 export const engagementRouter = createRouter({
   trackVisit: publicQuery
     .input(z.object({
@@ -66,11 +99,17 @@ export const engagementRouter = createRouter({
       referrer: z.string().max(1000).optional(),
     }))
     .mutation(async ({ input }) => {
-      await getDb().insert(siteVisitorSessions).values({
+      const db = getDb();
+      const [existingSession] = await db.select({ id: siteVisitorSessions.id })
+        .from(siteVisitorSessions)
+        .where(eq(siteVisitorSessions.sessionId, input.sessionId))
+        .limit(1);
+      await db.insert(siteVisitorSessions).values({
         sessionId: input.sessionId,
         lastPath: input.path,
         referrer: input.referrer || null,
       }).onDuplicateKeyUpdate({ set: { lastPath: input.path, lastSeenAt: new Date() } });
+      if (!existingSession) await notifyNewVisitor(input.path, input.referrer);
       return { success: true };
     }),
 
