@@ -15,6 +15,7 @@ import { feedRouter } from "./feed-router";
 import { liveRouter } from "./live-router";
 import { memberRouter } from "./member-router";
 import { engagementRouter } from "./engagement-router";
+import { archiveRouter } from "./archive-router";
 import { createRouter, publicQuery } from "./middleware";
 
 export const appRouter = createRouter({
@@ -36,6 +37,7 @@ export const appRouter = createRouter({
   live: liveRouter,
   member: memberRouter,
   engagement: engagementRouter,
+  archive: archiveRouter,
 });
 
 export type AppRouter = typeof appRouter;
