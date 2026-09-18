@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   normalizeLibraryOfCongressResponse,
+  normalizeNationalArchivesDetail,
   normalizeNationalArchivesResponse,
 } from "./archive";
 
@@ -134,5 +135,23 @@ describe("National Archives normalization", () => {
     });
     expect(result.results[0].imageUrl).toBeNull();
     expect(result.results[0].hasDigitalImage).toBe(false);
+  });
+
+  it("preserves ordered images and PDFs for the on-site record viewer", () => {
+    const detail = normalizeNationalArchivesDetail({
+      body: { hits: { hits: [{ _source: { record: {
+        naId: 99,
+        title: "Enrollment packet",
+        digitalObjects: [
+          { designator: "Page 1", objectType: "Image", objectUrl: "https://catalog.archives.gov/page-1.jpg" },
+          { designator: "Attachment", objectType: "PDF", objectUrl: "https://catalog.archives.gov/attachment.pdf" },
+          { designator: "Unsafe", objectType: "Image", objectUrl: "https://evil.example/page.jpg" },
+        ],
+      } } }] } },
+    }, "99");
+
+    expect(detail?.digitalObjects).toHaveLength(2);
+    expect(detail?.digitalObjects.map(object => object.mediaType)).toEqual(["image", "pdf"]);
+    expect(detail?.digitalObjects[0].title).toBe("Page 1");
   });
 });

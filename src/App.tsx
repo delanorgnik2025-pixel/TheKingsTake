@@ -34,6 +34,9 @@ const LandReportPage = lazy(() => import('./pages/LandReportPage'))
 const PetitionPage = lazy(() => import('./pages/PetitionPage'))
 const ConsultationPage = lazy(() => import('./pages/ConsultationPage'))
 const FoundationalBlackAmericanPage = lazy(() => import('./pages/FoundationalBlackAmericanPage'))
+const ArchivesPage = lazy(() => import('./pages/ArchivesPage'))
+const NaraRecordPage = lazy(() => import('./pages/NaraRecordPage'))
+const NewsletterUnsubscribePage = lazy(() => import('./pages/NewsletterUnsubscribePage'))
 // Ancestor Root Registry & Ancestor Realm pages retained in repo for future development; routes currently offline.
 
 function AppLayout({ children }: { children: React.ReactNode }) {
@@ -62,8 +65,8 @@ function AppLayout({ children }: { children: React.ReactNode }) {
     <>
       <CustomCursor />
       <AudioExperience />
-      {!hideNav && <Navigation onMenuToggle={() => setMenuOpen(true)} onNavClick={scrollToSection} />}
-      <MenuOverlay isOpen={menuOpen} onClose={() => setMenuOpen(false)} onNavClick={scrollToSection} />
+      {!hideNav && <Navigation onMenuToggle={() => setMenuOpen(true)} />}
+      <MenuOverlay isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
       {children}
       <VisitorAssistant />
       {!hideNav && <Footer onNavClick={scrollToSection} />}
@@ -105,6 +108,9 @@ function AppRoutes() {
           <Route path="/petition" element={<PetitionPage />} />
           <Route path="/consultation" element={<ConsultationPage />} />
           <Route path="/fba" element={<FoundationalBlackAmericanPage />} />
+          <Route path="/archives" element={<ArchivesPage />} />
+          <Route path="/archives/nara/:naId" element={<NaraRecordPage />} />
+          <Route path="/newsletter/unsubscribe" element={<NewsletterUnsubscribePage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>

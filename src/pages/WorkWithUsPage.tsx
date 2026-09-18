@@ -2,11 +2,12 @@ import { useState } from 'react'
 import { Link } from 'react-router'
 import { motion } from 'framer-motion'
 import {
-  ArrowLeft, Users, Send, CheckCircle, Sparkles, Globe,
-  Video, Search, PenTool, Mic, BookOpen, Share2, MapPin,
-  Clock, Star, AlertTriangle, Mail
+  ArrowLeft, Users, Send, CheckCircle, Sparkles,
+  Video, Search, PenTool, Mic, Share2, MapPin,
+  Clock, Star, Mail
 } from 'lucide-react'
 import ScrollReveal from '../components/ScrollReveal'
+import { trpc } from '@/providers/trpc'
 
 // ============================================
 // WORK WITH US — Volunteer/Collaboration Page
@@ -181,15 +182,19 @@ export default function WorkWithUsPage() {
     message: '',
   })
   const [submitted, setSubmitted] = useState(false)
-  const [sending, setSending] = useState(false)
+  const [submitError, setSubmitError] = useState('')
+  const submitApplication = trpc.engagement.submitWorkApplication.useMutation()
 
   const handleApply = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!application.name || !application.email || !application.role) return
-    setSending(true)
-    await new Promise(r => setTimeout(r, 800))
-    setSubmitted(true)
-    setSending(false)
+    setSubmitError('')
+    try {
+      await submitApplication.mutateAsync(application)
+      setSubmitted(true)
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'Your application could not be submitted. Please try again.')
+    }
   }
 
   return (
@@ -410,13 +415,14 @@ export default function WorkWithUsPage() {
                 </div>
                 <button
                   type="submit"
-                  disabled={sending || !application.name || !application.email || !application.role}
+                  disabled={submitApplication.isPending || !application.name || !application.email || !application.role || application.message.trim().length < 20}
                   className="w-full flex items-center justify-center gap-2 rounded-full h-12 bg-[#FF9500] text-[#25364B] hover:bg-[#CC6A00] transition-colors font-medium disabled:opacity-30 disabled:cursor-not-allowed"
                   style={{ boxShadow: '0 4px 16px rgba(255,149,0,0.25)' }}
                 >
                   <Send size={16} />
-                  {sending ? 'Submitting...' : 'Submit Application'}
+                  {submitApplication.isPending ? 'Submitting...' : 'Submit Application'}
                 </button>
+                {submitError && <p role="alert" className="text-center text-sm text-red-300">{submitError}</p>}
               </form>
             )}
           </div>

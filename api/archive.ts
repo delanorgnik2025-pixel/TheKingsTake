@@ -13,6 +13,21 @@ export type ArchiveRecord = {
   repository: "Library of Congress" | "National Archives";
 };
 
+export type ArchiveDigitalObject = {
+  id: string;
+  title: string;
+  url: string;
+  thumbnailUrl: string | null;
+  mediaType: "image" | "pdf" | "other";
+};
+
+export type NationalArchivesRecordDetail = ArchiveRecord & {
+  naId: string;
+  levelOfDescription: string | null;
+  creators: string[];
+  digitalObjects: ArchiveDigitalObject[];
+};
+
 type UnknownRecord = Record<string, unknown>;
 
 function asRecord(value: unknown): UnknownRecord {
@@ -81,7 +96,7 @@ function safeNaraImageUrl(value: unknown): string | null {
   if (!text) return null;
   try {
     const url = new URL(text);
-    const allowedHosts = ["catalog.archives.gov", "s3.amazonaws.com"];
+    const allowedHosts = ["catalog.archives.gov", "archives.gov", "s3.amazonaws.com"];
     if (
       !allowedHosts.some(
         host =>
@@ -95,6 +110,109 @@ function safeNaraImageUrl(value: unknown): string | null {
   } catch {
     return null;
   }
+}
+
+function naraMediaType(object: UnknownRecord): ArchiveDigitalObject["mediaType"] {
+  const type = (asText(object.objectType) || asText(object.mimeType) || "").toLowerCase();
+  const url = (asText(object.objectUrl) || "").toLowerCase();
+  if (type.includes("pdf") || url.endsWith(".pdf")) return "pdf";
+  if (type.includes("image") || /\.(jpe?g|png|gif|tiff?)(\?|$)/i.test(url)) return "image";
+  return "other";
+}
+
+function naraRecordFromHit(raw: unknown): UnknownRecord {
+  const hit = asRecord(raw);
+  const source = asRecord(hit._source);
+  return asRecord(source.record || hit.record || raw);
+}
+
+export function normalizeNationalArchivesDetail(
+  payload: unknown,
+  expectedNaId: string
+): NationalArchivesRecordDetail | null {
+  const root = asRecord(payload);
+  const body = asRecord(root.body);
+  const hits = asRecord(body.hits);
+  const candidates = [
+    ...(Array.isArray(hits.hits) ? hits.hits : []),
+    body,
+    root,
+  ].map(naraRecordFromHit);
+  const record =
+    candidates.find(candidate => asText(candidate.naId) === expectedNaId) ||
+    candidates.find(candidate => Boolean(asText(candidate.naId)));
+  if (!record) return null;
+
+  const naId = asText(record.naId);
+  const title = asText(record.title);
+  if (!naId || !title) return null;
+
+  const rawObjects = Array.isArray(record.digitalObjects)
+    ? record.digitalObjects.map(asRecord)
+    : [];
+  const digitalObjects = rawObjects
+    .map((object, index): ArchiveDigitalObject | null => {
+      const url = safeNaraImageUrl(object.objectUrl || object.url);
+      if (!url) return null;
+      const thumbnailUrl = safeNaraImageUrl(
+        object.thumbnailUrl || object.thumbnail || object.objectThumbnailUrl
+      );
+      return {
+        id: asText(object.naId) || asText(object.id) || `${naId}-${index + 1}`,
+        title:
+          asText(object.title) ||
+          asText(object.designator) ||
+          `Digital object ${index + 1}`,
+        url,
+        thumbnailUrl,
+        mediaType: naraMediaType(object),
+      };
+    })
+    .filter((object): object is ArchiveDigitalObject => object !== null);
+  const occurrence = firstObject(record.physicalOccurrences);
+  const referenceUnit = firstObject(occurrence.referenceUnits);
+  const restriction =
+    nestedText(record.useRestriction, "status") ||
+    nestedText(record.accessRestriction, "status");
+  const creators = (Array.isArray(record.creators) ? record.creators : [])
+    .map(creator => {
+      const value = asRecord(creator);
+      return asText(value.name) || asText(value.termName) || asText(value.heading);
+    })
+    .filter((value): value is string => Boolean(value));
+
+  return {
+    id: `nara-${naId}`,
+    naId,
+    title,
+    date: naraDate(record),
+    description: naraDescription(record),
+    format: [asText(record.levelOfDescription), ...asTexts(record.generalRecordsTypes)]
+      .filter((value): value is string => Boolean(value))
+      .slice(0, 8),
+    subjects: [
+      ...asTexts(record.generalRecordsTypes),
+      ...asTexts(record.specificRecordsTypes),
+    ].slice(0, 16),
+    locations: [
+      asText(referenceUnit.name),
+      asText(referenceUnit.city),
+      asText(referenceUnit.state),
+    ].filter((value): value is string => Boolean(value)),
+    imageUrl:
+      digitalObjects.find(object => object.mediaType === "image")?.thumbnailUrl ||
+      digitalObjects.find(object => object.mediaType === "image")?.url ||
+      null,
+    recordUrl: `https://catalog.archives.gov/id/${encodeURIComponent(naId)}`,
+    rights: restriction
+      ? `${restriction}. Review the official catalog record for complete access and use restrictions.`
+      : null,
+    hasDigitalImage: digitalObjects.some(object => object.mediaType === "image"),
+    repository: "National Archives",
+    levelOfDescription: asText(record.levelOfDescription),
+    creators,
+    digitalObjects,
+  };
 }
 
 function safeLocUrl(value: unknown, image = false): string | null {

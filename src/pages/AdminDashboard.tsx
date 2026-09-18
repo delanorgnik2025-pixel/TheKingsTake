@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation, Link } from "react-router";
+import { useNavigate, Link } from "react-router";
 import { trpc } from "@/providers/trpc";
 import {
   LayoutDashboard,
@@ -8,8 +8,6 @@ import {
   ScrollText,
   Settings,
   LogOut,
-  X,
-  ChevronRight,
   BarChart3,
   Calendar,
   Megaphone,
@@ -18,6 +16,9 @@ import {
   KeyRound,
   Copy,
   Mail,
+  BriefcaseBusiness,
+  Newspaper,
+  Send,
 } from "lucide-react";
 
 // ─── Sidebar navigation items ───
@@ -30,6 +31,8 @@ const NAV_ITEMS = [
   { id: "contacts", label: "Contacts", icon: Users },
   { id: "access-codes", label: "Member Access Codes", icon: KeyRound },
   { id: "audience", label: "Audience & Leads", icon: Mail },
+  { id: "applications", label: "Work Applications", icon: BriefcaseBusiness },
+  { id: "newsletter", label: "The King's Dispatch", icon: Newspaper },
   { id: "settings", label: "Settings", icon: Settings },
 ];
 
@@ -532,6 +535,94 @@ function AudienceModule() {
   );
 }
 
+function ApplicationsModule() {
+  const utils = trpc.useUtils();
+  const { data, isLoading } = trpc.engagement.adminApplications.useQuery();
+  const update = trpc.engagement.adminUpdateApplication.useMutation({
+    onSuccess: () => utils.engagement.adminApplications.invalidate(),
+  });
+  if (isLoading) return <p className="text-[#C9B99A]">Loading applications…</p>;
+  return (
+    <div>
+      <h3 className="mb-2 text-xl text-[#F0EBE1]" style={{ fontFamily: "Newsreader, serif" }}>Work With Us Applications</h3>
+      <p className="mb-6 text-sm text-[#C9B99A]/70">Every application submitted through the public page is stored here and also triggers an owner email alert.</p>
+      <div className="space-y-3">
+        {!data?.length && <div className="rounded border border-white/10 p-8 text-center text-[#C9B99A]">No applications yet.</div>}
+        {data?.map(application => (
+          <article key={application.id} className="rounded border border-white/10 bg-white/[0.02] p-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <h4 className="text-[#F0EBE1]">{application.name} · <span className="text-[#FFB840]">{application.role}</span></h4>
+                <a href={`mailto:${application.email}?subject=${encodeURIComponent(`Your AASOTU ${application.role} application`)}`} className="text-xs text-[#FF9500]">{application.email}</a>
+                <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-[#C9B99A]">{application.message}</p>
+              </div>
+              <select
+                value={application.status}
+                onChange={event => update.mutate({ id: application.id, status: event.target.value as "new" | "reviewing" | "contacted" | "accepted" | "declined", adminNotes: application.adminNotes || undefined })}
+                className="rounded border border-[#FF9500]/25 bg-[#101b28] px-3 py-2 text-xs text-[#F0EBE1]"
+              >
+                <option value="new">New</option><option value="reviewing">Reviewing</option><option value="contacted">Contacted</option><option value="accepted">Accepted</option><option value="declined">Declined</option>
+              </select>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function NewsletterModule() {
+  const utils = trpc.useUtils();
+  const { data } = trpc.engagement.adminNewsletterCampaigns.useQuery();
+  const [draft, setDraft] = useState({ subject: "", previewText: "", content: "", sources: "" });
+  const [notice, setNotice] = useState("");
+  const create = trpc.engagement.adminCreateNewsletterCampaign.useMutation({
+    onSuccess: async () => {
+      setDraft({ subject: "", previewText: "", content: "", sources: "" });
+      setNotice("Draft saved. Review it below before sending.");
+      await utils.engagement.adminNewsletterCampaigns.invalidate();
+    },
+  });
+  const send = trpc.engagement.adminSendNewsletterCampaign.useMutation({
+    onSuccess: async result => {
+      setNotice(`Newsletter delivered to ${result.sent} subscriber${result.sent === 1 ? "" : "s"}.`);
+      await utils.engagement.adminNewsletterCampaigns.invalidate();
+    },
+    onError: error => setNotice(error.message),
+  });
+  const save = () => {
+    const sourceUrls = draft.sources.split(/\s+/).map(value => value.trim()).filter(Boolean);
+    create.mutate({ subject: draft.subject, previewText: draft.previewText || undefined, content: draft.content, sourceUrls });
+  };
+  return (
+    <div>
+      <h3 className="mb-2 text-xl text-[#F0EBE1]" style={{ fontFamily: "Newsreader, serif" }}>The King&apos;s Dispatch</h3>
+      <p className="mb-6 text-sm leading-relaxed text-[#C9B99A]/70">Create a branded, source-backed newsletter draft. Nothing sends automatically: review the copy and citations, then approve the delivery.</p>
+      <div className="mb-8 space-y-3 rounded border border-[#FF9500]/20 bg-white/[0.02] p-4">
+        <input value={draft.subject} onChange={event => setDraft({ ...draft, subject: event.target.value })} placeholder="Newsletter subject" className="w-full rounded bg-[#101b28] px-3 py-2 text-sm text-white" />
+        <input value={draft.previewText} onChange={event => setDraft({ ...draft, previewText: event.target.value })} placeholder="Inbox preview text (optional)" className="w-full rounded bg-[#101b28] px-3 py-2 text-sm text-white" />
+        <textarea value={draft.content} onChange={event => setDraft({ ...draft, content: event.target.value })} rows={10} placeholder="Write the edition here. Separate sections with blank lines and include source attribution in the copy." className="w-full rounded bg-[#101b28] px-3 py-2 text-sm leading-relaxed text-white" />
+        <textarea value={draft.sources} onChange={event => setDraft({ ...draft, sources: event.target.value })} rows={3} placeholder="Source URLs — one per line" className="w-full rounded bg-[#101b28] px-3 py-2 text-xs text-white" />
+        <button onClick={save} disabled={create.isPending || draft.subject.trim().length < 3 || draft.content.trim().length < 30} className="rounded bg-[#FF9500] px-4 py-2 text-sm font-semibold text-[#182635] disabled:opacity-40">{create.isPending ? "Saving…" : "Save newsletter draft"}</button>
+        {notice && <p className="text-xs text-[#FFB840]">{notice}</p>}
+      </div>
+      <h4 className="mb-3 text-[#F0EBE1]">Drafts and send history</h4>
+      <div className="space-y-3">
+        {!data?.length && <p className="rounded border border-white/10 p-6 text-center text-sm text-[#C9B99A]">No editions created yet.</p>}
+        {data?.map(campaign => (
+          <article key={campaign.id} className="rounded border border-white/10 p-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div><p className="text-sm text-[#F0EBE1]">{campaign.subject}</p><p className="text-[11px] uppercase tracking-wider text-[#C9B99A]/60">{campaign.status}{campaign.status === "sent" ? ` · ${campaign.recipientCount} delivered` : ""}</p></div>
+              {campaign.status !== "sent" && <button onClick={() => { if (window.confirm(`Send “${campaign.subject}” to every subscribed reader now?`)) send.mutate({ id: campaign.id, confirm: true }); }} disabled={send.isPending} className="inline-flex items-center justify-center gap-2 rounded border border-[#FF9500]/40 px-3 py-2 text-xs text-[#FFB840] disabled:opacity-40"><Send size={13}/> Approve & send</button>}
+            </div>
+            <p className="mt-3 line-clamp-3 whitespace-pre-wrap text-xs leading-relaxed text-[#C9B99A]">{campaign.content}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ─── Main Dashboard ───
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -586,6 +677,10 @@ export default function AdminDashboard() {
         return <AccessCodesModule />;
       case "audience":
         return <AudienceModule />;
+      case "applications":
+        return <ApplicationsModule />;
+      case "newsletter":
+        return <NewsletterModule />;
       case "settings":
         return <SettingsModule onLogout={handleLogout} />;
       default:

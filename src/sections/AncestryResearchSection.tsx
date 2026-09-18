@@ -15,8 +15,6 @@ import {
   AlertTriangle,
   Database,
   Globe,
-  Clock,
-  Tag,
   Loader2,
   Image as ImageIcon,
 } from "lucide-react";
@@ -27,11 +25,10 @@ import {
   LAW_CATEGORIES,
 } from "../data/reclassificationLaws";
 import { ALTERNATIVE_TRIBAL_NAMES } from "../data/alternativeTribalNames";
-import { STATE_RECORD_MAP, getStateRecord } from "../data/stateRecordMap";
+import { getStateRecord } from "../data/stateRecordMap";
 import type {
   TribalRollRecord,
   LawPolicyRecord,
-  AncestryFilterCategory,
 } from "../types/ancestry";
 import { trpc } from "@/providers/trpc";
 
@@ -406,13 +403,19 @@ function LawModal({
   );
 }
 
-function PublicArchiveSearch({ stateName }: { stateName?: string }) {
-  const [query, setQuery] = useState("");
-  const [submittedQuery, setSubmittedQuery] = useState("");
+export function PublicArchiveSearch({
+  stateName,
+  initialQuery = "",
+}: {
+  stateName?: string;
+  initialQuery?: string;
+}) {
+  const [query, setQuery] = useState(initialQuery || stateName || "");
+  const [submittedQuery, setSubmittedQuery] = useState(initialQuery || stateName || "");
   const [page, setPage] = useState(1);
   const [source, setSource] = useState<"all" | "nara" | "loc">("all");
   const [onlineOnly, setOnlineOnly] = useState(false);
-  const effectiveQuery = [submittedQuery, stateName].filter(Boolean).join(" ");
+  const effectiveQuery = submittedQuery;
   const locSearch = trpc.archive.searchLibraryOfCongress.useQuery(
     { query: effectiveQuery || "records", page, pageSize: 8 },
     {
@@ -638,14 +641,24 @@ function PublicArchiveSearch({ stateName }: { stateName?: string }) {
                       Rights note: {record.rights}
                     </p>
                   )}
-                  <a
-                    href={record.recordUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs font-medium text-[#FFB840] hover:text-[#FF9500]"
-                  >
-                    View original record <ExternalLink size={11} />
-                  </a>
+                  <div className="flex flex-wrap items-center gap-3">
+                    {record.repository === "National Archives" && (
+                      <a
+                        href={`/archives/nara/${record.id.replace("nara-", "")}`}
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-[#FF9500] px-3 py-2 text-xs font-semibold text-[#182635] hover:bg-[#FFB840]"
+                      >
+                        Open record here <BookOpen size={12} />
+                      </a>
+                    )}
+                    <a
+                      href={record.recordUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-xs font-medium text-[#FFB840] hover:text-[#FF9500]"
+                    >
+                      View original at {record.repository === "National Archives" ? "NARA" : "LOC"} <ExternalLink size={11} />
+                    </a>
+                  </div>
                 </div>
               </article>
             ))}
@@ -693,6 +706,7 @@ export default function AncestryResearchSection() {
     const stateParam = getUrlParam("state");
     if (stateParam) {
       setUrlStateFilter(stateParam);
+      setActiveTab("archives");
       const section = document.getElementById("ancestry");
       if (section) {
         setTimeout(() => section.scrollIntoView({ behavior: "smooth" }), 300);
@@ -702,6 +716,7 @@ export default function AncestryResearchSection() {
     const handleHashChange = () => {
       const newState = getUrlParam("state");
       setUrlStateFilter(newState);
+      if (newState) setActiveTab("archives");
     };
     window.addEventListener("hashchange", handleHashChange);
     return () => window.removeEventListener("hashchange", handleHashChange);
@@ -1154,7 +1169,7 @@ export default function AncestryResearchSection() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
             >
-              <PublicArchiveSearch stateName={stateRecordInfo?.state} />
+              <PublicArchiveSearch key={stateRecordInfo?.state || "all-states"} stateName={stateRecordInfo?.state} />
             </motion.div>
           )}
 

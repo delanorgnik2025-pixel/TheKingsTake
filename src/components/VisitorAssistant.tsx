@@ -1,4 +1,5 @@
-import { FormEvent, useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import type { FormEvent } from 'react'
 import { Link, useLocation } from 'react-router'
 import { Bot, MessageCircle, Send, X } from 'lucide-react'
 import { trpc } from '@/providers/trpc'
@@ -19,7 +20,14 @@ export default function VisitorAssistant() {
   const location = useLocation()
   const [open, setOpen] = useState(false)
   const [input, setInput] = useState('')
-  const [messages, setMessages] = useState<Message[]>([{ role: 'guide', text: "Welcome to The King's Take. I can help you find the book, community, history resources, or the right service. What brings you here today?" }])
+  const [messages, setMessages] = useState<Message[]>(() => {
+    try {
+      const saved = sessionStorage.getItem('tktGuideConversation')
+      if (saved) return JSON.parse(saved) as Message[]
+    } catch { /* start a fresh conversation */ }
+    return [{ role: 'guide', text: "Welcome to The King's Take. I can help you search public archives, explore the map, find the book, join the community, or choose a service. What are you trying to uncover today?" }]
+  })
+  const conversationEnd = useRef<HTMLDivElement>(null)
   const [showLead, setShowLead] = useState(false)
   const [lead, setLead] = useState({ name: '', email: '', interest: 'General information', message: '' })
   const [leadSent, setLeadSent] = useState(false)
@@ -35,6 +43,11 @@ export default function VisitorAssistant() {
     return () => window.clearInterval(timer)
   }, [location.pathname])
 
+  useEffect(() => {
+    sessionStorage.setItem('tktGuideConversation', JSON.stringify(messages.slice(-20)))
+    conversationEnd.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages, ask.isPending])
+
   if (location.pathname.startsWith('/admin')) return null
 
   const send = async (event?: FormEvent, preset?: string) => {
@@ -43,7 +56,8 @@ export default function VisitorAssistant() {
     if (!text || ask.isPending) return
     setMessages(current => [...current, { role: 'visitor', text }])
     setInput('')
-    const result = await ask.mutateAsync({ message: text, currentPath: location.pathname }).catch(() => ({ answer: 'I can help you find the feed, book, services, or contact page. Please choose an option below.' }))
+    const history = messages.slice(-10)
+    const result = await ask.mutateAsync({ message: text, currentPath: location.pathname, history }).catch(() => ({ answer: 'I’m having trouble reaching the live guide right now. You can still search records at /archives, visit the community at /feed, or contact the team at /contact.' }))
     setMessages(current => [...current, { role: 'guide', text: result.answer }])
   }
 
@@ -62,10 +76,11 @@ export default function VisitorAssistant() {
         </div>
         <div className="flex-1 space-y-3 overflow-y-auto p-4">
           {messages.map((message, index) => <div key={index} className={`max-w-[88%] rounded-xl px-3 py-2 text-sm leading-relaxed ${message.role === 'guide' ? 'bg-white/[0.06] text-[#F0EBE1]' : 'ml-auto bg-[#FF9500] text-[#182635]'}`}>{message.text}</div>)}
-          {ask.isPending && <div className="text-xs text-[#C9B99A]">The Royal Guide is responding…</div>}
+          {ask.isPending && <div className="inline-flex items-center gap-1 rounded-xl bg-white/[0.06] px-3 py-2 text-xs text-[#C9B99A]"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#FF9500]"/><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#FF9500] [animation-delay:150ms]"/><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#FF9500] [animation-delay:300ms]"/><span className="ml-1">Considering your question…</span></div>}
           <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
             <Link to="/pre-order" className="rounded border border-[#FF9500]/30 p-2 text-center text-[#FFB840]">The Book</Link>
             <Link to="/feed" className="rounded border border-[#FF9500]/30 p-2 text-center text-[#FFB840]">Royal Circle</Link>
+            <Link to="/archives" className="rounded border border-[#FF9500]/30 p-2 text-center text-[#FFB840]">Search Archives</Link>
             <Link to="/writing-services" className="rounded border border-[#FF9500]/30 p-2 text-center text-[#FFB840]">Writing Help</Link>
             <button onClick={() => setShowLead(true)} className="rounded border border-[#FF9500]/30 p-2 text-[#FFB840]">Contact Me</button>
           </div>
@@ -82,6 +97,7 @@ export default function VisitorAssistant() {
               <button disabled={captureLead.isPending} className="w-full rounded bg-[#FF9500] py-2 text-sm font-bold text-[#182635]">Send Request</button>
             </>}
           </form>}
+          <div ref={conversationEnd} />
         </div>
         <form onSubmit={send} className="flex gap-2 border-t border-white/10 p-3">
           <input value={input} onChange={e => setInput(e.target.value)} placeholder="Ask where to find something…" className="min-w-0 flex-1 rounded-lg bg-[#0f1b29] px-3 py-2 text-sm text-white outline-none"/>

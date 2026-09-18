@@ -348,7 +348,34 @@ export const newsletterSubscribers = mysqlTable("newsletter_subscribers", {
   sourcePage: varchar("source_page", { length: 500 }),
   interests: text("interests"),
   status: mysqlEnum("status", ["subscribed", "unsubscribed"]).default("subscribed").notNull(),
+  unsubscribeToken: varchar("unsubscribe_token", { length: 64 }).unique(),
   consentedAt: timestamp("consented_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull().$onUpdate(() => new Date()),
+});
+
+export const newsletterCampaigns = mysqlTable("newsletter_campaigns", {
+  id: serial("id").primaryKey(),
+  subject: varchar("subject", { length: 255 }).notNull(),
+  previewText: varchar("preview_text", { length: 255 }),
+  content: text("content").notNull(),
+  sourceUrls: text("source_urls"),
+  status: mysqlEnum("status", ["draft", "scheduled", "sent"]).default("draft").notNull(),
+  scheduledAt: timestamp("scheduled_at"),
+  sentAt: timestamp("sent_at"),
+  recipientCount: int("recipient_count").default(0).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull().$onUpdate(() => new Date()),
+});
+
+export const workApplications = mysqlTable("work_applications", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  email: varchar("email", { length: 320 }).notNull(),
+  role: varchar("role", { length: 255 }).notNull(),
+  message: text("message").notNull(),
+  status: mysqlEnum("status", ["new", "reviewing", "contacted", "accepted", "declined"]).default("new").notNull(),
+  adminNotes: text("admin_notes"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull().$onUpdate(() => new Date()),
 });

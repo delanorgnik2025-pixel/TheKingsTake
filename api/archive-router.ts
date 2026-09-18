@@ -2,6 +2,7 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import {
   normalizeLibraryOfCongressResponse,
+  normalizeNationalArchivesDetail,
   normalizeNationalArchivesResponse,
 } from "./archive";
 import { createRouter, publicQuery } from "./middleware";
@@ -25,6 +26,53 @@ function remember(
 }
 
 export const archiveRouter = createRouter({
+  getNationalArchivesRecord: publicQuery
+    .input(z.object({ naId: z.string().regex(/^\d{1,20}$/) }))
+    .query(async ({ input }) => {
+      const apiKey = process.env.NARA_API_KEY;
+      if (!apiKey)
+        throw new TRPCError({
+          code: "PRECONDITION_FAILED",
+          message: "National Archives access is being configured.",
+        });
+      const url = new URL("https://catalog.archives.gov/proxy/v3/records/search");
+      url.searchParams.set("q", input.naId);
+      url.searchParams.set("page", "1");
+      url.searchParams.set("limit", "20");
+      url.searchParams.set("includeExtractedText", "true");
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 35_000);
+      try {
+        const response = await fetch(url, {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "User-Agent": "TheKingsTake Archive Research/1.0",
+            "x-api-key": apiKey,
+          },
+          signal: controller.signal,
+        });
+        if (!response.ok)
+          throw new Error(`National Archives returned ${response.status}`);
+        const record = normalizeNationalArchivesDetail(await response.json(), input.naId);
+        if (!record)
+          throw new TRPCError({ code: "NOT_FOUND", message: "Archive record not found." });
+        return record;
+      } catch (error) {
+        if (error instanceof TRPCError) throw error;
+        throw new TRPCError({
+          code: "BAD_GATEWAY",
+          message:
+            error instanceof Error && error.name === "AbortError"
+              ? "The National Archives request timed out. Please try again."
+              : "This National Archives record is temporarily unavailable.",
+          cause: error,
+        });
+      } finally {
+        clearTimeout(timeout);
+      }
+    }),
+
   searchLibraryOfCongress: publicQuery
     .input(
       z.object({
