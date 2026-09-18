@@ -1,18 +1,38 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { normalizeLibraryOfCongressResponse } from "./archive";
+import {
+  normalizeLibraryOfCongressResponse,
+  normalizeNationalArchivesResponse,
+} from "./archive";
 import { createRouter, publicQuery } from "./middleware";
 
 const CACHE_TTL_MS = 10 * 60 * 1000;
-const cache = new Map<string, { expiresAt: number; value: ReturnType<typeof normalizeLibraryOfCongressResponse> }>();
+const cache = new Map<
+  string,
+  {
+    expiresAt: number;
+    value: ReturnType<typeof normalizeLibraryOfCongressResponse>;
+  }
+>();
+
+function remember(
+  key: string,
+  value: ReturnType<typeof normalizeLibraryOfCongressResponse>
+) {
+  if (cache.size >= 100) cache.delete(cache.keys().next().value || "");
+  cache.set(key, { expiresAt: Date.now() + CACHE_TTL_MS, value });
+  return value;
+}
 
 export const archiveRouter = createRouter({
   searchLibraryOfCongress: publicQuery
-    .input(z.object({
-      query: z.string().trim().min(2).max(120),
-      page: z.number().int().min(1).max(100).default(1),
-      pageSize: z.number().int().min(6).max(24).default(12),
-    }))
+    .input(
+      z.object({
+        query: z.string().trim().min(2).max(120),
+        page: z.number().int().min(1).max(100).default(1),
+        pageSize: z.number().int().min(6).max(24).default(12),
+      })
+    )
     .query(async ({ input }) => {
       const cacheKey = `${input.query.toLowerCase()}|${input.page}|${input.pageSize}`;
       const cached = cache.get(cacheKey);
@@ -30,18 +50,94 @@ export const archiveRouter = createRouter({
       const timeout = setTimeout(() => controller.abort(), 35_000);
       try {
         const response = await fetch(url, {
-          headers: { Accept: "application/json", "User-Agent": "TheKingsTake Archive Research/1.0" },
+          headers: {
+            Accept: "application/json",
+            "User-Agent": "TheKingsTake Archive Research/1.0",
+          },
           signal: controller.signal,
         });
-        if (!response.ok) throw new Error(`Library of Congress returned ${response.status}`);
-        const normalized = normalizeLibraryOfCongressResponse(await response.json());
-        if (cache.size >= 100) cache.delete(cache.keys().next().value || "");
-        cache.set(cacheKey, { expiresAt: Date.now() + CACHE_TTL_MS, value: normalized });
-        return normalized;
+        if (!response.ok)
+          throw new Error(`Library of Congress returned ${response.status}`);
+        const normalized = normalizeLibraryOfCongressResponse(
+          await response.json()
+        );
+        return remember(cacheKey, normalized);
       } catch (error) {
-        const message = error instanceof Error && error.name === "AbortError"
-          ? "The Library of Congress search timed out. Please try again."
-          : "The Library of Congress search is temporarily unavailable. Please try again.";
+        const message =
+          error instanceof Error && error.name === "AbortError"
+            ? "The Library of Congress search timed out. Please try again."
+            : "The Library of Congress search is temporarily unavailable. Please try again.";
+        throw new TRPCError({ code: "BAD_GATEWAY", message, cause: error });
+      } finally {
+        clearTimeout(timeout);
+      }
+    }),
+
+  searchNationalArchives: publicQuery
+    .input(
+      z.object({
+        query: z.string().trim().min(2).max(120),
+        page: z.number().int().min(1).max(100).default(1),
+        pageSize: z.number().int().min(4).max(20).default(8),
+        availableOnline: z.boolean().default(false),
+      })
+    )
+    .query(async ({ input }) => {
+      const apiKey = process.env.NARA_API_KEY;
+      if (!apiKey)
+        throw new TRPCError({
+          code: "PRECONDITION_FAILED",
+          message:
+            "National Archives search is being configured. Please try again soon.",
+        });
+
+      const cacheKey = `nara|${input.query.toLowerCase()}|${input.page}|${input.pageSize}|${input.availableOnline}`;
+      const cached = cache.get(cacheKey);
+      if (cached && cached.expiresAt > Date.now()) return cached.value;
+
+      // The live Catalog interface currently uses this v3 search route. The key
+      // remains server-only and is sent with every request as required by NARA.
+      const url = new URL(
+        "https://catalog.archives.gov/proxy/v3/records/search"
+      );
+      url.searchParams.set("q", input.query);
+      url.searchParams.set("page", String(input.page));
+      url.searchParams.set("limit", String(input.pageSize));
+      url.searchParams.set("includeExtractedText", "false");
+      url.searchParams.set("includeOtherExtractedText", "false");
+      if (input.availableOnline)
+        url.searchParams.set("availableOnline", "true");
+
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 35_000);
+      try {
+        const response = await fetch(url, {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "User-Agent": "TheKingsTake Archive Research/1.0",
+            "x-api-key": apiKey,
+          },
+          signal: controller.signal,
+        });
+        if (!response.ok)
+          throw new Error(`National Archives returned ${response.status}`);
+        const contentType = response.headers.get("content-type") || "";
+        if (!contentType.includes("application/json"))
+          throw new Error("National Archives returned an unexpected response");
+        const normalized = normalizeNationalArchivesResponse(
+          await response.json()
+        );
+        normalized.pagination.current = input.page;
+        normalized.pagination.next =
+          normalized.results.length === input.pageSize ? "next" : null;
+        normalized.pagination.previous = input.page > 1 ? "previous" : null;
+        return remember(cacheKey, normalized);
+      } catch (error) {
+        const message =
+          error instanceof Error && error.name === "AbortError"
+            ? "The National Archives search timed out. Please try again."
+            : "The National Archives search is temporarily unavailable. Please try again.";
         throw new TRPCError({ code: "BAD_GATEWAY", message, cause: error });
       } finally {
         clearTimeout(timeout);

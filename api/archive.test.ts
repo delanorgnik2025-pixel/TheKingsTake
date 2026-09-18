@@ -1,21 +1,33 @@
 import { describe, expect, it } from "vitest";
-import { normalizeLibraryOfCongressResponse } from "./archive";
+import {
+  normalizeLibraryOfCongressResponse,
+  normalizeNationalArchivesResponse,
+} from "./archive";
 
 describe("Library of Congress archive normalization", () => {
   it("keeps safe record metadata and labels digitized images", () => {
     const result = normalizeLibraryOfCongressResponse({
-      pagination: { current: 2, total: 33, next: "https://www.loc.gov/search/?sp=3" },
-      results: [{
-        id: "https://www.loc.gov/item/123/",
-        title: "Freedmen record",
-        date: "1870",
-        description: ["A public archive description"],
-        format: ["Manuscript/Mixed Material"],
-        subject: ["Freedmen"],
-        location: ["Georgia"],
-        image_url: ["https://tile.loc.gov/image.jpg"],
-        item: { rights_advisory: "Review the rights statement on the original record." },
-      }],
+      pagination: {
+        current: 2,
+        total: 33,
+        next: "https://www.loc.gov/search/?sp=3",
+      },
+      results: [
+        {
+          id: "https://www.loc.gov/item/123/",
+          title: "Freedmen record",
+          date: "1870",
+          description: ["A public archive description"],
+          format: ["Manuscript/Mixed Material"],
+          subject: ["Freedmen"],
+          location: ["Georgia"],
+          image_url: ["https://tile.loc.gov/image.jpg"],
+          item: {
+            rights_advisory:
+              "Review the rights statement on the original record.",
+          },
+        },
+      ],
     });
 
     expect(result.pagination).toMatchObject({ current: 2, total: 33 });
@@ -31,7 +43,11 @@ describe("Library of Congress archive normalization", () => {
     const result = normalizeLibraryOfCongressResponse({
       results: [
         { id: "https://evil.example/item", title: "Unsafe" },
-        { id: "https://www.loc.gov/item/456/", title: "Metadata only", image_url: ["https://evil.example/image.jpg"] },
+        {
+          id: "https://www.loc.gov/item/456/",
+          title: "Metadata only",
+          image_url: ["https://evil.example/image.jpg"],
+        },
       ],
     });
     expect(result.results).toHaveLength(1);
@@ -41,9 +57,82 @@ describe("Library of Congress archive normalization", () => {
 
   it("upgrades trusted Library of Congress record links to HTTPS", () => {
     const result = normalizeLibraryOfCongressResponse({
-      results: [{ id: "http://www.loc.gov/item/456/", title: "Trusted record" }],
+      results: [
+        { id: "http://www.loc.gov/item/456/", title: "Trusted record" },
+      ],
     });
 
     expect(result.results[0].recordUrl).toBe("https://www.loc.gov/item/456/");
+  });
+});
+
+describe("National Archives normalization", () => {
+  it("maps official records and digital objects into the shared archive model", () => {
+    const result = normalizeNationalArchivesResponse({
+      body: {
+        hits: {
+          total: { value: 42 },
+          hits: [
+            {
+              _source: {
+                record: {
+                  naId: 28218579,
+                  title: "Freedmen record",
+                  levelOfDescription: "fileUnit",
+                  generalRecordsTypes: ["Textual Records"],
+                  inclusiveStartDate: { logicalDate: "1861-01-01" },
+                  inclusiveEndDate: { logicalDate: "1867-12-31" },
+                  digitalObjects: [
+                    {
+                      objectType: "Image (JPG)",
+                      objectUrl:
+                        "https://catalog.archives.gov/medialive/image.jpg",
+                    },
+                  ],
+                  useRestriction: { status: "Unrestricted" },
+                },
+              },
+            },
+          ],
+        },
+      },
+    });
+
+    expect(result.pagination.total).toBe(42);
+    expect(result.results[0]).toMatchObject({
+      id: "nara-28218579",
+      title: "Freedmen record",
+      repository: "National Archives",
+      hasDigitalImage: true,
+      recordUrl: "https://catalog.archives.gov/id/28218579",
+    });
+  });
+
+  it("rejects untrusted digital-object image hosts", () => {
+    const result = normalizeNationalArchivesResponse({
+      body: {
+        hits: {
+          total: { value: 1 },
+          hits: [
+            {
+              _source: {
+                record: {
+                  naId: 1,
+                  title: "Metadata only",
+                  digitalObjects: [
+                    {
+                      objectType: "Image",
+                      objectUrl: "https://evil.example/image.jpg",
+                    },
+                  ],
+                },
+              },
+            },
+          ],
+        },
+      },
+    });
+    expect(result.results[0].imageUrl).toBeNull();
+    expect(result.results[0].hasDigitalImage).toBe(false);
   });
 });

@@ -1,4 +1,11 @@
-import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  type ReactNode,
+} from "react";
 import { trpc } from "@/providers/trpc";
 
 interface Member {
@@ -22,7 +29,9 @@ const MemberContext = createContext<MemberContextType | null>(null);
 
 export function MemberProvider({ children }: { children: ReactNode }) {
   const [member, setMember] = useState<Member | null>(null);
-  const [token, setToken] = useState<string | null>(() => localStorage.getItem("memberToken"));
+  const [token, setToken] = useState<string | null>(() =>
+    localStorage.getItem("memberToken")
+  );
   const [isLoading, setIsLoading] = useState(true);
 
   const meQuery = trpc.member.me.useQuery(undefined, {
@@ -53,15 +62,12 @@ export function MemberProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("memberToken", newToken);
     setToken(newToken);
     setMember(newMember);
-    // Refresh page to ensure headers are set
-    window.location.reload();
   }, []);
 
   const logout = useCallback(() => {
     localStorage.removeItem("memberToken");
     setToken(null);
     setMember(null);
-    window.location.reload();
   }, []);
 
   return (
