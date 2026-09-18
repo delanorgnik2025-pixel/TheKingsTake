@@ -1,7 +1,54 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router";
 import { ArrowLeft, ChevronLeft, ChevronRight, ExternalLink, FileText, Loader2 } from "lucide-react";
 import { trpc } from "@/providers/trpc";
+
+type ViewerImageProps = {
+  title: string;
+  url: string;
+  thumbnailUrl: string | null;
+  recordUrl: string;
+};
+
+function ViewerImage({ title, url, thumbnailUrl, recordUrl }: ViewerImageProps) {
+  const [source, setSource] = useState(url);
+  const [unavailable, setUnavailable] = useState(false);
+
+  useEffect(() => {
+    setSource(url);
+    setUnavailable(false);
+  }, [url]);
+
+  if (unavailable) {
+    return (
+      <div className="flex min-h-[55vh] max-w-xl flex-col items-center justify-center px-6 text-center">
+        <FileText size={38} className="mb-4 text-[#C9B99A]/35" />
+        <h2 className="text-xl">Preview unavailable</h2>
+        <p className="mt-2 text-sm leading-relaxed text-[#C9B99A]">
+          NARA lists this digital object, but its file format or archive link cannot be displayed in this browser. This is an archive-side limitation, not a problem with your search.
+        </p>
+        <a href={recordUrl} target="_blank" rel="noreferrer" className="mt-5 inline-flex items-center gap-2 rounded-lg border border-[#FF9500]/35 px-4 py-2 text-sm text-[#FFB840]">
+          Check the official NARA record <ExternalLink size={14}/>
+        </a>
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={source}
+      alt={title}
+      className="max-h-[76vh] max-w-full object-contain"
+      onError={() => {
+        if (thumbnailUrl && source !== thumbnailUrl) {
+          setSource(thumbnailUrl);
+          return;
+        }
+        setUnavailable(true);
+      }}
+    />
+  );
+}
 
 export default function NaraRecordPage() {
   const { naId = "" } = useParams();
@@ -47,7 +94,7 @@ export default function NaraRecordPage() {
                       {current.mediaType === "pdf" ? (
                         <iframe title={current.title} src={current.url} className="h-[72vh] w-full rounded bg-white" />
                       ) : (
-                        <img src={current.url} alt={current.title} className="max-h-[76vh] max-w-full object-contain" />
+                        <ViewerImage title={current.title} url={current.url} thumbnailUrl={current.thumbnailUrl} recordUrl={query.data.recordUrl} />
                       )}
                     </div>
                     <div className="flex items-center justify-between gap-3 border-t border-white/10 p-3">

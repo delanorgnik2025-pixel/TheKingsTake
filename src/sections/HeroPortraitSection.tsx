@@ -23,27 +23,33 @@ export default function HeroPortraitSection() {
       {/* Bottom gradient fade into next section */}
       <div className="absolute inset-x-0 bottom-0 h-[200px] md:h-[300px] bg-gradient-to-t from-[#14202E] via-[#14202E]/80 to-transparent" />
 
-      {/* Desktop archive search — a primary product, not a buried tab. */}
+      {/* Desktop archive search — kept above the artwork's branded caption. */}
       <motion.div
         initial={{ opacity: 0, x: -24 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.45, duration: 0.7 }}
-        className="absolute left-8 top-[28%] z-10 hidden w-[min(390px,34vw)] rounded-2xl border border-[#FF9500]/30 bg-[#101b28]/90 p-5 shadow-2xl backdrop-blur-lg md:block lg:left-12 lg:p-6"
+        className="absolute left-8 top-6 z-10 hidden w-[min(760px,calc(100vw-4rem))] rounded-2xl border border-[#FF9500]/30 bg-[#101b28]/90 p-4 shadow-2xl backdrop-blur-lg md:block lg:left-12 lg:top-8"
       >
-        <p className="mb-2 flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-[#FFB840]"><Database size={13}/> Public Archive Search</p>
-        <h1 className="text-2xl leading-tight text-[#F0EBE1] lg:text-3xl" style={{ fontFamily: 'Newsreader, serif' }}>Search the records.<br/>Follow the evidence.</h1>
-        <p className="mt-2 text-xs leading-relaxed text-[#C9B99A]">Search National Archives and Library of Congress records directly through The King&apos;s Take.</p>
-        <form onSubmit={searchArchives} className="mt-4 flex overflow-hidden rounded-lg border border-white/10 bg-[#0b1420]">
-          <input value={query} onChange={event => setQuery(event.target.value)} aria-label="Search public archives" placeholder="Name, place, Dawes roll…" className="min-w-0 flex-1 bg-transparent px-3 py-3 text-sm text-white outline-none placeholder:text-[#C9B99A]/45" />
-          <button className="bg-[#FF9500] px-4 text-[#182635]" aria-label="Search archives"><Search size={17}/></button>
-        </form>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {['Dawes Rolls', "Freedmen's Bureau", 'Land records', 'Military service'].map(term => <button key={term} onClick={() => navigate(`/archives?q=${encodeURIComponent(term)}`)} className="rounded-full border border-[#FF9500]/20 px-2.5 py-1 text-[10px] text-[#C9B99A] hover:border-[#FF9500]/60 hover:text-[#FFB840]">{term}</button>)}
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,0.9fr)_minmax(360px,1.1fr)] lg:items-center">
+          <div>
+            <p className="mb-1.5 flex items-center gap-2 text-[10px] uppercase tracking-[0.18em] text-[#FFB840]"><Database size={13}/> Public Archive Search</p>
+            <h1 className="text-xl leading-tight text-[#F0EBE1] lg:text-2xl" style={{ fontFamily: 'Newsreader, serif' }}>Search the records. Follow the evidence.</h1>
+            <p className="mt-1.5 text-[11px] leading-relaxed text-[#C9B99A]">Search National Archives and Library of Congress records through The King&apos;s Take.</p>
+          </div>
+          <div>
+            <form onSubmit={searchArchives} className="flex overflow-hidden rounded-lg border border-white/10 bg-[#0b1420]">
+              <input value={query} onChange={event => setQuery(event.target.value)} aria-label="Search public archives" placeholder="Name, place, Dawes roll…" className="min-w-0 flex-1 bg-transparent px-3 py-3 text-sm text-white outline-none placeholder:text-[#C9B99A]/45" />
+              <button className="bg-[#FF9500] px-4 text-[#182635]" aria-label="Search archives"><Search size={17}/></button>
+            </form>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {['Dawes Rolls', "Freedmen's Bureau", 'Land records', 'Military service'].map(term => <button key={term} onClick={() => navigate(`/archives?q=${encodeURIComponent(term)}`)} className="rounded-full border border-[#FF9500]/20 px-2.5 py-1 text-[10px] text-[#C9B99A] hover:border-[#FF9500]/60 hover:text-[#FFB840]">{term}</button>)}
+            </div>
+          </div>
         </div>
       </motion.div>
 
       {/* Mobile: Archive Search appears immediately before Map, as requested. */}
-      <div className="absolute bottom-20 left-1/2 z-10 flex -translate-x-1/2 gap-2 md:hidden">
+      <div className="absolute left-1/2 top-4 z-10 flex -translate-x-1/2 gap-2 md:hidden">
         <Link to="/archives" className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-[#FF9500]/50 bg-[#101b28]/90 px-3 py-2 text-[11px] font-medium text-[#FFB840] backdrop-blur"><Search size={13}/> Search Archives</Link>
         <button onClick={() => document.getElementById('heritage')?.scrollIntoView({ behavior: 'smooth' })} className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-white/15 bg-[#101b28]/90 px-3 py-2 text-[11px] text-[#C9B99A] backdrop-blur"><Map size={13}/> Explore Map</button>
       </div>
