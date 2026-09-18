@@ -79,14 +79,17 @@ async function researchCurrentNews(apiKey: string) {
     method: "POST",
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: process.env.NEWSLETTER_RESEARCH_MODEL || "gpt-5.5",
-      tools: [{ type: "web_search" }],
-      include: ["web_search_call.action.sources"],
-      input: `Today is ${new Date().toISOString().slice(0, 10)}. Research the most consequential, current developments from the last 24-48 hours for readers of TheKingsTake.com. Prioritize civil rights, African American communities, economic justice and Black wealth, criminal-justice policy, government action, Black and Indigenous history, genealogy and public archives, books, publishing, and media. Choose one strong lead story and two shorter developments. Verify the lead with at least two independent credible sources. Prefer primary sources, public agencies, established newsrooms, and subject-matter institutions. Avoid rumors, partisan clickbait, celebrity gossip, and unsupported claims. Return a detailed factual research brief with dates, what happened, why it matters, points of uncertainty, and citations. This is research for a human-approved editorial draft; do not pretend to know the publisher's personal opinion.`,
+      model: process.env.NEWSLETTER_RESEARCH_MODEL || "gpt-4.1-mini",
+      tools: [{ type: "web_search", search_context_size: "low" }],
+      tool_choice: "required",
+      max_output_tokens: 1800,
+      input: `Today is ${new Date().toISOString().slice(0, 10)}. Research current developments from the last 48 hours for TheKingsTake.com readers. Choose one consequential lead story and two short developments involving civil rights, African American communities, economic justice, criminal-justice policy, government action, Black or Indigenous history, genealogy, archives, books, or media. Verify the lead with at least two independent credible sources, prioritizing public agencies, primary documents, established newsrooms, and subject-matter institutions. Avoid rumors, clickbait, celebrity gossip, and unsupported claims. Return a concise factual brief with dates, why each item matters, uncertainty, and citations. This is a draft for human approval; do not invent the publisher's personal opinion.`,
     }),
   });
   if (!response.ok) {
     const detail = await response.text();
+    if (response.status === 429)
+      throw new Error("OpenAI news research is temporarily rate-limited. Wait about one minute, then try again.");
     throw new Error(`OpenAI web research failed (${response.status}): ${detail.slice(0, 300)}`);
   }
   const extracted = extractResearch(await response.json());
