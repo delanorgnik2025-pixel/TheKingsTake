@@ -32,6 +32,8 @@ import {
   Landmark,
   Share2,
   X,
+  Newspaper,
+  ArrowRight,
 } from "lucide-react";
 import { trpc } from "@/providers/trpc";
 import { useMember } from "@/providers/MemberProvider";
@@ -129,6 +131,153 @@ type FeedPost = {
   memberAvatar: string | null;
 };
 
+type DispatchPost = {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  coverImage: string | null;
+  createdAt: Date | string;
+};
+
+function dispatchDate(date: Date | string): string {
+  return new Date(date).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+function DispatchRail({
+  posts,
+  loading,
+  mobile = false,
+}: {
+  posts: DispatchPost[];
+  loading: boolean;
+  mobile?: boolean;
+}) {
+  const latest = posts[0];
+
+  if (loading) {
+    return (
+      <section className="overflow-hidden rounded-xl border border-[rgba(255,149,0,0.22)] bg-[#1A2A3D] p-4">
+        <div className="h-4 w-36 animate-pulse rounded bg-[#C9B99A]/10" />
+        <div className="mt-4 h-36 animate-pulse rounded-lg bg-[#0F1B29]" />
+      </section>
+    );
+  }
+
+  if (!latest) return null;
+
+  if (mobile) {
+    return (
+      <section aria-labelledby="mobile-dispatch-title" className="lg:hidden">
+        <div className="mb-3 flex items-end justify-between gap-4">
+          <div>
+            <p className="mb-1 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#FF9500]">
+              <Newspaper size={12} /> Daily intelligence
+            </p>
+            <h2 id="mobile-dispatch-title" className="text-xl text-[#F0EBE1]" style={{ fontFamily: "Newsreader, serif" }}>
+              The King&apos;s Dispatch
+            </h2>
+          </div>
+          <a href="/#newsletter" className="shrink-0 text-[11px] font-semibold text-[#FFB840] hover:text-[#FF9500]">
+            Get it by email
+          </a>
+        </div>
+        <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {posts.map((post, index) => (
+            <Link
+              key={post.id}
+              to={`/blog/${post.slug}`}
+              className="group relative min-h-48 w-[82vw] max-w-[350px] shrink-0 snap-start overflow-hidden rounded-xl border border-[rgba(255,149,0,0.25)] bg-[#1A2A3D]"
+            >
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,149,0,0.22),transparent_55%)]" />
+              {post.coverImage && (
+                <img
+                  src={post.coverImage}
+                  alt=""
+                  className="absolute inset-0 h-full w-full object-cover opacity-35 transition-transform duration-500 group-hover:scale-105"
+                  onError={event => { event.currentTarget.style.display = "none"; }}
+                />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#101C2A] via-[#101C2A]/75 to-transparent" />
+              <div className="relative flex min-h-48 flex-col justify-end p-4">
+                <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.16em] text-[#FFB840]">
+                  {index === 0 ? "Latest edition · " : "Edition · "}{dispatchDate(post.createdAt)}
+                </p>
+                <h3 className="line-clamp-2 text-xl leading-tight text-[#F0EBE1]" style={{ fontFamily: "Newsreader, serif" }}>
+                  {post.title}
+                </h3>
+                <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-[#FFB840]">
+                  Read Dispatch <ArrowRight size={13} />
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section aria-labelledby="desktop-dispatch-title" className="overflow-hidden rounded-xl border border-[rgba(255,149,0,0.3)] bg-gradient-to-b from-[#25364B] to-[#172535] shadow-[0_18px_45px_rgba(0,0,0,0.16)]">
+      <div className="border-b border-[rgba(255,149,0,0.16)] px-5 py-4">
+        <p className="mb-1 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#FF9500]">
+          <Newspaper size={12} /> Source-backed daily news
+        </p>
+        <h2 id="desktop-dispatch-title" className="text-xl text-[#F0EBE1]" style={{ fontFamily: "Newsreader, serif" }}>
+          The King&apos;s Dispatch
+        </h2>
+      </div>
+
+      <Link to={`/blog/${latest.slug}`} className="group block">
+        <div className="relative aspect-[16/10] overflow-hidden bg-[#0F1B29]">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,149,0,0.3),transparent_58%)]" />
+          {latest.coverImage && (
+            <img
+              src={latest.coverImage}
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover opacity-65 transition-transform duration-500 group-hover:scale-105"
+              onError={event => { event.currentTarget.style.display = "none"; }}
+            />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#101C2A] via-[#101C2A]/55 to-transparent" />
+          <span className="absolute left-4 top-4 rounded-full border border-[#FF9500]/35 bg-[#101C2A]/90 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.15em] text-[#FFB840]">
+            Latest edition
+          </span>
+        </div>
+        <div className="p-5">
+          <p className="mb-2 text-[10px] uppercase tracking-[0.14em] text-[#C9B99A]/70">{dispatchDate(latest.createdAt)}</p>
+          <h3 className="text-xl leading-tight text-[#F0EBE1] transition-colors group-hover:text-[#FFB840]" style={{ fontFamily: "Newsreader, serif" }}>
+            {latest.title}
+          </h3>
+          {latest.excerpt && <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-[#C9B99A]">{latest.excerpt}</p>}
+          <span className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-[#FFB840]">
+            Read full Dispatch <ArrowRight size={13} />
+          </span>
+        </div>
+      </Link>
+
+      {posts.length > 1 && (
+        <div className="border-t border-[rgba(255,149,0,0.14)] px-5 py-2">
+          {posts.slice(1, 4).map(post => (
+            <Link key={post.id} to={`/blog/${post.slug}`} className="group block border-b border-white/[0.06] py-3 last:border-0">
+              <p className="text-[9px] uppercase tracking-[0.12em] text-[#C9B99A]/55">{dispatchDate(post.createdAt)}</p>
+              <p className="mt-1 line-clamp-2 text-sm leading-snug text-[#F0EBE1] transition-colors group-hover:text-[#FFB840]">{post.title}</p>
+            </Link>
+          ))}
+        </div>
+      )}
+
+      <a href="/#newsletter" className="flex items-center justify-between border-t border-[rgba(255,149,0,0.16)] bg-[#FF9500]/[0.08] px-5 py-3 text-xs font-bold text-[#FFB840] hover:bg-[#FF9500]/[0.14]">
+        Get the Dispatch by email <ArrowRight size={13} />
+      </a>
+    </section>
+  );
+}
+
 // ─── page ─────────────────────────────────────────────────────────────────────
 export default function FeedPage() {
   const { postId } = useParams<{ postId?: string }>();
@@ -158,6 +307,10 @@ export default function FeedPage() {
   );
   const liveStatus = trpc.live.status.useQuery(undefined, {
     refetchInterval: 15000,
+  });
+  const dispatches = trpc.blog.list.useQuery({
+    category: "DAILY NEWS",
+    limit: 5,
   });
 
   const expireAdminSession = () => {
@@ -287,6 +440,11 @@ export default function FeedPage() {
       <div className="relative z-10 max-w-6xl mx-auto px-4 pb-20 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
         {/* Left column: Composer + Feed */}
         <div className="space-y-5">
+          <DispatchRail
+            posts={(dispatches.data || []) as DispatchPost[]}
+            loading={dispatches.isLoading}
+            mobile
+          />
           {/* Member bar */}
           <div className="rounded-lg border border-[rgba(255,149,0,0.18)] bg-[#25364B]/80 backdrop-blur-sm p-3 flex items-center justify-between">
             {member || isAdmin ? (
@@ -421,6 +579,10 @@ export default function FeedPage() {
 
         {/* Right column: Sidebar */}
         <aside className="hidden lg:block space-y-5">
+          <DispatchRail
+            posts={(dispatches.data || []) as DispatchPost[]}
+            loading={dispatches.isLoading}
+          />
           {/* Subscribe CTA */}
           <div className="rounded-xl border border-[rgba(255,149,0,0.25)] bg-gradient-to-b from-[#25364B] to-[#1A2A3D] p-5">
             <div className="flex items-center gap-2 mb-3">

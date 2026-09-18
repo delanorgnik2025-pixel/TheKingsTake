@@ -2,7 +2,7 @@ import { z } from "zod";
 import { createRouter, publicQuery, authedQuery, adminQuery } from "./middleware";
 import { getDb } from "./queries/connection";
 import { posts, users } from "@db/schema";
-import { eq, desc } from "drizzle-orm";
+import { and, eq, desc } from "drizzle-orm";
 
 export const blogRouter = createRouter({
   // Public: list published posts
@@ -16,11 +16,14 @@ export const blogRouter = createRouter({
       const limit = input?.limit ?? 10;
       if (input?.category) {
         return db.select().from(posts)
-          .where(eq(posts.category, input.category))
+          .where(and(eq(posts.published, true), eq(posts.category, input.category)))
           .orderBy(desc(posts.createdAt))
           .limit(limit);
       }
-      return db.select().from(posts).orderBy(desc(posts.createdAt)).limit(limit);
+      return db.select().from(posts)
+        .where(eq(posts.published, true))
+        .orderBy(desc(posts.createdAt))
+        .limit(limit);
     }),
 
   // Public: get single post by slug
@@ -28,7 +31,9 @@ export const blogRouter = createRouter({
     .input(z.object({ slug: z.string() }))
     .query(async ({ input }) => {
       const db = getDb();
-      const results = await db.select().from(posts).where(eq(posts.slug, input.slug)).limit(1);
+      const results = await db.select().from(posts)
+        .where(and(eq(posts.slug, input.slug), eq(posts.published, true)))
+        .limit(1);
       return results[0] ?? null;
     }),
 

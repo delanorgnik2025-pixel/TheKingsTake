@@ -31,7 +31,7 @@ export default function Footer({ onNavClick }: FooterProps) {
           <p className="text-xs text-[#C9B99A]">The People's Voice | AASOTU Media Group LLC</p>
         </div>
 
-        <div className="mb-10 max-w-xl rounded-xl border border-[#FF9500]/20 bg-[#182635]/40 p-5">
+        <div id="newsletter" className="mb-10 max-w-xl scroll-mt-24 rounded-xl border border-[#FF9500]/20 bg-[#182635]/40 p-5">
           <h4 className="mb-1 text-lg text-[#F0EBE1]">The King's Dispatch</h4>
           <p className="mb-3 text-xs leading-relaxed text-[#C9B99A]">Book updates, community strategy, major investigations, and selected releases from #TheKingsTake.</p>
           {subscribed ? <p className="text-sm text-emerald-300">You are on the list. Welcome.</p> : <form onSubmit={submitNewsletter} className="flex flex-col gap-2 sm:flex-row">
