@@ -1,0 +1,16 @@
+ALTER TABLE newsletter_campaigns
+  ADD COLUMN automated boolean NOT NULL DEFAULT false AFTER source_urls,
+  ADD COLUMN daily_key varchar(32) NULL AFTER automated,
+  ADD COLUMN research_summary text NULL AFTER daily_key,
+  ADD COLUMN image_url text NULL AFTER research_summary,
+  ADD COLUMN image_alt varchar(500) NULL AFTER image_url,
+  ADD COLUMN image_credit text NULL AFTER image_alt,
+  ADD COLUMN image_source_url text NULL AFTER image_credit,
+  ADD COLUMN article_title varchar(255) NULL AFTER image_source_url,
+  ADD COLUMN article_slug varchar(255) NULL AFTER article_title,
+  ADD COLUMN article_excerpt text NULL AFTER article_slug,
+  ADD COLUMN article_content text NULL AFTER article_excerpt,
+  ADD COLUMN published_post_id bigint unsigned NULL AFTER article_content,
+  ADD COLUMN approved_at timestamp NULL AFTER published_post_id,
+  ADD UNIQUE KEY newsletter_campaigns_daily_key_unique (daily_key),
+  ADD KEY newsletter_campaigns_published_post_idx (published_post_id);

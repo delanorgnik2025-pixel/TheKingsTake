@@ -8,6 +8,7 @@ import { createContext } from "./context";
 import { env } from "./lib/env";
 import { createOAuthCallbackHandler } from "./kimi/auth";
 import { Paths } from "@contracts/constants";
+import { startDailyNewsAutomation } from "./newsletter-automation";
 
 const app = new Hono<{ Bindings: HttpBindings }>();
 
@@ -70,4 +71,5 @@ if (env.isProduction) {
   serve({ fetch: app.fetch, port }, () => {
     console.log(`Server running on http://localhost:${port}/`);
   });
+  startDailyNewsAutomation();
 }

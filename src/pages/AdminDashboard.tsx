@@ -571,54 +571,133 @@ function ApplicationsModule() {
   );
 }
 
+type NewsletterCampaign = {
+  id: number;
+  subject: string;
+  previewText: string | null;
+  content: string;
+  sourceUrls: string | null;
+  automated: boolean;
+  dailyKey: string | null;
+  imageUrl: string | null;
+  imageAlt: string | null;
+  imageCredit: string | null;
+  imageSourceUrl: string | null;
+  articleTitle: string | null;
+  articleExcerpt: string | null;
+  articleContent: string | null;
+  status: "draft" | "scheduled" | "sent";
+};
+
+function campaignSources(value: string | null) {
+  try { return (JSON.parse(value || "[]") as string[]).filter(Boolean); } catch { return []; }
+}
+
+function AutomatedCampaignEditor({ campaign, onSaved }: { campaign: NewsletterCampaign; onSaved: () => Promise<void> }) {
+  const [editing, setEditing] = useState(false);
+  const [notice, setNotice] = useState("");
+  const [form, setForm] = useState({
+    subject: campaign.subject,
+    previewText: campaign.previewText || "",
+    content: campaign.content,
+    sources: campaignSources(campaign.sourceUrls).join("\n"),
+    articleTitle: campaign.articleTitle || "",
+    articleExcerpt: campaign.articleExcerpt || "",
+    articleContent: campaign.articleContent || "",
+    imageUrl: campaign.imageUrl || "",
+    imageAlt: campaign.imageAlt || "",
+    imageCredit: campaign.imageCredit || "",
+    imageSourceUrl: campaign.imageSourceUrl || "",
+  });
+  const update = trpc.engagement.adminUpdateNewsletterCampaign.useMutation({
+    onSuccess: async () => { setNotice("Draft changes saved."); setEditing(false); await onSaved(); },
+    onError: error => setNotice(error.message),
+  });
+  const set = (key: keyof typeof form, value: string) => setForm(current => ({ ...current, [key]: value }));
+  const save = () => update.mutate({
+    id: campaign.id,
+    subject: form.subject,
+    previewText: form.previewText || undefined,
+    content: form.content,
+    sourceUrls: form.sources.split(/\s+/).map(value => value.trim()).filter(Boolean),
+    articleTitle: form.articleTitle || undefined,
+    articleExcerpt: form.articleExcerpt || undefined,
+    articleContent: form.articleContent || undefined,
+    imageUrl: form.imageUrl || undefined,
+    imageAlt: form.imageAlt || undefined,
+    imageCredit: form.imageCredit || undefined,
+    imageSourceUrl: form.imageSourceUrl || undefined,
+  });
+  if (!editing) return (
+    <div className="mt-4">
+      <div className="grid gap-4 lg:grid-cols-[220px_1fr]">
+        {campaign.imageUrl && <div><img src={campaign.imageUrl} alt={campaign.imageAlt || campaign.subject} className="h-36 w-full rounded border border-white/10 object-cover" /><p className="mt-1 line-clamp-2 text-[10px] text-[#C9B99A]/60">{campaign.imageCredit}</p></div>}
+        <div>
+          {campaign.articleTitle && <p className="text-base text-[#F0EBE1]">Website article: {campaign.articleTitle}</p>}
+          <p className="mt-2 line-clamp-4 whitespace-pre-wrap text-xs leading-relaxed text-[#C9B99A]">{campaign.content}</p>
+          <div className="mt-3 flex flex-wrap gap-2">{campaignSources(campaign.sourceUrls).map((url, index) => <a key={url} href={url} target="_blank" rel="noreferrer" className="rounded-full border border-[#FF9500]/30 px-2.5 py-1 text-[10px] text-[#FFB840]">Source {index + 1}</a>)}</div>
+        </div>
+      </div>
+      {campaign.status !== "sent" && <button onClick={() => setEditing(true)} className="mt-4 rounded border border-white/15 px-3 py-2 text-xs text-[#F0EBE1]">Review or edit complete draft</button>}
+      {notice && <p className="mt-2 text-xs text-[#FFB840]">{notice}</p>}
+    </div>
+  );
+  const inputClass = "w-full rounded border border-white/10 bg-[#101b28] px-3 py-2 text-sm text-white";
+  return (
+    <div className="mt-4 space-y-3 rounded border border-[#FF9500]/20 bg-[#101b28]/60 p-4">
+      <p className="text-xs uppercase tracking-[0.12em] text-[#FFB840]">Email edition</p>
+      <input className={inputClass} value={form.subject} onChange={event => set("subject", event.target.value)} placeholder="Email subject" />
+      <input className={inputClass} value={form.previewText} onChange={event => set("previewText", event.target.value)} placeholder="Inbox preview" />
+      <textarea className={inputClass} rows={10} value={form.content} onChange={event => set("content", event.target.value)} />
+      <p className="pt-2 text-xs uppercase tracking-[0.12em] text-[#FFB840]">Website article</p>
+      <input className={inputClass} value={form.articleTitle} onChange={event => set("articleTitle", event.target.value)} placeholder="Article title" />
+      <textarea className={inputClass} rows={3} value={form.articleExcerpt} onChange={event => set("articleExcerpt", event.target.value)} placeholder="Article excerpt" />
+      <textarea className={inputClass} rows={16} value={form.articleContent} onChange={event => set("articleContent", event.target.value)} placeholder="Full article" />
+      <p className="pt-2 text-xs uppercase tracking-[0.12em] text-[#FFB840]">Image and verification</p>
+      <input className={inputClass} value={form.imageUrl} onChange={event => set("imageUrl", event.target.value)} placeholder="Image URL" />
+      <input className={inputClass} value={form.imageAlt} onChange={event => set("imageAlt", event.target.value)} placeholder="Image description" />
+      <input className={inputClass} value={form.imageCredit} onChange={event => set("imageCredit", event.target.value)} placeholder="Image credit and license" />
+      <input className={inputClass} value={form.imageSourceUrl} onChange={event => set("imageSourceUrl", event.target.value)} placeholder="Image credit link" />
+      <textarea className={inputClass} rows={4} value={form.sources} onChange={event => set("sources", event.target.value)} placeholder="At least two source URLs — one per line" />
+      <div className="flex gap-2"><button onClick={save} disabled={update.isPending} className="rounded bg-[#FF9500] px-4 py-2 text-xs font-semibold text-[#182635] disabled:opacity-40">{update.isPending ? "Saving…" : "Save reviewed draft"}</button><button onClick={() => setEditing(false)} className="rounded border border-white/15 px-4 py-2 text-xs text-[#C9B99A]">Cancel</button></div>
+      {notice && <p className="text-xs text-[#FFB840]">{notice}</p>}
+    </div>
+  );
+}
+
 function NewsletterModule() {
   const utils = trpc.useUtils();
   const { data } = trpc.engagement.adminNewsletterCampaigns.useQuery();
+  const { data: automation } = trpc.engagement.adminNewsletterAutomationStatus.useQuery(undefined, { refetchInterval: 60_000 });
   const [draft, setDraft] = useState({ subject: "", previewText: "", content: "", sources: "" });
   const [notice, setNotice] = useState("");
-  const create = trpc.engagement.adminCreateNewsletterCampaign.useMutation({
-    onSuccess: async () => {
-      setDraft({ subject: "", previewText: "", content: "", sources: "" });
-      setNotice("Draft saved. Review it below before sending.");
-      await utils.engagement.adminNewsletterCampaigns.invalidate();
-    },
-  });
-  const send = trpc.engagement.adminSendNewsletterCampaign.useMutation({
-    onSuccess: async result => {
-      setNotice(`Newsletter delivered to ${result.sent} subscriber${result.sent === 1 ? "" : "s"}.`);
-      await utils.engagement.adminNewsletterCampaigns.invalidate();
-    },
+  const refresh = async () => { await Promise.all([utils.engagement.adminNewsletterCampaigns.invalidate(), utils.engagement.adminNewsletterAutomationStatus.invalidate()]); };
+  const generate = trpc.engagement.adminGenerateDailyNewsDraft.useMutation({
+    onSuccess: async result => { setNotice(result.created ? "Today's researched draft is ready below. Review it before approval." : "Today's automated draft already exists below."); await refresh(); },
     onError: error => setNotice(error.message),
   });
-  const save = () => {
-    const sourceUrls = draft.sources.split(/\s+/).map(value => value.trim()).filter(Boolean);
-    create.mutate({ subject: draft.subject, previewText: draft.previewText || undefined, content: draft.content, sourceUrls });
-  };
+  const create = trpc.engagement.adminCreateNewsletterCampaign.useMutation({
+    onSuccess: async () => { setDraft({ subject: "", previewText: "", content: "", sources: "" }); setNotice("Manual draft saved. Review it below before sending."); await refresh(); },
+  });
+  const send = trpc.engagement.adminSendNewsletterCampaign.useMutation({
+    onSuccess: async result => { setNotice(`${result.published ? "Article published and newsletter" : "Newsletter"} delivered to ${result.sent} subscriber${result.sent === 1 ? "" : "s"}.`); await refresh(); },
+    onError: error => setNotice(error.message),
+  });
+  const save = () => create.mutate({ subject: draft.subject, previewText: draft.previewText || undefined, content: draft.content, sourceUrls: draft.sources.split(/\s+/).map(value => value.trim()).filter(Boolean) });
   return (
     <div>
       <h3 className="mb-2 text-xl text-[#F0EBE1]" style={{ fontFamily: "Newsreader, serif" }}>The King&apos;s Dispatch</h3>
-      <p className="mb-6 text-sm leading-relaxed text-[#C9B99A]/70">Create a branded, source-backed newsletter draft. Nothing sends automatically: review the copy and citations, then approve the delivery.</p>
-      <div className="mb-8 space-y-3 rounded border border-[#FF9500]/20 bg-white/[0.02] p-4">
-        <input value={draft.subject} onChange={event => setDraft({ ...draft, subject: event.target.value })} placeholder="Newsletter subject" className="w-full rounded bg-[#101b28] px-3 py-2 text-sm text-white" />
-        <input value={draft.previewText} onChange={event => setDraft({ ...draft, previewText: event.target.value })} placeholder="Inbox preview text (optional)" className="w-full rounded bg-[#101b28] px-3 py-2 text-sm text-white" />
-        <textarea value={draft.content} onChange={event => setDraft({ ...draft, content: event.target.value })} rows={10} placeholder="Write the edition here. Separate sections with blank lines and include source attribution in the copy." className="w-full rounded bg-[#101b28] px-3 py-2 text-sm leading-relaxed text-white" />
-        <textarea value={draft.sources} onChange={event => setDraft({ ...draft, sources: event.target.value })} rows={3} placeholder="Source URLs — one per line" className="w-full rounded bg-[#101b28] px-3 py-2 text-xs text-white" />
-        <button onClick={save} disabled={create.isPending || draft.subject.trim().length < 3 || draft.content.trim().length < 30} className="rounded bg-[#FF9500] px-4 py-2 text-sm font-semibold text-[#182635] disabled:opacity-40">{create.isPending ? "Saving…" : "Save newsletter draft"}</button>
-        {notice && <p className="text-xs text-[#FFB840]">{notice}</p>}
-      </div>
-      <h4 className="mb-3 text-[#F0EBE1]">Drafts and send history</h4>
-      <div className="space-y-3">
-        {!data?.length && <p className="rounded border border-white/10 p-6 text-center text-sm text-[#C9B99A]">No editions created yet.</p>}
-        {data?.map(campaign => (
-          <article key={campaign.id} className="rounded border border-white/10 p-4">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div><p className="text-sm text-[#F0EBE1]">{campaign.subject}</p><p className="text-[11px] uppercase tracking-wider text-[#C9B99A]/60">{campaign.status}{campaign.status === "sent" ? ` · ${campaign.recipientCount} delivered` : ""}</p></div>
-              {campaign.status !== "sent" && <button onClick={() => { if (window.confirm(`Send “${campaign.subject}” to every subscribed reader now?`)) send.mutate({ id: campaign.id, confirm: true }); }} disabled={send.isPending} className="inline-flex items-center justify-center gap-2 rounded border border-[#FF9500]/40 px-3 py-2 text-xs text-[#FFB840] disabled:opacity-40"><Send size={13}/> Approve & send</button>}
-            </div>
-            <p className="mt-3 line-clamp-3 whitespace-pre-wrap text-xs leading-relaxed text-[#C9B99A]">{campaign.content}</p>
-          </article>
-        ))}
-      </div>
+      <p className="mb-6 text-sm leading-relaxed text-[#C9B99A]/70">The system researches current stories, verifies at least two independent sources, prepares a licensed image, writes the website article and email edition, then stops for your approval.</p>
+      <section className="mb-8 rounded border border-[#FF9500]/30 bg-[#FF9500]/[0.04] p-5">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div><p className="text-base text-[#F0EBE1]">Daily approval workflow</p><p className="mt-1 text-xs leading-relaxed text-[#C9B99A]">Runs at {automation?.dailyHourEastern ?? 5}:00 AM Eastern. Research and drafting are automatic. Nothing publishes or emails subscribers until you approve it.</p><div className="mt-3 flex flex-wrap gap-2 text-[10px]"><span className={`rounded-full px-2.5 py-1 ${automation?.enabled ? "bg-emerald-400/10 text-emerald-300" : "bg-red-400/10 text-red-300"}`}>Schedule {automation?.enabled ? "on" : "off"}</span><span className={`rounded-full px-2.5 py-1 ${automation?.researchConfigured ? "bg-emerald-400/10 text-emerald-300" : "bg-red-400/10 text-red-300"}`}>News research {automation?.researchConfigured ? "ready" : "needs API key"}</span><span className={`rounded-full px-2.5 py-1 ${automation?.emailConfigured ? "bg-emerald-400/10 text-emerald-300" : "bg-amber-400/10 text-amber-300"}`}>Delivery {automation?.emailConfigured ? "ready" : "not configured"}</span></div></div>
+          <button onClick={() => { setNotice("Researching today's news and building the edition. This may take about a minute…"); generate.mutate(); }} disabled={generate.isPending || !automation?.researchConfigured} className="shrink-0 rounded bg-[#FF9500] px-4 py-3 text-sm font-semibold text-[#182635] disabled:opacity-40">{generate.isPending ? "Researching & writing…" : "Build today's draft now"}</button>
+        </div>
+        {notice && <p className="mt-4 text-xs text-[#FFB840]">{notice}</p>}
+      </section>
+      <details className="mb-8 rounded border border-white/10 bg-white/[0.02] p-4"><summary className="cursor-pointer text-sm text-[#C9B99A]">Create a manual edition instead</summary><div className="mt-4 space-y-3"><input value={draft.subject} onChange={event => setDraft({ ...draft, subject: event.target.value })} placeholder="Newsletter subject" className="w-full rounded bg-[#101b28] px-3 py-2 text-sm text-white" /><input value={draft.previewText} onChange={event => setDraft({ ...draft, previewText: event.target.value })} placeholder="Inbox preview text (optional)" className="w-full rounded bg-[#101b28] px-3 py-2 text-sm text-white" /><textarea value={draft.content} onChange={event => setDraft({ ...draft, content: event.target.value })} rows={10} placeholder="Write the edition here." className="w-full rounded bg-[#101b28] px-3 py-2 text-sm leading-relaxed text-white" /><textarea value={draft.sources} onChange={event => setDraft({ ...draft, sources: event.target.value })} rows={3} placeholder="Source URLs — one per line" className="w-full rounded bg-[#101b28] px-3 py-2 text-xs text-white" /><button onClick={save} disabled={create.isPending || draft.subject.trim().length < 3 || draft.content.trim().length < 30} className="rounded border border-[#FF9500]/40 px-4 py-2 text-sm text-[#FFB840] disabled:opacity-40">{create.isPending ? "Saving…" : "Save manual draft"}</button></div></details>
+      <h4 className="mb-3 text-[#F0EBE1]">Approval desk and send history</h4>
+      <div className="space-y-4">{!data?.length && <p className="rounded border border-white/10 p-6 text-center text-sm text-[#C9B99A]">No editions created yet. Build today&apos;s first draft above.</p>}{data?.map(campaign => <article key={campaign.id} className={`rounded border p-4 ${campaign.status === "draft" ? "border-[#FF9500]/30" : "border-white/10"}`}><div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><div><div className="flex flex-wrap items-center gap-2"><p className="text-sm text-[#F0EBE1]">{campaign.subject}</p>{campaign.automated && <span className="rounded-full bg-[#FF9500]/10 px-2 py-0.5 text-[9px] uppercase tracking-wider text-[#FFB840]">Automated daily draft</span>}</div><p className="mt-1 text-[11px] uppercase tracking-wider text-[#C9B99A]/60">{campaign.status}{campaign.dailyKey ? ` · ${campaign.dailyKey}` : ""}{campaign.status === "sent" ? ` · ${campaign.recipientCount} delivered` : ""}</p></div>{campaign.status !== "sent" && <button onClick={() => { const action = campaign.automated ? "Publish the website article and send this edition to every subscribed reader now?" : `Send “${campaign.subject}” to every subscribed reader now?`; if (window.confirm(action)) send.mutate({ id: campaign.id, confirm: true }); }} disabled={send.isPending} className="inline-flex items-center justify-center gap-2 rounded border border-[#FF9500]/40 px-3 py-2 text-xs text-[#FFB840] disabled:opacity-40"><Send size={13}/> {campaign.automated ? "Approve, publish & send" : "Approve & send"}</button>}</div>{campaign.automated ? <AutomatedCampaignEditor campaign={campaign} onSaved={refresh} /> : <p className="mt-3 line-clamp-3 whitespace-pre-wrap text-xs leading-relaxed text-[#C9B99A]">{campaign.content}</p>}</article>)}</div>
     </div>
   );
 }

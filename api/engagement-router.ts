@@ -7,10 +7,12 @@ import { getDb } from "./queries/connection";
 import {
   newsletterSubscribers,
   newsletterCampaigns,
+  posts,
   siteLeads,
   siteVisitorSessions,
   workApplications,
 } from "@db/schema";
+import { generateDailyNewsDraft, latestAutomatedCampaign } from "./newsletter-automation";
 
 const SITE_GUIDE = `
 You are the Royal Guide, the navigation assistant for TheKingsTake.com and AASOTU Media Group LLC.
@@ -125,11 +127,35 @@ function escapeHtml(value: string) {
   })[character] || character);
 }
 
-function newsletterHtml(subject: string, previewText: string | null, content: string, unsubscribeUrl: string) {
-  const paragraphs = content.split(/\n{2,}/).map(paragraph =>
-    `<p style="margin:0 0 18px;line-height:1.7;color:#dfd5c2">${escapeHtml(paragraph).replaceAll("\n", "<br>")}</p>`
-  ).join("");
-  return `<!doctype html><html><body style="margin:0;background:#101b28;font-family:Georgia,serif"><div style="display:none;max-height:0;overflow:hidden">${escapeHtml(previewText || subject)}</div><div style="max-width:680px;margin:0 auto;padding:32px 20px"><div style="border:1px solid rgba(255,149,0,.3);background:#182635"><div style="padding:28px;border-bottom:1px solid rgba(255,149,0,.25);text-align:center"><div style="color:#ff9500;font:12px Arial,sans-serif;letter-spacing:3px;text-transform:uppercase">AASOTU Media Group LLC</div><h1 style="margin:12px 0 0;color:#f0ebe1;font-size:34px">The King’s Dispatch</h1><div style="margin-top:8px;color:#c9b99a;font:12px Arial,sans-serif">#TheKingsTake · The People’s Voice</div></div><div style="padding:30px"><h2 style="margin:0 0 22px;color:#ffb840;font-size:25px">${escapeHtml(subject)}</h2>${paragraphs}</div><div style="padding:22px;text-align:center;border-top:1px solid rgba(255,255,255,.08);color:#9f927d;font:11px Arial,sans-serif">Sent by AASOTU Media Group LLC · <a href="${escapeHtml(unsubscribeUrl)}" style="color:#ffb840">Unsubscribe</a></div></div></div></body></html>`;
+function safeHttpUrl(value: string | null | undefined) {
+  if (!value) return null;
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" || url.protocol === "http:" ? url.toString() : null;
+  } catch {
+    return null;
+  }
+}
+
+function renderNewsletterCopy(content: string) {
+  return content.split("\n").map(line => {
+    const trimmed = line.trim();
+    if (!trimmed) return `<div style="height:12px"></div>`;
+    if (trimmed.startsWith("## ")) return `<h3 style="margin:22px 0 10px;color:#ffb840;font-size:20px">${escapeHtml(trimmed.slice(3))}</h3>`;
+    const bullet = trimmed.match(/^- \[([^\]]+)\]\((https?:\/\/[^)]+)\)$/);
+    if (bullet) return `<div style="margin:0 0 9px;color:#dfd5c2">• <a href="${escapeHtml(bullet[2])}" style="color:#ffb840">${escapeHtml(bullet[1])}</a></div>`;
+    return `<p style="margin:0 0 13px;line-height:1.7;color:#dfd5c2">${escapeHtml(trimmed)}</p>`;
+  }).join("");
+}
+
+function newsletterHtml(campaign: typeof newsletterCampaigns.$inferSelect, unsubscribeUrl: string, articleUrl?: string) {
+  const imageUrl = safeHttpUrl(campaign.imageUrl);
+  const imageSourceUrl = safeHttpUrl(campaign.imageSourceUrl);
+  const image = imageUrl
+    ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(campaign.imageAlt || campaign.subject)}" style="display:block;width:100%;max-height:380px;object-fit:cover"><div style="padding:8px 20px;background:#101b28;color:#9f927d;font:10px Arial,sans-serif">Image: ${imageSourceUrl ? `<a href="${escapeHtml(imageSourceUrl)}" style="color:#c9b99a">${escapeHtml(campaign.imageCredit || "View credit")}</a>` : escapeHtml(campaign.imageCredit || "AASOTU Media Group LLC")}</div>`
+    : "";
+  const readMore = articleUrl ? `<p style="margin:25px 0 0"><a href="${escapeHtml(articleUrl)}" style="display:inline-block;padding:12px 18px;background:#ff9500;color:#101b28;text-decoration:none;font:bold 13px Arial,sans-serif">Read the full article</a></p>` : "";
+  return `<!doctype html><html><body style="margin:0;background:#101b28;font-family:Georgia,serif"><div style="display:none;max-height:0;overflow:hidden">${escapeHtml(campaign.previewText || campaign.subject)}</div><div style="max-width:680px;margin:0 auto;padding:32px 20px"><div style="border:1px solid rgba(255,149,0,.3);background:#182635"><div style="padding:28px;border-bottom:1px solid rgba(255,149,0,.25);text-align:center"><div style="color:#ff9500;font:12px Arial,sans-serif;letter-spacing:3px;text-transform:uppercase">AASOTU Media Group LLC</div><h1 style="margin:12px 0 0;color:#f0ebe1;font-size:34px">The King’s Dispatch</h1><div style="margin-top:8px;color:#c9b99a;font:12px Arial,sans-serif">#TheKingsTake · The People’s Voice</div></div>${image}<div style="padding:30px"><h2 style="margin:0 0 22px;color:#ffb840;font-size:25px">${escapeHtml(campaign.subject)}</h2>${renderNewsletterCopy(campaign.content)}${readMore}</div><div style="padding:22px;text-align:center;border-top:1px solid rgba(255,255,255,.08);color:#9f927d;font:11px Arial,sans-serif">Sent by AASOTU Media Group LLC · <a href="${escapeHtml(unsubscribeUrl)}" style="color:#ffb840">Unsubscribe</a></div></div></div></body></html>`;
 }
 
 let lastVisitorAlertAt = 0;
@@ -281,6 +307,25 @@ export const engagementRouter = createRouter({
     getDb().select().from(newsletterCampaigns).orderBy(desc(newsletterCampaigns.createdAt)).limit(100)
   ),
 
+  adminNewsletterAutomationStatus: adminQuery.query(async () => ({
+    enabled: process.env.NEWSLETTER_AUTOMATION_ENABLED !== "false",
+    researchConfigured: Boolean(process.env.OPENAI_API_KEY),
+    emailConfigured: Boolean(process.env.RESEND_API_KEY && process.env.NEWSLETTER_FROM_EMAIL),
+    dailyHourEastern: Number(process.env.NEWSLETTER_DAILY_HOUR_ET || "5"),
+    latest: await latestAutomatedCampaign(),
+  })),
+
+  adminGenerateDailyNewsDraft: adminQuery.mutation(async () => {
+    try {
+      return await generateDailyNewsDraft();
+    } catch (error) {
+      throw new TRPCError({
+        code: "PRECONDITION_FAILED",
+        message: error instanceof Error ? error.message : "The daily draft could not be generated.",
+      });
+    }
+  }),
+
   adminCreateNewsletterCampaign: adminQuery
     .input(z.object({
       subject: z.string().trim().min(3).max(255),
@@ -298,6 +343,42 @@ export const engagementRouter = createRouter({
       return { success: true, id: Number(result.insertId) };
     }),
 
+  adminUpdateNewsletterCampaign: adminQuery
+    .input(z.object({
+      id: z.number().int().positive(),
+      subject: z.string().trim().min(3).max(255),
+      previewText: z.string().trim().max(255).optional(),
+      content: z.string().trim().min(30).max(60000),
+      sourceUrls: z.array(z.string().url().max(1000)).min(2).max(20),
+      articleTitle: z.string().trim().min(3).max(255).optional(),
+      articleExcerpt: z.string().trim().max(3000).optional(),
+      articleContent: z.string().trim().max(60000).optional(),
+      imageUrl: z.string().url().max(3000).optional(),
+      imageAlt: z.string().trim().max(500).optional(),
+      imageCredit: z.string().trim().max(2000).optional(),
+      imageSourceUrl: z.string().url().max(3000).optional(),
+    }))
+    .mutation(async ({ input }) => {
+      const db = getDb();
+      const [campaign] = await db.select().from(newsletterCampaigns).where(eq(newsletterCampaigns.id, input.id)).limit(1);
+      if (!campaign) throw new TRPCError({ code: "NOT_FOUND", message: "Newsletter draft not found." });
+      if (campaign.status === "sent") throw new TRPCError({ code: "CONFLICT", message: "A sent edition cannot be edited." });
+      const { id, sourceUrls, ...fields } = input;
+      await db.update(newsletterCampaigns).set({
+        ...fields,
+        previewText: fields.previewText || null,
+        sourceUrls: JSON.stringify(sourceUrls),
+        articleTitle: fields.articleTitle || null,
+        articleExcerpt: fields.articleExcerpt || null,
+        articleContent: fields.articleContent || null,
+        imageUrl: fields.imageUrl || null,
+        imageAlt: fields.imageAlt || null,
+        imageCredit: fields.imageCredit || null,
+        imageSourceUrl: fields.imageSourceUrl || null,
+      }).where(eq(newsletterCampaigns.id, id));
+      return { success: true };
+    }),
+
   adminSendNewsletterCampaign: adminQuery
     .input(z.object({ id: z.number().int().positive(), confirm: z.literal(true) }))
     .mutation(async ({ input }) => {
@@ -305,8 +386,33 @@ export const engagementRouter = createRouter({
       const [campaign] = await db.select().from(newsletterCampaigns).where(eq(newsletterCampaigns.id, input.id)).limit(1);
       if (!campaign) throw new TRPCError({ code: "NOT_FOUND", message: "Newsletter draft not found." });
       if (campaign.status === "sent") throw new TRPCError({ code: "CONFLICT", message: "This newsletter has already been sent." });
-      const subscribers = await db.select().from(newsletterSubscribers).where(eq(newsletterSubscribers.status, "subscribed")).limit(500);
+      let sourceUrls: string[] = [];
+      try { sourceUrls = JSON.parse(campaign.sourceUrls || "[]"); } catch { sourceUrls = []; }
+      if (campaign.automated && sourceUrls.length < 2)
+        throw new TRPCError({ code: "PRECONDITION_FAILED", message: "Automated editions require at least two source links before approval." });
       const siteUrl = (process.env.PUBLIC_SITE_URL || "https://thekingstake.com").replace(/\/$/, "");
+      let publishedPostId = campaign.publishedPostId;
+      let articleUrl: string | undefined;
+      if (campaign.automated) {
+        if (!campaign.articleTitle || !campaign.articleSlug || !campaign.articleContent)
+          throw new TRPCError({ code: "PRECONDITION_FAILED", message: "The website article is incomplete. Edit and save the draft before approval." });
+        if (!publishedPostId) {
+          const [postResult] = await db.insert(posts).values({
+            title: campaign.articleTitle,
+            slug: campaign.articleSlug,
+            excerpt: campaign.articleExcerpt,
+            content: campaign.articleContent,
+            category: "DAILY NEWS",
+            coverImage: campaign.imageUrl,
+            published: true,
+            featured: false,
+          });
+          publishedPostId = Number(postResult.insertId);
+          await db.update(newsletterCampaigns).set({ publishedPostId, approvedAt: new Date() }).where(eq(newsletterCampaigns.id, input.id));
+        }
+        articleUrl = `${siteUrl}/blog/${campaign.articleSlug}`;
+      }
+      const subscribers = await db.select().from(newsletterSubscribers).where(eq(newsletterSubscribers.status, "subscribed")).limit(500);
       let sent = 0;
       for (const subscriber of subscribers) {
         const token = subscriber.unsubscribeToken || nanoid(40);
@@ -316,14 +422,14 @@ export const engagementRouter = createRouter({
         const result = await sendEmail(
           subscriber.email,
           campaign.subject,
-          `${campaign.content}\n\nUnsubscribe: ${unsubscribeUrl}`,
-          newsletterHtml(campaign.subject, campaign.previewText, campaign.content, unsubscribeUrl)
+          `${campaign.content}${articleUrl ? `\n\nRead the full article: ${articleUrl}` : ""}\n\nUnsubscribe: ${unsubscribeUrl}`,
+          newsletterHtml(campaign, unsubscribeUrl, articleUrl)
         );
         if (!result.sent) throw new TRPCError({ code: "BAD_GATEWAY", message: `Sending stopped after ${sent} deliveries: ${result.reason}` });
         sent += 1;
       }
-      await db.update(newsletterCampaigns).set({ status: "sent", sentAt: new Date(), recipientCount: sent }).where(eq(newsletterCampaigns.id, input.id));
-      return { success: true, sent };
+      await db.update(newsletterCampaigns).set({ status: "sent", sentAt: new Date(), recipientCount: sent, approvedAt: campaign.approvedAt || new Date(), publishedPostId }).where(eq(newsletterCampaigns.id, input.id));
+      return { success: true, sent, published: Boolean(publishedPostId), articleUrl };
     }),
 
   captureLead: publicQuery

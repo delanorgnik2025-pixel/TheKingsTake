@@ -513,6 +513,35 @@ This article is for educational and informational purposes only. It does not con
   },
 };
 
+function renderArticleMarkdown(markdown: string) {
+  const inline = (value: string) => value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/\*\*([^*]+)\*\*/g, '<strong class="text-[#F0EBE1]">$1</strong>')
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, '<a href="$2" target="_blank" rel="noreferrer" class="text-[#FFB840] underline underline-offset-2">$1</a>')
+    .replace(/_([^_]+)_/g, '<em class="text-[#9f927d]">$1</em>');
+  const lines = markdown.split("\n");
+  const html: string[] = [];
+  let inList = false;
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (line.startsWith("- ")) {
+      if (!inList) { html.push('<ul class="my-4 list-disc space-y-2 pl-6">'); inList = true; }
+      html.push(`<li>${inline(line.slice(2))}</li>`);
+      continue;
+    }
+    if (inList) { html.push("</ul>"); inList = false; }
+    if (!line) continue;
+    if (line.startsWith("## ")) html.push(`<h2 class="mt-8 mb-4 text-2xl text-[#F0EBE1]">${inline(line.slice(3))}</h2>`);
+    else if (line.startsWith("### ")) html.push(`<h3 class="mt-6 mb-3 text-xl text-[#F0EBE1]">${inline(line.slice(4))}</h3>`);
+    else html.push(`<p class="mb-5">${inline(line)}</p>`);
+  }
+  if (inList) html.push("</ul>");
+  return html.join("");
+}
+
 export default function BlogPostPage() {
   const { slug } = useParams<{ slug: string }>();
   const { data: apiPost } = trpc.blog.bySlug.useQuery({ slug: slug ?? "" });
@@ -572,14 +601,7 @@ export default function BlogPostPage() {
           <div
             className="prose prose-invert max-w-none text-[#C9B99A] leading-relaxed"
             dangerouslySetInnerHTML={{
-              __html: post.content
-                .replace(/\n\n/g, "</p><p>")
-                .replace(/\n/g, "<br />")
-                .replace(/^/, "<p>")
-                .replace(/$/, "</p>")
-                .replace(/<p><\/p>/g, "")
-                .replace(/## (.*?)<\/p>/g, "<h2 class=\"text-2xl text-[#F0EBE1] mt-8 mb-4\">$1</h2>")
-                .replace(/<h2.*?>(.*?)<\/h2>/g, "<h2 class=\"text-2xl text-[#F0EBE1] mt-8 mb-4\">$1</h2>"),
+              __html: renderArticleMarkdown(post.content),
             }}
           />
         </div>
