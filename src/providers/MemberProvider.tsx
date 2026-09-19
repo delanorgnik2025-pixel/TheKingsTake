@@ -41,13 +41,6 @@ export function MemberProvider({ children }: { children: ReactNode }) {
   });
 
   useEffect(() => {
-    if (token) {
-      // Set token on trpc client headers
-      (trpc as any).setHeaders?.({ "x-member-token": token });
-    }
-  }, [token]);
-
-  useEffect(() => {
     if (meQuery.data) {
       setMember(meQuery.data);
     } else if (meQuery.isError) {
