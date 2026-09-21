@@ -46,7 +46,8 @@ export const visitorRouter = createRouter({
       facebookSubscriber: input.facebookSubscriber, newsletterConsent,
     }).onDuplicateKeyUpdate({ set: {
       lastSessionId: input.sessionId, interests: JSON.stringify(input.interests), lookingFor: input.lookingFor || null,
-      facebookSubscriber: input.facebookSubscriber, newsletterConsent: newsletterConsent || Boolean(existing?.newsletterConsent),
+      facebookSubscriber: input.facebookSubscriber,
+      newsletterConsent: previousSubscriber?.status === "unsubscribed" ? false : newsletterConsent || Boolean(existing?.newsletterConsent),
       lastSeenAt: new Date(),
     } });
     const [saved] = await db.select().from(visitorContacts).where(eq(visitorContacts.email, email)).limit(1);
