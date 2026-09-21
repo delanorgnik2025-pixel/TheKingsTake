@@ -816,7 +816,7 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#182635] flex flex-col md:flex-row min-w-0">
+    <div className="min-h-screen bg-[#182635] flex flex-col md:flex-row min-w-0 pt-16">
       <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-3 md:hidden">
         <span className="flex items-center gap-2 text-sm font-medium text-[#F0EBE1]">
           <Crown size={18} className="text-[#FF9500]" />
@@ -825,11 +825,12 @@ export default function AdminDashboard() {
         <button
           type="button"
           onClick={() => setMenuOpen(open => !open)}
-          aria-label={menuOpen ? "Close admin menu" : "Open admin menu"}
+          aria-label={menuOpen ? "Close admin sections" : "Open admin sections"}
           aria-expanded={menuOpen}
           aria-controls="admin-navigation"
-          className="rounded border border-white/20 p-2 text-[#F0EBE1]"
+          className="flex items-center gap-2 rounded border border-[#FF9500]/50 px-3 py-2 text-sm text-[#FFB840]"
         >
+          <span>Admin sections</span>
           {menuOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
       </div>
