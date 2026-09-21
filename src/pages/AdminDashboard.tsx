@@ -411,6 +411,14 @@ function AccessCodesModule() {
 }
 
 function AudienceModule() {
+  const utils = trpc.useUtils();
+  const [replyThread, setReplyThread] = useState<string | null>(null);
+  const [replyBody, setReplyBody] = useState("");
+  const { data: visitorData } = trpc.visitor.adminContacts.useQuery(undefined, { refetchInterval: 30_000 });
+  const { data: conversations, refetch: refetchConversations } = trpc.visitor.adminConversations.useQuery(undefined, { refetchInterval: 5_000 });
+  const reply = trpc.visitor.adminReply.useMutation({ onSuccess: () => { setReplyBody(""); refetchConversations(); } });
+  const startChat = trpc.visitor.adminStartChat.useMutation({ onSuccess: () => { setReplyBody(""); refetchConversations(); } });
+  const threads = Array.from(new Map((conversations || []).map(message => [message.contactId, message])).values()).reverse();
   const [testResult, setTestResult] = useState<{
     ok: boolean;
     message: string;
@@ -438,8 +446,7 @@ function AudienceModule() {
         Audience & Leads
       </h3>
       <p className="text-sm text-[#C9B99A]/70 mb-6">
-        Anonymous visitors are counted without exposing their identity. Contact
-        information appears only after voluntary submission.
+        New visitors enter an email and interests before using the site. Emails are self-reported; only visitors who opt into dispatches are on the newsletter list. Earlier anonymous visits cannot be identified retroactively.
       </p>
       <div className="mb-6 rounded border border-white/10 bg-white/[0.02] p-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -503,6 +510,39 @@ function AudienceModule() {
           <p className="text-2xl text-[#FF9500]">{data?.leads.length || 0}</p>
           <p className="text-xs text-[#C9B99A]">Recent leads</p>
         </div>
+      </div>
+      <div className="mb-3 flex items-center justify-between gap-2"><h4 className="text-[#F0EBE1]">Identified visitors ({visitorData?.total || 0})</h4><button onClick={async () => {
+        const records = await utils.visitor.adminExportContacts.fetch();
+        const rows = [["email", "interests", "looking_for", "facebook_subscriber", "newsletter_consent", "first_seen", "last_seen"], ...records.map(v => [v.email, v.interests, v.lookingFor || "", v.facebookSubscriber, String(v.newsletterConsent), String(v.firstSeenAt), String(v.lastSeenAt)])];
+        const csv = rows.map(row => row.map(cell => { const value = String(cell); return `"${(/^[\s]*[=+\-@]/.test(value) ? "'" : "") + value.replaceAll('"', '""')}"`; }).join(",")).join("\r\n");
+        const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+        const link = document.createElement("a"); link.href = url; link.download = "thekingstake-visitors.csv"; link.click(); URL.revokeObjectURL(url);
+      }} className="rounded border border-[#FF9500]/50 px-3 py-1 text-xs text-[#FFB840]">Export CSV</button></div>
+      <div className="space-y-2 mb-8 max-h-[400px] overflow-y-auto">
+        {!visitorData?.contacts.length && <p className="text-sm text-[#C9B99A]">No visitor entries yet.</p>}
+        {visitorData?.contacts.map(visitor => <div key={visitor.id} className="rounded border border-white/10 p-3 text-sm">
+          <a href={`mailto:${visitor.email}`} className="text-[#FFB840]">{visitor.email}</a>
+          <p className="text-xs text-[#C9B99A]">Interests: {(() => { try { return (JSON.parse(visitor.interests) as string[]).join(', '); } catch { return visitor.interests; } })()} · Facebook: {visitor.facebookSubscriber} · Dispatch: {visitor.newsletterConsent ? 'opted in' : 'not subscribed'}</p>
+          {visitor.lookingFor && <p className="text-xs text-[#C9B99A]">Looking for: {visitor.lookingFor}</p>}
+          <p className="text-[10px] text-[#C9B99A]/70">Last seen: {new Date(visitor.lastSeenAt).toLocaleString()}</p>
+          <button onClick={() => setReplyThread(`start:${visitor.id}`)} className="mt-2 text-xs text-[#FFB840]">Start chat</button>
+          {replyThread === `start:${visitor.id}` && <form onSubmit={event => { event.preventDefault(); startChat.mutate({ contactId: visitor.id, body: replyBody }); }} className="mt-2 flex gap-2"><input value={replyBody} onChange={event => setReplyBody(event.target.value)} maxLength={2000} className="min-w-0 flex-1 rounded bg-[#101B28] p-2 text-white" placeholder="Send a message while they are here" /><button disabled={!replyBody.trim() || startChat.isPending} className="rounded bg-[#FF9500] px-3 text-[#101B28] disabled:opacity-50">Send</button></form>}
+        </div>)}
+      </div>
+      <h4 className="text-[#F0EBE1] mb-3">Live chat inbox ({threads.length})</h4>
+      <div className="space-y-3 mb-8">
+        {!threads.length && <p className="text-sm text-[#C9B99A]">No visitor messages yet.</p>}
+        {threads.map(thread => {
+          const key = String(thread.contactId);
+          return <div key={key} className="rounded border border-white/10 p-3 text-sm">
+            <button onClick={() => setReplyThread(replyThread === key ? null : key)} className="text-left text-[#FFB840]">{thread.email} · {thread.body.slice(0, 80)} {replyThread === key ? '▲' : '▼'}</button>
+            {replyThread === key && <div className="mt-3 space-y-2">
+              {conversations?.filter(message => message.contactId === thread.contactId).map(message => <p key={message.id} className="rounded bg-white/5 p-2 text-[#C9B99A]"><b>{message.sender === 'owner' ? 'You' : 'Visitor'}:</b> {message.body}</p>)}
+              <form onSubmit={event => { event.preventDefault(); reply.mutate({ contactId: thread.contactId, sessionId: thread.sessionId, body: replyBody }); }} className="flex gap-2"><input value={replyBody} onChange={event => setReplyBody(event.target.value)} maxLength={2000} className="min-w-0 flex-1 rounded bg-[#101B28] p-2 text-white" placeholder="Write your reply" /><button disabled={!replyBody.trim() || reply.isPending} className="rounded bg-[#FF9500] px-3 text-[#101B28] disabled:opacity-50">Send</button></form>
+              {reply.error && <p className="text-red-300">{reply.error.message}</p>}
+            </div>}
+          </div>;
+        })}
       </div>
       <h4 className="text-[#F0EBE1] mb-3">Lead requests</h4>
       <div className="space-y-2 mb-8">

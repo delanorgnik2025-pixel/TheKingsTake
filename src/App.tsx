@@ -41,8 +41,10 @@ const NewsletterUnsubscribePage = lazy(() => import('./pages/NewsletterUnsubscri
 
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [visitorAdmitted, setVisitorAdmitted] = useState(false)
   const lenisRef = useRef<Lenis | null>(null)
   const location = useLocation()
+  const publicUtilityPage = location.pathname.startsWith('/admin') || location.pathname === '/privacy-policy' || location.pathname === '/newsletter/unsubscribe'
   const hideNav = location.pathname === '/ancestor-root-registry' || location.pathname.startsWith('/ancestor-root-registry/')
 
   useEffect(() => {
@@ -64,12 +66,14 @@ function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <CustomCursor />
-      <AudioExperience />
-      {!hideNav && <Navigation onMenuToggle={() => setMenuOpen(true)} />}
-      <MenuOverlay isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
-      {children}
-      <VisitorAssistant />
-      {!hideNav && <Footer onNavClick={scrollToSection} />}
+      {!publicUtilityPage && <AudioExperience onAccessChange={setVisitorAdmitted} />}
+      {(publicUtilityPage || visitorAdmitted) && <>
+        {!hideNav && <Navigation onMenuToggle={() => setMenuOpen(true)} />}
+        <MenuOverlay isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
+        {children}
+        {!publicUtilityPage && <VisitorAssistant />}
+        {!hideNav && <Footer onNavClick={scrollToSection} />}
+      </>}
     </>
   )
 }

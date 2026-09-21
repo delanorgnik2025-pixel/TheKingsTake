@@ -8,12 +8,59 @@ import {
   Music,
   ChevronRight,
 } from "lucide-react";
+import { trpc } from "@/providers/trpc";
+import { Link, useLocation } from "react-router";
 
 // A licensed Artlist track can be swapped in through Railway without changing
 // the player. Keep the bundled track as a safe fallback until that file is ready.
 const AUDIO_SRC =
   import.meta.env.VITE_SITE_AUDIO_URL?.trim() || "/audio/ambient-heritage.mp3";
 const SESSION_KEY = "tk-audio-session";
+const INTERESTS = ["Indigenous heritage", "Ancestry research", "Public archives", "Book and author", "Community feed", "Civic news", "Writing services", "Partnerships"] as const;
+
+function visitorSessionId() {
+  let id = sessionStorage.getItem("tktVisitorSession");
+  if (!id) { id = crypto.randomUUID().replaceAll("-", ""); sessionStorage.setItem("tktVisitorSession", id); }
+  return id;
+}
+
+function VisitorEntry({ onComplete }: { onComplete: () => void }) {
+  const location = useLocation();
+  const [email, setEmail] = useState("");
+  const [interests, setInterests] = useState<string[]>([]);
+  const [lookingFor, setLookingFor] = useState("");
+  const [facebookSubscriber, setFacebookSubscriber] = useState<"yes" | "no" | "unsure">("unsure");
+  const [newsletterConsent, setNewsletterConsent] = useState(false);
+  const [step, setStep] = useState(0);
+  const enter = trpc.visitor.enter.useMutation();
+  return <div className="fixed inset-0 z-[110] overflow-y-auto bg-[#14202E] px-5 py-12 text-[#F0EBE1]" role="dialog" aria-modal="true" aria-label="Visitor entry">
+    <div className="mx-auto max-w-lg rounded-2xl border border-[#FF9500]/30 bg-[#1B2B3B] p-6 shadow-2xl sm:p-9">
+      <p className="mb-3 text-xs uppercase tracking-[.2em] text-[#FF9500]">The King’s Take · Visitor entry</p>
+      <h2 className="mb-3 text-3xl font-semibold">{step === 0 ? "Welcome to the hub" : "What brings you here?"}</h2>
+      <p className="mb-6 text-sm text-[#C9B99A]">{step === 0 ? "Enter your email to continue. We use it to recognize your visits and make it possible for the owner to reply if you start a conversation." : "Choose at least one interest so we can show you the right parts of the site."}</p>
+      {step === 0 ? <form onSubmit={e => { e.preventDefault(); if (email.trim()) setStep(1); }} className="space-y-4">
+        <label className="block text-sm">Email address <input type="email" required maxLength={320} autoComplete="email" value={email} onChange={e => setEmail(e.target.value)} className="mt-2 w-full rounded border border-white/20 bg-[#101B28] px-4 py-3 text-white" placeholder="you@example.com" /></label>
+        <button className="w-full rounded bg-[#FF9500] px-4 py-3 font-semibold text-[#14202E]">Continue</button>
+      </form> : <form onSubmit={async e => {
+        e.preventDefault();
+        if (!interests.length) return;
+        try { await enter.mutateAsync({ email, interests: interests as (typeof INTERESTS)[number][], lookingFor, facebookSubscriber, newsletterConsent, sessionId: visitorSessionId(), sourcePage: location.pathname }); onComplete(); }
+        catch { /* error displayed below */ }
+      }} className="space-y-5">
+        <fieldset><legend className="mb-2 text-sm font-semibold">Your interests *</legend><div className="grid grid-cols-2 gap-2">{INTERESTS.map(option => <label key={option} className="flex cursor-pointer items-center gap-2 rounded border border-white/15 p-2 text-xs"><input type="checkbox" checked={interests.includes(option)} onChange={() => setInterests(current => current.includes(option) ? current.filter(value => value !== option) : [...current, option])} className="accent-[#FF9500]" />{option}</label>)}</div></fieldset>
+        <label className="block text-sm">What are you looking for? <input maxLength={500} value={lookingFor} onChange={e => setLookingFor(e.target.value)} placeholder="Optional: tell us in your own words" className="mt-2 w-full rounded border border-white/20 bg-[#101B28] px-4 py-3 text-white" /></label>
+        <label className="block text-sm">Do you subscribe to our Facebook community? <select value={facebookSubscriber} onChange={e => setFacebookSubscriber(e.target.value as typeof facebookSubscriber)} className="mt-2 w-full rounded border border-white/20 bg-[#101B28] px-4 py-3 text-white"><option value="unsure">Not sure / prefer not to say</option><option value="yes">Yes</option><option value="no">No</option></select></label>
+        <p className="text-xs text-[#C9B99A]">To post or comment, use your member access code separately in Royal Circle. Facebook subscription alone does not grant access.</p>
+        <label className="flex gap-3 text-sm"><input type="checkbox" checked={newsletterConsent} onChange={e => setNewsletterConsent(e.target.checked)} className="accent-[#FF9500]" /><span>Email me The King’s Dispatch and site updates. Optional; unsubscribe anytime.</span></label>
+        {enter.error && <p role="alert" className="text-sm text-red-300">{enter.error.message}</p>}
+        <button disabled={!interests.length || enter.isPending} className="w-full rounded bg-[#FF9500] px-4 py-3 font-semibold text-[#14202E] disabled:opacity-50">{enter.isPending ? "Saving…" : "Enter the site"}</button>
+        <button type="button" onClick={() => setStep(0)} className="block text-xs text-[#C9B99A]">Edit email</button>
+      </form>}
+      <Link to="/privacy-policy" className="mt-6 block text-xs text-[#FFB840] underline">How we use your information</Link>
+      <p className="mt-2 text-xs text-[#C9B99A]">Your email is collected for access; dispatch emails require your separate consent.</p>
+    </div>
+  </div>;
+}
 
 // Floating audio control (visible after user opts in)
 function FloatingAudioControl({
@@ -264,19 +311,22 @@ function EntranceOverlay({
 // ============================================
 // MAIN EXPORT
 // ============================================
-export default function AudioExperience() {
+export default function AudioExperience({ onAccessChange }: { onAccessChange: (allowed: boolean) => void }) {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [showOverlay, setShowOverlay] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(true);
+  const [soundChosen, setSoundChosen] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(false);
+  const [admitted, setAdmitted] = useState(false);
+  const status = trpc.visitor.status.useQuery(undefined, { retry: 1 });
 
   useEffect(() => {
     // Use sessionStorage so prompt shows every new browser session
     // NOT localStorage — user wants to see it on each fresh visit
     const dismissedThisSession = sessionStorage.getItem(SESSION_KEY);
-    if (dismissedThisSession !== "dismissed") {
-      setShowOverlay(true);
-    }
+    if (dismissedThisSession === "dismissed") { setShowOverlay(false); setSoundChosen(true); }
   }, []);
+
+  useEffect(() => { if (status.data?.admitted) { setAdmitted(true); onAccessChange(true); } }, [status.data?.admitted, onAccessChange]);
 
   useEffect(() => {
     if (audioEnabled && audioRef.current) {
@@ -292,12 +342,14 @@ export default function AudioExperience() {
     sessionStorage.setItem(SESSION_KEY, "dismissed");
     setAudioEnabled(true);
     setShowOverlay(false);
+    setSoundChosen(true);
   }, []);
 
   const handleEnterSilent = useCallback(() => {
     sessionStorage.setItem(SESSION_KEY, "dismissed");
     setAudioEnabled(false);
     setShowOverlay(false);
+    setSoundChosen(true);
   }, []);
 
   return (
@@ -315,8 +367,11 @@ export default function AudioExperience() {
         )}
       </AnimatePresence>
 
+      {soundChosen && !admitted && !status.isPending && <VisitorEntry onComplete={() => { setAdmitted(true); onAccessChange(true); }} />}
+      {status.isError && <p className="fixed inset-x-0 bottom-0 z-[120] bg-red-900 p-3 text-center text-sm text-white">The entrance service is unavailable. Please refresh in a moment.</p>}
+
       {/* Floating audio control (after overlay dismissed) */}
-      {!showOverlay && <FloatingAudioControl audioRef={audioRef} />}
+      {!showOverlay && admitted && <FloatingAudioControl audioRef={audioRef} />}
     </>
   );
 }

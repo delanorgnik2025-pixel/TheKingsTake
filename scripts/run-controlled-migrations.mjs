@@ -7,6 +7,7 @@ const migrations = [
   ["20260916_audience_engagement", "db/manual/20260916_audience_engagement.sql"],
   ["20260918_archive_communications", "db/manual/20260918_archive_communications.sql"],
   ["20260918_daily_news_automation", "db/manual/20260918_daily_news_automation.sql"],
+  ["20260921_visitor_gate_chat", "db/manual/20260921_visitor_gate_chat.sql"],
 ];
 
 const databaseUrl = process.env.DATABASE_URL;

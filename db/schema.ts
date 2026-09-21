@@ -414,6 +414,27 @@ export const siteVisitorSessions = mysqlTable("site_visitor_sessions", {
   lastSeenAt: timestamp("last_seen_at").defaultNow().notNull(),
 });
 
+export const visitorContacts = mysqlTable("visitor_contacts", {
+  id: serial("id").primaryKey(),
+  email: varchar("email", { length: 320 }).notNull().unique(),
+  lastSessionId: varchar("last_session_id", { length: 64 }).notNull(),
+  interests: text("interests").notNull(),
+  lookingFor: varchar("looking_for", { length: 500 }),
+  facebookSubscriber: mysqlEnum("facebook_subscriber", ["yes", "no", "unsure"]).notNull(),
+  newsletterConsent: boolean("newsletter_consent").default(false).notNull(),
+  firstSeenAt: timestamp("first_seen_at").defaultNow().notNull(),
+  lastSeenAt: timestamp("last_seen_at").defaultNow().notNull(),
+});
+
+export const visitorMessages = mysqlTable("visitor_messages", {
+  id: serial("id").primaryKey(),
+  contactId: bigint("contact_id", { mode: "number", unsigned: true }).notNull(),
+  sessionId: varchar("session_id", { length: 64 }).notNull(),
+  sender: mysqlEnum("sender", ["visitor", "owner"]).notNull(),
+  body: text("body").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // ─── Live Streams (Mux) ─────────────────────────────────────────────────────
 export const liveStreams = mysqlTable("live_streams", {
   id: serial("id").primaryKey(),

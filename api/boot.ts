@@ -9,6 +9,8 @@ import { env } from "./lib/env";
 import { createOAuthCallbackHandler } from "./kimi/auth";
 import { Paths } from "@contracts/constants";
 import { startDailyNewsAutomation } from "./newsletter-automation";
+import { visitorFromRequest } from "./security/visitor-session";
+import { verifyAdminToken } from "./security/auth";
 
 const app = new Hono<{ Bindings: HttpBindings }>();
 
@@ -33,6 +35,15 @@ app.get("/api/auth/login", (c) => {
 
 app.get(Paths.oauthCallback, createOAuthCallbackHandler());
 app.use("/api/trpc/*", async (c) => {
+  const operations = decodeURIComponent(c.req.path.replace(/^\/api\/trpc\//, "")).split(",");
+  const unauthenticated = new Set(["visitor.status", "visitor.enter", "engagement.unsubscribe", "ping"]);
+  if (!operations.every(operation => unauthenticated.has(operation) || operation.startsWith("auth.") || operation.startsWith("stripe.webhook"))) {
+    const adminToken = c.req.header("x-admin-token");
+    const isAdmin = adminToken ? await verifyAdminToken(adminToken) : false;
+    if (!isAdmin && !(await visitorFromRequest(c.req.raw))) {
+      return c.json({ error: "Complete visitor entry to access the website." }, 401);
+    }
+  }
   return fetchRequestHandler({
     endpoint: "/api/trpc",
     req: c.req.raw,

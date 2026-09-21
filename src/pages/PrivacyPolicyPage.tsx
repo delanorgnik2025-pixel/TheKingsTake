@@ -31,7 +31,7 @@ export default function PrivacyPolicyPage() {
 
           <ScrollReveal delay={0.25}>
             <p className="text-base text-[#C9B99A] leading-relaxed max-w-2xl">
-              Last Updated: May 18, 2026. This Privacy Policy describes how your information is collected, used, and shared when you visit, interact with, or make a purchase from our website, platforms, or mobile applications (collectively, the "Services").
+              Last Updated: September 21, 2026. This Privacy Policy describes how your information is collected, used, and shared when you visit, interact with, or make a purchase from our website, platforms, or mobile applications (collectively, the "Services").
             </p>
           </ScrollReveal>
 
@@ -63,6 +63,7 @@ export default function PrivacyPolicyPage() {
               </p>
 
               <h3 className="text-sm text-[#F0EBE1] uppercase tracking-[0.04em] mb-3">Personal Data You Provide Voluntarily</h3>
+              <p className="text-sm text-[#C9B99A] leading-relaxed mb-4">Website entry requires an email address and at least one interest. We also ask what you seek and whether you subscribe to our Facebook community. The email is self-reported and is used to recognize your visit and support direct replies in the on-site chat. Messages sent to the owner are stored in the admin inbox. Email newsletters require a separate optional subscription choice; visitors who decline are not added to the newsletter distribution list. The site uses an essential 30-day visitor cookie to remember your entry. You can clear it in your browser to start a new entry session.</p>
               <p className="text-sm text-[#C9B99A] leading-relaxed mb-4">
                 While using our Services, we may ask you to provide us with certain personally identifiable information that can be used to contact or identify you ("Personal Data"). This includes, but is not limited to:
               </p>

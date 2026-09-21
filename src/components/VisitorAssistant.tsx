@@ -19,6 +19,7 @@ function getSessionId() {
 export default function VisitorAssistant() {
   const location = useLocation()
   const [open, setOpen] = useState(false)
+  const [humanChat, setHumanChat] = useState(false)
   const [input, setInput] = useState('')
   const [messages, setMessages] = useState<Message[]>(() => {
     try {
@@ -34,6 +35,8 @@ export default function VisitorAssistant() {
   const track = trpc.engagement.trackVisit.useMutation()
   const ask = trpc.engagement.askGuide.useMutation()
   const captureLead = trpc.engagement.captureLead.useMutation()
+  const chat = trpc.visitor.myMessages.useQuery(undefined, { refetchInterval: 8_000 })
+  const sendHuman = trpc.visitor.sendMessage.useMutation({ onSuccess: () => chat.refetch() })
 
   useEffect(() => {
     if (location.pathname.startsWith('/admin')) return
@@ -53,6 +56,11 @@ export default function VisitorAssistant() {
   const send = async (event?: FormEvent, preset?: string) => {
     event?.preventDefault()
     const text = (preset || input).trim()
+    if (humanChat) {
+      if (!text || sendHuman.isPending) return
+      await sendHuman.mutateAsync({ body: text }).then(() => setInput('')).catch(() => {})
+      return
+    }
     if (!text || ask.isPending) return
     setMessages(current => [...current, { role: 'visitor', text }])
     setInput('')
@@ -71,10 +79,16 @@ export default function VisitorAssistant() {
     <>
       {open && <div className="fixed bottom-24 right-4 z-[90] flex h-[min(620px,75vh)] w-[min(390px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-[#FF9500]/30 bg-[#182635] shadow-2xl">
         <div className="flex items-center justify-between border-b border-white/10 bg-[#25364B] p-4">
-          <div className="flex items-center gap-2"><Bot className="text-[#FF9500]" size={20}/><div><p className="text-sm font-semibold text-[#F0EBE1]">The Royal Guide</p><p className="text-[10px] text-[#C9B99A]">Website navigation & assistance</p></div></div>
+          <div className="flex items-center gap-2"><Bot className="text-[#FF9500]" size={20}/><div><p className="text-sm font-semibold text-[#F0EBE1]">{humanChat ? 'Message the owner' : 'The Royal Guide'}</p><p className="text-[10px] text-[#C9B99A]">{humanChat ? 'Replies appear here when the owner responds' : 'Website navigation & assistance'}</p></div></div>
           <button onClick={() => setOpen(false)} className="text-[#C9B99A]" aria-label="Close assistant"><X size={18}/></button>
         </div>
+        <div className="flex border-b border-white/10 text-xs"><button onClick={() => setHumanChat(false)} className={`flex-1 p-2 ${!humanChat ? 'text-[#FF9500]' : 'text-[#C9B99A]'}`}>AI guide</button><button onClick={() => setHumanChat(true)} className={`flex-1 p-2 ${humanChat ? 'text-[#FF9500]' : 'text-[#C9B99A]'}`}>Talk to the owner</button></div>
         <div className="flex-1 space-y-3 overflow-y-auto p-4">
+          {humanChat ? <>
+            <p className="text-xs text-[#C9B99A]">Leave a message here. The owner can reply from the admin inbox. Replies are visible while you use this browser session; response times vary.</p>
+            {chat.data?.map(message => <div key={message.id} className={`max-w-[88%] rounded-xl px-3 py-2 text-sm ${message.sender === 'owner' ? 'bg-white/[0.06] text-[#F0EBE1]' : 'ml-auto bg-[#FF9500] text-[#182635]'}`}>{message.body}</div>)}
+            {sendHuman.error && <p role="alert" className="text-xs text-red-300">{sendHuman.error.message}</p>}
+          </> : <>
           {messages.map((message, index) => <div key={index} className={`max-w-[88%] rounded-xl px-3 py-2 text-sm leading-relaxed ${message.role === 'guide' ? 'bg-white/[0.06] text-[#F0EBE1]' : 'ml-auto bg-[#FF9500] text-[#182635]'}`}>{message.text}</div>)}
           {ask.isPending && <div className="inline-flex items-center gap-1 rounded-xl bg-white/[0.06] px-3 py-2 text-xs text-[#C9B99A]"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#FF9500]"/><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#FF9500] [animation-delay:150ms]"/><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#FF9500] [animation-delay:300ms]"/><span className="ml-1">Considering your question…</span></div>}
           <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
@@ -97,15 +111,17 @@ export default function VisitorAssistant() {
               <button disabled={captureLead.isPending} className="w-full rounded bg-[#FF9500] py-2 text-sm font-bold text-[#182635]">Send Request</button>
             </>}
           </form>}
+          </>}
           <div ref={conversationEnd} />
         </div>
         <form onSubmit={send} className="flex gap-2 border-t border-white/10 p-3">
-          <input value={input} onChange={e => setInput(e.target.value)} placeholder="Ask where to find something…" className="min-w-0 flex-1 rounded-lg bg-[#0f1b29] px-3 py-2 text-sm text-white outline-none"/>
-          <button disabled={!input.trim() || ask.isPending} className="rounded-lg bg-[#FF9500] p-2 text-[#182635] disabled:opacity-40" aria-label="Send"><Send size={18}/></button>
+          <input value={input} onChange={e => setInput(e.target.value)} placeholder={humanChat ? 'Message the owner…' : 'Ask where to find something…'} className="min-w-0 flex-1 rounded-lg bg-[#0f1b29] px-3 py-2 text-sm text-white outline-none"/>
+          <button disabled={!input.trim() || (humanChat ? sendHuman.isPending : ask.isPending)} className="rounded-lg bg-[#FF9500] p-2 text-[#182635] disabled:opacity-40" aria-label="Send"><Send size={18}/></button>
         </form>
       </div>}
-      <button onClick={() => setOpen(value => !value)} className="fixed bottom-5 right-5 z-[90] flex h-14 w-14 items-center justify-center rounded-full bg-[#FF9500] text-[#182635] shadow-xl" aria-label="Open website assistant">
+      <button onClick={() => { setOpen(value => !value); if (!open && chat.data?.at(-1)?.sender === 'owner') setHumanChat(true) }} className="fixed bottom-5 right-5 z-[90] flex h-14 w-14 items-center justify-center rounded-full bg-[#FF9500] text-[#182635] shadow-xl" aria-label="Open website assistant">
         {open ? <X/> : <MessageCircle/>}
+        {!open && chat.data?.at(-1)?.sender === 'owner' && <span className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-red-500" aria-label="Owner message" />}
       </button>
     </>
   )

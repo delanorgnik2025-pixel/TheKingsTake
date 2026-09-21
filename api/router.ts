@@ -16,6 +16,7 @@ import { liveRouter } from "./live-router";
 import { memberRouter } from "./member-router";
 import { engagementRouter } from "./engagement-router";
 import { archiveRouter } from "./archive-router";
+import { visitorRouter } from "./visitor-router";
 import { createRouter, publicQuery } from "./middleware";
 
 export const appRouter = createRouter({
@@ -38,6 +39,7 @@ export const appRouter = createRouter({
   member: memberRouter,
   engagement: engagementRouter,
   archive: archiveRouter,
+  visitor: visitorRouter,
 });
 
 export type AppRouter = typeof appRouter;
