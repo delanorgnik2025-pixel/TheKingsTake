@@ -10,9 +10,11 @@ import {
   posts,
   siteLeads,
   siteVisitorSessions,
+  visitorContacts,
   workApplications,
 } from "@db/schema";
 import { generateDailyNewsDraft, latestAutomatedCampaign } from "./newsletter-automation";
+import { visitorFromRequest } from "./security/visitor-session";
 
 const SITE_GUIDE = `
 You are the Royal Guide, the navigation assistant for TheKingsTake.com and AASOTU Media Group LLC.
@@ -170,7 +172,7 @@ function safeReferrer(value?: string) {
   }
 }
 
-async function notifyNewVisitor(path: string, referrer?: string) {
+async function notifyNewVisitor(path: string, referrer?: string, email?: string) {
   if (process.env.VISITOR_ALERTS_ENABLED !== "true") return;
 
   queuedVisitorCount += 1;
@@ -191,7 +193,7 @@ async function notifyNewVisitor(path: string, referrer?: string) {
     visitorCount === 1
       ? "New visitor on TheKingsTake.com"
       : `${visitorCount} new visitors on TheKingsTake.com`,
-    `New browsing session${visitorCount === 1 ? "" : "s"}: ${visitorCount}\nEntry page: ${entryPath}\nSource: ${safeReferrer(referrer)}\n\nOpen the Audience & Leads dashboard for current activity.`
+    `New browsing session${visitorCount === 1 ? "" : "s"}: ${visitorCount}\nLatest identified visitor: ${email || "Unknown"}\nEntry page: ${entryPath}\nSource: ${safeReferrer(referrer)}\n\nOpen Audience & Leads for all captured emails and interests.`
   );
 }
 
@@ -204,7 +206,7 @@ export const engagementRouter = createRouter({
         referrer: z.string().max(1000).optional(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       const db = getDb();
       const [existingSession] = await db
         .select({ id: siteVisitorSessions.id })
@@ -221,7 +223,11 @@ export const engagementRouter = createRouter({
         .onDuplicateKeyUpdate({
           set: { lastPath: input.path, lastSeenAt: new Date() },
         });
-      if (!existingSession) await notifyNewVisitor(input.path, input.referrer);
+      if (!existingSession) {
+        const visitor = await visitorFromRequest(ctx.req);
+        const [person] = visitor ? await db.select({ email: visitorContacts.email }).from(visitorContacts).where(eq(visitorContacts.id, visitor.contactId)).limit(1) : [];
+        await notifyNewVisitor(input.path, input.referrer, person?.email);
+      }
       return { success: true };
     }),
 
