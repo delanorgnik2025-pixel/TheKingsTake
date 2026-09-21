@@ -426,6 +426,15 @@ export const visitorContacts = mysqlTable("visitor_contacts", {
   lastSeenAt: timestamp("last_seen_at").defaultNow().notNull(),
 });
 
+// A single lifetime preview per identified email for each research tool.
+export const visitorToolUsage = mysqlTable("visitor_tool_usage", {
+  id: serial("id").primaryKey(),
+  contactId: bigint("contact_id", { mode: "number", unsigned: true }).notNull(),
+  tool: mysqlEnum("tool", ["globe", "archives"]).notNull(),
+  usedSeconds: int("used_seconds").default(0).notNull(),
+  lastMeterAt: timestamp("last_meter_at"),
+}, table => [uniqueIndex("visitor_tool_contact_tool_unique").on(table.contactId, table.tool)]);
+
 export const visitorMessages = mysqlTable("visitor_messages", {
   id: serial("id").primaryKey(),
   contactId: bigint("contact_id", { mode: "number", unsigned: true }).notNull(),
