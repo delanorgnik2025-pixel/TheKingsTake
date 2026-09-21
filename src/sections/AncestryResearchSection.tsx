@@ -31,6 +31,7 @@ import type {
   LawPolicyRecord,
 } from "../types/ancestry";
 import { trpc } from "@/providers/trpc";
+import ResearchPreview from "@/components/ResearchPreview";
 
 // ============================================
 // URL PARAMS HELPER
@@ -1169,7 +1170,7 @@ export default function AncestryResearchSection() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
             >
-              <PublicArchiveSearch key={stateRecordInfo?.state || "all-states"} stateName={stateRecordInfo?.state} />
+              <ResearchPreview tool="archives"><PublicArchiveSearch key={stateRecordInfo?.state || "all-states"} stateName={stateRecordInfo?.state} /></ResearchPreview>
             </motion.div>
           )}
 
