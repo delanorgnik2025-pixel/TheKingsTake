@@ -8,6 +8,7 @@ import CustomCursor from './components/CustomCursor'
 import AudioExperience from './components/AudioExperience'
 import ScrollToTop from './components/ScrollToTop'
 import VisitorAssistant from './components/VisitorAssistant'
+import ResearchPreview from './components/ResearchPreview'
 
 // ============================================
 // LAZY-LOADED PAGES — Prevents eager import crashes
@@ -112,8 +113,8 @@ function AppRoutes() {
           <Route path="/petition" element={<PetitionPage />} />
           <Route path="/consultation" element={<ConsultationPage />} />
           <Route path="/fba" element={<FoundationalBlackAmericanPage />} />
-          <Route path="/archives" element={<ArchivesPage />} />
-          <Route path="/archives/nara/:naId" element={<NaraRecordPage />} />
+          <Route path="/archives" element={<ResearchPreview tool="archives"><ArchivesPage /></ResearchPreview>} />
+          <Route path="/archives/nara/:naId" element={<ResearchPreview tool="archives"><NaraRecordPage /></ResearchPreview>} />
           <Route path="/newsletter/unsubscribe" element={<NewsletterUnsubscribePage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
