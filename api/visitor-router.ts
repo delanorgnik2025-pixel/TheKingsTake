@@ -6,6 +6,7 @@ import { adminQuery, createRouter, publicQuery } from "./middleware";
 import { getDb } from "./queries/connection";
 import { newsletterSubscribers, siteVisitorSessions, visitorContacts, visitorMessages } from "@db/schema";
 import { createVisitorSession, visitorCookie, visitorFromRequest } from "./security/visitor-session";
+import { toolPreview } from "./security/tool-preview";
 
 const interestOptions = ["Indigenous heritage", "Ancestry research", "Public archives", "Book and author", "Community feed", "Civic news", "Writing services", "Partnerships"] as const;
 const messageLimit = new Map<string, { count: number; until: number }>();
@@ -25,6 +26,10 @@ async function contact(req: Request) {
 
 export const visitorRouter = createRouter({
   status: publicQuery.query(async ({ ctx }) => ({ admitted: Boolean(await visitorFromRequest(ctx.req)) })),
+  toolPreview: publicQuery.input(z.object({ tool: z.enum(["globe", "archives"]) }))
+    .query(({ ctx, input }) => toolPreview(ctx.req, input.tool)),
+  useTool: publicQuery.input(z.object({ tool: z.enum(["globe", "archives"]) }))
+    .mutation(({ ctx, input }) => toolPreview(ctx.req, input.tool, "heartbeat")),
   enter: publicQuery.input(z.object({
     email: z.email().max(320),
     sessionId: z.string().regex(/^[a-zA-Z0-9_-]{16,64}$/),

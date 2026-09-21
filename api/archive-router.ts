@@ -6,6 +6,7 @@ import {
   normalizeNationalArchivesResponse,
 } from "./archive";
 import { createRouter, publicQuery } from "./middleware";
+import { toolPreview } from "./security/tool-preview";
 
 const CACHE_TTL_MS = 10 * 60 * 1000;
 const cache = new Map<
@@ -28,7 +29,8 @@ function remember(
 export const archiveRouter = createRouter({
   getNationalArchivesRecord: publicQuery
     .input(z.object({ naId: z.string().regex(/^\d{1,20}$/) }))
-    .query(async ({ input }) => {
+    .query(async ({ ctx, input }) => {
+      await toolPreview(ctx.req, "archives", "request");
       const apiKey = process.env.NARA_API_KEY;
       if (!apiKey)
         throw new TRPCError({
@@ -81,7 +83,8 @@ export const archiveRouter = createRouter({
         pageSize: z.number().int().min(6).max(24).default(12),
       })
     )
-    .query(async ({ input }) => {
+    .query(async ({ ctx, input }) => {
+      await toolPreview(ctx.req, "archives", "request");
       const cacheKey = `${input.query.toLowerCase()}|${input.page}|${input.pageSize}`;
       const cached = cache.get(cacheKey);
       if (cached && cached.expiresAt > Date.now()) return cached.value;
@@ -130,7 +133,8 @@ export const archiveRouter = createRouter({
         availableOnline: z.boolean().default(false),
       })
     )
-    .query(async ({ input }) => {
+    .query(async ({ ctx, input }) => {
+      await toolPreview(ctx.req, "archives", "request");
       const apiKey = process.env.NARA_API_KEY;
       if (!apiKey)
         throw new TRPCError({

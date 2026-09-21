@@ -2,6 +2,7 @@ import { Link } from 'react-router'
 import HeroSection from '../sections/HeroSection'
 import HeroPortraitSection from '../sections/HeroPortraitSection'
 import HeritageSection from '../sections/HeritageSection'
+import ResearchPreview from '../components/ResearchPreview'
 import AncestryResearchSection from '../sections/AncestryResearchSection'
 import AboutSection from '../sections/AboutSection'
 import ServicesSection from '../sections/ServicesSection'
@@ -35,7 +36,7 @@ export default function HomePage() {
 
       {/* 3. Indigenous Soul Tribe Map — Cosmic aesthetic continues */}
       <MarqueeDivider text="#TheKingsTake — We Were Here Before Anybody — Discover Your Roots — 225+ Nations Documented — The Land Remembers" />
-      <HeritageSection />
+      <ResearchPreview tool="globe"><HeritageSection /></ResearchPreview>
 
       {/* 4. Ancestry Research & Dawes Rolls — Reclaim Your Heritage */}
       <MarqueeDivider text="#TheKingsTake — They Hid Our Identity in the Records — Search the Dawes Rolls — Reclaim What Was Taken — Your Ancestors Are Waiting" />
