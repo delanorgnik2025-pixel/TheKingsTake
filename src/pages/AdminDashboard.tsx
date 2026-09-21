@@ -19,6 +19,8 @@ import {
   BriefcaseBusiness,
   Newspaper,
   Send,
+  Menu,
+  X,
 } from "lucide-react";
 
 // ─── Sidebar navigation items ───
@@ -520,8 +522,8 @@ function AudienceModule() {
       }} className="rounded border border-[#FF9500]/50 px-3 py-1 text-xs text-[#FFB840]">Export CSV</button></div>
       <div className="space-y-2 mb-8 max-h-[400px] overflow-y-auto">
         {!visitorData?.contacts.length && <p className="text-sm text-[#C9B99A]">No visitor entries yet.</p>}
-        {visitorData?.contacts.map(visitor => <div key={visitor.id} className="rounded border border-white/10 p-3 text-sm">
-          <a href={`mailto:${visitor.email}`} className="text-[#FFB840]">{visitor.email}</a>
+        {visitorData?.contacts.map(visitor => <div key={visitor.id} className="min-w-0 rounded border border-white/10 p-3 text-sm break-words">
+          <a href={`mailto:${visitor.email}`} className="break-all text-[#FFB840]">{visitor.email}</a>
           <p className="text-xs text-[#C9B99A]">Interests: {(() => { try { return (JSON.parse(visitor.interests) as string[]).join(', '); } catch { return visitor.interests; } })()} · Facebook: {visitor.facebookSubscriber} · Dispatch: {visitor.newsletterConsent ? 'opted in' : 'not subscribed'}</p>
           {visitor.lookingFor && <p className="text-xs text-[#C9B99A]">Looking for: {visitor.lookingFor}</p>}
           <p className="text-[10px] text-[#C9B99A]/70">Last seen: {new Date(visitor.lastSeenAt).toLocaleString()}</p>
@@ -534,8 +536,8 @@ function AudienceModule() {
         {!threads.length && <p className="text-sm text-[#C9B99A]">No visitor messages yet.</p>}
         {threads.map(thread => {
           const key = String(thread.contactId);
-          return <div key={key} className="rounded border border-white/10 p-3 text-sm">
-            <button onClick={() => setReplyThread(replyThread === key ? null : key)} className="text-left text-[#FFB840]">{thread.email} · {thread.body.slice(0, 80)} {replyThread === key ? '▲' : '▼'}</button>
+          return <div key={key} className="min-w-0 rounded border border-white/10 p-3 text-sm break-words">
+            <button onClick={() => setReplyThread(replyThread === key ? null : key)} className="max-w-full break-all text-left text-[#FFB840]">{thread.email} · {thread.body.slice(0, 80)} {replyThread === key ? '▲' : '▼'}</button>
             {replyThread === key && <div className="mt-3 space-y-2">
               {conversations?.filter(message => message.contactId === thread.contactId).map(message => <p key={message.id} className="rounded bg-white/5 p-2 text-[#C9B99A]"><b>{message.sender === 'owner' ? 'You' : 'Visitor'}:</b> {message.body}</p>)}
               <form onSubmit={event => { event.preventDefault(); reply.mutate({ contactId: thread.contactId, sessionId: thread.sessionId, body: replyBody }); }} className="flex gap-2"><input value={replyBody} onChange={event => setReplyBody(event.target.value)} maxLength={2000} className="min-w-0 flex-1 rounded bg-[#101B28] p-2 text-white" placeholder="Write your reply" /><button disabled={!replyBody.trim() || reply.isPending} className="rounded bg-[#FF9500] px-3 text-[#101B28] disabled:opacity-50">Send</button></form>
@@ -745,6 +747,7 @@ function NewsletterModule() {
 // ─── Main Dashboard ───
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   // Verify admin on mount
@@ -756,6 +759,11 @@ export default function AdminDashboard() {
   function handleLogout() {
     localStorage.removeItem("adminToken");
     window.location.href = "/admin/login";
+  }
+
+  function selectTab(tab: string) {
+    setActiveTab(tab);
+    setMenuOpen(false);
   }
 
   function renderModule() {
@@ -808,9 +816,25 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#182635] flex">
+    <div className="min-h-screen bg-[#182635] flex flex-col md:flex-row min-w-0">
+      <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-3 md:hidden">
+        <span className="flex items-center gap-2 text-sm font-medium text-[#F0EBE1]">
+          <Crown size={18} className="text-[#FF9500]" />
+          {NAV_ITEMS.find(item => item.id === activeTab)?.label || "Admin Panel"}
+        </span>
+        <button
+          type="button"
+          onClick={() => setMenuOpen(open => !open)}
+          aria-label={menuOpen ? "Close admin menu" : "Open admin menu"}
+          aria-expanded={menuOpen}
+          aria-controls="admin-navigation"
+          className="rounded border border-white/20 p-2 text-[#F0EBE1]"
+        >
+          {menuOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
+      </div>
       {/* Sidebar */}
-      <aside className="w-60 bg-[#182635] border-r border-white/[0.06] flex flex-col shrink-0">
+      <aside id="admin-navigation" className={`${menuOpen ? "flex" : "hidden"} w-full bg-[#182635] border-b border-white/[0.06] flex-col shrink-0 md:flex md:w-60 md:border-b-0 md:border-r`}>
         <div className="p-4 border-b border-white/[0.06]">
           <div className="flex items-center gap-2">
             <Crown size={20} className="text-[#FF9500]" />
@@ -827,7 +851,7 @@ export default function AdminDashboard() {
           {NAV_ITEMS.map(item => (
             <button
               key={item.id}
-              onClick={() => setActiveTab(item.id)}
+              onClick={() => selectTab(item.id)}
               className={`w-full flex items-center gap-2.5 h-9 px-3 rounded text-sm transition-colors ${activeTab === item.id ? "bg-[#FF9500]/10 text-[#FF9500]" : "text-[#C9B99A] hover:bg-white/[0.03] hover:text-[#F0EBE1]"}`}
             >
               <item.icon size={16} />
@@ -836,6 +860,7 @@ export default function AdminDashboard() {
           ))}
           <Link
             to="/feed"
+            onClick={() => setMenuOpen(false)}
             className="w-full flex items-center gap-2.5 h-9 px-3 rounded text-sm transition-colors text-[#FFB840] hover:bg-[#FF9500]/10 hover:text-[#FF9500]"
           >
             <Radio size={16} />
@@ -854,8 +879,8 @@ export default function AdminDashboard() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto">
-        <div className="max-w-[900px] mx-auto px-6 py-8">{renderModule()}</div>
+      <main className="min-w-0 flex-1 overflow-x-hidden">
+        <div className="max-w-[900px] mx-auto min-w-0 px-4 py-6 sm:px-6 sm:py-8">{renderModule()}</div>
       </main>
     </div>
   );
