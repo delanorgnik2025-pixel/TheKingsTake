@@ -46,6 +46,7 @@ export default function Navigation({ onMenuToggle }: NavigationProps) {
 
       <div className="hidden md:flex items-center gap-6">
         <Link to="/feed" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200">The Feed</Link>
+        <Link to="/investigations" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200">Investigations</Link>
         <Link to="/archives" className="text-[#FFB840] text-sm hover:text-[#FF9500] transition-colors duration-200">Archives</Link>
 
         {/* Writing Services Dropdown */}
@@ -121,6 +122,7 @@ export default function Navigation({ onMenuToggle }: NavigationProps) {
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
             className="absolute top-16 left-0 right-0 bg-[#25364B]/95 backdrop-blur-xl p-6 md:hidden" style={{ borderTop: '1px solid rgba(255,149,0,0.15)' }}>
             <Link to="/feed" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">The Feed</Link>
+            <Link to="/investigations" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Investigations</Link>
             <Link to="/archives" onClick={() => setMobileOpen(false)} className="block text-[#FFB840] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Search Archives</Link>
 
             {/* Writing Services Mobile */}

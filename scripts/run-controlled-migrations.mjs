@@ -9,6 +9,9 @@ const migrations = [
   ["20260918_daily_news_automation", "db/manual/20260918_daily_news_automation.sql"],
   ["20260921_visitor_gate_chat", "db/manual/20260921_visitor_gate_chat.sql"],
   ["20260921_research_preview", "db/manual/20260921_research_preview.sql"],
+  ["20260923_timed_dispatch_delivery", "db/manual/20260923_timed_dispatch_delivery.sql"],
+  ["20260927_dispatch_article_compatibility", "db/manual/20260927_dispatch_article_compatibility.sql"],
+  ["20260927_nolan_wells_investigation", "db/manual/20260927_nolan_wells_investigation.sql"],
 ];
 
 const databaseUrl = process.env.DATABASE_URL;
@@ -36,6 +39,37 @@ try {
     await connection.query(sql);
     await connection.execute("INSERT INTO controlled_migrations (name) VALUES (?)", [name]);
     console.log(`[migration] completed: ${name}`);
+  }
+
+  // Exercise the exact database contract used during Dispatch approval. The
+  // synthetic row is rolled back, and deployment stops if production cannot
+  // accept it, preventing another opaque failure in the admin interface.
+  await connection.beginTransaction();
+  const verificationSlug = `dispatch-deployment-verification-${Date.now()}`;
+  try {
+    await connection.execute(
+      `INSERT INTO posts
+        (title, slug, excerpt, content, category, coverImage, published, featured)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        "Dispatch deployment verification",
+        verificationSlug,
+        "Synthetic deployment check",
+        "This temporary row verifies the Dispatch publication schema.",
+        "SYSTEM CHECK",
+        null,
+        false,
+        false,
+      ],
+    );
+    await connection.rollback();
+    await connection.execute("DELETE FROM posts WHERE slug = ?", [verificationSlug]);
+    console.log("[migration] verified: Dispatch article insert contract");
+  } catch (error) {
+    await connection.rollback();
+    await connection.execute("DELETE FROM posts WHERE slug = ?", [verificationSlug]);
+    const code = error && typeof error === "object" && "code" in error ? String(error.code) : "unknown";
+    throw new Error(`Dispatch article insert contract failed (${code}).`);
   }
 } finally {
   await connection.end();

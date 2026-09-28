@@ -629,6 +629,8 @@ type NewsletterCampaign = {
   articleExcerpt: string | null;
   articleContent: string | null;
   status: "draft" | "scheduled" | "sent";
+  scheduledAt: string | Date | null;
+  lastDeliveryError: string | null;
 };
 
 function campaignSources(value: string | null) {
@@ -707,6 +709,32 @@ function AutomatedCampaignEditor({ campaign, onSaved }: { campaign: NewsletterCa
   );
 }
 
+function nextDispatchInput(existing?: string | Date | null) {
+  const date = existing ? new Date(existing) : new Date();
+  if (!existing) {
+    date.setHours(9, 0, 0, 0);
+    if (date.getTime() < Date.now() + 15 * 60_000) date.setDate(date.getDate() + 1);
+  }
+  const offset = date.getTimezoneOffset() * 60_000;
+  return new Date(date.getTime() - offset).toISOString().slice(0, 16);
+}
+
+function DispatchScheduleControl({ campaign, pending, onSchedule }: { campaign: NewsletterCampaign; pending: boolean; onSchedule: (id: number, isoTime: string) => void }) {
+  const [time, setTime] = useState(() => nextDispatchInput(campaign.scheduledAt));
+  const submit = () => {
+    const parsed = new Date(time);
+    if (Number.isNaN(parsed.getTime())) return;
+    const wording = campaign.status === "scheduled" ? "Update this delivery time?" : "Approve this dispatch and queue it for timed delivery?";
+    if (window.confirm(`${wording}\n\n${parsed.toLocaleString()}\n\nThe system will automatically preserve at least 20 hours between dispatches.`))
+      onSchedule(campaign.id, parsed.toISOString());
+  };
+  return <div className="flex w-full flex-col gap-2 sm:w-auto sm:min-w-[250px]">
+    <label className="text-[10px] uppercase tracking-wider text-[#C9B99A]/70">Delivery time (your local time)</label>
+    <input type="datetime-local" value={time} onChange={event => setTime(event.target.value)} className="rounded border border-white/15 bg-[#101b28] px-3 py-2 text-xs text-[#F0EBE1]" />
+    <button onClick={submit} disabled={pending} className="inline-flex items-center justify-center gap-2 rounded border border-[#FF9500]/40 px-3 py-2 text-xs text-[#FFB840] disabled:opacity-40"><Send size={13}/> {campaign.status === "scheduled" ? "Reschedule delivery" : "Approve & schedule"}</button>
+  </div>;
+}
+
 function NewsletterModule() {
   const utils = trpc.useUtils();
   const { data } = trpc.engagement.adminNewsletterCampaigns.useQuery();
@@ -722,14 +750,14 @@ function NewsletterModule() {
     onSuccess: async () => { setDraft({ subject: "", previewText: "", content: "", sources: "" }); setNotice("Manual draft saved. Review it below before sending."); await refresh(); },
   });
   const send = trpc.engagement.adminSendNewsletterCampaign.useMutation({
-    onSuccess: async result => { setNotice(`${result.published ? "Article published and newsletter" : "Newsletter"} delivered to ${result.sent} subscriber${result.sent === 1 ? "" : "s"}.`); await refresh(); },
-    onError: error => setNotice(error.message),
+    onSuccess: async result => { const when = new Date(result.scheduledAt).toLocaleString(); setNotice(result.adjusted ? `Approved. To prevent back-to-back email, delivery was moved to the next safe opening: ${when}.` : `Approved and scheduled for ${when}.`); await refresh(); },
+    onError: () => setNotice("This dispatch could not be scheduled. Review the required fields and try again; no email was sent."),
   });
   const save = () => create.mutate({ subject: draft.subject, previewText: draft.previewText || undefined, content: draft.content, sourceUrls: draft.sources.split(/\s+/).map(value => value.trim()).filter(Boolean) });
   return (
     <div>
       <h3 className="mb-2 text-xl text-[#F0EBE1]" style={{ fontFamily: "Newsreader, serif" }}>The King&apos;s Dispatch</h3>
-      <p className="mb-6 text-sm leading-relaxed text-[#C9B99A]/70">The system researches current stories, verifies at least two independent sources, prepares a licensed image, writes the website article and email edition, then stops for your approval.</p>
+      <p className="mb-6 text-sm leading-relaxed text-[#C9B99A]/70">The system researches current stories, verifies at least two independent sources, prepares a licensed image, writes the website article and email edition, then stops for your approval. Approved dispatches are timed and kept at least 20 hours apart.</p>
       <section className="mb-8 rounded border border-[#FF9500]/30 bg-[#FF9500]/[0.04] p-5">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div><p className="text-base text-[#F0EBE1]">Daily approval workflow</p><p className="mt-1 text-xs leading-relaxed text-[#C9B99A]">Runs at {automation?.dailyHourEastern ?? 5}:00 AM Eastern. Research and drafting are automatic. Nothing publishes or emails subscribers until you approve it.</p><div className="mt-3 flex flex-wrap gap-2 text-[10px]"><span className={`rounded-full px-2.5 py-1 ${automation?.enabled ? "bg-emerald-400/10 text-emerald-300" : "bg-red-400/10 text-red-300"}`}>Schedule {automation?.enabled ? "on" : "off"}</span><span className={`rounded-full px-2.5 py-1 ${automation?.researchConfigured ? "bg-emerald-400/10 text-emerald-300" : "bg-red-400/10 text-red-300"}`}>News research {automation?.researchConfigured ? "ready" : "needs API key"}</span><span className={`rounded-full px-2.5 py-1 ${automation?.emailConfigured ? "bg-emerald-400/10 text-emerald-300" : "bg-amber-400/10 text-amber-300"}`}>Delivery {automation?.emailConfigured ? "ready" : "not configured"}</span></div></div>
@@ -739,7 +767,7 @@ function NewsletterModule() {
       </section>
       <details className="mb-8 rounded border border-white/10 bg-white/[0.02] p-4"><summary className="cursor-pointer text-sm text-[#C9B99A]">Create a manual edition instead</summary><div className="mt-4 space-y-3"><input value={draft.subject} onChange={event => setDraft({ ...draft, subject: event.target.value })} placeholder="Newsletter subject" className="w-full rounded bg-[#101b28] px-3 py-2 text-sm text-white" /><input value={draft.previewText} onChange={event => setDraft({ ...draft, previewText: event.target.value })} placeholder="Inbox preview text (optional)" className="w-full rounded bg-[#101b28] px-3 py-2 text-sm text-white" /><textarea value={draft.content} onChange={event => setDraft({ ...draft, content: event.target.value })} rows={10} placeholder="Write the edition here." className="w-full rounded bg-[#101b28] px-3 py-2 text-sm leading-relaxed text-white" /><textarea value={draft.sources} onChange={event => setDraft({ ...draft, sources: event.target.value })} rows={3} placeholder="Source URLs — one per line" className="w-full rounded bg-[#101b28] px-3 py-2 text-xs text-white" /><button onClick={save} disabled={create.isPending || draft.subject.trim().length < 3 || draft.content.trim().length < 30} className="rounded border border-[#FF9500]/40 px-4 py-2 text-sm text-[#FFB840] disabled:opacity-40">{create.isPending ? "Saving…" : "Save manual draft"}</button></div></details>
       <h4 className="mb-3 text-[#F0EBE1]">Approval desk and send history</h4>
-      <div className="space-y-4">{!data?.length && <p className="rounded border border-white/10 p-6 text-center text-sm text-[#C9B99A]">No editions created yet. Build today&apos;s first draft above.</p>}{data?.map(campaign => <article key={campaign.id} className={`rounded border p-4 ${campaign.status === "draft" ? "border-[#FF9500]/30" : "border-white/10"}`}><div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><div><div className="flex flex-wrap items-center gap-2"><p className="text-sm text-[#F0EBE1]">{campaign.subject}</p>{campaign.automated && <span className="rounded-full bg-[#FF9500]/10 px-2 py-0.5 text-[9px] uppercase tracking-wider text-[#FFB840]">Automated daily draft</span>}</div><p className="mt-1 text-[11px] uppercase tracking-wider text-[#C9B99A]/60">{campaign.status}{campaign.dailyKey ? ` · ${campaign.dailyKey}` : ""}{campaign.status === "sent" ? ` · ${campaign.recipientCount} delivered` : ""}</p></div>{campaign.status !== "sent" && <button onClick={() => { const action = campaign.automated ? "Publish the website article and send this edition to every subscribed reader now?" : `Send “${campaign.subject}” to every subscribed reader now?`; if (window.confirm(action)) send.mutate({ id: campaign.id, confirm: true }); }} disabled={send.isPending} className="inline-flex items-center justify-center gap-2 rounded border border-[#FF9500]/40 px-3 py-2 text-xs text-[#FFB840] disabled:opacity-40"><Send size={13}/> {campaign.automated ? "Approve, publish & send" : "Approve & send"}</button>}</div>{campaign.automated ? <AutomatedCampaignEditor campaign={campaign} onSaved={refresh} /> : <p className="mt-3 line-clamp-3 whitespace-pre-wrap text-xs leading-relaxed text-[#C9B99A]">{campaign.content}</p>}</article>)}</div>
+      <div className="space-y-4">{!data?.length && <p className="rounded border border-white/10 p-6 text-center text-sm text-[#C9B99A]">No editions created yet. Build today&apos;s first draft above.</p>}{data?.map(campaign => <article key={campaign.id} className={`rounded border p-4 ${campaign.status === "draft" ? "border-[#FF9500]/30" : "border-white/10"}`}><div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><div><div className="flex flex-wrap items-center gap-2"><p className="text-sm text-[#F0EBE1]">{campaign.subject}</p>{campaign.automated && <span className="rounded-full bg-[#FF9500]/10 px-2 py-0.5 text-[9px] uppercase tracking-wider text-[#FFB840]">Automated daily draft</span>}</div><p className="mt-1 text-[11px] uppercase tracking-wider text-[#C9B99A]/60">{campaign.status}{campaign.dailyKey ? ` · ${campaign.dailyKey}` : ""}{campaign.status === "sent" ? ` · ${campaign.recipientCount} delivered` : ""}{campaign.status === "scheduled" && campaign.scheduledAt ? ` · ${new Date(campaign.scheduledAt).toLocaleString()}` : ""}</p>{campaign.lastDeliveryError && <p className="mt-2 max-w-xl text-xs text-amber-300">{campaign.lastDeliveryError}</p>}</div>{campaign.status !== "sent" && <DispatchScheduleControl campaign={campaign} pending={send.isPending} onSchedule={(id, scheduledAt) => send.mutate({ id, confirm: true, scheduledAt })} />}</div>{campaign.automated ? <AutomatedCampaignEditor campaign={campaign} onSaved={refresh} /> : <p className="mt-3 line-clamp-3 whitespace-pre-wrap text-xs leading-relaxed text-[#C9B99A]">{campaign.content}</p>}</article>)}</div>
     </div>
   );
 }

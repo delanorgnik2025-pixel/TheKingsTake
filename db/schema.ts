@@ -375,11 +375,24 @@ export const newsletterCampaigns = mysqlTable("newsletter_campaigns", {
   approvedAt: timestamp("approved_at"),
   status: mysqlEnum("status", ["draft", "scheduled", "sent"]).default("draft").notNull(),
   scheduledAt: timestamp("scheduled_at"),
+  deliveryStartedAt: timestamp("delivery_started_at"),
+  lastDeliveryError: text("last_delivery_error"),
   sentAt: timestamp("sent_at"),
   recipientCount: int("recipient_count").default(0).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull().$onUpdate(() => new Date()),
 });
+
+export const newsletterDeliveries = mysqlTable("newsletter_deliveries", {
+  id: serial("id").primaryKey(),
+  campaignId: bigint("campaign_id", { mode: "number", unsigned: true }).notNull(),
+  subscriberId: bigint("subscriber_id", { mode: "number", unsigned: true }).notNull(),
+  status: mysqlEnum("status", ["sent", "failed"]).notNull(),
+  providerMessage: varchar("provider_message", { length: 500 }),
+  sentAt: timestamp("sent_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull().$onUpdate(() => new Date()),
+}, table => [uniqueIndex("newsletter_delivery_campaign_subscriber_unique").on(table.campaignId, table.subscriberId)]);
 
 export const workApplications = mysqlTable("work_applications", {
   id: serial("id").primaryKey(),

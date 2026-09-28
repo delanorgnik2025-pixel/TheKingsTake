@@ -9,6 +9,7 @@ import { env } from "./lib/env";
 import { createOAuthCallbackHandler } from "./kimi/auth";
 import { Paths } from "@contracts/constants";
 import { startDailyNewsAutomation } from "./newsletter-automation";
+import { startNewsletterDeliveryWorker } from "./engagement-router";
 import { visitorFromRequest } from "./security/visitor-session";
 import { verifyAdminToken } from "./security/auth";
 
@@ -83,4 +84,5 @@ if (env.isProduction) {
     console.log(`Server running on http://localhost:${port}/`);
   });
   startDailyNewsAutomation();
+  startNewsletterDeliveryWorker();
 }

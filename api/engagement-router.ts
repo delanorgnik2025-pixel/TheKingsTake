@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, isNull, lte, ne, sql } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { nanoid } from "nanoid";
 import { adminQuery, createRouter, publicQuery } from "./middleware";
@@ -7,6 +7,7 @@ import { getDb } from "./queries/connection";
 import {
   newsletterSubscribers,
   newsletterCampaigns,
+  newsletterDeliveries,
   posts,
   siteLeads,
   siteVisitorSessions,
@@ -158,6 +159,175 @@ function newsletterHtml(campaign: typeof newsletterCampaigns.$inferSelect, unsub
     : "";
   const readMore = articleUrl ? `<p style="margin:25px 0 0"><a href="${escapeHtml(articleUrl)}" style="display:inline-block;padding:12px 18px;background:#ff9500;color:#101b28;text-decoration:none;font:bold 13px Arial,sans-serif">Read the full article</a></p>` : "";
   return `<!doctype html><html><body style="margin:0;background:#101b28;font-family:Georgia,serif"><div style="display:none;max-height:0;overflow:hidden">${escapeHtml(campaign.previewText || campaign.subject)}</div><div style="max-width:680px;margin:0 auto;padding:32px 20px"><div style="border:1px solid rgba(255,149,0,.3);background:#182635"><div style="padding:28px;border-bottom:1px solid rgba(255,149,0,.25);text-align:center"><div style="color:#ff9500;font:12px Arial,sans-serif;letter-spacing:3px;text-transform:uppercase">AASOTU Media Group LLC</div><h1 style="margin:12px 0 0;color:#f0ebe1;font-size:34px">The King’s Dispatch</h1><div style="margin-top:8px;color:#c9b99a;font:12px Arial,sans-serif">#TheKingsTake · The People’s Voice</div></div>${image}<div style="padding:30px"><h2 style="margin:0 0 22px;color:#ffb840;font-size:25px">${escapeHtml(campaign.subject)}</h2>${renderNewsletterCopy(campaign.content)}${readMore}<div style="margin-top:30px;padding:20px;border:1px solid rgba(255,149,0,.25);color:#dfd5c2;font:14px Arial,sans-serif;line-height:1.6"><strong style="color:#ffb840">Join the conversation</strong><br>Follow #TheKingsTake on Facebook for updates and subscription options. Members with an issued access code can sign in on the website to continue exploring the globe and archives.<br><a href="https://www.facebook.com/thekingstake" style="color:#ffb840">Visit our Facebook page</a></div></div><div style="padding:22px;text-align:center;border-top:1px solid rgba(255,255,255,.08);color:#9f927d;font:11px Arial,sans-serif">Sent by AASOTU Media Group LLC · <a href="${escapeHtml(unsubscribeUrl)}" style="color:#ffb840">Unsubscribe</a></div></div></div></body></html>`;
+}
+
+const DISPATCH_MIN_GAP_HOURS = Math.max(1, Number(process.env.NEWSLETTER_MIN_GAP_HOURS || "20"));
+const DISPATCH_RETRY_MINUTES = 15;
+
+function dispatchPublicError(error: unknown) {
+  const message = error instanceof Error ? error.message : "Unknown delivery failure";
+  console.error("[dispatch] Delivery failed", message);
+  if (message.startsWith("Email provider") || message === "Could not reach the email provider." || message === "Email variables are incomplete.")
+    return "Email delivery is temporarily unavailable. The dispatch will retry automatically.";
+  return "The dispatch could not be completed. It will retry automatically; no subscriber will receive a duplicate copy.";
+}
+
+async function validateCampaignForApproval(campaign: typeof newsletterCampaigns.$inferSelect) {
+  let sourceUrls: string[] = [];
+  try { sourceUrls = JSON.parse(campaign.sourceUrls || "[]"); } catch { sourceUrls = []; }
+  if (campaign.automated && sourceUrls.length < 2)
+    throw new TRPCError({ code: "PRECONDITION_FAILED", message: "Automated editions require at least two source links before approval." });
+  if (campaign.automated && (!campaign.articleTitle || !campaign.articleSlug || !campaign.articleContent))
+    throw new TRPCError({ code: "PRECONDITION_FAILED", message: "The website article is incomplete. Edit and save the draft before approval." });
+}
+
+async function scheduleNewsletterCampaign(id: number, requestedAt: Date) {
+  const db = getDb();
+  const [campaign] = await db.select().from(newsletterCampaigns).where(eq(newsletterCampaigns.id, id)).limit(1);
+  if (!campaign) throw new TRPCError({ code: "NOT_FOUND", message: "Newsletter draft not found." });
+  if (campaign.status === "sent") throw new TRPCError({ code: "CONFLICT", message: "This newsletter has already been sent." });
+  await validateCampaignForApproval(campaign);
+
+  const otherDeliveries = await db.select({ status: newsletterCampaigns.status, sentAt: newsletterCampaigns.sentAt, scheduledAt: newsletterCampaigns.scheduledAt })
+    .from(newsletterCampaigns)
+    .where(ne(newsletterCampaigns.id, id));
+  const latestReservedTime = otherDeliveries.reduce((latest, item) => {
+    const date = item.status === "sent" ? item.sentAt : item.status === "scheduled" ? item.scheduledAt : null;
+    return date ? Math.max(latest, date.getTime()) : latest;
+  }, 0);
+  const earliestBySpacing = latestReservedTime + DISPATCH_MIN_GAP_HOURS * 60 * 60_000;
+  const earliestByClock = Date.now() + 60_000;
+  const scheduledAt = new Date(Math.max(requestedAt.getTime(), earliestByClock, earliestBySpacing));
+  await db.update(newsletterCampaigns).set({
+    status: "scheduled",
+    approvedAt: campaign.approvedAt || new Date(),
+    scheduledAt,
+    deliveryStartedAt: null,
+    lastDeliveryError: null,
+  }).where(eq(newsletterCampaigns.id, id));
+  return { success: true as const, scheduledAt, adjusted: scheduledAt.getTime() > requestedAt.getTime() + 1_000, minimumGapHours: DISPATCH_MIN_GAP_HOURS };
+}
+
+async function publishCampaignArticle(campaign: typeof newsletterCampaigns.$inferSelect) {
+  if (!campaign.automated) return { publishedPostId: campaign.publishedPostId, articleUrl: undefined as string | undefined };
+  const db = getDb();
+  const siteUrl = (process.env.PUBLIC_SITE_URL || "https://thekingstake.com").replace(/\/$/, "");
+  let publishedPostId = campaign.publishedPostId;
+  if (!publishedPostId) {
+    const [existingPost] = await db.select({ id: posts.id }).from(posts).where(eq(posts.slug, campaign.articleSlug!)).limit(1);
+    if (existingPost) {
+      publishedPostId = existingPost.id;
+    } else {
+      try {
+        const [postResult] = await db.insert(posts).values({
+          title: campaign.articleTitle!,
+          slug: campaign.articleSlug!,
+          excerpt: campaign.articleExcerpt,
+          content: campaign.articleContent!,
+          category: "DAILY NEWS",
+          coverImage: campaign.imageUrl?.slice(0, 500) || null,
+          published: true,
+          featured: false,
+        });
+        publishedPostId = Number(postResult.insertId);
+      } catch (error) {
+        const [racedPost] = await db.select({ id: posts.id }).from(posts).where(eq(posts.slug, campaign.articleSlug!)).limit(1);
+        if (!racedPost) {
+          // Drizzle's error.message includes the full SQL parameters, including
+          // the unpublished article. Never return that text to the admin UI.
+          const cause = error && typeof error === "object" && "cause" in error ? error.cause : null;
+          const code = cause && typeof cause === "object" && "code" in cause ? String(cause.code) : "unknown";
+          console.error("[dispatch] Article insert failed", { campaignId: campaign.id, code });
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "The article could not be published. No dispatch email was sent; the edition remains available for review.",
+          });
+        }
+        publishedPostId = racedPost.id;
+      }
+    }
+    await db.update(newsletterCampaigns).set({ publishedPostId }).where(eq(newsletterCampaigns.id, campaign.id));
+  }
+  return { publishedPostId, articleUrl: `${siteUrl}/blog/${campaign.articleSlug}` };
+}
+
+async function deliverNewsletterCampaign(id: number) {
+  const db = getDb();
+  const [campaign] = await db.select().from(newsletterCampaigns).where(eq(newsletterCampaigns.id, id)).limit(1);
+  if (!campaign || campaign.status !== "scheduled") return;
+  await validateCampaignForApproval(campaign);
+  const { publishedPostId, articleUrl } = await publishCampaignArticle(campaign);
+  const siteUrl = (process.env.PUBLIC_SITE_URL || "https://thekingstake.com").replace(/\/$/, "");
+  const subscribers = await db.select().from(newsletterSubscribers).where(eq(newsletterSubscribers.status, "subscribed")).limit(500);
+  let sent = 0;
+  for (const subscriber of subscribers) {
+    const [previous] = await db.select({ status: newsletterDeliveries.status }).from(newsletterDeliveries)
+      .where(and(eq(newsletterDeliveries.campaignId, campaign.id), eq(newsletterDeliveries.subscriberId, subscriber.id))).limit(1);
+    if (previous?.status === "sent") { sent += 1; continue; }
+    const token = subscriber.unsubscribeToken || nanoid(40);
+    if (!subscriber.unsubscribeToken)
+      await db.update(newsletterSubscribers).set({ unsubscribeToken: token }).where(eq(newsletterSubscribers.id, subscriber.id));
+    const unsubscribeUrl = `${siteUrl}/newsletter/unsubscribe?token=${encodeURIComponent(token)}`;
+    const result = await sendEmail(
+      subscriber.email,
+      campaign.subject,
+      `${campaign.content}${articleUrl ? `\n\nRead the full article: ${articleUrl}` : ""}\n\nFollow #TheKingsTake and explore subscription options: https://www.facebook.com/thekingstake\nMembers with an issued access code can sign in for continued globe and archive access.\n\nUnsubscribe: ${unsubscribeUrl}`,
+      newsletterHtml(campaign, unsubscribeUrl, articleUrl)
+    );
+    await db.insert(newsletterDeliveries).values({
+      campaignId: campaign.id,
+      subscriberId: subscriber.id,
+      status: result.sent ? "sent" : "failed",
+      providerMessage: result.sent ? null : result.reason.slice(0, 500),
+      sentAt: result.sent ? new Date() : null,
+    }).onDuplicateKeyUpdate({ set: {
+      status: result.sent ? "sent" : "failed",
+      providerMessage: result.sent ? null : result.reason.slice(0, 500),
+      sentAt: result.sent ? new Date() : null,
+    }});
+    if (!result.sent) throw new Error(result.reason);
+    sent += 1;
+  }
+  await db.update(newsletterCampaigns).set({
+    status: "sent", sentAt: new Date(), recipientCount: sent,
+    deliveryStartedAt: null, lastDeliveryError: null, publishedPostId,
+  }).where(eq(newsletterCampaigns.id, id));
+}
+
+let dispatchWorkerRunning = false;
+async function runDueDispatches() {
+  if (dispatchWorkerRunning) return;
+  dispatchWorkerRunning = true;
+  try {
+    const db = getDb();
+    const due = await db.select({ id: newsletterCampaigns.id }).from(newsletterCampaigns)
+      .where(and(eq(newsletterCampaigns.status, "scheduled"), lte(newsletterCampaigns.scheduledAt, new Date()), isNull(newsletterCampaigns.deliveryStartedAt)))
+      .orderBy(newsletterCampaigns.scheduledAt).limit(5);
+    for (const item of due) {
+      const [claim] = await db.update(newsletterCampaigns).set({ deliveryStartedAt: new Date(), lastDeliveryError: null })
+        .where(and(eq(newsletterCampaigns.id, item.id), eq(newsletterCampaigns.status, "scheduled"), isNull(newsletterCampaigns.deliveryStartedAt)));
+      if (Number(claim.affectedRows) !== 1) continue;
+      try {
+        await deliverNewsletterCampaign(item.id);
+      } catch (error) {
+        await db.update(newsletterCampaigns).set({
+          deliveryStartedAt: null,
+          lastDeliveryError: dispatchPublicError(error),
+          scheduledAt: new Date(Date.now() + DISPATCH_RETRY_MINUTES * 60_000),
+        }).where(eq(newsletterCampaigns.id, item.id));
+      }
+    }
+  } catch (error) {
+    console.error("[dispatch] Worker check failed", error instanceof Error ? error.message : error);
+  } finally {
+    dispatchWorkerRunning = false;
+  }
+}
+
+export function startNewsletterDeliveryWorker() {
+  setTimeout(runDueDispatches, 20_000).unref();
+  setInterval(runDueDispatches, 60_000).unref();
+  console.log(`[dispatch] Timed delivery worker enabled with a ${DISPATCH_MIN_GAP_HOURS}-hour minimum gap.`);
 }
 
 let lastVisitorAlertAt = 0;
@@ -386,56 +556,11 @@ export const engagementRouter = createRouter({
     }),
 
   adminSendNewsletterCampaign: adminQuery
-    .input(z.object({ id: z.number().int().positive(), confirm: z.literal(true) }))
+    .input(z.object({ id: z.number().int().positive(), confirm: z.literal(true), scheduledAt: z.string().datetime().optional() }))
     .mutation(async ({ input }) => {
-      const db = getDb();
-      const [campaign] = await db.select().from(newsletterCampaigns).where(eq(newsletterCampaigns.id, input.id)).limit(1);
-      if (!campaign) throw new TRPCError({ code: "NOT_FOUND", message: "Newsletter draft not found." });
-      if (campaign.status === "sent") throw new TRPCError({ code: "CONFLICT", message: "This newsletter has already been sent." });
-      let sourceUrls: string[] = [];
-      try { sourceUrls = JSON.parse(campaign.sourceUrls || "[]"); } catch { sourceUrls = []; }
-      if (campaign.automated && sourceUrls.length < 2)
-        throw new TRPCError({ code: "PRECONDITION_FAILED", message: "Automated editions require at least two source links before approval." });
-      const siteUrl = (process.env.PUBLIC_SITE_URL || "https://thekingstake.com").replace(/\/$/, "");
-      let publishedPostId = campaign.publishedPostId;
-      let articleUrl: string | undefined;
-      if (campaign.automated) {
-        if (!campaign.articleTitle || !campaign.articleSlug || !campaign.articleContent)
-          throw new TRPCError({ code: "PRECONDITION_FAILED", message: "The website article is incomplete. Edit and save the draft before approval." });
-        if (!publishedPostId) {
-          const [postResult] = await db.insert(posts).values({
-            title: campaign.articleTitle,
-            slug: campaign.articleSlug,
-            excerpt: campaign.articleExcerpt,
-            content: campaign.articleContent,
-            category: "DAILY NEWS",
-            coverImage: campaign.imageUrl,
-            published: true,
-            featured: false,
-          });
-          publishedPostId = Number(postResult.insertId);
-          await db.update(newsletterCampaigns).set({ publishedPostId, approvedAt: new Date() }).where(eq(newsletterCampaigns.id, input.id));
-        }
-        articleUrl = `${siteUrl}/blog/${campaign.articleSlug}`;
-      }
-      const subscribers = await db.select().from(newsletterSubscribers).where(eq(newsletterSubscribers.status, "subscribed")).limit(500);
-      let sent = 0;
-      for (const subscriber of subscribers) {
-        const token = subscriber.unsubscribeToken || nanoid(40);
-        if (!subscriber.unsubscribeToken)
-          await db.update(newsletterSubscribers).set({ unsubscribeToken: token }).where(eq(newsletterSubscribers.id, subscriber.id));
-        const unsubscribeUrl = `${siteUrl}/newsletter/unsubscribe?token=${encodeURIComponent(token)}`;
-        const result = await sendEmail(
-          subscriber.email,
-          campaign.subject,
-          `${campaign.content}${articleUrl ? `\n\nRead the full article: ${articleUrl}` : ""}\n\nFollow #TheKingsTake and explore subscription options: https://www.facebook.com/thekingstake\nMembers with an issued access code can sign in for continued globe and archive access.\n\nUnsubscribe: ${unsubscribeUrl}`,
-          newsletterHtml(campaign, unsubscribeUrl, articleUrl)
-        );
-        if (!result.sent) throw new TRPCError({ code: "BAD_GATEWAY", message: `Sending stopped after ${sent} deliveries: ${result.reason}` });
-        sent += 1;
-      }
-      await db.update(newsletterCampaigns).set({ status: "sent", sentAt: new Date(), recipientCount: sent, approvedAt: campaign.approvedAt || new Date(), publishedPostId }).where(eq(newsletterCampaigns.id, input.id));
-      return { success: true, sent, published: Boolean(publishedPostId), articleUrl };
+      const requestedAt = input.scheduledAt ? new Date(input.scheduledAt) : new Date(Date.now() + 60_000);
+      if (Number.isNaN(requestedAt.getTime())) throw new TRPCError({ code: "BAD_REQUEST", message: "Choose a valid delivery date and time." });
+      return scheduleNewsletterCampaign(input.id, requestedAt);
     }),
 
   captureLead: publicQuery

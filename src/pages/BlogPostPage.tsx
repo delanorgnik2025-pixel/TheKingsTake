@@ -520,7 +520,7 @@ function renderArticleMarkdown(markdown: string) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/\*\*([^*]+)\*\*/g, '<strong class="text-[#F0EBE1]">$1</strong>')
-    .replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, '<a href="$2" target="_blank" rel="noreferrer" class="text-[#FFB840] underline underline-offset-2">$1</a>')
+    .replace(/\[([^\]]+)\]\(((?:https?:\/\/|\/)[^)]+)\)/g, '<a href="$2" target="_blank" rel="noreferrer" class="text-[#FFB840] underline underline-offset-2">$1</a>')
     .replace(/_([^_]+)_/g, '<em class="text-[#9f927d]">$1</em>');
   const lines = markdown.split("\n");
   const html: string[] = [];
@@ -544,7 +544,7 @@ function renderArticleMarkdown(markdown: string) {
 
 export default function BlogPostPage() {
   const { slug } = useParams<{ slug: string }>();
-  const { data: apiPost } = trpc.blog.bySlug.useQuery({ slug: slug ?? "" });
+  const { data: apiPost, isLoading } = trpc.blog.bySlug.useQuery({ slug: slug ?? "" });
 
   // Use API data if available, otherwise show static fallback immediately
   const post = useMemo(() => {
@@ -552,6 +552,15 @@ export default function BlogPostPage() {
     if (slug && FALLBACK_POSTS[slug]) return FALLBACK_POSTS[slug];
     return null;
   }, [apiPost, slug]);
+  const isInvestigation = post?.category === "INVESTIGATIONS";
+
+  if (!post) {
+    return (
+      <main className="min-h-screen bg-[#14202E] px-6 pb-20 pt-28 text-center text-[#C9B99A]">
+        {isLoading ? "Loading article…" : "This article is not available."}
+      </main>
+    );
+  }
 
   return (
     <div className="relative min-h-screen pt-24 pb-16 px-6 md:px-12 overflow-hidden">
@@ -565,11 +574,11 @@ export default function BlogPostPage() {
 
       <div className="relative z-10 max-w-3xl mx-auto">
         <Link
-          to="/news"
+          to={isInvestigation ? "/investigations" : "/feed"}
           className="inline-flex items-center gap-2 text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors mb-8"
         >
           <ArrowLeft size={16} />
-          Back to Blog
+          {isInvestigation ? "Back to Investigations" : "Back to The Feed"}
         </Link>
 
         <div className="flex items-center gap-4 mb-4">

@@ -37,6 +37,7 @@ const ConsultationPage = lazy(() => import('./pages/ConsultationPage'))
 const FoundationalBlackAmericanPage = lazy(() => import('./pages/FoundationalBlackAmericanPage'))
 const ArchivesPage = lazy(() => import('./pages/ArchivesPage'))
 const NaraRecordPage = lazy(() => import('./pages/NaraRecordPage'))
+const InvestigationsPage = lazy(() => import('./pages/InvestigationsPage'))
 const NewsletterUnsubscribePage = lazy(() => import('./pages/NewsletterUnsubscribePage'))
 // Ancestor Root Registry & Ancestor Realm pages retained in repo for future development; routes currently offline.
 
@@ -93,6 +94,7 @@ function AppRoutes() {
           <Route path="/blog" element={<Navigate to="/feed" replace />} />
           <Route path="/news" element={<Navigate to="/feed" replace />} />
           <Route path="/blog/:slug" element={<BlogPostPage />} />
+          <Route path="/investigations" element={<InvestigationsPage />} />
           <Route path="/writing-services" element={<WritingServicesPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           {/* Terms of Service page - add when file exists */}
