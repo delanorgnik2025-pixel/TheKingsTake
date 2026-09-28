@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { ArrowRight, CloudLightning, FileSearch, Globe2, Landmark, Radio, ShieldCheck } from "lucide-react";
+import { ArrowRight, ChevronDown, CloudLightning, FileSearch, Globe2, Landmark, Radio, ShieldCheck } from "lucide-react";
 import { trpc } from "@/providers/trpc";
 
 const beats = [
@@ -21,10 +21,15 @@ export default function NewsHubPage() {
       <header className="border-b border-[#FF9500]/20 bg-[#182635] px-6 py-14 md:px-12">
         <div className="mx-auto max-w-7xl">
           <div className="mb-5 flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-[#FF9500]"><Radio size={16}/> The People&apos;s Newsroom</div>
-          <div className="grid gap-8 lg:grid-cols-[1.25fr_.75fr] lg:items-end">
-            <div><h1 className="text-5xl leading-none md:text-7xl">The King&apos;s News Hub</h1><p className="mt-5 max-w-3xl text-lg leading-relaxed text-[#C9B99A]">Breaking news, public records and global developments—reported with visible sourcing, clear uncertainty and a distinction between documented fact and analysis.</p></div>
-            <div className="rounded-xl border border-emerald-300/20 bg-emerald-300/[0.06] p-5 text-sm leading-relaxed text-[#C9B99A]"><strong className="text-emerald-200">Editorial standard:</strong> at least two independent sources where available, primary records prioritized, image credits displayed, and no automated publication without approval.</div>
-          </div>
+          <div className="max-w-4xl"><h1 className="text-5xl leading-none md:text-7xl">The King&apos;s News Hub</h1><p className="mt-5 max-w-3xl text-lg leading-relaxed text-[#C9B99A]">Breaking news, public records and global developments—reported with visible sourcing, clear uncertainty and a distinction between documented fact and analysis.</p></div>
+          <details className="group mt-7 max-w-3xl border-t border-white/10 pt-4 text-sm text-[#C9B99A]">
+            <summary className="flex cursor-pointer list-none items-center gap-2 text-[#E8DFC9] marker:hidden">
+              <ShieldCheck size={16} className="text-emerald-300" />
+              <span>How we report</span>
+              <ChevronDown size={15} className="transition-transform group-open:rotate-180" />
+            </summary>
+            <p className="mt-3 max-w-2xl leading-relaxed">We seek at least two independent sources where available, prioritize primary records, display image credits and require editorial approval before publication. Investigative reporting clearly separates documented facts, witness accounts, analysis and unresolved questions.</p>
+          </details>
         </div>
       </header>
 
@@ -47,7 +52,18 @@ export default function NewsHubPage() {
       <section className="mx-auto mt-12 max-w-7xl border-t border-white/10 px-6 pt-10 md:px-12">
         <h2 className="text-3xl">Latest published reporting</h2>
         <div className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {news.map(post => <article key={post.id} className="rounded-xl border border-white/10 bg-[#182635] p-6"><p className="text-[10px] uppercase tracking-[0.15em] text-[#FF9500]">{post.category}</p><h3 className="mt-3 text-xl leading-snug">{post.title}</h3><p className="mt-3 line-clamp-3 text-sm leading-relaxed text-[#C9B99A]">{post.excerpt}</p><Link to={`/blog/${post.slug}`} className="mt-5 inline-flex items-center gap-2 text-sm text-[#FFB840]">Continue reading <ArrowRight size={14}/></Link></article>)}
+          {news.map(post => <article key={post.id} className="overflow-hidden rounded-xl border border-white/10 bg-[#182635]">
+            {post.coverImage ? (
+              <Link to={`/blog/${post.slug}`} aria-label={`Read ${post.title}`} className="block overflow-hidden">
+                <img src={post.coverImage} alt="" className="aspect-[16/9] w-full object-cover transition-transform duration-500 hover:scale-[1.025]" loading="lazy" />
+              </Link>
+            ) : (
+              <div className="flex aspect-[16/9] items-end bg-[radial-gradient(circle_at_75%_25%,rgba(255,149,0,.26),transparent_30%),linear-gradient(145deg,#25364b,#0e1722)] p-5">
+                <span className="text-[10px] uppercase tracking-[0.16em] text-[#C9B99A]/70">Editorial image pending</span>
+              </div>
+            )}
+            <div className="p-6"><p className="text-[10px] uppercase tracking-[0.15em] text-[#FF9500]">{post.category}</p><h3 className="mt-3 text-xl leading-snug">{post.title}</h3><p className="mt-3 line-clamp-3 text-sm leading-relaxed text-[#C9B99A]">{post.excerpt}</p><Link to={`/blog/${post.slug}`} className="mt-5 inline-flex items-center gap-2 text-sm text-[#FFB840]">Continue reading <ArrowRight size={14}/></Link></div>
+          </article>)}
         </div>
       </section>
     </main>
