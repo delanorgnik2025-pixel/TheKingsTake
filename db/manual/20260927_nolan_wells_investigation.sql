@@ -54,11 +54,15 @@ SET `title` = @investigation_title,
     `published` = true,
     `featured` = true,
     `updatedAt` = CURRENT_TIMESTAMP
-WHERE `slug` = @investigation_slug;
+-- Compare bytes so this idempotent seed works across the legacy
+-- utf8mb4_unicode_ci columns and the MySQL 8 utf8mb4_0900_ai_ci session.
+WHERE BINARY `slug` = BINARY @investigation_slug;
 
 INSERT INTO `posts` (`title`, `slug`, `excerpt`, `content`, `category`, `coverImage`, `published`, `featured`)
 SELECT @investigation_title, @investigation_slug, @investigation_excerpt, @investigation_content, 'INVESTIGATIONS', NULL, true, true
-WHERE NOT EXISTS (SELECT 1 FROM `posts` WHERE `slug` = @investigation_slug);
+WHERE NOT EXISTS (
+  SELECT 1 FROM `posts` WHERE BINARY `slug` = BINARY @investigation_slug
+);
 
 INSERT INTO `feed_posts` (`member_id`, `body`, `link_url`, `link_title`, `pinned`)
 SELECT NULL,
@@ -67,5 +71,7 @@ SELECT NULL,
        @investigation_title,
        true
 WHERE NOT EXISTS (
-  SELECT 1 FROM `feed_posts` WHERE `link_url` = '/blog/nolan-wells-garrett-discovery-phone-timeline'
+  SELECT 1
+  FROM `feed_posts`
+  WHERE BINARY `link_url` = BINARY '/blog/nolan-wells-garrett-discovery-phone-timeline'
 );
