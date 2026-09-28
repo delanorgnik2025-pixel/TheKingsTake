@@ -553,6 +553,7 @@ export default function BlogPostPage() {
     return null;
   }, [apiPost, slug]);
   const isInvestigation = post?.category === "INVESTIGATIONS";
+  const isNews = post?.category === "DAILY NEWS";
 
   if (!post) {
     return (
@@ -574,11 +575,11 @@ export default function BlogPostPage() {
 
       <div className="relative z-10 max-w-3xl mx-auto">
         <Link
-          to={isInvestigation ? "/investigations" : "/feed"}
+          to={isInvestigation ? "/investigations" : isNews ? "/news-hub" : "/feed"}
           className="inline-flex items-center gap-2 text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors mb-8"
         >
           <ArrowLeft size={16} />
-          {isInvestigation ? "Back to Investigations" : "Back to The Feed"}
+          {isInvestigation ? "Back to Investigations" : isNews ? "Back to News Hub" : "Back to The Feed"}
         </Link>
 
         <div className="flex items-center gap-4 mb-4">

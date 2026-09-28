@@ -18,6 +18,7 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
     { label: 'Book Consultation', href: '/consultation', icon: <Calendar size={16} />, desc: 'One-on-one with Ronald Lee King', highlight: true },
     { label: 'Foundational Black American', href: '/fba', icon: <Landmark size={16} />, desc: 'Our lineage, identity, and claim' },
     { label: 'The Feed', href: '/feed', icon: <Newspaper size={16} />, desc: 'News, posts & live broadcasts' },
+    { label: 'News Hub', href: '/news-hub', icon: <Radio size={16} />, desc: 'Breaking news & sourced daily reporting', highlight: true },
     { label: 'Investigations', href: '/investigations', icon: <FileSearch size={16} />, desc: 'Documents, timelines & research reports' },
     { label: 'Search Archives', href: '/archives', icon: <Landmark size={16} />, desc: 'NARA and Library of Congress records' },
     { label: 'Writing Services', href: '/writing-services', icon: <PenTool size={16} />, desc: 'All writing offerings' },

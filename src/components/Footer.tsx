@@ -50,6 +50,7 @@ export default function Footer({ onNavClick }: FooterProps) {
           <a href="/#heritage" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">Heritage</a>
           <button onClick={() => onNavClick('services')} className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200 cursor-pointer">Services</button>
           <Link to="/feed" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">The Feed</Link>
+          <Link to="/news-hub" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">News Hub</Link>
           <Link to="/investigations" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">Investigations</Link>
           <button onClick={() => onNavClick('contact')} className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200 cursor-pointer">Contact</button>
           <Link to="/privacy-policy" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">Privacy Policy</Link>
