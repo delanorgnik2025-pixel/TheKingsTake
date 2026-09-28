@@ -12,6 +12,7 @@ const migrations = [
   ["20260923_timed_dispatch_delivery", "db/manual/20260923_timed_dispatch_delivery.sql"],
   ["20260927_dispatch_article_compatibility", "db/manual/20260927_dispatch_article_compatibility.sql"],
   ["20260927_nolan_wells_investigation", "db/manual/20260927_nolan_wells_investigation.sql"],
+  ["20260928_hide_ai_assisted_service", "db/manual/20260928_hide_ai_assisted_service.sql"],
 ];
 
 const databaseUrl = process.env.DATABASE_URL;

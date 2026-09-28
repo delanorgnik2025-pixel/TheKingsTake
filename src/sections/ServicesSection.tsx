@@ -2,12 +2,12 @@ import { motion } from 'framer-motion'
 import type { Variants } from 'framer-motion'
 import { Link } from 'react-router'
 import { trpc } from '@/providers/trpc'
-import { PenTool, Globe, BookOpen, Megaphone, Code, Crown, ArrowRight, FileText, Feather, Type } from 'lucide-react'
+import { PenTool, Globe, BookOpen, Megaphone, Crown, ArrowRight, FileText, Feather, Type } from 'lucide-react'
 import ScrollReveal from '../components/ScrollReveal'
 import { useMemo } from 'react'
 
 const iconMap: Record<string, React.ElementType> = {
-  PenTool, Globe, BookOpen, Megaphone, Code, Crown, Feather, Type,
+  PenTool, Globe, BookOpen, Megaphone, Crown, Feather, Type,
 };
 
 const cardVariants: Variants = {
@@ -55,15 +55,6 @@ const FALLBACK_SERVICES = [
     type: "one_time" as const, icon: "Megaphone",
     features: JSON.stringify(["Story development sessions ($100/hr)", "Platform & branding strategy", "Content planning & messaging", "Advocacy organization guidance", "Educational court navigation info", "UPL awareness & community legal literacy"]),
     order: 5, isActive: true,
-  },
-  {
-    id: 6, name: "AI-Assisted Creative Services", slug: "ai-assisted-creative",
-    shortDescription: "Human storytelling enhanced by modern AI tools. Research, drafting, optimization, and content strategy.",
-    fullDescription: "AI-enhanced content creation that combines human storytelling craft with cutting-edge technology.",
-    price: 75, priceDisplay: "From $75", duration: "Per project",
-    type: "one_time" as const, icon: "Code",
-    features: JSON.stringify(["AI-assisted content ($75+)", "AI + human enhanced packages ($250+)", "Research & optimization", "Draft generation & editing", "Content strategy integration"]),
-    order: 6, isActive: true,
   },
   {
     id: 7, name: "Legacy Interview", slug: "legacy-interview",

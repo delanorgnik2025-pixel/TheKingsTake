@@ -24,7 +24,6 @@ const ANCHOR_TO_SLUG: Record<string, string> = {
   'legacy-interview': 'legacy-interview',
   'ghostwriting': 'ghostwriting',
   'content-writing': 'content-writing',
-  'ai-assisted': 'ai-assisted-creative',
 }
 
 const WRITING_SERVICES = [
@@ -135,24 +134,6 @@ const WRITING_SERVICES = [
       'Monthly Retainer (Custom)',
     ],
     cta: 'Book a Session',
-  },
-  {
-    id: 7,
-    slug: 'ai-assisted-creative',
-    title: 'AI-Assisted Creative Services',
-    icon: Sparkles,
-    price: 'From $75',
-    description: 'Human storytelling enhanced by modern AI. Research, drafting, optimization, strategy.',
-    details: 'AI amplifies your voice — it does not replace it. I use cutting-edge tools to accelerate research, generate drafts, and optimize content — then apply human craft to make it powerful.',
-    offerings: [
-      'AI-Assisted Content Drafting ($75+)',
-      'AI + Human Editing Package ($250+)',
-      'Research & Fact-Checking ($150+)',
-      'SEO Optimization & Analysis',
-      'Content Strategy with AI Insights',
-      'Enterprise Content Systems (Custom)',
-    ],
-    cta: 'Explore AI Services',
   },
 ];
 

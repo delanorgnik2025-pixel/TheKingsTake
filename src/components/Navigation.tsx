@@ -32,7 +32,6 @@ export default function Navigation({ onMenuToggle }: NavigationProps) {
     { label: 'Legacy Interview', href: '/writing-services#legacy-interview', desc: 'Preserve your story' },
     { label: 'Ghostwriting', href: '/writing-services#ghostwriting', desc: 'Your voice, my craft' },
     { label: 'Content Writing', href: '/writing-services#content-writing', desc: 'Copy that converts' },
-    { label: 'AI-Assisted Creative', href: '/writing-services#ai-assisted', desc: 'Human + AI power' },
   ]
 
   return (
@@ -155,7 +154,6 @@ export default function Navigation({ onMenuToggle }: NavigationProps) {
               <Link to="/writing-services#legacy-interview" onClick={() => setMobileOpen(false)} className="block text-[#C9B99A] text-base py-2 border-b border-[rgba(240,235,225,0.04)] hover:text-[#FF9500]">Legacy Interview</Link>
               <Link to="/writing-services#ghostwriting" onClick={() => setMobileOpen(false)} className="block text-[#C9B99A] text-base py-2 border-b border-[rgba(240,235,225,0.04)] hover:text-[#FF9500]">Ghostwriting</Link>
               <Link to="/writing-services#content-writing" onClick={() => setMobileOpen(false)} className="block text-[#C9B99A] text-base py-2 border-b border-[rgba(240,235,225,0.04)] hover:text-[#FF9500]">Content Writing</Link>
-              <Link to="/writing-services#ai-assisted" onClick={() => setMobileOpen(false)} className="block text-[#C9B99A] text-base py-2 border-b border-[rgba(240,235,225,0.04)] hover:text-[#FF9500]">AI-Assisted Creative</Link>
             </div>
 
             <Link to="/civics" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Civics</Link>

@@ -89,18 +89,6 @@ const FALLBACK_SERVICES: Record<string, {
       { label: "Premium Author Development", price: "$1,500+", desc: "Full-service: editing, design, launch, marketing, ongoing support" },
     ],
   },
-  "ai-assisted-creative": {
-    id: 6, slug: "ai-assisted-creative", name: "AI-Assisted Creative Services",
-    duration: "Per project", priceDisplay: "From $75", type: "one-time",
-    shortDescription: "Human storytelling enhanced by modern AI tools. Research, drafting, optimization, and content strategy.",
-    fullDescription: `AI-enhanced content creation that combines human storytelling craft with cutting-edge technology.\n\nThe tools are powerful. But the story is still yours. We use AI to amplify your voice — not replace it.`,
-    features: JSON.stringify(["AI-enhanced research","Draft generation & editing","Content optimization","SEO & analytics integration","Human review & refinement"]),
-    tiers: [
-      { label: "AI-Assisted Content", price: "$75", desc: "Single piece: article, blog post, social media content" },
-      { label: "AI + Human Enhanced Package", price: "$250", desc: "Multi-piece package: research, drafting, editing, optimization" },
-      { label: "Enterprise Content System", price: "Custom", desc: "Ongoing AI-assisted content production at scale" },
-    ],
-  },
   "consulting-strategy": {
     id: 5, slug: "consulting-strategy", name: "Consulting & Strategy",
     duration: "Per hour", priceDisplay: "$100/hour", type: "one-time",

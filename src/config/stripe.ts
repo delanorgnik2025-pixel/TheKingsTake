@@ -20,7 +20,6 @@ export const STRIPE_LINKS = {
   contentWritingBase: 'https://buy.stripe.com/PLACEHOLDER_CONTENT75',
   ghostwritingBase: 'https://buy.stripe.com/PLACEHOLDER_GHOST1500',
   consultingHourly: 'https://buy.stripe.com/PLACEHOLDER_CONSULT100',
-  aiCreativeBase: 'https://buy.stripe.com/PLACEHOLDER_AICREATIVE75',
   speechwritingBase: 'https://buy.stripe.com/PLACEHOLDER_SPEECH150',
   bookPublishingBase: 'https://buy.stripe.com/PLACEHOLDER_BOOK499',
 } as const

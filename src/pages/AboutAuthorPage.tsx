@@ -108,7 +108,7 @@ const PORTFOLIO_ITEMS = [
   {
     title: 'Writing Services',
     subtitle: 'Your Story, Masterfully Told',
-    description: 'Professional writing services including speechwriting, book publishing, ghostwriting, legacy interviews, content writing, and AI-assisted creative. Every word carries weight.',
+    description: 'Professional writing services including speechwriting, book publishing, ghostwriting, legacy interviews, and content writing. Every word carries Ronald Lee King’s perspective, craft, and editorial judgment.',
     tags: ['Speechwriting', 'Books', 'Content Creation'],
     link: '/writing-services',
     icon: Feather,
