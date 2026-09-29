@@ -14,7 +14,8 @@ import {
   visitorContacts,
   workApplications,
 } from "@db/schema";
-import { generateDailyNewsDraft, latestAutomatedCampaign } from "./newsletter-automation";
+import { NEWS_BEATS } from "../contracts/news-beats";
+import { queueDailyNewsGeneration, latestAutomatedCampaign, newsroomGenerationStatus } from "./newsletter-automation";
 import { visitorFromRequest } from "./security/visitor-session";
 
 const SITE_GUIDE = `
@@ -177,6 +178,11 @@ async function validateCampaignForApproval(campaign: typeof newsletterCampaigns.
   try { sourceUrls = JSON.parse(campaign.sourceUrls || "[]"); } catch { sourceUrls = []; }
   if (campaign.automated && sourceUrls.length < 2)
     throw new TRPCError({ code: "PRECONDITION_FAILED", message: "Automated editions require at least two source links before approval." });
+  if (campaign.dailyKey?.endsWith("-newsroom")) {
+    const bundle = await getDb().select().from(posts).where(eq(posts.newsEdition, campaign.dailyKey));
+    if (NEWS_BEATS.some(beat => !bundle.some(post => post.newsBeat === beat.id && post.title.trim() && post.content.trim() && post.coverImage)))
+      throw new TRPCError({ code: "PRECONDITION_FAILED", message: "All seven newsroom articles need complete copy and an image before this edition can be approved." });
+  }
   if (campaign.automated && (!campaign.articleTitle || !campaign.articleSlug || !campaign.articleContent))
     throw new TRPCError({ code: "PRECONDITION_FAILED", message: "The website article is incomplete. Edit and save the draft before approval." });
 }
@@ -248,6 +254,15 @@ async function publishCampaignArticle(campaign: typeof newsletterCampaigns.$infe
     }
     await db.update(newsletterCampaigns).set({ publishedPostId }).where(eq(newsletterCampaigns.id, campaign.id));
   }
+  // One editorial approval publishes the reviewed bundle; only one digest is
+  // queued for delivery, preserving the existing anti-spam spacing.
+  if (campaign.dailyKey?.endsWith("-newsroom")) {
+    const bundle = await db.select().from(posts).where(eq(posts.newsEdition, campaign.dailyKey));
+    campaign.content = bundle.map(post => `## ${NEWS_BEATS.find(beat => beat.id === post.newsBeat)?.label || "News"}\n${post.title}\n\n${post.excerpt || ""}\n\n[Read the full report](${siteUrl}/blog/${post.slug})`).join("\n\n");
+    await db.update(newsletterCampaigns).set({ content: campaign.content }).where(eq(newsletterCampaigns.id, campaign.id));
+    await db.update(posts).set({ published: true }).where(eq(posts.newsEdition, campaign.dailyKey));
+  }
+  if (publishedPostId && !campaign.dailyKey?.endsWith("-newsroom")) await db.update(posts).set({ published: true, title: campaign.articleTitle!, excerpt: campaign.articleExcerpt, content: campaign.articleContent!, coverImage: campaign.imageUrl?.slice(0, 500) || null }).where(eq(posts.id, publishedPostId));
   return { publishedPostId, articleUrl: `${siteUrl}/blog/${campaign.articleSlug}` };
 }
 
@@ -484,6 +499,7 @@ export const engagementRouter = createRouter({
   ),
 
   adminNewsletterAutomationStatus: adminQuery.query(async () => ({
+    ...newsroomGenerationStatus(),
     enabled: process.env.NEWSLETTER_AUTOMATION_ENABLED !== "false",
     researchConfigured: Boolean(process.env.OPENAI_API_KEY),
     emailConfigured: Boolean(process.env.RESEND_API_KEY && process.env.NEWSLETTER_FROM_EMAIL),
@@ -493,7 +509,7 @@ export const engagementRouter = createRouter({
 
   adminGenerateDailyNewsDraft: adminQuery.mutation(async () => {
     try {
-      return await generateDailyNewsDraft();
+      return queueDailyNewsGeneration();
     } catch (error) {
       throw new TRPCError({
         code: "PRECONDITION_FAILED",

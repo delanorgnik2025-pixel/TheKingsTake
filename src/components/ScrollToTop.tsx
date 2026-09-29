@@ -7,7 +7,7 @@ import { useLocation } from 'react-router'
  * middle/bottom of the new page instead of the top.
  */
 export default function ScrollToTop() {
-  const { pathname } = useLocation()
+  const { pathname, search } = useLocation()
 
   useEffect(() => {
     // Immediate scroll reset
@@ -15,7 +15,7 @@ export default function ScrollToTop() {
     // Also reset document scroll in case of nested scrollers
     document.documentElement.scrollTop = 0
     document.body.scrollTop = 0
-  }, [pathname])
+  }, [pathname, search])
 
   return null
 }

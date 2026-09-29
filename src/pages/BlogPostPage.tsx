@@ -552,6 +552,8 @@ export default function BlogPostPage() {
     if (slug && FALLBACK_POSTS[slug]) return FALLBACK_POSTS[slug];
     return null;
   }, [apiPost, slug]);
+  const beat = apiPost?.newsBeat;
+  const { data: related = [] } = trpc.blog.list.useQuery({ beat: beat || "", limit: 6 }, { enabled: Boolean(beat) });
   const isInvestigation = post?.category === "INVESTIGATIONS";
   const isNews = post?.category === "DAILY NEWS";
 
@@ -582,7 +584,7 @@ export default function BlogPostPage() {
           {isInvestigation ? "Back to Investigations" : isNews ? "Back to News Hub" : "Back to The Feed"}
         </Link>
 
-        <div className="flex items-center gap-4 mb-4">
+        <div className="flex flex-wrap items-center gap-4 mb-4">
           <span className="flex items-center gap-1 text-xs text-[#FF9500] uppercase tracking-[0.08em]">
             <Tag size={12} />
             {post.category}
@@ -607,6 +609,8 @@ export default function BlogPostPage() {
           </p>
         )}
 
+        {post.coverImage && <figure className="mb-8 overflow-hidden rounded-lg border border-white/10"><img src={post.coverImage} alt={post.title} className="aspect-video w-full object-cover" /></figure>}
+
         <div className="bg-[rgba(37,54,75,0.9)] backdrop-blur-lg rounded-lg border border-[rgba(255,149,0,0.2)] p-8">
           <div
             className="prose prose-invert max-w-none text-[#C9B99A] leading-relaxed"
@@ -615,6 +619,8 @@ export default function BlogPostPage() {
             }}
           />
         </div>
+
+        {beat && <section className="mt-10"><Link to={`/news-hub?beat=${beat}`} className="text-sm text-[#FFB840]">Explore this coverage desk →</Link><h2 className="mt-5 text-2xl text-[#F0EBE1]">Continue the story</h2><div className="mt-4 grid gap-4 sm:grid-cols-2">{related.filter(item => item.slug !== post.slug).slice(0, 4).map(item => <Link key={item.id} to={`/blog/${item.slug}`} className="overflow-hidden rounded-lg border border-white/10 bg-[#182635]">{item.coverImage && <img src={item.coverImage} alt="" loading="lazy" className="aspect-video w-full object-cover" />}<h3 className="p-4 text-lg text-[#F0EBE1]">{item.title}</h3></Link>)}</div></section>}
 
         <div className="mt-12 p-6 bg-[rgba(42,58,74,0.7)] rounded-lg border border-[rgba(255,149,0,0.2)]">
           <div className="flex items-center gap-4">

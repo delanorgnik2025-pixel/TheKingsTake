@@ -36,6 +36,8 @@ export const posts = mysqlTable("posts", {
   content: text("content").notNull(),
   category: varchar("category", { length: 50 }).notNull(),
   coverImage: varchar("coverImage", { length: 500 }),
+  newsBeat: varchar("news_beat", { length: 32 }),
+  newsEdition: varchar("news_edition", { length: 32 }),
   published: boolean("published").default(true).notNull(),
   featured: boolean("featured").default(false).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),

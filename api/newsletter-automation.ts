@@ -1,7 +1,9 @@
-import { desc, eq } from "drizzle-orm";
-import { newsletterCampaigns } from "../db/schema";
+import { and, desc, eq } from "drizzle-orm";
+import { newsletterCampaigns, posts } from "../db/schema";
 import { getDb } from "./queries/connection";
 import { easternDailyKey, easternHour, selectIndependentSources, type NewsSource as Source } from "./newsletter-automation-utils";
+
+import { NEWS_BEATS, type NewsBeatId } from "../contracts/news-beats";
 
 export { easternDailyKey, easternHour, selectIndependentSources } from "./newsletter-automation-utils";
 
@@ -74,7 +76,7 @@ function slugify(value: string, dailyKey: string) {
   return `${base || "kings-daily-brief"}-${dailyKey}`;
 }
 
-async function researchCurrentNews(apiKey: string) {
+async function researchCurrentNews(apiKey: string, focus: string) {
   const response = await fetch("https://api.openai.com/v1/responses", {
     method: "POST",
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
@@ -83,7 +85,7 @@ async function researchCurrentNews(apiKey: string) {
       tools: [{ type: "web_search", search_context_size: "low" }],
       tool_choice: "required",
       max_output_tokens: 1800,
-      input: `Today is ${new Date().toISOString().slice(0, 10)}. Research current developments from the last 48 hours for TheKingsTake.com readers. Choose one consequential lead story and two short developments involving civil rights, African American communities, economic justice, criminal-justice policy, government action, Black or Indigenous history, genealogy, archives, books, or media. Verify the lead with at least two independent credible sources, prioritizing public agencies, primary documents, established newsrooms, and subject-matter institutions. Avoid rumors, clickbait, celebrity gossip, and unsupported claims. Return a concise factual brief with dates, why each item matters, uncertainty, and citations. This is a draft for human approval; do not invent the publisher's personal opinion.`,
+      input: `Today is ${new Date().toISOString().slice(0, 10)}. Research current developments from the last 48 hours for TheKingsTake.com readers. Research this coverage beat ONLY: ${focus} Choose one consequential verified story. If no new development is confirmed, explicitly produce a dated background/context brief using the most recent reliable evidence rather than inventing breaking news. Verify the lead with at least two independent credible sources, prioritizing public agencies, primary documents, established newsrooms, and subject-matter institutions. Avoid rumors, clickbait, celebrity gossip, and unsupported claims. Return a concise factual brief with dates, why each item matters, uncertainty, and citations. This is a draft for human approval; do not invent the publisher's personal opinion.`,
     }),
   });
   if (!response.ok) {
@@ -108,7 +110,7 @@ async function writeDraft(apiKey: string, research: string, sources: Source[]): 
       messages: [
         {
           role: "system",
-          content: `You are the careful editorial desk for The King's Take, published by AASOTU Media Group LLC. Write a clear, original, serious daily news analysis for a general audience. Separate verified fact from interpretation. Do not fabricate quotes, numbers, links, or Ronald Lee King's personal views. Do not make legal conclusions. Use only the supplied research. The article should be 700-1,100 words with concise Markdown headings. The newsletter should be 350-600 words and invite readers to read the full article. Return strict JSON with exactly these string keys: subject, previewText, articleTitle, articleExcerpt, articleContent, newsletterContent, imageSearchTerm. Do not put source lists in the copy; the application appends the verified sources. imageSearchTerm must describe a factual newsworthy subject suitable for a Wikimedia Commons photo, not an abstract illustration.`,
+          content: `You are the careful editorial desk for The King's Take, published by AASOTU Media Group LLC. Write a clear, original, serious daily news analysis for a general audience. Separate verified fact from interpretation. Do not fabricate quotes, numbers, links, or Ronald Lee King's personal views. Do not make legal conclusions. Use only the supplied research. The article should be 350-600 words, or shorter if the verified evidence is limited with concise Markdown headings. The newsletter should be 60-100 words and invite readers to read the full article. Return strict JSON with exactly these string keys: subject, previewText, articleTitle, articleExcerpt, articleContent, newsletterContent, imageSearchTerm. Do not put source lists in the copy; the application appends the verified sources. imageSearchTerm must describe a factual newsworthy subject suitable for a Wikimedia Commons photo, not an abstract illustration.`,
         },
         {
           role: "user",
@@ -129,7 +131,8 @@ async function writeDraft(apiKey: string, research: string, sources: Source[]): 
   return parsed as EditorialDraft;
 }
 
-async function findCommonsImage(searchTerm: string): Promise<ImageSelection> {
+async function findCommonsImage(searchTerm: string, beat: NewsBeatId): Promise<ImageSelection> {
+  const fallback = { ...FALLBACK_IMAGE, url: `https://thekingstake.com/images/news-${beat}.jpg`, alt: `${NEWS_BEATS.find(item => item.id === beat)?.label} — editorial illustration`, credit: "AASOTU Media Group LLC · Editorial illustration" };
   try {
     const params = new URLSearchParams({
       action: "query",
@@ -146,7 +149,7 @@ async function findCommonsImage(searchTerm: string): Promise<ImageSelection> {
     const response = await fetch(`https://commons.wikimedia.org/w/api.php?${params}`, {
       headers: { "User-Agent": "TheKingsTake/1.0 (https://thekingstake.com/contact)" },
     });
-    if (!response.ok) return FALLBACK_IMAGE;
+    if (!response.ok) return fallback;
     const data = (await response.json()) as {
       query?: { pages?: Record<string, { title?: string; imageinfo?: Array<{ thumburl?: string; url?: string; descriptionurl?: string; extmetadata?: Record<string, { value?: string }> }> }> };
     };
@@ -157,6 +160,7 @@ async function findCommonsImage(searchTerm: string): Promise<ImageSelection> {
       if (!url?.startsWith("https://upload.wikimedia.org/")) continue;
       const metadata = info.extmetadata || {};
       const license = stripHtml(metadata.LicenseShortName?.value || "Wikimedia Commons license");
+      if (!/^(CC BY|CC0|Public domain)/i.test(license)) continue;
       const artist = stripHtml(metadata.Artist?.value || metadata.Credit?.value || "Wikimedia Commons contributor");
       return {
         url,
@@ -168,7 +172,7 @@ async function findCommonsImage(searchTerm: string): Promise<ImageSelection> {
   } catch (error) {
     console.error("[daily-news] Wikimedia image search failed", error instanceof Error ? error.message : error);
   }
-  return FALLBACK_IMAGE;
+  return fallback;
 }
 
 async function notifyDraftReady(campaignId: number, subject: string) {
@@ -189,56 +193,73 @@ async function notifyDraftReady(campaignId: number, subject: string) {
   }).catch(error => console.error("[daily-news] Draft-ready email failed", error));
 }
 
-export async function generateDailyNewsDraft(options: { force?: boolean } = {}) {
+export async function generateDailyNewsDraft() {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) throw new Error("OPENAI_API_KEY is required for daily news research.");
   const db = getDb();
-  const dailyKey = easternDailyKey();
+  const dailyKey = `${easternDailyKey()}-newsroom`;
   const [existing] = await db.select().from(newsletterCampaigns).where(eq(newsletterCampaigns.dailyKey, dailyKey)).limit(1);
-  if (existing && !options.force) return { created: false as const, campaign: existing };
-  if (existing && options.force) throw new Error("Today's automated draft already exists. Edit it in the approval desk instead of overwriting it.");
-
-  const research = await researchCurrentNews(apiKey);
-  const editorial = await writeDraft(apiKey, research.text, research.sources);
-  const image = await findCommonsImage(editorial.imageSearchTerm);
-  const sourceSection = `\n\n## Sources\n${research.sources.map(source => `- [${source.title}](${source.url})`).join("\n")}`;
-  const imageCredit = image.sourceUrl ? `${image.credit} — ${image.sourceUrl}` : image.credit;
+  if (existing) return { created: false as const, campaign: existing };
+  for (const beat of NEWS_BEATS) {
+    const [saved] = await db.select({ id: posts.id }).from(posts).where(and(eq(posts.newsEdition, dailyKey), eq(posts.newsBeat, beat.id))).limit(1);
+    if (saved) continue;
+    const research = await researchCurrentNews(apiKey, beat.focus);
+    const editorial = await writeDraft(apiKey, research.text, research.sources);
+    const image = await findCommonsImage(editorial.imageSearchTerm, beat.id);
+    const sourceSection = `\n\n## Sources\n${research.sources.map(source => `- [${source.title}](${source.url})`).join("\n")}`;
+    const imageCredit = image.sourceUrl ? `${image.credit} — ${image.sourceUrl}` : image.credit;
+    await db.insert(posts).values({
+      title: editorial.articleTitle.slice(0, 255),
+      slug: slugify(editorial.articleTitle, `${dailyKey.slice(0, 10)}-${beat.id}`),
+      excerpt: editorial.articleExcerpt,
+      content: `${editorial.articleContent}${sourceSection}\n\n_Image: ${imageCredit}_`,
+      category: "DAILY NEWS", newsBeat: beat.id, newsEdition: dailyKey,
+      coverImage: image.url.slice(0, 500), published: false, featured: false,
+    });
+    console.log(`[daily-news] Prepared ${beat.id} for editorial review`);
+  }
+  const articles = await db.select().from(posts).where(eq(posts.newsEdition, dailyKey)).orderBy(posts.newsBeat);
+  if (articles.length !== NEWS_BEATS.length) throw new Error("Some coverage beats are still being researched; completed drafts are saved for the next attempt.");
+  const lead = articles.find(article => article.newsBeat === "environment") || articles[0];
+  const digest = articles.map(article => `## ${NEWS_BEATS.find(beat => beat.id === article.newsBeat)?.label}\n${article.title}\n\n${article.excerpt}\n\n[Read the full report](https://thekingstake.com/blog/${article.slug})`).join("\n\n");
+  const sources = [...new Set(articles.flatMap(article => [...article.content.matchAll(/\]\((https?:[^)]+)\)/g)].map(match => match[1])))];
   const [result] = await db.insert(newsletterCampaigns).values({
-    subject: editorial.subject.slice(0, 255),
-    previewText: editorial.previewText.slice(0, 255),
-    content: `${editorial.newsletterContent}${sourceSection}`,
-    sourceUrls: JSON.stringify(research.sources.map(source => source.url)),
-    automated: true,
-    dailyKey,
-    researchSummary: research.text,
-    imageUrl: image.url,
-    imageAlt: image.alt,
-    imageCredit,
-    imageSourceUrl: image.sourceUrl,
-    articleTitle: editorial.articleTitle.slice(0, 255),
-    articleSlug: slugify(editorial.articleTitle, dailyKey),
-    articleExcerpt: editorial.articleExcerpt,
-    articleContent: `${editorial.articleContent}${sourceSection}\n\n_Image: ${imageCredit}_`,
+    subject: `The King's Dispatch · ${easternDailyKey()} · Seven coverage desks`,
+    previewText: "Weather, conflicts, Africa, environment and science — today's sourced reporting.",
+    content: digest, sourceUrls: JSON.stringify(sources), automated: true, dailyKey,
+    researchSummary: "Seven individually sourced articles. Review the full newsroom bundle before approving this single digest.",
+    imageUrl: lead.coverImage, imageAlt: lead.title, imageCredit: "See the image credit in the linked article.",
+    articleTitle: lead.title, articleSlug: lead.slug, articleExcerpt: lead.excerpt, articleContent: lead.content,
   });
   const id = Number(result.insertId);
   const [campaign] = await db.select().from(newsletterCampaigns).where(eq(newsletterCampaigns.id, id)).limit(1);
-  await notifyDraftReady(id, editorial.subject);
+  await notifyDraftReady(id, campaign.subject);
   return { created: true as const, campaign };
 }
 
 let generationInProgress = false;
+let lastGenerationError: string | null = null;
+export function newsroomGenerationStatus() { return { generating: generationInProgress, lastGenerationError }; }
 
-async function runScheduledGeneration() {
-  if (generationInProgress || easternHour() < Number(process.env.NEWSLETTER_DAILY_HOUR_ET || "5")) return;
+export async function runScheduledGeneration(manual = false) {
+  if (generationInProgress || (!manual && easternHour() < Number(process.env.NEWSLETTER_DAILY_HOUR_ET || "5"))) return;
   generationInProgress = true;
+  lastGenerationError = null;
   try {
     const result = await generateDailyNewsDraft();
     if (result.created) console.log(`[daily-news] Created approval draft for ${easternDailyKey()}`);
   } catch (error) {
+    lastGenerationError = "Daily research could not finish. Completed article drafts are saved; the next run will resume. Check the research connection or try again shortly.";
     console.error("[daily-news] Generation skipped or failed", error instanceof Error ? error.message : error);
   } finally {
     generationInProgress = false;
   }
+}
+
+export function queueDailyNewsGeneration() {
+  if (generationInProgress) return { queued: true as const, created: false as const };
+  void runScheduledGeneration(true);
+  return { queued: true as const, created: false as const };
 }
 
 export function startDailyNewsAutomation() {
@@ -250,8 +271,8 @@ export function startDailyNewsAutomation() {
     console.log("[daily-news] Automation waiting for OPENAI_API_KEY.");
     return;
   }
-  setTimeout(runScheduledGeneration, 30_000).unref();
-  setInterval(runScheduledGeneration, 15 * 60_000).unref();
+  setTimeout(() => runScheduledGeneration(), 30_000).unref();
+  setInterval(() => runScheduledGeneration(), 15 * 60_000).unref();
   console.log(`[daily-news] Approval-draft automation enabled for ${process.env.NEWSLETTER_DAILY_HOUR_ET || "5"}:00 AM Eastern.`);
 }
 

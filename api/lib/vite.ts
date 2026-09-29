@@ -3,9 +3,11 @@ import type { HttpBindings } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
 import fs from "fs";
 import path from "path";
-import { eq } from "drizzle-orm";
-import { feedPosts, members } from "@db/schema";
+import { and, eq } from "drizzle-orm";
+import { feedPosts, members, posts } from "@db/schema";
 import { getDb } from "../queries/connection";
+
+import { articleMetadataHtml } from "./article-metadata";
 
 type App = Hono<{ Bindings: HttpBindings }>;
 
@@ -102,6 +104,22 @@ export function serveStaticFiles(app: App) {
 
   app.get("/feed/post/:id", sharedPostHandler);
   app.get("/feed/post/:id/:slug", sharedPostHandler);
+
+  // Public metadata contains only published articles. Crawlers receive it even
+  // when the visitor entrance form is still shown by the client application.
+  app.get("/blog/:slug", async c => {
+    const indexPath = path.resolve(distPath, "index.html");
+    if (!fs.existsSync(indexPath)) return c.json({ error: "Frontend build not found" }, 500);
+    try {
+      const [post] = await getDb().select().from(posts).where(and(eq(posts.slug, c.req.param("slug")), eq(posts.published, true))).limit(1);
+      if (!post) return c.html(fs.readFileSync(indexPath, "utf-8"), 404);
+      c.header("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
+      return c.html(articleMetadataHtml(fs.readFileSync(indexPath, "utf-8"), post));
+    } catch (error) {
+      console.error("Article metadata lookup failed");
+      return c.html(fs.readFileSync(indexPath, "utf-8"), 503);
+    }
+  });
 
   // SPA fallback: for ALL non-API browser requests, return index.html
   // This must come AFTER static file routes but BEFORE API 404 handler

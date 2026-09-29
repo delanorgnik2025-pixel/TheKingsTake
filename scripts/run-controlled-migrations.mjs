@@ -13,6 +13,9 @@ const migrations = [
   ["20260927_dispatch_article_compatibility", "db/manual/20260927_dispatch_article_compatibility.sql"],
   ["20260927_nolan_wells_investigation", "db/manual/20260927_nolan_wells_investigation.sql"],
   ["20260928_nolan_wells_source_update", "db/manual/20260928_nolan_wells_source_update.sql"],
+  ["20260928_nolan_wells_visual_archive", "db/manual/20260928_nolan_wells_visual_archive.sql"],
+  ["20260929_newsroom_beats", "db/manual/20260929_newsroom_beats.sql"],
+  ["20260929_newsroom_opening_briefs", "db/manual/20260929_newsroom_opening_briefs.sql"],
 ];
 
 const databaseUrl = process.env.DATABASE_URL;

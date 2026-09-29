@@ -9,14 +9,15 @@ export const blogRouter = createRouter({
   list: publicQuery
     .input(z.object({
       category: z.string().optional(),
-      limit: z.number().min(1).max(50).default(10),
+      beat: z.string().optional(),
+      limit: z.number().min(1).max(200).default(10),
     }).optional())
     .query(async ({ input }) => {
       const db = getDb();
       const limit = input?.limit ?? 10;
-      if (input?.category) {
+      if (input?.category || input?.beat) {
         return db.select().from(posts)
-          .where(and(eq(posts.published, true), eq(posts.category, input.category)))
+          .where(and(eq(posts.published, true), input.category ? eq(posts.category, input.category) : undefined, input.beat ? eq(posts.newsBeat, input.beat) : undefined))
           .orderBy(desc(posts.createdAt))
           .limit(limit);
       }
@@ -48,6 +49,10 @@ export const blogRouter = createRouter({
       await db.update(users).set({ role: "admin" }).where(eq(users.id, user.id));
       return { success: true, message: "You are now an admin! Refresh the page to access the admin panel." };
     }),
+
+  newsroomDrafts: adminQuery.input(z.object({ edition: z.string().max(32) })).query(({ input }) =>
+    getDb().select().from(posts).where(eq(posts.newsEdition, input.edition)).orderBy(posts.newsBeat)
+  ),
 
   // Admin: create post
   create: adminQuery

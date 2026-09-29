@@ -1,20 +1,18 @@
-import { Link } from "react-router";
-import { ArrowRight, ChevronDown, CloudLightning, FileSearch, Globe2, Landmark, Radio, ShieldCheck } from "lucide-react";
+import { Link, useSearchParams } from "react-router";
+import { ArrowRight, ChevronDown, CloudLightning, FileSearch, Globe2, Landmark, Radio, ShieldCheck, Leaf } from "lucide-react";
+import { NEWS_BEATS } from "@contracts/news-beats";
 import { trpc } from "@/providers/trpc";
 
-const beats = [
-  { id: "weather", label: "Breaking Weather", detail: "Major U.S. storms, flooding, emergencies and official alerts.", icon: CloudLightning },
-  { id: "us-conflicts", label: "U.S. Conflicts", detail: "American military action, war-powers decisions and foreign-policy consequences.", icon: ShieldCheck },
-  { id: "gaza-israel", label: "Gaza & Israel", detail: "Civilian impact, diplomacy, military developments and primary-source statements.", icon: Landmark },
-  { id: "ukraine", label: "Ukraine", detail: "Battlefield, diplomatic, humanitarian and U.S. policy developments.", icon: Globe2 },
-  { id: "sahel", label: "Burkina Faso & the Sahel", detail: "Ibrahim Traoré, regional alliances, governance and competing claims about sovereignty.", icon: Radio },
-  { id: "africa", label: "Africa & Decolonization", detail: "Movements challenging colonial institutions, foreign control and extractive systems.", icon: FileSearch },
-] as const;
+const icons = { weather: CloudLightning, "us-conflicts": ShieldCheck, "gaza-israel": Landmark, ukraine: Globe2, sahel: Radio, africa: FileSearch, environment: Leaf };
+const beats = NEWS_BEATS.map(beat => ({ ...beat, icon: icons[beat.id] }));
 
 export default function NewsHubPage() {
-  const { data: posts = [], isLoading } = trpc.blog.list.useQuery({ limit: 50 });
+  const [params] = useSearchParams();
+  const selected = beats.find(beat => beat.id === params.get("beat"));
+  const { data: posts = [], isLoading } = trpc.blog.list.useQuery({ limit: 200 });
   const news = posts.filter(post => post.category === "DAILY NEWS" || post.category === "INVESTIGATIONS");
-  const lead = news[0];
+  const visible = selected ? news.filter(post => post.newsBeat === selected.id) : news;
+  const lead = selected ? visible[0] : news.find(post => post.category === "INVESTIGATIONS") || news[0];
 
   return (
     <main className="min-h-screen bg-[#101b28] pb-24 pt-16 text-[#F0EBE1]">
@@ -43,16 +41,16 @@ export default function NewsHubPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-6 py-6 md:px-12">
-        <div className="mb-7 flex items-end justify-between gap-4"><div><p className="text-xs uppercase tracking-[0.18em] text-[#FF9500]">Daily coverage desk</p><h2 className="mt-2 text-3xl">Six continuing news beats</h2></div><Link to="/investigations" className="hidden text-sm text-[#FFB840] hover:text-[#FF9500] sm:inline">View Investigations →</Link></div>
+        <div className="mb-7 flex items-end justify-between gap-4"><div><p className="text-xs uppercase tracking-[0.18em] text-[#FF9500]">Daily coverage desk</p><h2 className="mt-2 text-3xl">Seven continuing news beats</h2></div><Link to="/investigations" className="hidden text-sm text-[#FFB840] hover:text-[#FF9500] sm:inline">View Investigations →</Link></div>
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {beats.map(beat => <article id={beat.id} key={beat.id} className="scroll-mt-24 rounded-xl border border-white/10 bg-[#182635] p-6"><beat.icon className="text-[#FF9500]" size={23}/><h3 className="mt-5 text-xl">{beat.label}</h3><p className="mt-3 text-sm leading-relaxed text-[#C9B99A]">{beat.detail}</p><p className="mt-5 text-[10px] uppercase tracking-[0.16em] text-[#C9B99A]/50">Daily sourced article · approval required</p></article>)}
+          {beats.map(beat => <Link to={`/news-hub?beat=${beat.id}`} id={beat.id} key={beat.id} className={`scroll-mt-24 overflow-hidden rounded-xl border bg-[#182635] transition hover:border-[#FF9500]/70 ${selected?.id === beat.id ? "border-[#FF9500]" : "border-white/10"}`}><img src={`/images/news-${beat.id}.jpg`} alt="" className="aspect-[2/1] w-full object-cover" loading="lazy" /><div className="p-6"><beat.icon className="text-[#FF9500]" size={23}/><h3 className="mt-5 text-xl">{beat.label}</h3><p className="mt-3 text-sm leading-relaxed text-[#C9B99A]">{beat.detail}</p><p className="mt-5 text-xs text-[#FFB840]">Explore stories · {news.filter(post => post.newsBeat === beat.id).length} published →</p></div></Link>)}
         </div>
       </section>
 
       <section className="mx-auto mt-12 max-w-7xl border-t border-white/10 px-6 pt-10 md:px-12">
-        <h2 className="text-3xl">Latest published reporting</h2>
+        <div className="flex flex-wrap items-center justify-between gap-4"><h2 className="text-3xl">{selected ? selected.label : "Latest published reporting"}</h2>{selected && <Link to="/news-hub" className="text-sm text-[#FFB840]">All news desks →</Link>}</div>{selected && <p className="mt-3 text-[#C9B99A]">{selected.detail}</p>}{!isLoading && !visible.length && <p className="mt-6 rounded border border-white/10 p-6 text-[#C9B99A]">Reporting for this desk is awaiting editorial approval. Published stories will appear here.</p>}
         <div className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {news.map(post => <article key={post.id} className="overflow-hidden rounded-xl border border-white/10 bg-[#182635]">
+          {visible.map(post => <article key={post.id} className="overflow-hidden rounded-xl border border-white/10 bg-[#182635]">
             {post.coverImage ? (
               <Link to={`/blog/${post.slug}`} aria-label={`Read ${post.title}`} className="block overflow-hidden">
                 <img src={post.coverImage} alt="" className="aspect-[16/9] w-full object-cover transition-transform duration-500 hover:scale-[1.025]" loading="lazy" />
