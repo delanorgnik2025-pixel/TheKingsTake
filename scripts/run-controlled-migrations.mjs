@@ -17,6 +17,7 @@ const migrations = [
   ["20260929_newsroom_beats", "db/manual/20260929_newsroom_beats.sql"],
   ["20260929_newsroom_opening_briefs", "db/manual/20260929_newsroom_opening_briefs.sql"],
   ["20260929_weather_current_brief", "db/manual/20260929_weather_current_brief.sql"],
+  ["20260929_real_news_images", "db/manual/20260929_real_news_images.sql"],
 ];
 
 const databaseUrl = process.env.DATABASE_URL;

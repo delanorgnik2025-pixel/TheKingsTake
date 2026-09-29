@@ -1,3 +1,4 @@
+import { NEWS_IMAGES } from "../contracts/news-images";
 import { and, desc, eq } from "drizzle-orm";
 import { newsletterCampaigns, posts } from "../db/schema";
 import { getDb } from "./queries/connection";
@@ -24,12 +25,6 @@ type ImageSelection = {
   sourceUrl: string | null;
 };
 
-const FALLBACK_IMAGE: ImageSelection = {
-  url: "https://thekingstake.com/images/news-broadcast-bg.jpg",
-  alt: "The King's Take daily news desk",
-  credit: "AASOTU Media Group LLC",
-  sourceUrl: null,
-};
 
 function extractResearch(response: unknown) {
   const data = response as {
@@ -132,14 +127,15 @@ async function writeDraft(apiKey: string, research: string, sources: Source[]): 
 }
 
 async function findCommonsImage(searchTerm: string, beat: NewsBeatId): Promise<ImageSelection> {
-  const fallback = { ...FALLBACK_IMAGE, url: `https://thekingstake.com/images/news-${beat}.jpg`, alt: `${NEWS_BEATS.find(item => item.id === beat)?.label} — editorial illustration`, credit: "AASOTU Media Group LLC · Editorial illustration" };
+  const photo = NEWS_IMAGES[beat];
+  const fallback: ImageSelection = { url: photo.url, alt: photo.alt, credit: `${photo.caption} ${photo.credit}`, sourceUrl: photo.sourceUrl };
   try {
     const params = new URLSearchParams({
       action: "query",
       format: "json",
       origin: "*",
       generator: "search",
-      gsrsearch: `${searchTerm} filetype:bitmap`,
+      gsrsearch: `${searchTerm} filetype:bitmap -artificial -illustration -drawing -diagram -logo`,
       gsrnamespace: "6",
       gsrlimit: "8",
       prop: "imageinfo",
@@ -159,13 +155,15 @@ async function findCommonsImage(searchTerm: string, beat: NewsBeatId): Promise<I
       const url = info?.thumburl || info?.url;
       if (!url?.startsWith("https://upload.wikimedia.org/")) continue;
       const metadata = info.extmetadata || {};
+      const description = stripHtml(metadata.ImageDescription?.value || "");
+      if (/AI.generated|AI generated|artificial intelligence|illustration|drawing|diagram|rendering|computer.generated/i.test(`${page.title} ${description}`)) continue;
       const license = stripHtml(metadata.LicenseShortName?.value || "Wikimedia Commons license");
       if (!/^(CC BY|CC0|Public domain)/i.test(license)) continue;
       const artist = stripHtml(metadata.Artist?.value || metadata.Credit?.value || "Wikimedia Commons contributor");
       return {
         url,
         alt: stripHtml(metadata.ImageDescription?.value || page.title?.replace(/^File:/, "") || searchTerm).slice(0, 500),
-        credit: `${artist} · ${license}`.slice(0, 1000),
+        credit: `Context image: ${description.slice(0, 300)}. ${artist} · ${license}`.slice(0, 1000),
         sourceUrl: info.descriptionurl || null,
       };
     }

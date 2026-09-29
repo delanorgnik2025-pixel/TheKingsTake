@@ -1,3 +1,4 @@
+import { newsImageForUrl } from "@contracts/news-images";
 import { trpc } from "@/providers/trpc";
 import { Link, useParams } from "react-router";
 import { ArrowLeft, Calendar, Tag, User } from "lucide-react";
@@ -609,7 +610,7 @@ export default function BlogPostPage() {
           </p>
         )}
 
-        {post.coverImage && <figure className="mb-8 overflow-hidden rounded-lg border border-white/10"><img src={post.coverImage} alt={post.title} className="aspect-video w-full object-cover" /></figure>}
+        {post.coverImage && <figure className="mb-8 overflow-hidden rounded-lg border border-white/10"><img src={post.coverImage} alt={newsImageForUrl(post.coverImage)?.alt || post.title} className="aspect-video w-full object-cover" />{newsImageForUrl(post.coverImage) && <figcaption className="bg-[#182635] px-4 py-3 text-xs leading-relaxed text-[#C9B99A]">{newsImageForUrl(post.coverImage)?.caption} {newsImageForUrl(post.coverImage)?.credit} · <a href={newsImageForUrl(post.coverImage)?.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline">Source and license</a></figcaption>}</figure>}
 
         <div className="bg-[rgba(37,54,75,0.9)] backdrop-blur-lg rounded-lg border border-[rgba(255,149,0,0.2)] p-8">
           <div

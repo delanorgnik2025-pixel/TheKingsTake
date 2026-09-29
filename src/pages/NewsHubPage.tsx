@@ -1,5 +1,6 @@
 import { Link, useSearchParams } from "react-router";
 import { ArrowRight, ChevronDown, CloudLightning, FileSearch, Globe2, Landmark, Radio, ShieldCheck, Leaf } from "lucide-react";
+import { NEWS_IMAGES, newsImageForUrl } from "@contracts/news-images";
 import { NEWS_BEATS } from "@contracts/news-beats";
 import { trpc } from "@/providers/trpc";
 
@@ -35,7 +36,7 @@ export default function NewsHubPage() {
         {isLoading ? <p className="text-[#C9B99A]">Loading the newsroom…</p> : lead ? (
           <article className="grid overflow-hidden rounded-2xl border border-[#FF9500]/25 bg-[#1b2a3a] lg:grid-cols-[1.1fr_.9fr]">
             <div className="min-h-72 bg-gradient-to-br from-[#283d55] via-[#182635] to-[#0b121d] p-8 md:p-12"><p className="text-xs uppercase tracking-[0.18em] text-[#FF9500]">Lead report · {lead.category}</p><h2 className="mt-5 text-3xl leading-tight md:text-5xl">{lead.title}</h2><p className="mt-5 leading-relaxed text-[#C9B99A]">{lead.excerpt}</p><Link to={`/blog/${lead.slug}`} className="mt-8 inline-flex items-center gap-2 rounded bg-[#FF9500] px-5 py-3 text-sm font-bold text-[#101b28]">Read the full report <ArrowRight size={16}/></Link></div>
-            <div className="min-h-72 bg-cover bg-center" style={lead.coverImage ? { backgroundImage: `linear-gradient(rgba(16,27,40,.18),rgba(16,27,40,.55)),url(${lead.coverImage})` } : { background: "radial-gradient(circle at 70% 25%, rgba(255,149,0,.28), transparent 32%), linear-gradient(145deg,#25364b,#0e1722)" }} />
+            <div className="flex flex-col"><div className="min-h-72 flex-1 bg-cover bg-center" style={lead.coverImage ? { backgroundImage: `linear-gradient(rgba(16,27,40,.18),rgba(16,27,40,.55)),url(${lead.coverImage})` } : { background: "radial-gradient(circle at 70% 25%, rgba(255,149,0,.28), transparent 32%), linear-gradient(145deg,#25364b,#0e1722)" }} />{newsImageForUrl(lead.coverImage) && <p className="px-5 py-3 text-xs leading-relaxed text-[#C9B99A]">{newsImageForUrl(lead.coverImage)?.caption}</p>}</div>
           </article>
         ) : <div className="rounded-xl border border-white/10 bg-[#182635] p-8 text-[#C9B99A]">The first sourced report is being prepared for publication.</div>}
       </section>
@@ -43,7 +44,7 @@ export default function NewsHubPage() {
       <section className="mx-auto max-w-7xl px-6 py-6 md:px-12">
         <div className="mb-7 flex items-end justify-between gap-4"><div><p className="text-xs uppercase tracking-[0.18em] text-[#FF9500]">Daily coverage desk</p><h2 className="mt-2 text-3xl">Seven continuing news beats</h2></div><Link to="/investigations" className="hidden text-sm text-[#FFB840] hover:text-[#FF9500] sm:inline">View Investigations →</Link></div>
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {beats.map(beat => <Link to={`/news-hub?beat=${beat.id}`} id={beat.id} key={beat.id} className={`scroll-mt-24 overflow-hidden rounded-xl border bg-[#182635] transition hover:border-[#FF9500]/70 ${selected?.id === beat.id ? "border-[#FF9500]" : "border-white/10"}`}><img src={`/images/news-${beat.id}.jpg`} alt="" className="aspect-[2/1] w-full object-cover" loading="lazy" /><div className="p-6"><beat.icon className="text-[#FF9500]" size={23}/><h3 className="mt-5 text-xl">{beat.label}</h3><p className="mt-3 text-sm leading-relaxed text-[#C9B99A]">{beat.detail}</p><p className="mt-5 text-xs text-[#FFB840]">Explore stories · {news.filter(post => post.newsBeat === beat.id).length} published →</p></div></Link>)}
+          {beats.map(beat => <Link to={`/news-hub?beat=${beat.id}`} id={beat.id} key={beat.id} className={`scroll-mt-24 overflow-hidden rounded-xl border bg-[#182635] transition hover:border-[#FF9500]/70 ${selected?.id === beat.id ? "border-[#FF9500]" : "border-white/10"}`}><img src={NEWS_IMAGES[beat.id].url} alt={NEWS_IMAGES[beat.id].alt} className="aspect-[2/1] w-full object-cover" loading="lazy" /><div className="px-6 pt-3 text-[10px] leading-relaxed text-[#C9B99A]/80">{NEWS_IMAGES[beat.id].caption} <span>{NEWS_IMAGES[beat.id].credit}</span></div><div className="p-6"><beat.icon className="text-[#FF9500]" size={23}/><h3 className="mt-5 text-xl">{beat.label}</h3><p className="mt-3 text-sm leading-relaxed text-[#C9B99A]">{beat.detail}</p><p className="mt-5 text-xs text-[#FFB840]">Explore stories · {news.filter(post => post.newsBeat === beat.id).length} published →</p></div></Link>)}
         </div>
       </section>
 
