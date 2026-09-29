@@ -41,6 +41,7 @@ import MemberAuthModal from "@/components/MemberAuthModal";
 import NewsTicker from "@/components/NewsTicker";
 import TrendingRail from "@/components/TrendingRail";
 import FeedBackdrop from "@/components/FeedBackdrop";
+import { resolveFeedLink } from "../../contracts/feed-links";
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 function timeAgo(date: Date | string): string {
@@ -1464,6 +1465,7 @@ function PostCard({
   const [copiedShare, setCopiedShare] = useState(false);
   const { member } = useMember();
   const canInteract = Boolean(member || isAdmin);
+  const postLink = resolveFeedLink(post.linkUrl, window.location.origin);
 
   const likeMutation = trpc.member.likePost.useMutation();
   const isLikedQuery = trpc.member.isLiked.useQuery(
@@ -1668,9 +1670,9 @@ function PostCard({
           {linkify(post.body)}
         </p>
 
-        {post.linkUrl && (
+        {postLink && (
           <a
-            href={post.linkUrl}
+            href={postLink.href}
             target="_blank"
             rel="noopener noreferrer"
             className="mt-3 flex items-center gap-3 bg-[#182635] border border-[rgba(255,149,0,0.2)] rounded px-4 py-3 hover:border-[#FF9500] transition-colors group"
@@ -1681,7 +1683,7 @@ function PostCard({
                 {post.linkTitle || post.linkUrl}
               </p>
               <p className="text-[#C9B99A] text-xs truncate">
-                {new URL(post.linkUrl).hostname}
+                {postLink.hostname}
               </p>
             </div>
           </a>
