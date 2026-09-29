@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { resolveFeedLink } from './feed-links';
+import { resolveFeedLink } from '../../contracts/feed-links';
 
 describe('stored feed links', () => {
   const origin = 'https://thekingstake.com';
