@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router'
+import { useSearchParams } from 'react-router'
 import { LogIn, Crown, AlertTriangle, ArrowLeft } from 'lucide-react'
 import { Link } from 'react-router'
 import { trpc } from '@/providers/trpc'
@@ -11,10 +11,8 @@ export default function AdminLogin() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const adminLogin = trpc.auth.adminLogin.useMutation()
-  const utils = trpc.useUtils()
 
   const requestedReturnPath = searchParams.get('returnTo')
   const returnPath = requestedReturnPath?.startsWith('/') && !requestedReturnPath.startsWith('//')
@@ -36,8 +34,8 @@ export default function AdminLogin() {
       const res = await adminLogin.mutateAsync({ password })
       if (res?.success && res.token) {
         localStorage.setItem('adminToken', res.token)
-        await utils.visitor.status.invalidate()
-        navigate(returnPath)
+        // Reload so all auth hooks and cached visitor queries read the new token.
+        window.location.assign(returnPath)
       } else {
         setError('Invalid password. Please try again.')
       }
