@@ -22,7 +22,7 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
     { label: 'Investigations', href: '/investigations', icon: <FileSearch size={16} />, desc: 'Documents, timelines & research reports' },
     { label: 'Search Archives', href: '/archives', icon: <Landmark size={16} />, desc: 'NARA and Library of Congress records' },
     { label: 'Brand Studio', href: '/brand-studio', icon: <Globe size={16} />, desc: 'Websites, identity & author launches', highlight: true },
-    { label: 'Writing Services', href: '/writing-services', icon: <PenTool size={16} />, desc: 'All writing offerings' },
+    { label: 'Services', href: '/services', icon: <PenTool size={16} />, desc: 'Writing, publishing support & strategy' },
     { label: 'Civics', href: '/civics', icon: <Shield size={16} />, desc: 'Know your rights' },
     { label: 'AASOTU Media', href: '/aasotu', icon: <Sparkles size={16} />, desc: 'Media group & brand' },
     { label: 'About', href: '/about-author', icon: <Users size={16} />, desc: 'Ronald Lee King' },

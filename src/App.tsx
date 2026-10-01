@@ -16,6 +16,7 @@ import ResearchPreview from './components/ResearchPreview'
 const HomePage = lazy(() => import('./pages/Home'))
 const BlogPostPage = lazy(() => import('./pages/BlogPostPage'))
 const FeedPage = lazy(() => import('./pages/FeedPage'))
+const ServicesPage = lazy(() => import('./pages/ServicesPage'))
 const BrandStudioPage = lazy(() => import('./pages/BrandStudioPage'))
 const WritingServicesPage = lazy(() => import('./pages/WritingServicesPage'))
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'))
@@ -105,6 +106,7 @@ function AppRoutes() {
           <Route path="/investigations" element={<InvestigationsPage />} />
           <Route path="/news-hub" element={<NewsHubPage />} />
           <Route path="/brand-studio" element={<BrandStudioPage />} />
+          <Route path="/services" element={<ServicesPage />} />
           <Route path="/writing-services" element={<WritingServicesPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           {/* Terms of Service page - add when file exists */}

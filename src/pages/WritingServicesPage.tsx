@@ -6,6 +6,7 @@ import {
   Feather, Type, Scroll, Quote, ArrowRight, Check, Sparkles,
   ChevronDown, ChevronUp, Users
 } from 'lucide-react'
+import { servicePositioning } from '../../contracts/service-positioning'
 import ScrollReveal from '../components/ScrollReveal'
 import MarqueeDivider from '../components/MarqueeDivider'
 
@@ -24,6 +25,7 @@ const ANCHOR_TO_SLUG: Record<string, string> = {
   'legacy-interview': 'legacy-interview',
   'ghostwriting': 'ghostwriting',
   'content-writing': 'content-writing',
+  'consulting-strategy': 'consulting-strategy',
 }
 
 const WRITING_SERVICES = [
@@ -247,6 +249,7 @@ export default function WritingServicesPage() {
                   transition={{ delay: i * 0.08 }}
                   style={{ scrollMarginTop: '90px' }}
                 >
+                  <div className="mb-3 grid gap-3 rounded-xl border border-white/10 bg-[#101b28] p-4 sm:grid-cols-2">{servicePositioning.filter(item => item.slug === service.slug).map(item => <div key={item.slug} className="contents"><div><p className="text-xs uppercase tracking-wider" style={{color:item.color}}>Best fit</p><p className="mt-1 text-sm text-[#C9B99A]">{item.bestFor}</p></div><div><p className="text-xs uppercase tracking-wider" style={{color:item.color}}>Consider before choosing</p><p className="mt-1 text-sm text-[#C9B99A]">{item.boundary}</p></div></div>)}</div>
                   {/* Service Header */}
                   <button
                     onClick={() => setExpandedService(isExpanded ? null : service.id)}

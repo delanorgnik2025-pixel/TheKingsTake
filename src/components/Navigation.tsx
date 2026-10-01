@@ -26,7 +26,7 @@ export default function Navigation({ onMenuToggle }: NavigationProps) {
   }, [])
 
   const writingDropdownItems = [
-    { label: 'Brand Studio', href: '/brand-studio', desc: 'Websites, identity & author launches' },
+    { label: 'Services Overview', href: '/services', desc: 'Compare writing, publishing & strategy' },
     { label: 'Writing Services', href: '/writing-services', desc: 'All writing offerings' },
     { label: 'Speechwriting', href: '/writing-services#speechwriting', desc: 'Speeches & narratives' },
     { label: 'Book & Publishing', href: '/writing-services#book-publishing', desc: 'Manuscript to published' },
@@ -61,13 +61,14 @@ export default function Navigation({ onMenuToggle }: NavigationProps) {
         <Link to="/investigations" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200">Investigations</Link>
         <Link to="/archives" className="text-[#FFB840] text-sm hover:text-[#FF9500] transition-colors duration-200">Archives</Link>
 
-        {/* Writing Services Dropdown */}
+        <Link to="/brand-studio" className="text-[#FFB840] text-sm hover:text-[#FF9500]">Brand Studio</Link>
+        {/* Creative Services Dropdown */}
         <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => setWritingDropdownOpen(!writingDropdownOpen)}
             className="flex items-center gap-1 text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200"
           >
-            Brand Studio <ChevronDown size={14} className={`transition-transform duration-200 ${writingDropdownOpen ? 'rotate-180' : ''}`} />
+            Services <ChevronDown size={14} className={`transition-transform duration-200 ${writingDropdownOpen ? 'rotate-180' : ''}`} />
           </button>
           <AnimatePresence>
             {writingDropdownOpen && (
@@ -102,7 +103,7 @@ export default function Navigation({ onMenuToggle }: NavigationProps) {
         </Link>
         <a href="/#heritage" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200 cursor-pointer">Heritage</a>
         <a href="/#ancestry" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200 cursor-pointer">Ancestry</a>
-        <a href="/#services" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200 cursor-pointer">Services</a>
+
         <Link to="/contact" className="text-[#C9B99A] text-sm hover:text-[#FF9500] transition-colors duration-200">Contact</Link>
         {isAdmin ? (
           <Link to="/admin/dashboard" className="flex items-center gap-1 text-[#FF9500] text-sm hover:text-[#FFB840] transition-colors">
@@ -148,7 +149,7 @@ export default function Navigation({ onMenuToggle }: NavigationProps) {
 
             <Link to="/brand-studio" onClick={() => setMobileOpen(false)} className="block py-3 text-xl text-[#FFB840]">Brand Studio</Link>
             {/* Writing Services Mobile */}
-            <Link to="/writing-services" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Writing Services</Link>
+            <Link to="/services" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Services · Writing & Publishing</Link>
             <div className="pl-4">
               <Link to="/writing-services" onClick={() => setMobileOpen(false)} className="block text-[#C9B99A] text-base py-2 border-b border-[rgba(240,235,225,0.04)] hover:text-[#FF9500]">Writing Services</Link>
               <Link to="/writing-services#speechwriting" onClick={() => setMobileOpen(false)} className="block text-[#C9B99A] text-base py-2 border-b border-[rgba(240,235,225,0.04)] hover:text-[#FF9500]">Speechwriting</Link>
@@ -165,7 +166,7 @@ export default function Navigation({ onMenuToggle }: NavigationProps) {
             </Link>
             <a href="/#heritage" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Heritage</a>
             <a href="/#ancestry" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Ancestry</a>
-            <a href="/#services" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Services</a>
+
             <Link to="/contact" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Contact</Link>
             {isAdmin ? (
               <Link to="/admin/dashboard" onClick={() => setMobileOpen(false)} className="block text-[#FF9500] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FFB840]">Admin Dashboard</Link>
