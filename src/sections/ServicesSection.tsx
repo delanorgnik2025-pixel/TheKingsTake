@@ -3,10 +3,11 @@ import type { Variants } from 'framer-motion'
 import { Link } from 'react-router'
 import { trpc } from '@/providers/trpc'
 import { PenTool, Globe, BookOpen, Megaphone, Crown, ArrowRight, FileText, Feather, Type } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import ScrollReveal from '../components/ScrollReveal'
 import { useMemo } from 'react'
 
-const iconMap: Record<string, React.ElementType> = {
+const iconMap: Record<string, LucideIcon> = {
   PenTool, Globe, BookOpen, Megaphone, Crown, Feather, Type,
 };
 
@@ -30,12 +31,12 @@ const FALLBACK_SERVICES = [
     order: 1, isActive: true,
   },
   {
-    id: 2, name: "Website Development & Digital Presence", slug: "website-development",
-    shortDescription: "High-converting websites, digital branding, and online presence that commands attention. From starter sites to premium platforms.",
-    fullDescription: "Full website development and digital branding — from landing pages to multi-platform ecosystems with AI integrations.",
-    price: 300, priceDisplay: "From $300", duration: "Per project",
+    id: 2, name: "Brand Studio", slug: "website-development",
+    shortDescription: "Brand identity, author launches, and business websites. A clear message and a practical online home.",
+    fullDescription: "Brand identity, author websites, and business websites with clearly scoped booking or inquiry tools.",
+    price: 2495, priceDisplay: "Websites from $2,495", duration: "Per project",
     type: "one_time" as const, icon: "Globe",
-    features: JSON.stringify(["Starter presence website ($300-$600)", "Professional brand website ($800-$1,500)", "Premium platform builds ($2,000+)", "Domain & hosting setup ($100+)", "Maintenance plans ($50-$150/mo)"]),
+    features: JSON.stringify(["Brand Essentials ($495)", "Author Launch ($2,495)", "Business Identity ($2,495)", "Custom platform builds quoted separately", "Monthly Care ($79/mo)"]),
     order: 2, isActive: true,
   },
   {
@@ -87,7 +88,7 @@ const FALLBACK_SERVICES = [
 
 export default function ServicesSection() {
   const { data: apiServices } = trpc.service.list.useQuery();
-  const services = useMemo(() => (apiServices && apiServices.length > 0 ? apiServices : FALLBACK_SERVICES), [apiServices]);
+  const services = useMemo(() => (apiServices && apiServices.length > 0 ? apiServices : FALLBACK_SERVICES).map(service => service.slug === "website-development" ? { ...service, name: "Brand Studio", shortDescription: "Brand identity, author launches, and business websites. A clear message and a practical online home.", priceDisplay: "Websites from $2,495" } : service), [apiServices]);
 
   return (
     <section id="services" className="relative py-24 md:py-32 px-6 md:px-12 overflow-hidden">
@@ -130,12 +131,8 @@ export default function ServicesSection() {
                 <div className="mb-4"><Icon size={32} className="text-[#FF9500]" strokeWidth={1.5} /></div>
                 <p className="text-sm text-[#C9B99A] leading-relaxed mb-4">{service.shortDescription}</p>
                 <p className="text-lg text-[#FF9500] font-medium">{service.priceDisplay}</p>
-                {service.price >= 50 && (
-                  <p className="text-[11px] text-[#FF9500]/70 mb-1">or 4 interest-free payments with Klarna</p>
-                )}
-                <p className="text-[10px] text-[#C9B99A]/40 mb-4">Payment plans available</p>
-                <Link to="/writing-services" className="inline-flex items-center gap-1 text-xs text-[#FF9500] uppercase tracking-[0.04em] cursor-pointer hover:underline transition-all">
-                  View All Services <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
+                <Link to={service.slug === "website-development" ? "/brand-studio" : "/writing-services"} className="inline-flex items-center gap-1 text-xs text-[#FF9500] uppercase tracking-[0.04em] cursor-pointer hover:underline transition-all">
+                  {service.slug === "website-development" ? "Explore Brand Studio" : "View Writing Services"} <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
                 </Link>
               </motion.div>
             );

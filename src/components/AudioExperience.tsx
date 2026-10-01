@@ -36,6 +36,7 @@ function VisitorEntry({ onComplete }: { onComplete: () => void }) {
   return <div className="fixed inset-0 z-[110] overflow-y-auto bg-[#14202E] px-5 py-12 text-[#F0EBE1]" role="dialog" aria-modal="true" aria-label="Visitor entry">
     <div className="mx-auto max-w-lg rounded-2xl border border-[#FF9500]/30 bg-[#1B2B3B] p-6 shadow-2xl sm:p-9">
       <p className="mb-3 text-xs uppercase tracking-[.2em] text-[#FF9500]">The King’s Take · Visitor entry</p>
+      <Link to="/brand-studio" className="mb-5 block text-sm text-[#FFB840] underline">Looking for website services? Visit Brand Studio →</Link>
       <h2 className="mb-3 text-3xl font-semibold">{step === 0 ? "Welcome to the hub" : "What brings you here?"}</h2>
       <p className="mb-6 text-sm text-[#C9B99A]">{step === 0 ? "Enter your email to continue. We use it to recognize your visits and make it possible for the owner to reply if you start a conversation." : "Choose at least one interest so we can show you the right parts of the site."}</p>
       {step === 0 ? <form onSubmit={e => { e.preventDefault(); if (email.trim()) setStep(1); }} className="space-y-4">
@@ -264,6 +265,8 @@ function EntranceOverlay({
           Enter the experience. Explore 225+ Indigenous nations, tribal rolls,
           treaties, and the records they tried to hide.
         </p>
+
+        <Link to="/brand-studio" className="mb-6 block text-sm text-[#FFB840] underline underline-offset-4">Need a website or brand? Visit Brand Studio →</Link>
 
         {/* Mobile-optimized buttons — larger tap targets, full width on small screens */}
         <div className="flex flex-col gap-3 justify-center">

@@ -16,6 +16,7 @@ import ResearchPreview from './components/ResearchPreview'
 const HomePage = lazy(() => import('./pages/Home'))
 const BlogPostPage = lazy(() => import('./pages/BlogPostPage'))
 const FeedPage = lazy(() => import('./pages/FeedPage'))
+const BrandStudioPage = lazy(() => import('./pages/BrandStudioPage'))
 const WritingServicesPage = lazy(() => import('./pages/WritingServicesPage'))
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
@@ -47,7 +48,8 @@ function AppLayout({ children }: { children: React.ReactNode }) {
   const [visitorAdmitted, setVisitorAdmitted] = useState(false)
   const lenisRef = useRef<Lenis | null>(null)
   const location = useLocation()
-  const publicUtilityPage = location.pathname.startsWith('/admin') || location.pathname === '/privacy-policy' || location.pathname === '/newsletter/unsubscribe'
+  const publicSalesPage = location.pathname === '/brand-studio'
+  const publicUtilityPage = publicSalesPage || location.pathname.startsWith('/admin') || location.pathname === '/privacy-policy' || location.pathname === '/newsletter/unsubscribe'
   const hideNav = location.pathname === '/ancestor-root-registry' || location.pathname.startsWith('/ancestor-root-registry/')
 
   useEffect(() => {
@@ -75,7 +77,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
         <MenuOverlay isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
         {children}
         {!publicUtilityPage && <VisitorAssistant />}
-        {!hideNav && <Footer onNavClick={scrollToSection} />}
+        {!hideNav && <Footer onNavClick={scrollToSection} hideNewsletter={publicSalesPage} />}
       </>}
     </>
   )
@@ -97,6 +99,7 @@ function AppRoutes() {
           <Route path="/blog/:slug" element={<BlogPostPage />} />
           <Route path="/investigations" element={<InvestigationsPage />} />
           <Route path="/news-hub" element={<NewsHubPage />} />
+          <Route path="/brand-studio" element={<BrandStudioPage />} />
           <Route path="/writing-services" element={<WritingServicesPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           {/* Terms of Service page - add when file exists */}

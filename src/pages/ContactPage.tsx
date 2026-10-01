@@ -17,7 +17,7 @@ const CONSULTATION_FEATURES = [
   { icon: <BookOpen size={16} />, title: 'Book & Publishing Support', desc: 'From $499 — Manuscript to published author' },
   { icon: <Mic size={16} />, title: 'Legacy Interview', desc: 'From $500 — Your story preserved forever' },
   { icon: <Feather size={16} />, title: 'Ghostwriting', desc: 'From $1,500 — Your voice, my craft' },
-  { icon: <Globe size={16} />, title: 'Website & Digital Presence', desc: 'From $300 — High-converting digital platforms' },
+  { icon: <Globe size={16} />, title: 'Brand Studio', desc: 'Websites from $2,495 — Author and business launches' },
   { icon: <Star size={16} />, title: 'Creative Consulting', desc: '$100/hour — 1-on-1 strategy sessions' },
 ]
 

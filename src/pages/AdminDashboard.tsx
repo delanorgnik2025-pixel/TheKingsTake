@@ -557,8 +557,10 @@ function AudienceModule() {
             <a href={`mailto:${lead.email}`} className="text-xs text-[#FFB840]">
               {lead.email}
             </a>
+            {lead.sourcePage === "/brand-studio" && <p className="mt-1 text-xs text-[#FFB840]">Brand Studio project inquiry · {new Date(lead.createdAt).toLocaleDateString()}</p>}
+            {lead.phone && <p className="mt-1 text-xs text-[#C9B99A]">Phone: {lead.phone}</p>}
             {lead.message && (
-              <p className="mt-1 text-xs text-[#C9B99A]">{lead.message}</p>
+              <p className="mt-1 whitespace-pre-wrap text-xs text-[#C9B99A]">{lead.message}</p>
             )}
           </div>
         ))}

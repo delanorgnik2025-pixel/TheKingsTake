@@ -219,6 +219,7 @@ export default function WritingServicesPage() {
 
       <MarqueeDivider text="#TheKingsTake — Your Vision. My Words. — Storytelling That Moves People — AASOTU Media Group" />
 
+      <div className="bg-[#101b28] px-6 py-6 text-center"><Link to="/brand-studio" className="text-[#FFB840] underline underline-offset-4">Need a website, brand identity, or an author launch? Explore Brand Studio →</Link></div>
       {/* Services Accordion */}
       <section className="relative py-16 md:py-24 px-6 md:px-12 bg-[#182635]">
         <div className="max-w-7xl mx-auto">

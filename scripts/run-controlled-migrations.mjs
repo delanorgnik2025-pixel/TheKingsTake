@@ -18,6 +18,7 @@ const migrations = [
   ["20260929_newsroom_opening_briefs", "db/manual/20260929_newsroom_opening_briefs.sql"],
   ["20260929_weather_current_brief", "db/manual/20260929_weather_current_brief.sql"],
   ["20260929_real_news_images", "db/manual/20260929_real_news_images.sql"],
+  ["20261001_brand_studio", "db/manual/20261001_brand_studio.sql"],
 ];
 
 const databaseUrl = process.env.DATABASE_URL;
@@ -76,6 +77,19 @@ try {
     await connection.execute("DELETE FROM posts WHERE slug = ?", [verificationSlug]);
     const code = error && typeof error === "object" && "code" in error ? String(error.code) : "unknown";
     throw new Error(`Dispatch article insert contract failed (${code}).`);
+  }
+  await connection.beginTransaction();
+  try {
+    await connection.execute(
+      "INSERT INTO site_leads (name, email, phone, interest, message, source_page) VALUES (?, ?, ?, ?, ?, ?)",
+      ["Deployment verification", "deployment-check@example.invalid", null, "Brand Studio · Author Launch", "Temporary inquiry persistence verification.", "/brand-studio"],
+    );
+    await connection.rollback();
+    console.log("[migration] verified: Brand Studio inquiry insert contract");
+  } catch (error) {
+    await connection.rollback();
+    const code = error && typeof error === "object" && "code" in error ? String(error.code) : "unknown";
+    throw new Error(`Brand Studio inquiry insert contract failed (${code}).`);
   }
 } finally {
   await connection.end();

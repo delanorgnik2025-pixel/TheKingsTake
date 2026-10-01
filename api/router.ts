@@ -1,3 +1,4 @@
+import { brandStudioRouter } from "./brand-studio-router";
 import { authRouter } from "./auth-router";
 import { blogRouter } from "./blog-router";
 import { serviceRouter } from "./service-router";
@@ -20,6 +21,7 @@ import { visitorRouter } from "./visitor-router";
 import { createRouter, publicQuery } from "./middleware";
 
 export const appRouter = createRouter({
+  brandStudio: brandStudioRouter,
   ping: publicQuery.query(() => ({ ok: true, ts: Date.now() })),
   auth: authRouter,
   blog: blogRouter,

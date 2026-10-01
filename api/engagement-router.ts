@@ -28,6 +28,7 @@ Current pages:
 - /pre-order — Preorder Ronald Lee King's book, The African American State of the Union: From the Loins of the Beast.
 - /about-author — Ronald Lee King's author story and background.
 - /aasotu — AASOTU Media Group LLC mission and brand.
+- /brand-studio — public website and branding packages: Brand Essentials from $495, Author Launch and Business Identity from $2,495, Writing & Copy from $300, Monthly Care $79/month. Project inquiry form sends requests to the owner.
 - /writing-services — writing, speechwriting, ghostwriting, editing and publishing support.
 - /consultation — strategy and consultation booking.
 - /work-with-us — partnerships, media work and collaboration inquiries.

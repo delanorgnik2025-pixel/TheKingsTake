@@ -21,6 +21,7 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
     { label: 'News Hub', href: '/news-hub', icon: <Radio size={16} />, desc: 'Breaking news & sourced daily reporting', highlight: true },
     { label: 'Investigations', href: '/investigations', icon: <FileSearch size={16} />, desc: 'Documents, timelines & research reports' },
     { label: 'Search Archives', href: '/archives', icon: <Landmark size={16} />, desc: 'NARA and Library of Congress records' },
+    { label: 'Brand Studio', href: '/brand-studio', icon: <Globe size={16} />, desc: 'Websites, identity & author launches', highlight: true },
     { label: 'Writing Services', href: '/writing-services', icon: <PenTool size={16} />, desc: 'All writing offerings' },
     { label: 'Civics', href: '/civics', icon: <Shield size={16} />, desc: 'Know your rights' },
     { label: 'AASOTU Media', href: '/aasotu', icon: <Sparkles size={16} />, desc: 'Media group & brand' },
@@ -53,7 +54,7 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
             <X size={28} />
           </button>
 
-          <div className="h-full flex flex-col items-center justify-center px-6">
+          <div className="h-full overflow-y-auto flex flex-col items-center px-6 pt-20 pb-16">
             <nav className="w-full max-w-md space-y-1">
               {menuItems.map((item, i) => (
                 <Link
@@ -89,7 +90,7 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
             </nav>
 
             {/* Footer */}
-            <div className="absolute bottom-6 left-0 right-0 text-center">
+            <div className="mt-8 text-center">
               <span className="text-[9px] uppercase tracking-[0.2em] text-[#C9B99A]/20">#TheKingsTake &middot; AASOTU Media Group LLC</span>
             </div>
           </div>

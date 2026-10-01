@@ -121,6 +121,21 @@ export function serveStaticFiles(app: App) {
     }
   });
 
+  app.get("/brand-studio", c => {
+    const indexPath = path.resolve(distPath, "index.html");
+    if (!fs.existsSync(indexPath)) return c.json({ error: "Frontend build not found" }, 500);
+    const title = "Brand Studio | Websites & Branding by Ronald Lee King";
+    const description = "Author websites, business websites, brand identity and writing from AASOTU Media Group LLC. Explore packages and request a project quote.";
+    let html = fs.readFileSync(indexPath, "utf-8").replace(/<title>[^<]*<\/title>/i, `<title>${title}</title>`);
+    for (const [attribute, key, value] of [
+      ["name", "description", description], ["property", "og:title", title],
+      ["property", "og:description", description], ["property", "og:url", "https://thekingstake.com/brand-studio"],
+      ["name", "twitter:title", title], ["name", "twitter:description", description],
+    ] as const) html = replaceMeta(html, attribute, key, value);
+    html = html.replace(/<link[^>]+rel="canonical"[^>]*>/gi, "").replace("</head>", '<link rel="canonical" href="https://thekingstake.com/brand-studio" /></head>');
+    return c.html(html);
+  });
+
   // SPA fallback: for ALL non-API browser requests, return index.html
   // This must come AFTER static file routes but BEFORE API 404 handler
   app.get("*", (c) => {

@@ -37,7 +37,7 @@ app.get("/api/auth/login", (c) => {
 app.get(Paths.oauthCallback, createOAuthCallbackHandler());
 app.use("/api/trpc/*", async (c) => {
   const operations = decodeURIComponent(c.req.path.replace(/^\/api\/trpc\//, "")).split(",");
-  const unauthenticated = new Set(["visitor.status", "visitor.enter", "engagement.unsubscribe", "ping"]);
+  const unauthenticated = new Set(["brandStudio.inquire", "visitor.status", "visitor.enter", "engagement.unsubscribe", "ping"]);
   if (!operations.every(operation => unauthenticated.has(operation) || operation.startsWith("auth.") || operation.startsWith("stripe.webhook"))) {
     const adminToken = c.req.header("x-admin-token");
     const isAdmin = adminToken ? await verifyAdminToken(adminToken) : false;
