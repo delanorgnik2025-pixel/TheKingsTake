@@ -514,22 +514,40 @@ This article is for educational and informational purposes only. It does not con
   },
 };
 
-function renderArticleMarkdown(markdown: string) {
-  const inline = (value: string) => value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
+export function renderArticleMarkdown(markdown: string) {
+  const escape = (value: string) => value
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  const text = (value: string) => escape(value)
     .replace(/\*\*([^*]+)\*\*/g, '<strong class="text-[#F0EBE1]">$1</strong>')
-    .replace(/\[([^\]]+)\]\(((?:https?:\/\/|\/)[^)]+)\)/g, '<a href="$2" target="_blank" rel="noreferrer" class="text-[#FFB840] underline underline-offset-2">$1</a>')
-    .replace(/_([^_]+)_/g, '<em class="text-[#9f927d]">$1</em>');
+    .replace(/(^|\s)_([^_]+)_(?=\s|$|[.,;:!?])/g, '$1<em class="text-[#C9B99A]">$2</em>');
+  const inline = (value: string) => {
+    // Format text separately: Markdown must never rewrite generated HTML or URLs.
+    const pattern = /\[([^\]]+)\]\(((?:https?:\/\/|\/)[^)]+)\)/g;
+    let result = "";
+    let cursor = 0;
+    for (const match of value.matchAll(pattern)) {
+      result += text(value.slice(cursor, match.index));
+      const url = new URL(match[2], "https://thekingstake.com");
+      if (!['https:', 'http:'].includes(url.protocol)) {
+        result += text(match[1]);
+      } else {
+        for (const key of [...url.searchParams.keys()]) {
+          if (key.startsWith('utm_')) url.searchParams.delete(key);
+        }
+        result += `<a href="${escape(url.href)}" target="_blank" rel="noopener noreferrer" class="text-[#FFB840] underline underline-offset-4 decoration-[#FFB840]/40 hover:decoration-[#FFB840] break-words">${text(match[1])}</a>`;
+      }
+      cursor = match.index! + match[0].length;
+    }
+    return result + text(value.slice(cursor));
+  };
   const lines = markdown.split("\n");
   const html: string[] = [];
   let inList = false;
   for (const raw of lines) {
     const line = raw.trim();
     if (line.startsWith("- ")) {
-      if (!inList) { html.push('<ul class="my-4 list-disc space-y-2 pl-6">'); inList = true; }
+      if (!inList) { html.push('<ul class="my-4 list-disc space-y-3 pl-5 marker:text-[#FFB840]">'); inList = true; }
       html.push(`<li>${inline(line.slice(2))}</li>`);
       continue;
     }
@@ -612,9 +630,9 @@ export default function BlogPostPage() {
 
         {post.coverImage && <figure className="mb-8 overflow-hidden rounded-lg border border-white/10"><img src={post.coverImage} alt={newsImageForUrl(post.coverImage)?.alt || post.title} className="aspect-video w-full object-cover" />{newsImageForUrl(post.coverImage) && <figcaption className="bg-[#182635] px-4 py-3 text-xs leading-relaxed text-[#C9B99A]">{newsImageForUrl(post.coverImage)?.caption} {newsImageForUrl(post.coverImage)?.credit} · <a href={newsImageForUrl(post.coverImage)?.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline">Source and license</a></figcaption>}</figure>}
 
-        <div className="bg-[rgba(37,54,75,0.9)] backdrop-blur-lg rounded-lg border border-[rgba(255,149,0,0.2)] p-8">
+        <div className="bg-[rgba(37,54,75,0.9)] backdrop-blur-lg rounded-lg border border-[rgba(255,149,0,0.2)] p-5 sm:p-8">
           <div
-            className="prose prose-invert max-w-none text-[#C9B99A] leading-relaxed"
+            className="prose prose-invert max-w-none text-[#C9B99A] leading-relaxed break-words [overflow-wrap:anywhere]"
             dangerouslySetInnerHTML={{
               __html: renderArticleMarkdown(post.content),
             }}
