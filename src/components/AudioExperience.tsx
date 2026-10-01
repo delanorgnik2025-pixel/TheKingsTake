@@ -18,6 +18,12 @@ const AUDIO_SRC =
 const SESSION_KEY = "tk-audio-session";
 const INTERESTS = ["Indigenous heritage", "Ancestry research", "Public archives", "Book and author", "Community feed", "Civic news", "Writing services", "Partnerships"] as const;
 
+function OwnerEntrance() {
+  const location = useLocation();
+  const returnTo = encodeURIComponent(location.pathname + location.search + location.hash);
+  return <Link to={`/admin/login?returnTo=${returnTo}`} className="mt-5 block text-sm text-[#FFB840] underline underline-offset-4">Owner entrance · Admin login</Link>;
+}
+
 function visitorSessionId() {
   let id = sessionStorage.getItem("tktVisitorSession");
   if (!id) { id = crypto.randomUUID().replaceAll("-", ""); sessionStorage.setItem("tktVisitorSession", id); }
@@ -37,6 +43,7 @@ function VisitorEntry({ onComplete }: { onComplete: () => void }) {
     <div className="mx-auto max-w-lg rounded-2xl border border-[#FF9500]/30 bg-[#1B2B3B] p-6 shadow-2xl sm:p-9">
       <p className="mb-3 text-xs uppercase tracking-[.2em] text-[#FF9500]">The King’s Take · Visitor entry</p>
       <Link to="/brand-studio" className="mb-5 block text-sm text-[#FFB840] underline">Looking for website services? Visit Brand Studio →</Link>
+      <OwnerEntrance />
       <h2 className="mb-3 text-3xl font-semibold">{step === 0 ? "Welcome to the hub" : "What brings you here?"}</h2>
       <p className="mb-6 text-sm text-[#C9B99A]">{step === 0 ? "Enter your email to continue. We use it to recognize your visits and make it possible for the owner to reply if you start a conversation." : "Choose at least one interest so we can show you the right parts of the site."}</p>
       {step === 0 ? <form onSubmit={e => { e.preventDefault(); if (email.trim()) setStep(1); }} className="space-y-4">
@@ -268,6 +275,8 @@ function EntranceOverlay({
 
         <Link to="/brand-studio" className="mb-6 block text-sm text-[#FFB840] underline underline-offset-4">Need a website or brand? Visit Brand Studio →</Link>
 
+        <OwnerEntrance />
+
         {/* Mobile-optimized buttons — larger tap targets, full width on small screens */}
         <div className="flex flex-col gap-3 justify-center">
           <button
@@ -315,7 +324,7 @@ function EntranceOverlay({
 // ============================================
 // MAIN EXPORT
 // ============================================
-export default function AudioExperience({ onAccessChange }: { onAccessChange: (allowed: boolean) => void }) {
+export default function AudioExperience({ onAccessChange }: { onAccessChange: (allowed: boolean, owner?: boolean) => void }) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [showOverlay, setShowOverlay] = useState(true);
   const [soundChosen, setSoundChosen] = useState(false);
@@ -330,7 +339,13 @@ export default function AudioExperience({ onAccessChange }: { onAccessChange: (a
     if (dismissedThisSession === "dismissed") { setShowOverlay(false); setSoundChosen(true); }
   }, []);
 
-  useEffect(() => { if (status.data?.admitted) { setAdmitted(true); onAccessChange(true); } }, [status.data?.admitted, onAccessChange]);
+  useEffect(() => {
+    if (status.data) {
+      setAdmitted(status.data.admitted);
+      onAccessChange(status.data.admitted, status.data.owner);
+      if (status.data.owner) { setShowOverlay(false); setSoundChosen(true); }
+    }
+  }, [status.data, onAccessChange]);
 
   useEffect(() => {
     if (audioEnabled && audioRef.current) {

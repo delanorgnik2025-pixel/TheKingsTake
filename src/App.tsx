@@ -46,6 +46,11 @@ const NewsletterUnsubscribePage = lazy(() => import('./pages/NewsletterUnsubscri
 function AppLayout({ children }: { children: React.ReactNode }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [visitorAdmitted, setVisitorAdmitted] = useState(false)
+  const [ownerSession, setOwnerSession] = useState(false)
+  const updateAdmission = useCallback((allowed: boolean, owner = false) => {
+    setVisitorAdmitted(allowed)
+    setOwnerSession(owner)
+  }, [])
   const lenisRef = useRef<Lenis | null>(null)
   const location = useLocation()
   const publicSalesPage = location.pathname === '/brand-studio'
@@ -71,12 +76,12 @@ function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <CustomCursor />
-      {!publicUtilityPage && <AudioExperience onAccessChange={setVisitorAdmitted} />}
+      {!publicUtilityPage && <AudioExperience onAccessChange={updateAdmission} />}
       {(publicUtilityPage || visitorAdmitted) && <>
         {!hideNav && <Navigation onMenuToggle={() => setMenuOpen(true)} />}
         <MenuOverlay isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
         {children}
-        {!publicUtilityPage && <VisitorAssistant />}
+        {!publicUtilityPage && !ownerSession && <VisitorAssistant />}
         {!hideNav && <Footer onNavClick={scrollToSection} hideNewsletter={publicSalesPage} />}
       </>}
     </>

@@ -14,6 +14,7 @@ export default function AdminLogin() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const adminLogin = trpc.auth.adminLogin.useMutation()
+  const utils = trpc.useUtils()
 
   const requestedReturnPath = searchParams.get('returnTo')
   const returnPath = requestedReturnPath?.startsWith('/') && !requestedReturnPath.startsWith('//')
@@ -35,6 +36,7 @@ export default function AdminLogin() {
       const res = await adminLogin.mutateAsync({ password })
       if (res?.success && res.token) {
         localStorage.setItem('adminToken', res.token)
+        await utils.visitor.status.invalidate()
         navigate(returnPath)
       } else {
         setError('Invalid password. Please try again.')

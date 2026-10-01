@@ -6,6 +6,7 @@ import { adminQuery, createRouter, publicQuery } from "./middleware";
 import { getDb } from "./queries/connection";
 import { newsletterSubscribers, siteVisitorSessions, visitorContacts, visitorMessages } from "@db/schema";
 import { createVisitorSession, visitorCookie, visitorFromRequest } from "./security/visitor-session";
+import { visitorAccessStatus } from "./security/visitor-access";
 import { toolPreview } from "./security/tool-preview";
 
 const interestOptions = ["Indigenous heritage", "Ancestry research", "Public archives", "Book and author", "Community feed", "Civic news", "Writing services", "Partnerships"] as const;
@@ -25,7 +26,7 @@ async function contact(req: Request) {
 }
 
 export const visitorRouter = createRouter({
-  status: publicQuery.query(async ({ ctx }) => ({ admitted: Boolean(await visitorFromRequest(ctx.req)) })),
+  status: publicQuery.query(({ ctx }) => visitorAccessStatus(ctx.req)),
   toolPreview: publicQuery.input(z.object({ tool: z.enum(["globe", "archives"]) }))
     .query(({ ctx, input }) => toolPreview(ctx.req, input.tool)),
   useTool: publicQuery.input(z.object({ tool: z.enum(["globe", "archives"]) }))
