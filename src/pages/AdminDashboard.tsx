@@ -1,3 +1,4 @@
+import StudioOrders from '@/components/StudioOrders';
 import { useState, useEffect } from "react";
 import { useNavigate, Link, useSearchParams } from "react-router";
 import { trpc } from "@/providers/trpc";
@@ -812,12 +813,7 @@ export default function AdminDashboard() {
       case "dashboard":
         return <DashboardHome />;
       case "orders":
-        return (
-          <PlaceholderModule
-            title="Orders"
-            message="Stripe orders will appear here. Connect Stripe for live tracking."
-          />
-        );
+        return <StudioOrders />;
       case "petitions":
         return <PetitionsModule />;
       case "bookings":

@@ -1,3 +1,4 @@
+import { studioPaymentsRouter } from './studio-payments';
 import { brandStudioRouter } from "./brand-studio-router";
 import { authRouter } from "./auth-router";
 import { blogRouter } from "./blog-router";
@@ -22,6 +23,7 @@ import { createRouter, publicQuery } from "./middleware";
 
 export const appRouter = createRouter({
   brandStudio: brandStudioRouter,
+  studioPayments: studioPaymentsRouter,
   ping: publicQuery.query(() => ({ ok: true, ts: Date.now() })),
   auth: authRouter,
   blog: blogRouter,

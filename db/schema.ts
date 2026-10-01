@@ -471,3 +471,16 @@ export const liveStreams = mysqlTable("live_streams", {
   startedAt: timestamp("started_at"),
   endedAt: timestamp("ended_at"),
 });
+
+export const studioOrders = mysqlTable('studio_orders', {
+  id: varchar('id', { length: 36 }).primaryKey(),
+  sessionId: varchar('session_id', { length: 255 }).notNull().unique(),
+  paymentIntentId: varchar('payment_intent_id', { length: 255 }),
+  offerId: varchar('offer_id', { length: 100 }).notNull(), packageName: varchar('package_name', { length: 100 }).notNull(),
+  customerName: varchar('customer_name', { length: 255 }).notNull(), email: varchar('email', { length: 320 }).notNull(),
+  business: varchar('business', { length: 200 }).notNull(), project: text('project').notNull(),
+  amountCents: int('amount_cents').notNull(), totalCents: int('total_cents').notNull(),
+  currency: varchar('currency', { length: 3 }).notNull().default('usd'), liveMode: boolean('live_mode').notNull(),
+  status: varchar('status', { length: 30 }).notNull().default('pending'), refundedCents: int('refunded_cents').notNull().default(0),
+  createdAt: timestamp('created_at').defaultNow().notNull(), paidAt: timestamp('paid_at'), updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});

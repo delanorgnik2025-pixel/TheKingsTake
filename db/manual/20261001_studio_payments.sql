@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS studio_orders (
+ id varchar(36) PRIMARY KEY,
+ session_id varchar(255) NOT NULL UNIQUE,
+ payment_intent_id varchar(255) NULL,
+ offer_id varchar(100) NOT NULL,
+ package_name varchar(100) NOT NULL,
+ customer_name varchar(255) NOT NULL,
+ email varchar(320) NOT NULL,
+ business varchar(200) NOT NULL,
+ project text NOT NULL,
+ amount_cents int NOT NULL,
+ total_cents int NOT NULL,
+ currency varchar(3) NOT NULL DEFAULT 'usd',
+ live_mode boolean NOT NULL,
+ status varchar(30) NOT NULL DEFAULT 'pending',
+ refunded_cents int NOT NULL DEFAULT 0,
+ created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ paid_at timestamp NULL,
+ updated_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);

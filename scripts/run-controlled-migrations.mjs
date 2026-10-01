@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import mysql from "mysql2/promise";
 
 const migrations = [
+  ["20261001_studio_payments", "db/manual/20261001_studio_payments.sql"],
   ["20260914_member_community_stabilization", "db/manual/20260914_member_community_stabilization.sql"],
   ["20260915_exclusive_member_access", "db/manual/20260915_exclusive_member_access.sql"],
   ["20260916_audience_engagement", "db/manual/20260916_audience_engagement.sql"],
@@ -91,6 +92,23 @@ try {
     const code = error && typeof error === "object" && "code" in error ? String(error.code) : "unknown";
     throw new Error(`Brand Studio inquiry insert contract failed (${code}).`);
   }
+  await connection.beginTransaction();
+  try {
+    const checkId = `check-${Date.now()}`;
+    await connection.execute(
+      "INSERT INTO studio_orders (id, session_id, offer_id, package_name, customer_name, email, business, project, amount_cents, total_cents, live_mode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      [checkId, checkId, "author-launch", "Author Launch", "Deployment verification", "deployment-check@example.invalid", "Example", "Rolled back payment persistence check", 124750, 249500, false],
+    );
+    await connection.execute("UPDATE studio_orders SET status = 'paid', paid_at = CURRENT_TIMESTAMP WHERE id = ? AND status = 'pending'", [checkId]);
+    const [rows] = await connection.execute("SELECT status FROM studio_orders WHERE id = ?", [checkId]);
+    if (!Array.isArray(rows) || rows[0]?.status !== "paid") throw new Error("Studio payment transition failed");
+    await connection.rollback();
+    console.log("[migration] verified: Studio checkout order and payment update contract");
+  } catch {
+    await connection.rollback();
+    throw new Error("Studio payment persistence verification failed.");
+  }
+
 } finally {
   await connection.end();
 }
