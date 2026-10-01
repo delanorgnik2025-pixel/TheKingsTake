@@ -103,6 +103,7 @@ function AppRoutes() {
           {/* Ancestor Root Registry & Ancestor Realm — temporarily offline, in development */}
           <Route path="/civics" element={<CivicsPage />} />
           <Route path="/admin/login" element={<AdminLoginPage />} />
+          <Route path="/admin" element={<Navigate to="/admin/dashboard?section=newsletter" replace />} />
           <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
           <Route path="/admin/videos" element={<AdminVideosPage />} />
           <Route path="/pre-order" element={<PreOrderPage />} />

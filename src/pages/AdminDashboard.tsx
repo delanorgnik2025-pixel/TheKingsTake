@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router";
+import { useNavigate, Link, useSearchParams } from "react-router";
 import { trpc } from "@/providers/trpc";
 import {
   LayoutDashboard,
@@ -532,6 +532,7 @@ function AudienceModule() {
         </div>)}
       </div>
       <h4 className="text-[#F0EBE1] mb-3">Live chat inbox ({threads.length})</h4>
+      <p className="mb-4 text-sm text-[#C9B99A]">These are website chat messages, not emails. Visitors read and reply through “Talk to the owner” in the chat bubble while on the site. A saved message does not confirm they have read it. To contact someone who has left, use their email address separately.</p>
       <div className="space-y-3 mb-8">
         {!threads.length && <p className="text-sm text-[#C9B99A]">No visitor messages yet.</p>}
         {threads.map(thread => {
@@ -781,14 +782,16 @@ function NewsletterModule() {
 
 // ─── Main Dashboard ───
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState("dashboard");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const requestedSection = searchParams.get("section");
+  const [activeTab, setActiveTab] = useState(() => NAV_ITEMS.some(item => item.id === requestedSection) ? requestedSection! : "dashboard");
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   // Verify admin on mount
   useEffect(() => {
     const token = localStorage.getItem("adminToken");
-    if (!token) navigate("/admin/login", { replace: true });
+    if (!token) navigate(`/admin/login?returnTo=${encodeURIComponent(window.location.pathname + window.location.search)}`, { replace: true });
   }, [navigate]);
 
   function handleLogout() {
@@ -798,6 +801,7 @@ export default function AdminDashboard() {
 
   function selectTab(tab: string) {
     setActiveTab(tab);
+    setSearchParams({ section: tab }, { replace: true });
     setMenuOpen(false);
   }
 

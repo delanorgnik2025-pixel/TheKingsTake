@@ -37,6 +37,17 @@ export default function VisitorAssistant() {
   const captureLead = trpc.engagement.captureLead.useMutation()
   const chat = trpc.visitor.myMessages.useQuery(undefined, { refetchInterval: 8_000 })
   const sendHuman = trpc.visitor.sendMessage.useMutation({ onSuccess: () => chat.refetch() })
+  const [lastReadOwnerId, setLastReadOwnerId] = useState(() => Number(sessionStorage.getItem('tktLastReadOwnerMessage') || 0))
+  const latestOwnerMessage = chat.data?.filter(message => message.sender === 'owner').at(-1)
+  const hasOwnerMessage = Boolean(latestOwnerMessage && latestOwnerMessage.id > lastReadOwnerId)
+
+  useEffect(() => {
+    if (open && humanChat && latestOwnerMessage) {
+      setLastReadOwnerId(latestOwnerMessage.id)
+      sessionStorage.setItem('tktLastReadOwnerMessage', String(latestOwnerMessage.id))
+    }
+    if (open && humanChat) conversationEnd.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [open, humanChat, latestOwnerMessage?.id, chat.data?.length])
 
   useEffect(() => {
     if (location.pathname.startsWith('/admin')) return
@@ -85,7 +96,7 @@ export default function VisitorAssistant() {
         <div className="flex border-b border-white/10 text-xs"><button onClick={() => setHumanChat(false)} className={`flex-1 p-2 ${!humanChat ? 'text-[#FF9500]' : 'text-[#C9B99A]'}`}>AI guide</button><button onClick={() => setHumanChat(true)} className={`flex-1 p-2 ${humanChat ? 'text-[#FF9500]' : 'text-[#C9B99A]'}`}>Talk to the owner</button></div>
         <div className="flex-1 space-y-3 overflow-y-auto p-4">
           {humanChat ? <>
-            <p className="text-xs text-[#C9B99A]">Leave a message here. The owner can reply from the admin inbox. Replies are visible while you use this browser session; response times vary.</p>
+            <p className="text-xs text-[#C9B99A]">Chat directly with Ronald here. Type below and press Send to reply. Messages are saved on this website; this chat does not send email notifications. Response times vary.</p>
             {chat.data?.map(message => <div key={message.id} className={`max-w-[88%] rounded-xl px-3 py-2 text-sm ${message.sender === 'owner' ? 'bg-white/[0.06] text-[#F0EBE1]' : 'ml-auto bg-[#FF9500] text-[#182635]'}`}>{message.body}</div>)}
             {sendHuman.error && <p role="alert" className="text-xs text-red-300">{sendHuman.error.message}</p>}
           </> : <>
@@ -119,9 +130,10 @@ export default function VisitorAssistant() {
           <button disabled={!input.trim() || (humanChat ? sendHuman.isPending : ask.isPending)} className="rounded-lg bg-[#FF9500] p-2 text-[#182635] disabled:opacity-40" aria-label="Send"><Send size={18}/></button>
         </form>
       </div>}
-      <button onClick={() => { setOpen(value => !value); if (!open && chat.data?.at(-1)?.sender === 'owner') setHumanChat(true) }} className="fixed bottom-5 right-5 z-[90] flex h-14 w-14 items-center justify-center rounded-full bg-[#FF9500] text-[#182635] shadow-xl" aria-label="Open website assistant">
+      {!open && hasOwnerMessage && <button onClick={() => { setHumanChat(true); setOpen(true) }} className="fixed bottom-22 right-5 z-[90] max-w-[calc(100vw-2.5rem)] rounded-xl border border-[#FF9500]/40 bg-[#182635] px-4 py-3 text-sm text-[#F0EBE1] shadow-xl" aria-live="polite">Ronald sent you a message · Read & reply</button>}
+      <button onClick={() => { setOpen(value => !value); if (!open && hasOwnerMessage) setHumanChat(true) }} className="fixed bottom-5 right-5 z-[90] flex h-14 w-14 items-center justify-center rounded-full bg-[#FF9500] text-[#182635] shadow-xl" aria-label="Open website assistant">
         {open ? <X/> : <MessageCircle/>}
-        {!open && chat.data?.at(-1)?.sender === 'owner' && <span className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-red-500" aria-label="Owner message" />}
+        {!open && hasOwnerMessage && <span className="absolute -right-1 -top-1 h-3 w-3 rounded-full bg-red-500" aria-label="Owner message" />}
       </button>
     </>
   )

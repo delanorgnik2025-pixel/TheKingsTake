@@ -186,7 +186,7 @@ async function notifyDraftReady(campaignId: number, subject: string) {
       from,
       to: [to],
       subject: "Daily news draft ready for your approval",
-      text: `The King's Dispatch draft “${subject}” is ready. Nothing has been published or sent.\n\nReview campaign #${campaignId} in your admin dashboard: ${siteUrl}/admin`,
+      text: `The King's Dispatch draft “${subject}” is ready. Nothing has been published or sent.\n\nReview campaign #${campaignId} in your Dispatch approval desk: ${siteUrl}/admin/dashboard?section=newsletter`,
     }),
   }).catch(error => console.error("[daily-news] Draft-ready email failed", error));
 }
