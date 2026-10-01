@@ -13,8 +13,8 @@ describe('public Brand Studio inquiries', () => {
     expect(values).toHaveBeenCalledWith(expect.objectContaining({ email: 'studio@example.com', sourcePage: '/brand-studio', interest: 'Brand Studio · Author Launch', message: expect.stringContaining('Budget: Need guidance') }));
   });
   it('does not claim success if persistence fails', async () => {
-    values.mockRejectedValueOnce(new Error('Database unavailable'));
-    await expect(caller('test-failure').inquire(input)).rejects.toThrow();
+    values.mockRejectedValueOnce(new Error('Failed query: private SQL parameters'));
+    await expect(caller('test-failure').inquire(input)).rejects.toMatchObject({ code: 'INTERNAL_SERVER_ERROR', message: 'We could not save your inquiry. Please try again or email Ronald directly.' });
   });
   it('retains a saved lead when the email notification fails', async () => {
     vi.stubEnv('RESEND_API_KEY', 'test-only'); vi.stubEnv('OWNER_NOTIFICATION_EMAIL', 'owner@example.com'); vi.stubEnv('NEWSLETTER_FROM_EMAIL', 'from@example.com');

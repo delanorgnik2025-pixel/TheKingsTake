@@ -14,7 +14,8 @@ export const brandStudioRouter = createRouter({
     if (entry.count >= 5) throw new TRPCError({ code: 'TOO_MANY_REQUESTS', message: 'Please wait 15 minutes before sending another inquiry.' });
     entry.count++; attempts.set(key, entry);
     const values = studioLeadValues(input);
-    await getDb().insert(siteLeads).values(values);
+    try { await getDb().insert(siteLeads).values(values); }
+    catch { throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'We could not save your inquiry. Please try again or email Ronald directly.' }); }
     // The saved inquiry is authoritative even if the notification provider is unavailable.
     const apiKey = process.env.RESEND_API_KEY, to = process.env.OWNER_NOTIFICATION_EMAIL, from = process.env.NEWSLETTER_FROM_EMAIL;
     if (apiKey && to && from) {
