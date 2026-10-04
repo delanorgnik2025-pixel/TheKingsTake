@@ -402,6 +402,19 @@ export default function FeedPage() {
         </div>
       </div>
 
+      <nav aria-label="Explore the community" className="relative z-10 mx-auto mb-6 flex max-w-6xl flex-wrap justify-center gap-2 px-4">
+        {[
+          { to: "/news-hub", label: "News", icon: Newspaper },
+          { to: "/archives", label: "Archives", icon: BookOpen },
+          { to: "/fba", label: "Heritage", icon: Landmark },
+          { to: "/brand-studio", label: "Brand Studio", icon: Star },
+        ].map(({ to, label, icon: Icon }) => (
+          <Link key={to} to={to} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-white/15 bg-[#25364B]/80 px-4 py-2 text-sm text-[#F0EBE1] transition-colors hover:border-[#FF9500]/50 hover:bg-[#30445C]">
+            <Icon size={15} className="text-[#FFB840]" />{label}
+          </Link>
+        ))}
+      </nav>
+
       {/* Trending rail */}
       <div className="relative z-10">
         <TrendingRail />
@@ -1617,7 +1630,7 @@ function PostCard({
         id={`post-${post.id}`}
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`rounded-lg border p-4 backdrop-blur-sm ${post.pinned ? "border-[rgba(255,149,0,0.5)] shadow-[0_0_30px_rgba(255,149,0,0.08)]" : "border-[rgba(255,149,0,0.18)]"}`}
+        className={`rounded-xl border p-4 sm:p-5 backdrop-blur-sm ${post.pinned ? "border-[rgba(255,149,0,0.5)] shadow-[0_0_30px_rgba(255,149,0,0.08)]" : "border-[rgba(255,149,0,0.18)]"}`}
         style={{
           background:
             "linear-gradient(165deg, rgba(37,54,75,0.88), rgba(24,38,53,0.92))",
@@ -1774,7 +1787,7 @@ function PostCard({
                       onChange={e => setCommentText(e.target.value)}
                       placeholder="Write a comment..."
                       onKeyDown={e => e.key === "Enter" && handleComment()}
-                      className="flex-1 bg-[#182635] border border-[rgba(255,149,0,0.15)] rounded-lg px-3 py-2 text-sm text-[#F0EBE1] placeholder-[#C9B99A]/40 focus:outline-none focus:border-[#FF9500]"
+                      className="min-w-0 flex-1 bg-[#182635] border border-[rgba(255,149,0,0.15)] rounded-lg px-3 py-2 text-sm text-[#F0EBE1] placeholder-[#C9B99A]/40 focus:outline-none focus:border-[#FF9500]"
                     />
                     <button
                       onClick={handleComment}

@@ -88,7 +88,7 @@ export default function VisitorAssistant() {
 
   return (
     <>
-      {open && <div className="fixed bottom-24 right-4 z-[90] flex h-[min(620px,75vh)] w-[min(390px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-[#FF9500]/30 bg-[#182635] shadow-2xl">
+      {open && <div className="fixed bottom-24 right-4 z-[90] flex h-[min(620px,75dvh)] w-[min(390px,calc(100vw-2rem))] flex-col overflow-hidden rounded-3xl border border-white/15 bg-[#182635] shadow-2xl">
         <div className="flex items-center justify-between border-b border-white/10 bg-[#25364B] p-4">
           <div className="flex items-center gap-2"><Bot className="text-[#FF9500]" size={20}/><div><p className="text-sm font-semibold text-[#F0EBE1]">{humanChat ? 'Message the owner' : 'The Royal Guide'}</p><p className="text-[10px] text-[#C9B99A]">{humanChat ? 'Replies appear here when the owner responds' : 'Website navigation & assistance'}</p></div></div>
           <button onClick={() => setOpen(false)} className="text-[#C9B99A]" aria-label="Close assistant"><X size={18}/></button>
@@ -97,10 +97,10 @@ export default function VisitorAssistant() {
         <div className="flex-1 space-y-3 overflow-y-auto p-4">
           {humanChat ? <>
             <p className="text-xs text-[#C9B99A]">Chat directly with Ronald here. Type below and press Send to reply. Messages are saved on this website; this chat does not send email notifications. Response times vary.</p>
-            {chat.data?.map(message => <div key={message.id} className={`max-w-[88%] rounded-xl px-3 py-2 text-sm ${message.sender === 'owner' ? 'bg-white/[0.06] text-[#F0EBE1]' : 'ml-auto bg-[#FF9500] text-[#182635]'}`}>{message.body}</div>)}
+            {chat.data?.map(message => <div key={message.id} className={`max-w-[88%] break-words rounded-2xl px-4 py-2.5 text-sm ${message.sender === 'owner' ? 'rounded-bl-sm bg-white/[0.06] text-[#F0EBE1]' : 'ml-auto rounded-br-sm bg-[#FF9500] text-[#182635]'}`}>{message.body}</div>)}
             {sendHuman.error && <p role="alert" className="text-xs text-red-300">{sendHuman.error.message}</p>}
           </> : <>
-          {messages.map((message, index) => <div key={index} className={`max-w-[88%] rounded-xl px-3 py-2 text-sm leading-relaxed ${message.role === 'guide' ? 'bg-white/[0.06] text-[#F0EBE1]' : 'ml-auto bg-[#FF9500] text-[#182635]'}`}>{message.text}</div>)}
+          {messages.map((message, index) => <div key={index} className={`max-w-[88%] break-words rounded-2xl px-4 py-2.5 text-sm leading-relaxed ${message.role === 'guide' ? 'rounded-bl-sm bg-white/[0.06] text-[#F0EBE1]' : 'ml-auto rounded-br-sm bg-[#FF9500] text-[#182635]'}`}>{message.text}</div>)}
           {ask.isPending && <div className="inline-flex items-center gap-1 rounded-xl bg-white/[0.06] px-3 py-2 text-xs text-[#C9B99A]"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#FF9500]"/><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#FF9500] [animation-delay:150ms]"/><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#FF9500] [animation-delay:300ms]"/><span className="ml-1">Considering your question…</span></div>}
           <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
             <Link to="/pre-order" className="rounded border border-[#FF9500]/30 p-2 text-center text-[#FFB840]">The Book</Link>

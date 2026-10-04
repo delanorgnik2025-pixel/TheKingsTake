@@ -541,7 +541,7 @@ function AudienceModule() {
           return <div key={key} className="min-w-0 rounded border border-white/10 p-3 text-sm break-words">
             <button onClick={() => setReplyThread(replyThread === key ? null : key)} className="max-w-full break-all text-left text-[#FFB840]">{thread.email} · {thread.body.slice(0, 80)} {replyThread === key ? '▲' : '▼'}</button>
             {replyThread === key && <div className="mt-3 space-y-2">
-              {conversations?.filter(message => message.contactId === thread.contactId).map(message => <p key={message.id} className="rounded bg-white/5 p-2 text-[#C9B99A]"><b>{message.sender === 'owner' ? 'You' : 'Visitor'}:</b> {message.body}</p>)}
+              {conversations?.filter(message => message.contactId === thread.contactId).map(message => <p key={message.id} className={`max-w-[92%] break-words rounded-2xl px-4 py-3 text-sm leading-relaxed ${message.sender === "owner" ? "ml-auto rounded-br-sm bg-[#FF9500]/15 text-[#F0EBE1]" : "rounded-bl-sm bg-white/5 text-[#F0EBE1]"}`}><b>{message.sender === 'owner' ? 'You' : 'Visitor'}:</b> {message.body}</p>)}
               <form onSubmit={event => { event.preventDefault(); reply.mutate({ contactId: thread.contactId, sessionId: thread.sessionId, body: replyBody }); }} className="flex gap-2"><input value={replyBody} onChange={event => setReplyBody(event.target.value)} maxLength={2000} className="min-w-0 flex-1 rounded bg-[#101B28] p-2 text-white" placeholder="Write your reply" /><button disabled={!replyBody.trim() || reply.isPending} className="rounded bg-[#FF9500] px-3 text-[#101B28] disabled:opacity-50">Send</button></form>
               {reply.error && <p className="text-red-300">{reply.error.message}</p>}
             </div>}

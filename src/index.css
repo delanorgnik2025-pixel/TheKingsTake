@@ -7,6 +7,7 @@
 
 @layer base {
   :root {
+    --radius: 1.25rem;
     --dark-navy: #25364B;
     --charcoal: #3A4E64;
     --warm-amber: #FF9500;
@@ -32,6 +33,20 @@
     overflow-x: hidden;
     -webkit-tap-highlight-color: rgba(255, 149, 0, 0.15);
     touch-action: manipulation;
+  }
+
+  /* Shared soft editorial controls; utility classes can opt into other shapes. */
+  button, input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), textarea, select {
+    border-radius: 1rem;
+  }
+
+  button, a, input, textarea, select, summary {
+    scroll-margin-top: 6rem;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--hud-gold);
+    outline-offset: 3px;
   }
 
   /* Mobile optimizations */

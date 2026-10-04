@@ -29,7 +29,7 @@ export default function HudPanel({
       whileInView={{ opacity: 1, y: 0, x: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}
-      className={`bg-[rgba(42,58,74,0.7)] backdrop-blur-lg rounded border border-[rgba(255,149,0,0.2)] p-5 ${className}`}
+      className={`bg-[rgba(42,58,74,0.7)] backdrop-blur-lg rounded-xl border border-[rgba(255,149,0,0.2)] p-5 ${className}`}
       style={{ boxShadow: '0 2px 12px rgba(255,149,0,0.08)' }}
     >
       {showDots && (
