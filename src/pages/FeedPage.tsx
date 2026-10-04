@@ -67,7 +67,7 @@ function linkify(text: string) {
         href={p}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-[#FFB840] hover:underline break-all"
+        className="text-[#915400] hover:underline break-all"
       >
         {p}
       </a>
