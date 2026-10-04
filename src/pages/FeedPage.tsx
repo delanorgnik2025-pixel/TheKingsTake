@@ -103,11 +103,8 @@ function postShareUrl(post: FeedPost): string {
   return `${window.location.origin}/feed/post/${post.id}/${authorSlug(author)}`;
 }
 
-function postPreviewImage(post: FeedPost): string {
-  if (post.imageUrl) return post.imageUrl;
-  if (post.muxPlaybackId)
-    return `https://image.mux.com/${post.muxPlaybackId}/thumbnail.jpg?time=0`;
-  return `${window.location.origin}/images/og-image.jpg`;
+function postPreviewImage(): string {
+  return `${window.location.origin}/images/feed-community-share-v1.jpg`;
 }
 
 function isAdminPermissionError(error: unknown): boolean {
@@ -853,7 +850,7 @@ function MemberComposer({ onPosted }: { onPosted: () => void }) {
       <input
         ref={imageInputRef}
         type="file"
-        accept="image/jpeg,image/png,image/webp,image/gif"
+        accept="image/jpeg,image/png,image/jpeg,image/gif"
         className="hidden"
         onChange={e => {
           const file = e.target.files?.[0] || null;
@@ -1178,7 +1175,7 @@ function FeedComposer({
           <input
             ref={imageInputRef}
             type="file"
-            accept="image/jpeg,image/png,image/webp,image/gif"
+            accept="image/jpeg,image/png,image/jpeg,image/gif"
             className="hidden"
             onChange={e => {
               const file = e.target.files?.[0] || null;
@@ -1505,13 +1502,7 @@ function PostCard({
   };
 
   const handleShare = async () => {
-    const author = post.memberName || "Ronald Lee King";
-    const url = postShareUrl(post);
-    const data = {
-      title: `${author} on #TheKingsTake`,
-      text: post.body.slice(0, 180),
-      url,
-    };
+    const data = { url: postShareUrl(post) };
     if (navigator.share) {
       await navigator.share(data).catch(() => undefined);
       return;
@@ -1561,7 +1552,7 @@ function PostCard({
             >
               <div className="relative aspect-[1.91/1] bg-[#0f1924]">
                 <img
-                  src={postPreviewImage(post)}
+                  src={postPreviewImage()}
                   alt="Post preview"
                   className="h-full w-full object-cover"
                 />
@@ -1586,7 +1577,7 @@ function PostCard({
                   {post.memberName || "Ronald Lee King"} on #TheKingsTake
                 </h3>
                 <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-[#C9B99A]">
-                  {post.body || "A community post from TheKingsTake.com"}
+                  News, research and independent conversations. Join the feed to read this post and participate.
                 </p>
                 <div className="mt-4 grid grid-cols-2 gap-2">
                   <a
@@ -1598,7 +1589,7 @@ function PostCard({
                     Facebook
                   </a>
                   <a
-                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`${post.memberName || "Ronald Lee King"} on #TheKingsTake`)}&url=${encodeURIComponent(postShareUrl(post))}`}
+                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent("Join the conversation on #TheKingsTake")}&url=${encodeURIComponent(postShareUrl(post))}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="rounded-lg bg-black px-3 py-2.5 text-center text-xs font-semibold text-white"
@@ -1606,7 +1597,7 @@ function PostCard({
                     X / Twitter
                   </a>
                   <a
-                    href={`https://wa.me/?text=${encodeURIComponent(`${post.memberName || "Ronald Lee King"} on #TheKingsTake ${postShareUrl(post)}`)}`}
+                    href={`https://wa.me/?text=${encodeURIComponent(postShareUrl(post))}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="rounded-lg bg-[#25D366] px-3 py-2.5 text-center text-xs font-semibold text-[#102018]"

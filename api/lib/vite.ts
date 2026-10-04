@@ -8,6 +8,7 @@ import { feedPosts, members, posts } from "@db/schema";
 import { getDb } from "../queries/connection";
 
 import { articleMetadataHtml } from "./article-metadata";
+import { feedMetadataHtml } from "./feed-metadata";
 
 type App = Hono<{ Bindings: HttpBindings }>;
 
@@ -24,41 +25,6 @@ function replaceMeta(html: string, attribute: "name" | "property", key: string, 
   const pattern = new RegExp(`<meta\\s+${attribute}="${key}"\\s+content="[^"]*"\\s*\\/?\\s*>`, "i");
   const tag = `<meta ${attribute}="${key}" content="${escaped}" />`;
   return pattern.test(html) ? html.replace(pattern, tag) : html.replace("</head>", `    ${tag}\n  </head>`);
-}
-
-function renderSharedPostHtml(template: string, post: {
-  id: number;
-  body: string;
-  imageUrl: string | null;
-  muxPlaybackId: string | null;
-  memberName: string | null;
-}, requestUrl: string): string {
-  const author = post.memberName || "Ronald Lee King";
-  const title = `${author} on #TheKingsTake | TheKingsTake.com`;
-  const description = (post.body || `View ${author}'s exclusive community post on TheKingsTake.com`)
-    .replace(/\s+/g, " ")
-    .trim()
-    .slice(0, 220);
-  const image = post.imageUrl
-    || (post.muxPlaybackId ? `https://image.mux.com/${post.muxPlaybackId}/thumbnail.jpg?time=0` : null)
-    || "https://thekingstake.com/images/og-image.jpg";
-  const canonicalUrl = new URL(requestUrl);
-  canonicalUrl.protocol = "https:";
-  canonicalUrl.host = "thekingstake.com";
-  canonicalUrl.search = "";
-  canonicalUrl.hash = "";
-
-  let html = template.replace(/<title>[^<]*<\/title>/i, `<title>${escapeAttribute(title)}</title>`);
-  html = replaceMeta(html, "name", "description", description);
-  html = replaceMeta(html, "property", "og:title", title);
-  html = replaceMeta(html, "property", "og:description", description);
-  html = replaceMeta(html, "property", "og:type", "article");
-  html = replaceMeta(html, "property", "og:url", canonicalUrl.toString());
-  html = replaceMeta(html, "property", "og:image", image);
-  html = replaceMeta(html, "name", "twitter:title", title);
-  html = replaceMeta(html, "name", "twitter:description", description);
-  html = replaceMeta(html, "name", "twitter:image", image);
-  return html;
 }
 
 export function serveStaticFiles(app: App) {
@@ -95,13 +61,19 @@ export function serveStaticFiles(app: App) {
         .limit(1);
       if (!rows[0]) return c.notFound();
       c.header("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
-      return c.html(renderSharedPostHtml(fs.readFileSync(indexPath, "utf-8"), rows[0], c.req.url));
+      return c.html(feedMetadataHtml(fs.readFileSync(indexPath, "utf-8"), c.req.url, rows[0].memberName || "Ronald Lee King"));
     } catch (error) {
       console.error("Could not render shared feed post metadata", error);
       return c.html(fs.readFileSync(indexPath, "utf-8"));
     }
   };
 
+  app.get("/feed", c => {
+    const indexPath = path.resolve(distPath, "index.html");
+    if (!fs.existsSync(indexPath)) return c.json({ error: "Frontend build not found" }, 500);
+    c.header("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
+    return c.html(feedMetadataHtml(fs.readFileSync(indexPath, "utf-8"), c.req.url));
+  });
   app.get("/feed/post/:id", sharedPostHandler);
   app.get("/feed/post/:id/:slug", sharedPostHandler);
 
