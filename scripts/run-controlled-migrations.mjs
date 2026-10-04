@@ -20,6 +20,7 @@ const migrations = [
   ["20260929_weather_current_brief", "db/manual/20260929_weather_current_brief.sql"],
   ["20260929_real_news_images", "db/manual/20260929_real_news_images.sql"],
   ["20261001_brand_studio", "db/manual/20261001_brand_studio.sql"],
+  ["20261004_nolan_dispatch_lead", "db/manual/20261004_nolan_dispatch_lead.sql"],
 ];
 
 const databaseUrl = process.env.DATABASE_URL;
@@ -48,6 +49,10 @@ try {
     await connection.execute("INSERT INTO controlled_migrations (name) VALUES (?)", [name]);
     console.log(`[migration] completed: ${name}`);
   }
+
+  const [leadRows] = await connection.execute("SELECT status FROM newsletter_campaigns WHERE daily_key = ?", ["20261004-nolan-lead"]);
+  if (!Array.isArray(leadRows) || leadRows.length !== 1) throw new Error("Nolan Wells Dispatch lead was not persisted.");
+  console.log(`[migration] verified: Nolan Wells Dispatch lead persisted (${leadRows[0].status})`);
 
   // Exercise the exact database contract used during Dispatch approval. The
   // synthetic row is rolled back, and deployment stops if production cannot

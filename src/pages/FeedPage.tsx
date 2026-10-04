@@ -40,7 +40,7 @@ import { useMember } from "@/providers/MemberProvider";
 import MemberAuthModal from "@/components/MemberAuthModal";
 import NewsTicker from "@/components/NewsTicker";
 import TrendingRail from "@/components/TrendingRail";
-import FeedBackdrop from "@/components/FeedBackdrop";
+
 import { resolveFeedLink } from "../../contracts/feed-links";
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
@@ -179,11 +179,11 @@ function DispatchRail({
             <p className="mb-1 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-[#FF9500]">
               <Newspaper size={12} /> Daily intelligence
             </p>
-            <h2 id="mobile-dispatch-title" className="text-xl text-[#F0EBE1]" style={{ fontFamily: "Newsreader, serif" }}>
+            <h2 id="mobile-dispatch-title" className="text-xl text-[#182635]" style={{ fontFamily: "Newsreader, serif" }}>
               The King&apos;s Dispatch
             </h2>
           </div>
-          <a href="/#newsletter" className="shrink-0 text-[11px] font-semibold text-[#FFB840] hover:text-[#FF9500]">
+          <a href="/#newsletter" className="shrink-0 text-[11px] font-semibold text-[#915400] hover:text-[#FF9500]">
             Get it by email
           </a>
         </div>
@@ -361,8 +361,7 @@ export default function FeedPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#182635] relative">
-      <FeedBackdrop />
+    <div className="min-h-screen bg-[#F3F5F7] relative">
 
       {/* Auth Modal */}
       <MemberAuthModal isOpen={showAuth} onClose={() => setShowAuth(false)} />
@@ -375,7 +374,7 @@ export default function FeedPage() {
       <div className="relative z-10 max-w-6xl mx-auto px-4 pt-10 pb-8 text-center">
         <Link
           to="/"
-          className="inline-flex items-center gap-2 text-[#C9B99A] text-xs uppercase tracking-[0.2em] hover:text-[#FF9500] transition-colors mb-8"
+          className="inline-flex items-center gap-2 text-[#536174] text-xs uppercase tracking-[0.2em] hover:text-[#FF9500] transition-colors mb-8"
         >
           <ArrowLeft size={14} /> Home
         </Link>
@@ -385,22 +384,42 @@ export default function FeedPage() {
             <div className="absolute inset-0 blur-xl bg-[rgba(255,149,0,0.45)] -z-10 rounded-full" />
           </div>
           <h1
-            className="text-4xl sm:text-5xl text-[#F0EBE1]"
+            className="text-4xl sm:text-5xl text-[#182635]"
             style={{
               fontFamily: "Newsreader, serif",
-              textShadow: "0 0 40px rgba(255,149,0,0.35)",
+
             }}
           >
             The Feed
           </h1>
-          <p className="text-[#C9B99A] text-sm sm:text-base max-w-xl">
+          <p className="text-[#536174] text-sm sm:text-base max-w-xl">
             Dispatches from{" "}
-            <span className="text-[#FFB840] font-semibold">#TheKingsTake</span>{" "}
+            <span className="text-[#915400] font-semibold">#TheKingsTake</span>{" "}
             — news, commentary, and live broadcasts. No algorithm in between.
           </p>
           <div className="h-px w-40 mt-2 bg-gradient-to-r from-transparent via-[#FF9500] to-transparent" />
         </div>
       </div>
+
+      <nav aria-label="Explore the community" className="relative z-10 mx-auto mb-6 max-w-6xl px-4">
+        <div className="rounded-xl border border-[#DCE2E8] bg-white p-4 shadow-sm">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-[#536174]">Make yourself at home</p>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+            {[
+              { to: "/news-hub", label: "Read the news", detail: "Stories & investigations", icon: Newspaper },
+              { to: "/archives", label: "Explore the archives", detail: "Research & historical records", icon: BookOpen },
+              { to: "/fba", label: "Heritage & identity", detail: "History and community", icon: Landmark },
+              { to: "/brand-studio", label: "Build your presence", detail: "Websites & brand packages", icon: Star },
+            ].map(({ to, label, detail, icon: Icon }) => (
+              <Link key={to} to={to} className="min-w-0 rounded-lg bg-[#F3F5F7] p-3 text-[#182635] transition-colors hover:bg-[#FFF2DA] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#915400]">
+                <Icon size={18} className="mb-2 text-[#915400]" />
+                <span className="block text-sm font-semibold">{label}</span>
+                <span className="mt-1 block text-xs text-[#536174]">{detail}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </nav>
 
       {/* Trending rail */}
       <div className="relative z-10">
@@ -541,7 +560,7 @@ export default function FeedPage() {
 
           {/* Timeline */}
           {isLoading && offset === 0 && (
-            <div className="text-center py-16 text-[#C9B99A]">
+            <div className="text-center py-16 text-[#536174]">
               <Loader2 className="animate-spin inline-block mr-2" size={18} />
               Loading the feed…
             </div>
@@ -550,12 +569,12 @@ export default function FeedPage() {
             <div className="text-center py-16 border border-dashed border-[rgba(255,149,0,0.25)] rounded-lg">
               <Crown className="mx-auto text-[#FF9500] mb-3" size={32} />
               <p
-                className="text-[#F0EBE1] text-lg"
+                className="text-[#182635] text-lg"
                 style={{ fontFamily: "Newsreader, serif" }}
               >
                 The feed opens soon.
               </p>
-              <p className="text-[#C9B99A] text-sm mt-1">
+              <p className="text-[#536174] text-sm mt-1">
                 The first dispatch is being prepared. Check back shortly.
               </p>
             </div>
@@ -1617,28 +1636,28 @@ function PostCard({
         id={`post-${post.id}`}
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`rounded-lg border p-4 backdrop-blur-sm ${post.pinned ? "border-[rgba(255,149,0,0.5)] shadow-[0_0_30px_rgba(255,149,0,0.08)]" : "border-[rgba(255,149,0,0.18)]"}`}
+        className={`rounded-xl border p-4 sm:p-5 shadow-sm ${post.pinned ? "border-[rgba(255,149,0,0.5)] shadow-[0_0_30px_rgba(255,149,0,0.08)]" : "border-[rgba(255,149,0,0.18)]"}`}
         style={{
           background:
-            "linear-gradient(165deg, rgba(37,54,75,0.88), rgba(24,38,53,0.92))",
+            "#FFFFFF",
         }}
       >
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-[rgba(255,149,0,0.15)] border border-[rgba(255,149,0,0.4)] flex items-center justify-center shrink-0">
-              <Crown size={18} className="text-[#FF9500]" />
+              <Crown size={18} className="text-[#915400]" />
             </div>
             <div>
-              <p className="text-[#F0EBE1] text-sm font-medium">
+              <p className="text-[#182635] text-sm font-medium">
                 {post.memberName || "Ronald Lee King"}{" "}
-                <span className="text-[#FF9500]">
+                <span className="text-[#915400]">
                   · {post.memberId ? "Royal Member" : "#TheKingsTake"}
                 </span>
               </p>
-              <p className="text-[#C9B99A] text-[11px]">
+              <p className="text-[#536174] text-[11px]">
                 {timeAgo(post.createdAt)}
                 {post.pinned && (
-                  <span className="text-[#FFB840] ml-2">· Pinned</span>
+                  <span className="text-[#915400] ml-2">· Pinned</span>
                 )}
               </p>
             </div>
@@ -1648,7 +1667,7 @@ function PostCard({
               <button
                 title={post.pinned ? "Unpin" : "Pin to top"}
                 onClick={() => pinMutation.mutate({ id: post.id })}
-                className="p-1.5 text-[#C9B99A] hover:text-[#FFB840] transition-colors"
+                className="p-1.5 text-[#536174] hover:text-[#915400] transition-colors"
               >
                 {post.pinned ? <PinOff size={15} /> : <Pin size={15} />}
               </button>
@@ -1658,7 +1677,7 @@ function PostCard({
                   if (confirm("Delete this post?"))
                     deleteMutation.mutate({ id: post.id });
                 }}
-                className="p-1.5 text-[#C9B99A] hover:text-red-400 transition-colors"
+                className="p-1.5 text-[#536174] hover:text-red-400 transition-colors"
               >
                 <Trash2 size={15} />
               </button>
@@ -1666,7 +1685,7 @@ function PostCard({
           )}
         </div>
 
-        <p className="text-[#F0EBE1] text-[15px] leading-relaxed mt-3 whitespace-pre-wrap">
+        <p className="text-[#182635] text-[15px] leading-relaxed mt-3 whitespace-pre-wrap">
           {linkify(post.body)}
         </p>
 
@@ -1675,14 +1694,14 @@ function PostCard({
             href={postLink.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-3 flex items-center gap-3 bg-[#182635] border border-[rgba(255,149,0,0.2)] rounded px-4 py-3 hover:border-[#FF9500] transition-colors group"
+            className="mt-3 flex items-center gap-3 bg-[#F3F5F7] border border-[rgba(255,149,0,0.2)] rounded px-4 py-3 hover:border-[#FF9500] transition-colors group"
           >
-            <ExternalLink size={16} className="text-[#FF9500] shrink-0" />
+            <ExternalLink size={16} className="text-[#915400] shrink-0" />
             <div className="min-w-0">
-              <p className="text-[#F0EBE1] text-sm group-hover:text-[#FFB840] transition-colors truncate">
+              <p className="text-[#182635] text-sm group-hover:text-[#915400] transition-colors truncate">
                 {post.linkTitle || post.linkUrl}
               </p>
-              <p className="text-[#C9B99A] text-xs truncate">
+              <p className="text-[#536174] text-xs truncate">
                 {postLink.hostname}
               </p>
             </div>
@@ -1731,10 +1750,10 @@ function PostCard({
           )}
 
         {/* Actions */}
-        <div className="mt-3 pt-3 border-t border-[rgba(240,235,225,0.08)] flex items-center gap-4">
+        <div className="mt-3 pt-3 border-t border-[#DCE2E8] flex items-center gap-4">
           <button
             onClick={handleLike}
-            className={`flex items-center gap-1.5 text-sm transition-colors ${isLikedQuery.data?.liked ? "text-[#FF9500]" : "text-[#C9B99A] hover:text-[#FF9500]"}`}
+            className={`flex items-center gap-1.5 text-sm transition-colors ${isLikedQuery.data?.liked ? "text-[#915400]" : "text-[#536174] hover:text-[#915400]"}`}
           >
             <Heart
               size={16}
@@ -1744,13 +1763,13 @@ function PostCard({
           </button>
           <button
             onClick={() => setShowComments(!showComments)}
-            className="flex items-center gap-1.5 text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors"
+            className="flex items-center gap-1.5 text-sm text-[#536174] hover:text-[#915400] transition-colors"
           >
             <MessageCircle size={16} /> Comments
           </button>
           <button
             onClick={handleShare}
-            className="flex items-center gap-1.5 text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors"
+            className="flex items-center gap-1.5 text-sm text-[#536174] hover:text-[#915400] transition-colors"
           >
             <Share2 size={16} /> Share
           </button>
@@ -1765,7 +1784,7 @@ function PostCard({
               exit={{ height: 0, opacity: 0 }}
               className="overflow-hidden"
             >
-              <div className="mt-3 pt-3 border-t border-[rgba(240,235,225,0.06)] space-y-3">
+              <div className="mt-3 pt-3 border-t border-[#DCE2E8] space-y-3">
                 {/* Comment form */}
                 {canInteract ? (
                   <div className="flex gap-2">
@@ -1774,7 +1793,7 @@ function PostCard({
                       onChange={e => setCommentText(e.target.value)}
                       placeholder="Write a comment..."
                       onKeyDown={e => e.key === "Enter" && handleComment()}
-                      className="flex-1 bg-[#182635] border border-[rgba(255,149,0,0.15)] rounded-lg px-3 py-2 text-sm text-[#F0EBE1] placeholder-[#C9B99A]/40 focus:outline-none focus:border-[#FF9500]"
+                      className="min-w-0 flex-1 bg-[#F3F5F7] border border-[rgba(255,149,0,0.15)] rounded-lg px-3 py-2 text-sm text-[#182635] placeholder-[#C9B99A]/40 focus:outline-none focus:border-[#FF9500]"
                     />
                     <button
                       onClick={handleComment}
@@ -1787,7 +1806,7 @@ function PostCard({
                 ) : (
                   <button
                     onClick={() => setShowAuth(true)}
-                    className="w-full py-2 text-xs text-[#C9B99A] border border-dashed border-[rgba(255,149,0,0.2)] rounded-lg hover:text-[#FF9500] hover:border-[#FF9500]/30 transition-colors"
+                    className="w-full py-2 text-xs text-[#536174] border border-dashed border-[rgba(255,149,0,0.2)] rounded-lg hover:text-[#915400] hover:border-[#FF9500]/30 transition-colors"
                   >
                     Log in to comment
                   </button>
@@ -1798,7 +1817,7 @@ function PostCard({
                   <div className="text-center py-2">
                     <Loader2
                       size={14}
-                      className="animate-spin inline text-[#C9B99A]"
+                      className="animate-spin inline text-[#536174]"
                     />
                   </div>
                 )}
@@ -1812,19 +1831,19 @@ function PostCard({
                           className="w-full h-full rounded-full object-cover"
                         />
                       ) : (
-                        <User size={12} className="text-[#FF9500]" />
+                        <User size={12} className="text-[#915400]" />
                       )}
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <span className="text-[#F0EBE1] text-xs font-medium">
+                        <span className="text-[#182635] text-xs font-medium">
                           {comment.memberName || "Member"}
                         </span>
-                        <span className="text-[#C9B99A]/50 text-[10px]">
+                        <span className="text-[#536174]/50 text-[10px]">
                           {timeAgo(comment.createdAt)}
                         </span>
                       </div>
-                      <p className="text-[#C9B99A] text-xs leading-relaxed mt-0.5">
+                      <p className="text-[#536174] text-xs leading-relaxed mt-0.5">
                         {comment.content}
                       </p>
                     </div>
