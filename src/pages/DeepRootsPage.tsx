@@ -206,7 +206,7 @@ export default function DeepRootsPage() {
             <BookOpen size={22} className="text-[#FF9500] mx-auto mb-3" />
             <h3 className="text-[#F0EBE1] text-lg mb-2" style={{ fontFamily: 'Newsreader, serif' }}>The Companion Volume</h3>
             <p className="text-[#C9B99A] text-sm mb-4">
-              The African American State of the Union — the economic blueprint behind the map. Hardcover, 362 pages, releasing September 11, 2026.
+              The African American State of the Union — the economic blueprint behind the map. Hardcover pre-order. Final editing and proof approval are in progress; publication details will be confirmed.
             </p>
             <Link to="/pre-order" className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-[#FF9500] text-[#FFB840] text-sm hover:bg-[rgba(255,149,0,0.1)] transition-colors">
               Pre-Order the Hardcover — $39.99
