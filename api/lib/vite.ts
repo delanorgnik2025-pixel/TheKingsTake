@@ -35,7 +35,9 @@ export function serveStaticFiles(app: App) {
   const staticRoot = path.relative(process.cwd(), distPath) || ".";
 
   // Existing saved article/image URLs also resolve to the confirmed original cover.
-  app.get("/images/book-cover.jpg", c => c.redirect("/images/book-cover-confirmed-v1.png", 302));
+  app.get("/images/book-cover.jpg", c => c.redirect("/images/book-cover-author-confirmed-v2.jpg", 302));
+
+  app.get("/images/book-cover-confirmed-v1.png", c => c.redirect("/images/book-cover-author-confirmed-v2.jpg", 302));
 
   // Serve static files — only for actual files, not for SPA routes
   app.use("/assets/*", serveStatic({ root: staticRoot }));

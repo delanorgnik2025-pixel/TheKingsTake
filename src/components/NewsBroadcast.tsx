@@ -171,7 +171,7 @@ const FALLBACK_TRENDING: NewsPost[] = [
     id: 't5', slug: "dawes-rolls-digitization-complete-2025",
     title: "How to Search Digitized Dawes Records Beyond the Index",
     excerpt: "NARA offers searchable census cards and enrollment applications, but complete research requires comparing multiple record sets.",
-    category: "HERITAGE", coverImage: "/images/book-cover-confirmed-v1.png",
+    category: "HERITAGE", coverImage: "/images/book-cover-author-confirmed-v2.jpg",
     createdAt: "2026-09-17", author: "AASOTU Wire", source: "National Archives",
     isAIGenerated: false,
   },
@@ -209,7 +209,7 @@ const BLOG_POSTS: NewsPost[] = [
 ]
 
 const DEFAULT_VIDEOS: VideoItem[] = [
-  { id: 'v1', title: 'Featured Talk: The State of Our Union', description: 'Ronald Lee King breaks down what "From the Loins of the Beast" really means for our community.', thumbnail: '/images/book-cover-confirmed-v1.png', duration: '12:34', date: 'Coming Soon', isLive: false },
+  { id: 'v1', title: 'Featured Talk: The State of Our Union', description: 'Ronald Lee King breaks down what "From the Loins of the Beast" really means for our community.', thumbnail: '/images/book-cover-author-confirmed-v2.jpg', duration: '12:34', date: 'Coming Soon', isLive: false },
   { id: 'v2', title: 'Know Your Rights: Police Encounters', description: 'What to say, what not to say, and how to protect yourself.', thumbnail: '/images/blog-post-2.jpg', duration: '18:45', date: 'Coming Soon' },
   { id: 'v3', title: 'Building the AASOTU Movement', description: 'How we turn knowledge into power and community into protection.', thumbnail: '/images/blog-post-3.jpg', duration: '24:12', date: 'Coming Soon' },
 ]

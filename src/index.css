@@ -182,13 +182,13 @@
 /* 1783536493 */
 
 /* Show the entire confirmed cover, including typography, in every thumbnail. */
-img[src*="/images/book-cover-confirmed-v1.png"], img[src*="/images/book-cover.jpg"] {
+img[src*="/images/book-cover-author-confirmed-v2.jpg"], img[src*="/images/book-cover.jpg"] {
   object-fit: contain !important;
   transform: none !important;
   opacity: 1 !important;
   background-color: #090909;
 }
-[style*="/images/book-cover-confirmed-v1.png"], [style*="/images/book-cover.jpg"] {
+[style*="/images/book-cover-author-confirmed-v2.jpg"], [style*="/images/book-cover.jpg"] {
   background-size: contain !important;
   background-repeat: no-repeat !important;
 }
