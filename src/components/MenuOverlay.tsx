@@ -29,7 +29,7 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
     { label: 'Heritage Map', href: '/#heritage', icon: <Globe size={16} />, desc: 'Explore territories' },
     { label: 'Deep Roots Pass', href: '/deep-roots', icon: <Crown size={16} />, desc: 'Premium research membership — $12/mo' },
     { label: 'Land & History Report', href: '/land-report', icon: <MapPin size={16} />, desc: 'Custom research on your family\'s land — from $99' },
-    { label: 'Pre-Order Book', href: '/pre-order', icon: <ScrollText size={16} />, desc: '$39.99 hardcover — releases 9/11/2026' },
+    { label: 'Pre-Order Book', href: '/pre-order', icon: <ScrollText size={16} />, desc: '$39.99 hardcover — final proof in progress' },
   ]
 
   const isActive = (href: string) => {

@@ -281,7 +281,7 @@ export default function NewsBroadcast({ wordPressUrl }: Props) {
     "$15M in Federal Grants Awarded for Indigenous Language Preservation",
     "EEOC Reports 23% Surge in Workplace Discrimination Complaints by Black Workers",
     "National Archives Completes Full Dawes Rolls Digital Database — 250K Records Online",
-    "Featured: The African American State of the Union — Pre-Order the Hardcover Now for $39.99 — Releases 9/11/2026",
+    "Featured: The African American State of the Union — Pre-Order the Hardcover Now for $39.99 — Final proof in progress",
   ]
 
   return (

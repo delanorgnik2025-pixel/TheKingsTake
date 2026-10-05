@@ -46,7 +46,7 @@ function Ticker() {
     "$15M in Federal Grants for Indigenous Language Preservation",
     "EEOC Reports 23% Surge in Discrimination Complaints by Black Workers",
     "National Archives Completes Dawes Rolls Digitization — 250K Records",
-    "Pre-Order: The African American State of the Union — Hardcover $39.99 — Out 9/11/2026",
+    "Pre-Order: The African American State of the Union — Hardcover $39.99 — Final proof in progress",
   ]
   return (
     <div className="w-full bg-[#14202E] overflow-hidden py-2 border-b border-[rgba(255,149,0,0.15)]">
