@@ -6,6 +6,7 @@ import {
   Plus, Minus, Maximize2, MousePointerClick, Database, ChevronRight,
   Search, Mic, MicOff, Info, Feather, Crown
 } from 'lucide-react'
+import ResearchPlaces from '../components/ResearchPlaces'
 import ScrollReveal from '../components/ScrollReveal'
 import { STATE_DATA, POPULAR_STATES, STATE_COORDS, TRIBE_DB, TREATY_DB } from '../data/heritageData'
 import type { TribeDetail } from '../data/heritageData'
@@ -587,13 +588,16 @@ function HeritageMap({
   onTerritorySelect,
   onStateSelect,
   mapRef: externalMapRef,
+  archiveQuery,
 }: {
   onTerritorySelect: (t: TerritoryMarker) => void
   onStateSelect: (state: string) => void
   mapRef?: React.MutableRefObject<any>
+  archiveQuery?: string
 }) {
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<any>(null)
+  const [archiveMap,setArchiveMap] = useState<any>(null)
   const mapboxglRef = useRef<any>(null)
   const popupRef = useRef<any>(null)
   const [selectedState, setSelectedState] = useState<string | null>(null)
@@ -639,6 +643,7 @@ function HeritageMap({
       mapContainerRef.current!.style.touchAction = 'none'
 
       map.on('load', () => {
+        setArchiveMap(map)
         map.resize()
         map.setFog({ color: 'rgb(12, 21, 32)', 'high-color': 'rgb(27, 40, 56)', 'horizon-blend': 0.4, 'space-color': 'rgb(12, 21, 32)', 'star-intensity': 0.3 })
         map.setPaintProperty('satellite', 'raster-opacity', 0.7)
@@ -667,6 +672,8 @@ function HeritageMap({
         })
 
         map.on('click', (e: any) => {
+          const archiveLayers=['research-points','research-clusters'].filter(id=>map.getLayer(id))
+          if(archiveLayers.length&&map.queryRenderedFeatures(e.point,{layers:archiveLayers}).length)return
           if (popupRef.current) { popupRef.current.remove(); popupRef.current = null }
           const lng = e.lngLat.lng, lat = e.lngLat.lat
           for (const t of ALL_TERRITORIES) {
@@ -801,6 +808,8 @@ function HeritageMap({
           </>
         )}
       </div>
+
+      {archiveMap&&<ResearchPlaces externalMap={archiveMap} query={archiveQuery}/>}
 
       {/* Popular States */}
       <div>
@@ -1058,6 +1067,7 @@ export default function HeritageSection() {
             onTerritorySelect={handleTerritorySelect}
             onStateSelect={handleStateSelect}
             mapRef={mapScrollRef}
+            archiveQuery={searchQuery}
           />
         </ScrollReveal>
 

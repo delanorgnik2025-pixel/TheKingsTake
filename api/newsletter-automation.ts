@@ -71,16 +71,17 @@ function slugify(value: string, dailyKey: string) {
   return `${base || "kings-daily-brief"}-${dailyKey}`;
 }
 
-async function researchCurrentNews(apiKey: string, focus: string) {
+export async function researchCurrentNews(apiKey: string, focus: string) {
   const response = await fetch("https://api.openai.com/v1/responses", {
     method: "POST",
+    signal: AbortSignal.timeout(90000),
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       model: process.env.NEWSLETTER_RESEARCH_MODEL || "gpt-4.1-mini",
       tools: [{ type: "web_search", search_context_size: "low" }],
       tool_choice: "required",
       max_output_tokens: 1800,
-      input: `Today is ${new Date().toISOString().slice(0, 10)}. Research current developments from the last 48 hours for TheKingsTake.com readers. Research this coverage beat ONLY: ${focus} Choose one consequential verified story. If no new development is confirmed, explicitly produce a dated background/context brief using the most recent reliable evidence rather than inventing breaking news. Verify the lead with at least two independent credible sources, prioritizing public agencies, primary documents, established newsrooms, and subject-matter institutions. Avoid rumors, clickbait, celebrity gossip, and unsupported claims. Return a concise factual brief with dates, why each item matters, uncertainty, and citations. This is a draft for human approval; do not invent the publisher's personal opinion.`,
+      input: `Today is ${easternDailyKey()}. Research current developments from the last 48 hours for TheKingsTake.com readers. Research this coverage beat ONLY: ${focus} Choose one consequential verified story. If no new development is confirmed, explicitly produce a dated background/context brief using the most recent reliable evidence rather than inventing breaking news. Verify the lead with at least two independent credible sources, prioritizing public agencies, primary documents, established newsrooms, and subject-matter institutions. Avoid rumors, clickbait, celebrity gossip, and unsupported claims. Return a concise factual brief with dates, why each item matters, uncertainty, and citations. This is a draft for human approval; do not invent the publisher's personal opinion.`,
     }),
   });
   if (!response.ok) {
@@ -94,9 +95,10 @@ async function researchCurrentNews(apiKey: string, focus: string) {
   return extracted;
 }
 
-async function writeDraft(apiKey: string, research: string, sources: Source[]): Promise<EditorialDraft> {
+export async function writeDraft(apiKey: string, research: string, sources: Source[]): Promise<EditorialDraft> {
   const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
+    signal: AbortSignal.timeout(90000),
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       model: process.env.OPENAI_CHAT_MODEL || "gpt-4o-mini",
@@ -126,7 +128,7 @@ async function writeDraft(apiKey: string, research: string, sources: Source[]): 
   return parsed as EditorialDraft;
 }
 
-async function findCommonsImage(searchTerm: string, beat: NewsBeatId): Promise<ImageSelection> {
+export async function findCommonsImage(searchTerm: string, beat: NewsBeatId): Promise<ImageSelection> {
   const photo = NEWS_IMAGES[beat];
   const fallback: ImageSelection = { url: photo.url, alt: photo.alt, credit: `${photo.caption} ${photo.credit}`, sourceUrl: photo.sourceUrl };
   try {
@@ -143,6 +145,7 @@ async function findCommonsImage(searchTerm: string, beat: NewsBeatId): Promise<I
       iiurlwidth: "1400",
     });
     const response = await fetch(`https://commons.wikimedia.org/w/api.php?${params}`, {
+      signal: AbortSignal.timeout(12000),
       headers: { "User-Agent": "TheKingsTake/1.0 (https://thekingstake.com/contact)" },
     });
     if (!response.ok) return fallback;
@@ -181,6 +184,7 @@ async function notifyDraftReady(campaignId: number, subject: string) {
   const siteUrl = (process.env.PUBLIC_SITE_URL || "https://thekingstake.com").replace(/\/$/, "");
   await fetch("https://api.resend.com/emails", {
     method: "POST",
+    signal: AbortSignal.timeout(90000),
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
     body: JSON.stringify({
       from,

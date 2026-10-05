@@ -1,22 +1,23 @@
-# AASOTU Research Agent
+# Autonomous archive and feed workers
 
-Runs inside the existing Railway website service. No additional agent platform or database is provisioned.
+The existing Railway web service hosts the workers; no new service or subscription is provisioned. All controls live in Admin → Research Agent. Payments, visitor entry, book artwork, Dispatch approval and subscriber email delivery are preserved.
 
-## Operating controls
-- Admin dashboard → Research Agent: configure up to two topics, pause, verify connections, run today's batch, review records.
-- Starts one minute after production boot; checks hourly. A persistent Eastern-date claim allows at most one batch per day, including manual runs. No backlog or automatic same-day retries.
-- Maximum two National Archives searches, five returned records per search, ten AI calls per day; duplicate NAIDs are skipped. Provider charges are usage-based, not covered by ChatGPT subscriptions. Each AI call has a 350-token output cap and a bounded input.
-- Connection verification is a separate diagnostic: database SELECT, a small NARA query, OpenAI models authentication, Mapbox style access. It does not prove geocoding permissions or all model capabilities.
-- No geocoding calls. Mapbox displays manually reviewed locations; no permanent geocoding results are stored.
-- AI suggests place names only when its exact evidence quote is in the catalog title/description. The existing normalizer's `locations` can be repository addresses and is deliberately excluded.
-- External text is untrusted input. The agent has no email, payment, authentication, code-deployment or archive-write tools.
+## Jobs and limits
+- Daily archive discovery: up to two catalog searches, ten records and ten AI place extractions per New York day, with a durable daily claim.
+- Hourly map worker: two catalog searches and up to two new record analyses per hour (48 per day), rotating configured topics plus Gullah, Black Seminole, Prospect Bluff and Apalachicola River. Progresses result pages; duplicate NAIDs are skipped. Processes up to four pending location matches per hour, two candidate places each. No unbounded loop or catch-up burst.
+- Feed publisher: four slots, 08:00, 12:00, 16:00, 20:00 America/New_York, polled every five minutes. A late start attempts only its current slot, with a three-hour spacing guard; no back-to-back backlog. Each slot uses one web-research and one writing call, plus a bounded photo search. Failed slots consume their attempt until the next slot. No emails are sent by these workers.
 
-## Review and display
-All results enter private drafts. Approval requires place, latitude/longitude, evidence, exact/approximate label, and explicit rights/sensitive-location review. Review originals; public catalog availability alone does not establish unrestricted image use or precise geography. Approved matches appear on an additional clustered map in Archives. Original heritage map remains unchanged. Photos load upon selection.
+Maximum added model calls: 58 archive extractions and eight feed calls per day, excluding the pre-existing newsroom workflow. API calls and Railway hosting have usage costs; Plus does not include API billing. Pause switches are independent.
 
-Source identifiers, original catalog URL, descriptions, dates, image availability, restriction notes and search topic are retained. Records with unknown locations remain drafts. Human reviewers must avoid publishing sensitive burial coordinates or treating repository location as depicted location.
+## Automatic map rules
+A catalog title/description must contain the exact quoted place evidence and the full state name. A USGS GNIS exact-name lookup must return exactly one distinct feature, known WGS84 coordinates and an allowed town/natural-feature class. Broad geometries, conflicting matches and potentially sensitive burial, archaeological or private-home records remain private. GNIS repository-office addresses are never used. Location is labeled approximate because a town or river reference point is not a historical event boundary.
 
-## Persistence and failures
-`research_agent_settings`, `research_agent_runs`, `research_agent_records` are additive controlled migrations. Database advisory lock serializes manual/scheduled execution; durable daily claims prevent reprocessing across restarts. Each network request has a timeout. Connection errors retain source-grounded metadata where possible and show partial status. An interrupted run consumes that day's slot; it does not repeatedly incur model charges.
+Automatic entries expose catalog metadata and coordinate provenance. Images with unreviewed rights are omitted from these cards. Manual review can approve media; approved automatic entries can be hidden. Public metadata is not a claim of image copyright clearance or ancestry. Up to 1,000 recent mapped records are shown with clustering and a searchable list; this is not the entire National Archives corpus.
 
-Initial topics are Utah and Salt Lake City. Expand topics through admin settings once initial quality has been reviewed. This is the first archive-research agent, not a complete geospatial overhaul or an MCP server. Narrow MCP tools can be added separately.
+The archive map layer is also integrated into the existing heritage map. Gullah Wars is a search alias for a curated related starting point, Prospect Bluff, Florida, not a claim that every event in that history happened there. NPS provides historical context and Open Parks Network's NPS-held archive metadata provides the approximate site coordinate.
+
+## Feed publishing rules
+Original on-site articles require at least two independent sources from selected agency, institution or established newsroom domains. Supplied sources come from web-research citations, not invented model links. Failure or duplicate recent headline withholds publication. Descriptions distinguish current reporting from dated context. Photographs carry context/date/license credits; generated storm pictures are not used. Article and feed card publish in one database transaction; card links stay on TheKingsTake.com/blog. Source links are supplemental. This does not guarantee every automated interpretation is correct: publication history remains inspectable, and the owner can remove articles/posts through existing admin controls.
+
+## Reliability
+Durable slot keys and MySQL advisory locks prevent duplicate publication across deployments. Transactions roll back partial article/feed writes. Worker histories expose outcomes and failures. Timeouts bound provider calls. Settings and research records survive restarts. No new credentials, MCP servers, external social posting, Artlist purchases, or newsletter sends are created.
