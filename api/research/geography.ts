@@ -1,7 +1,8 @@
+import {RESEARCH_STATE_AREAS} from '../../contracts/research-state-areas';
 import type {ArchiveRecord} from '../archive';
 import type {PlaceSuggestion} from './evidence';
 export const GNIS_URL='https://carto.nationalmap.gov/arcgis/rest/services/geonames/MapServer';
-export type GazetteerMatch={name:string;state:string;featureId:string;longitude:number;latitude:number;source:string};
+export type GazetteerMatch={name:string;state:string;featureId:string;longitude:number;latitude:number;source:string;scope?:string;evidence?:string};
 const STATES:Record<string,string>={UT:'Utah',FL:'Florida',SC:'South Carolina',GA:'Georgia',NC:'North Carolina',TX:'Texas',CA:'California',NY:'New York',VA:'Virginia',LA:'Louisiana',MS:'Mississippi',AL:'Alabama',OK:'Oklahoma',NM:'New Mexico',AZ:'Arizona',NV:'Nevada',CO:'Colorado',MD:'Maryland',DC:'District of Columbia',PA:'Pennsylvania',TN:'Tennessee',KY:'Kentucky',OH:'Ohio',IL:'Illinois',IN:'Indiana',MI:'Michigan',WI:'Wisconsin',MN:'Minnesota',IA:'Iowa',MO:'Missouri',AR:'Arkansas',KS:'Kansas',NE:'Nebraska',SD:'South Dakota',ND:'North Dakota',MT:'Montana',WY:'Wyoming',ID:'Idaho',OR:'Oregon',WA:'Washington',AK:'Alaska',HI:'Hawaii',ME:'Maine',VT:'Vermont',NH:'New Hampshire',MA:'Massachusetts',RI:'Rhode Island',CT:'Connecticut',NJ:'New Jersey',DE:'Delaware',WV:'West Virginia'};
 const words=(s:string)=>s.toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
 export function chooseGazetteerMatch(record:ArchiveRecord,suggestion:PlaceSuggestion,payload:unknown):GazetteerMatch|null {
@@ -23,4 +24,22 @@ export async function resolvePlace(record:ArchiveRecord,suggestion:PlaceSuggesti
  const u=new URL(`${GNIS_URL}/find`);u.search=new URLSearchParams({searchText:suggestion.place,contains:'false',searchFields:'gaz_name',layers:'3,5,6,7,12,13,14',returnGeometry:'true',outSR:'4326',f:'json'}).toString();
  const r=await fetch(u,{signal:AbortSignal.timeout(15000)});if(!r.ok)throw new Error(`USGS gazetteer request failed (${r.status})`);
  return chooseGazetteerMatch(record,suggestion,await r.json());
+}
+
+// Only a source-supported geographical quote permits a general-area fallback.
+// Never use the catalog search query or the archive repository address as evidence.
+export function generalAreaMatch(record:ArchiveRecord,suggestions:PlaceSuggestion[]):GazetteerMatch|null {
+ const text=`${record.title} ${record.description || ''}`.toLowerCase();
+ for(const suggestion of suggestions){
+  const quote=suggestion.evidence.toLowerCase();
+  if(!text.includes(quote)||!quote.includes(suggestion.place.toLowerCase())||/repository|archive office|reference unit|stored at|held at/i.test(quote))continue;
+  let remaining=quote;const states:string[]=[];
+  for(const state of Object.keys(RESEARCH_STATE_AREAS).sort((a,b)=>b.length-a.length)){
+   const re=new RegExp(`\\b${state}\\b`,'ig');if(re.test(remaining)){states.push(state);remaining=remaining.replace(re,' ');}
+  }
+  if(states.length!==1)continue;
+  const state=states[0],[longitude,latitude]=RESEARCH_STATE_AREAS[state];
+  return {name:`${state} — general area`,state,featureId:`state-${state}`,longitude,latitude,scope:'state area',evidence:suggestion.evidence,source:record.recordUrl};
+ }
+ return null;
 }

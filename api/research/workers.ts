@@ -1,6 +1,7 @@
+import {RESEARCH_STATE_AREAS} from '../../contracts/research-state-areas';
 import type {RowDataPacket,ResultSetHeader} from 'mysql2/promise';
 import {agentDb,archiveBatch,suggest} from './agent';
-import {resolvePlace} from './geography';
+import {resolvePlace,generalAreaMatch} from './geography';
 import {researchDay,supportedSuggestions} from './evidence';
 import {researchCurrentNews,writeDraft,findCommonsImage} from '../newsletter-automation';
 import {NEWS_BEATS} from '../../contracts/news-beats';
@@ -15,10 +16,17 @@ export function trustedSources<T extends {url:string}>(sources:T[]){return sourc
 async function autoLocate(c:Awaited<ReturnType<typeof agentDb>>,row:RowDataPacket){
  const record=JSON.parse(row.record_json) as ArchiveRecord;
  const suggestions=supportedSuggestions(record,JSON.parse(row.suggestions_json || '[]'));
+ const publish=async(match:NonNullable<ReturnType<typeof generalAreaMatch>>,evidence:string)=>{
+  await c.execute("UPDATE research_agent_records SET status='approved',auto_published=1,place_name=?,latitude=?,longitude=?,evidence=?,precision_label=?,geo_source=?,reviewed_at=CURRENT_TIMESTAMP WHERE id=? AND status='draft'",[match.name,match.latitude,match.longitude,evidence,match.scope || 'approximate',match.source,row.id]);return true;
+ };
+ const broad=generalAreaMatch(record,suggestions) || generalAreaMatch(record,Object.keys(RESEARCH_STATE_AREAS).filter(state=>new RegExp(`\\b${state}\\b`,'i').test(record.title)).map(state=>({place:state,evidence:record.title})));let providerError=false;
  for(const candidate of suggestions.slice(0,2)){
-  const match=await resolvePlace(record,candidate);if(!match)continue;
-  await c.execute("UPDATE research_agent_records SET status='approved',auto_published=1,place_name=?,latitude=?,longitude=?,evidence=?,precision_label='approximate',geo_source=?,reviewed_at=CURRENT_TIMESTAMP WHERE id=? AND status='draft'",[match.name,match.latitude,match.longitude,candidate.evidence,match.source,row.id]);return true;
- }return false;
+  if(Object.prototype.hasOwnProperty.call(RESEARCH_STATE_AREAS,candidate.place))continue;
+  try {const match=await resolvePlace(record,candidate);if(match)return publish(match,candidate.evidence);}catch{providerError=true;}
+ }
+ if(broad)return publish(broad,broad.evidence!);
+ if(providerError)throw new Error('Location provider unavailable');
+ return false;
 }
 export async function runAutonomousWorker(kind:'feed'|'map',now=new Date()){
  const slot=workerSlot(kind,now);if(!slot)return {status:'outside schedule'};
@@ -32,23 +40,27 @@ export async function runAutonomousWorker(kind:'feed'|'map',now=new Date()){
   await c.execute("INSERT INTO agent_worker_runs (kind,slot_key,status) VALUES (?,?,'running') ON DUPLICATE KEY UPDATE status='running',notes=NULL,completed_at=NULL",[kind,slot]);claimed=true;
   let notes='';
   if(kind==='map'){
-   const [settings]=await c.query<RowDataPacket[]>('SELECT * FROM research_agent_settings WHERE id=1');let added=0,mapped=0;
+   const [settings]=await c.query<RowDataPacket[]>('SELECT * FROM research_agent_settings WHERE id=1');let added=0,mapped=0,unavailable=0;
    if(settings[0]?.enabled){
     const [count]=await c.query<RowDataPacket[]>("SELECT COUNT(*) AS total FROM agent_worker_runs WHERE kind='map'");const index=Math.max(0,Number(count[0]?.total || 1)-1);
-    const topics=[...new Set([...(JSON.parse(settings[0].topics) as string[]).slice(0,2),'Gullah','Black Seminole','Prospect Bluff','Apalachicola River'])];
-    const cycles=Math.ceil(topics.length/2),recordIndex=Math.floor(index/cycles)%5,page=1+Math.floor(index/(cycles*5));
+    const topics=[...new Set([...(JSON.parse(settings[0].topics) as string[]).slice(0,2),'Gullah','Black Seminole','Prospect Bluff','Apalachicola River',...Object.keys(RESEARCH_STATE_AREAS)])];
+    const cycles=Math.ceil(topics.length/2),page=1+Math.floor(index/cycles);
     for(const topic of [topics[(index*2)%topics.length],topics[(index*2+1)%topics.length]]){
      const records=await archiveBatch(topic,page);
-     // Two new records per hour, at most 48 additional analyses/day.
-     const record=records[recordIndex];if(!record)continue;
+     // Up to ten new records/hour, deduplicated by catalog identifier.
+     for(const record of records.slice(0,5)){
      const [exists]=await c.query<RowDataPacket[]>('SELECT id FROM research_agent_records WHERE id=?',[record.id]);if(exists.length)continue;
      const suggestions=process.env.OPENAI_API_KEY?await suggest(record):[];
      await c.execute('INSERT IGNORE INTO research_agent_records (id,title,record_json,suggestions_json,query_text) VALUES (?,?,?,?,?)',[record.id,record.title,JSON.stringify(record),JSON.stringify(suggestions),topic]);added++;
+     }
     }
    }
-   const [pending]=await c.query<RowDataPacket[]>("SELECT * FROM research_agent_records WHERE status='draft' AND geo_source IS NULL ORDER BY created_at LIMIT 4");
-   for(const row of pending){try{if(await autoLocate(c,row))mapped++;else await c.execute('UPDATE research_agent_records SET geo_source=? WHERE id=?',["Manual review required: ambiguous, broad, sensitive, or unsupported location.",row.id]);}catch{await c.execute('UPDATE research_agent_records SET geo_source=? WHERE id=?',["Location provider unavailable; manual review or a later explicit retry is needed.",row.id]);}}
-   notes=`${added} new records; ${mapped} automatic location matches; ${pending.length-mapped} retained for review`;
+   const [pending]=await c.query<RowDataPacket[]>("SELECT * FROM research_agent_records WHERE status='draft' AND (location_retry_at IS NULL OR location_retry_at<=CURRENT_TIMESTAMP) ORDER BY COALESCE(location_checked_at,created_at) LIMIT 25");
+   for(const row of pending){
+    try{if(await autoLocate(c,row))mapped++;else await c.execute("UPDATE research_agent_records SET geo_source=?,location_checked_at=CURRENT_TIMESTAMP,location_retry_at=DATE_ADD(CURRENT_TIMESTAMP,INTERVAL 7 DAY) WHERE id=?",["No supported geographic area yet; automatically reconsidered in seven days.",row.id]);}
+    catch{unavailable++;await c.execute("UPDATE research_agent_records SET geo_source=?,location_checked_at=CURRENT_TIMESTAMP,location_retry_at=DATE_ADD(CURRENT_TIMESTAMP,INTERVAL 1 DAY) WHERE id=?",["Location provider unavailable; automatic retry in one day.",row.id]);}
+   }
+   notes=`${added} new records; ${mapped} automatic location matches (including supported general areas); ${pending.length-mapped-unavailable} without supported geography; ${unavailable} provider failures queued for retry`;
   }else{
    if(!process.env.OPENAI_API_KEY)throw new Error('OpenAI key missing');
    const h=Number(slot.slice(-2));const day=Number(slot.slice(8,10));const beat=NEWS_BEATS[(day+Math.floor((h-8)/4))%NEWS_BEATS.length];
