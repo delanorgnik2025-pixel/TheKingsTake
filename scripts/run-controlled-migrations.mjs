@@ -5,6 +5,7 @@ const migrations = [
   ["20261005_autonomous_workers", "db/manual/20261005_autonomous_workers.sql"],
   ["20261005_feed_fallback", "db/manual/20261005_feed_fallback.sql"],
   ["20261005_map_general_areas", "db/manual/20261005_map_general_areas.sql"],
+  ["20261005_history_research", "db/manual/20261005_history_research.sql"],
   ["20261005_research_agent", "db/manual/20261005_research_agent.sql"],
   ["20261005_landing_design", "db/manual/20261005_landing_design.sql"],
   ["20261001_studio_payments", "db/manual/20261001_studio_payments.sql"],

@@ -22,7 +22,7 @@ export function chooseGazetteerMatch(record:ArchiveRecord,suggestion:PlaceSugges
 }
 export async function resolvePlace(record:ArchiveRecord,suggestion:PlaceSuggestion){
  const u=new URL(`${GNIS_URL}/find`);u.search=new URLSearchParams({searchText:suggestion.place,contains:'false',searchFields:'gaz_name',layers:'3,5,6,7,12,13,14',returnGeometry:'true',outSR:'4326',f:'json'}).toString();
- const r=await fetch(u,{signal:AbortSignal.timeout(15000)});if(!r.ok)throw new Error(`USGS gazetteer request failed (${r.status})`);
+ const r=await fetch(u,{signal:AbortSignal.timeout(8000)});if(!r.ok)throw new Error(`USGS gazetteer request failed (${r.status})`);
  return chooseGazetteerMatch(record,suggestion,await r.json());
 }
 

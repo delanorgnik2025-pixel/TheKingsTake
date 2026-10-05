@@ -1,3 +1,4 @@
+import {HISTORY_RESEARCH_TOPICS} from '../../contracts/history-research-topics';
 import {RESEARCH_STATE_AREAS} from '../../contracts/research-state-areas';
 import type {RowDataPacket,ResultSetHeader} from 'mysql2/promise';
 import {agentDb,archiveBatch,suggest} from './agent';
@@ -34,8 +35,10 @@ export async function runAutonomousWorker(kind:'feed'|'map',now=new Date()){
  try {
   const [lock]=await c.query<RowDataPacket[]>('SELECT GET_LOCK(?,0) AS acquired',[`aasotu_${kind}_worker`]);locked=lock[0]?.acquired===1;if(!locked)return {status:'busy'};
   const [controls]=await c.query<RowDataPacket[]>('SELECT * FROM agent_controls WHERE id=1');if(!controls[0]?.[`${kind}_enabled`])return {status:'paused'};
-  const [old]=await c.query<RowDataPacket[]>('SELECT status FROM agent_worker_runs WHERE kind=? AND slot_key=?',[kind,slot]);if(old.length && old[0].status!=='retry')return {status:old[0].status,alreadyRan:true};
-  // No restart catch-up bursts. A slot is attempted once even if a provider fails.
+  const [old]=await c.query<RowDataPacket[]>('SELECT status FROM agent_worker_runs WHERE kind=? AND slot_key=?',[kind,slot]);if(old.length && old[0].status!=='retry' && !(kind==='map' && old[0].status==='running'))return {status:old[0].status,alreadyRan:true};
+  // The acquired map lock proves an earlier running claim has no live owner.
+  // Resume that map slot after a restart; archive IDs prevent duplicate collection.
+  // Feed slots keep their existing no-repeat policy.
   if(kind==='feed'){const [recent]=await c.query<RowDataPacket[]>("SELECT slot_key FROM agent_worker_runs WHERE kind='feed' AND status='completed' AND started_at>DATE_SUB(CURRENT_TIMESTAMP,INTERVAL 3 HOUR)");if(recent.length)return {status:'spacing guard'};}
   await c.execute("INSERT INTO agent_worker_runs (kind,slot_key,status) VALUES (?,?,'running') ON DUPLICATE KEY UPDATE status='running',notes=NULL,completed_at=NULL",[kind,slot]);claimed=true;
   let notes='';
@@ -43,7 +46,7 @@ export async function runAutonomousWorker(kind:'feed'|'map',now=new Date()){
    const [settings]=await c.query<RowDataPacket[]>('SELECT * FROM research_agent_settings WHERE id=1');let added=0,mapped=0,unavailable=0;
    if(settings[0]?.enabled){
     const [count]=await c.query<RowDataPacket[]>("SELECT COUNT(*) AS total FROM agent_worker_runs WHERE kind='map'");const index=Math.max(0,Number(count[0]?.total || 1)-1);
-    const topics=[...new Set([...(JSON.parse(settings[0].topics) as string[]).slice(0,2),'Gullah','Black Seminole','Prospect Bluff','Apalachicola River',...Object.keys(RESEARCH_STATE_AREAS)])];
+    const topics=[...new Set([...(JSON.parse(settings[0].topics) as string[]).slice(0,2),...HISTORY_RESEARCH_TOPICS])];
     const cycles=Math.ceil(topics.length/2),page=1+Math.floor(index/cycles);
     for(const topic of [topics[(index*2)%topics.length],topics[(index*2+1)%topics.length]]){
      const records=await archiveBatch(topic,page);
