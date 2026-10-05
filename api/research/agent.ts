@@ -2,10 +2,10 @@ import mysql, {type RowDataPacket} from 'mysql2/promise';
 import {normalizeNationalArchivesResponse, type ArchiveRecord} from '../archive';
 import {researchDay, supportedSuggestions} from './evidence';
 export async function agentDb() { return mysql.createConnection(process.env.DATABASE_URL || ''); }
-export async function archiveBatch(query: string) {
+export async function archiveBatch(query: string, page=1) {
  if (!process.env.NARA_API_KEY) throw new Error('National Archives key is missing');
  const url=new URL('https://catalog.archives.gov/proxy/v3/records/search');
- url.searchParams.set('q',query); url.searchParams.set('page','1'); url.searchParams.set('limit','5');
+ url.searchParams.set('q',query); url.searchParams.set('page',String(page)); url.searchParams.set('limit','5');
  const r=await fetch(url,{headers:{'x-api-key':process.env.NARA_API_KEY,Accept:'application/json'},signal:AbortSignal.timeout(35000)});
  if(!r.ok) throw new Error(`National Archives request failed (${r.status})`);
  const data=await r.json() as {body?:{hits?:{hits?:unknown[]}}};
@@ -38,16 +38,18 @@ export async function runResearchAgent() {
   if(existing.length)return {status:existing[0].status,alreadyRan:true};
   await c.execute("INSERT INTO research_agent_runs (day_key,status) VALUES (?,'running')",[day]);claimed=true;
   const topics=JSON.parse(settings[0].topics) as string[];
+  const [history]=await c.query<RowDataPacket[]>('SELECT COUNT(*) AS total FROM research_agent_runs WHERE day_key < ?',[day]);
+  const page=1+Number(history[0]?.total || 0);
   for(const topic of topics.slice(0,2)) {
    try {
-    const records=await archiveBatch(topic);
+    const records=await archiveBatch(topic,page);
     for(const record of records.slice(0,5)) {
      const [found]=await c.query<RowDataPacket[]>('SELECT id FROM research_agent_records WHERE id=?',[record.id]);if(found.length)continue;
      let suggestions:ReturnType<typeof supportedSuggestions>=[];
      if(process.env.OPENAI_API_KEY && calls<10) {calls++;try{suggestions=await suggest(record);}catch(e){notes.push((e as Error).message);}}
      await c.execute('INSERT IGNORE INTO research_agent_records (id,title,record_json,suggestions_json,query_text) VALUES (?,?,?,?,?)',[record.id,record.title,JSON.stringify(record),JSON.stringify(suggestions),topic]);added++;
     }
-    notes.push(`${topic}: ${records.length} catalog results`);
+    notes.push(`${topic}: page ${page}, ${records.length} catalog results`);
    }catch(e){notes.push((e as Error).message);}
   }
   const status=notes.some(n=>/failed|missing|recognized/.test(n))?'partial':'completed';
