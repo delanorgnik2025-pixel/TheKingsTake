@@ -1,54 +1,24 @@
 import { Link } from 'react-router'
+import { trpc } from '../providers/trpc'
+import ClassicHome from './ClassicHome'
+import NoirHeroSection from '../sections/NoirHeroSection'
 import HeroSection from '../sections/HeroSection'
-import HeroPortraitSection from '../sections/HeroPortraitSection'
+import FeedSection from '../sections/FeedSection'
+import NewsTicker from '../components/NewsTicker'
 import HeritageSection from '../sections/HeritageSection'
 import ResearchPreview from '../components/ResearchPreview'
 import AncestryResearchSection from '../sections/AncestryResearchSection'
 import AboutSection from '../sections/AboutSection'
 import ServicesSection from '../sections/ServicesSection'
 import WritingMarketSection from '../sections/WritingMarketSection'
-import MarqueeDivider from '../components/MarqueeDivider'
-import NewsTicker from '../components/NewsTicker'
-import FeedSection from '../sections/FeedSection'
-
 import ContactSection from '../sections/ContactSection'
-import ActionCTASection from '../sections/ActionCTASection'
-
 export default function HomePage() {
-  return (
-    <main>
-      {/* 0. Live news ticker — feed headlines */}
-      <NewsTicker />
-
-      {/* 1. Ronald's Cosmic Portrait — Indigenous Aboriginal Royal American */}
-      <HeroPortraitSection />
-
-      {/* 1.5 Action CTAs — Petition + Consultation (elevated importance) */}
-      <ActionCTASection />
-
-      {/* 2. Book Promo + Blog Feed + Video Box */}
-      <MarqueeDivider text="#TheKingsTake — From the Loins of the Beast — The African American State of the Union — Pre-Order Now" />
-      <HeroSection />
-
-      {/* 2.5 The Feed — news, posts & live broadcasts */}
-      <MarqueeDivider text="#TheKingsTake — The Feed — News. Commentary. Live Broadcasts. — Straight From the Source" />
-      <FeedSection />
-
-      {/* 3. Indigenous Soul Tribe Map — Cosmic aesthetic continues */}
-      <MarqueeDivider text="#TheKingsTake — We Were Here Before Anybody — Discover Your Roots — 225+ Nations Documented — The Land Remembers" />
-      <ResearchPreview tool="globe"><HeritageSection /></ResearchPreview>
-
-      {/* 4. Ancestry Research & Dawes Rolls — Reclaim Your Heritage */}
-      <MarqueeDivider text="#TheKingsTake — They Hid Our Identity in the Records — Search the Dawes Rolls — Reclaim What Was Taken — Your Ancestors Are Waiting" />
-      <AncestryResearchSection />
-
-      {/* 6. GTA-Style Platform Sections */}
-      <AboutSection />
-      <ServicesSection />
-      <WritingMarketSection />
-      <MarqueeDivider text="#TheKingsTake — The People's Voice — AASOTU Media Group — Advocacy. Truth. Justice." />
-      {/* Blog content now featured prominently after hero section */}
-      <ContactSection />
-    </main>
-  )
+ const design = trpc.design.landing.useQuery(undefined, { staleTime: 0, retry: 1 })
+ if (design.isLoading) return <main className="min-h-screen bg-[#0b1420]" aria-busy="true"/>
+ if (design.data?.template === 'classic') return <ClassicHome/>
+ return <main className="bg-[#0b1420]">
+  <NewsTicker/><NoirHeroSection/><FeedSection/>
+  <section className="mx-auto max-w-6xl px-5 py-10"><div className="flex flex-col gap-5 rounded-3xl border border-[#e6b66b]/20 bg-[#142235] p-6 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-xs uppercase tracking-widest text-[#e6b66b]">Community initiative</p><h2 className="mt-2 text-2xl text-[#f5eee3]">Know the mission. Choose to take part.</h2><p className="mt-2 max-w-xl text-sm text-[#d4c8b6]">Read the purpose behind the Foundational Black American petition and decide whether to add your voice.</p></div><Link to="/petition" className="inline-flex min-h-12 shrink-0 items-center justify-center rounded-full border border-[#e6b66b]/50 px-6 text-[#e6b66b]">Explore the petition</Link></div></section>
+  <HeroSection/><ResearchPreview tool="globe"><HeritageSection/></ResearchPreview><AncestryResearchSection/><AboutSection/><ServicesSection/><WritingMarketSection/><ContactSection/>
+ </main>
 }

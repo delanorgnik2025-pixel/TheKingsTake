@@ -1,3 +1,4 @@
+import { designRouter } from "./design-router";
 import { studioPaymentsRouter } from './studio-payments';
 import { brandStudioRouter } from "./brand-studio-router";
 import { authRouter } from "./auth-router";
@@ -22,6 +23,7 @@ import { visitorRouter } from "./visitor-router";
 import { createRouter, publicQuery } from "./middleware";
 
 export const appRouter = createRouter({
+  design: designRouter,
   brandStudio: brandStudioRouter,
   studioPayments: studioPaymentsRouter,
   ping: publicQuery.query(() => ({ ok: true, ts: Date.now() })),

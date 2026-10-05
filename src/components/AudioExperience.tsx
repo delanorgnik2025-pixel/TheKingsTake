@@ -216,6 +216,8 @@ function EntranceOverlay({
   onEnter: () => void;
   onEnterWithSound: () => void;
 }) {
+  const design = trpc.design.landing.useQuery(undefined, {staleTime: 0, retry: 1});
+  const noir = design.data?.template !== 'classic';
   // Ensure tap works on mobile by using onTouchEnd + onClick
   const handleSound = useCallback(() => onEnterWithSound(), [onEnterWithSound]);
   const handleQuiet = useCallback(() => onEnter(), [onEnter]);
@@ -229,10 +231,7 @@ function EntranceOverlay({
       style={{ touchAction: "manipulation" }}
     >
       {/* Cosmic background effect */}
-      <div
-        className="absolute inset-0 bg-cover bg-center opacity-30"
-        style={{ backgroundImage: "url(/images/cosmic-bg.jpg)" }}
-      />
+      {noir ? <picture className="absolute inset-0"><source media="(min-width: 1024px)" srcSet="/images/landing-noir-desktop-v1.jpg"/><img src="/images/landing-noir-mobile-v1.jpg" alt="" className="h-full w-full object-cover object-[center_40%] opacity-40"/></picture> : <div className="absolute inset-0 bg-cover bg-center opacity-30" style={{backgroundImage: "url(/images/cosmic-bg.jpg)"}}/>}
       <div className="absolute inset-0 bg-gradient-to-b from-[#14202E]/60 via-transparent to-[#14202E]/90" />
 
       <motion.div
@@ -263,14 +262,11 @@ function EntranceOverlay({
         </p>
 
         <h1 className="text-4xl md:text-5xl text-[#F0EBE1] tracking-[-0.02em] leading-[1.1] mb-3 text-shadow-hero">
-          We Were Here
-          <br />
-          Before Anybody
+          {noir ? <>Independent voice.<br/>A world to explore.</> : <>We Were Here<br/>Before Anybody</>}
         </h1>
 
         <p className="text-sm text-[#C9B99A]/80 mb-8 leading-relaxed">
-          Enter the experience. Explore 225+ Indigenous nations, tribal rolls,
-          treaties, and the records they tried to hide.
+          {noir ? 'News, research and real conversations. Step inside #TheKingsTake.' : 'Enter the experience. Explore 225+ Indigenous nations, tribal rolls, treaties, and the records they tried to hide.'}
         </p>
 
         <Link to="/brand-studio" className="mb-6 block text-sm text-[#FFB840] underline underline-offset-4">Need a website or brand? Visit Brand Studio →</Link>

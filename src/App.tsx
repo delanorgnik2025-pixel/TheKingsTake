@@ -13,6 +13,7 @@ import ResearchPreview from './components/ResearchPreview'
 // ============================================
 // LAZY-LOADED PAGES — Prevents eager import crashes
 // ============================================
+const LandingPreview = lazy(() => import('./sections/NoirHeroSection'))
 const HomePage = lazy(() => import('./pages/Home'))
 const BlogPostPage = lazy(() => import('./pages/BlogPostPage'))
 const FeedPage = lazy(() => import('./pages/FeedPage'))
@@ -112,6 +113,7 @@ function AppRoutes() {
           {/* Terms of Service page - add when file exists */}
           {/* Ancestor Root Registry & Ancestor Realm — temporarily offline, in development */}
           <Route path="/civics" element={<CivicsPage />} />
+          <Route path="/admin/design-preview" element={<main className="pt-16"><LandingPreview /></main>} />
           <Route path="/admin/login" element={<AdminLoginPage />} />
           <Route path="/admin" element={<Navigate to="/admin/dashboard?section=newsletter" replace />} />
           <Route path="/admin/dashboard" element={<AdminDashboardPage />} />

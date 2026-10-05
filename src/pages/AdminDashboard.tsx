@@ -230,6 +230,9 @@ function PlaceholderModule({
 
 // ─── Settings Module ───
 function SettingsModule({ onLogout }: { onLogout: () => void }) {
+  const design = trpc.design.landing.useQuery();
+  const utils = trpc.useUtils();
+  const setDesign = trpc.design.setLanding.useMutation({ onSuccess: () => utils.design.landing.invalidate() });
   return (
     <div>
       <h3
@@ -238,6 +241,14 @@ function SettingsModule({ onLogout }: { onLogout: () => void }) {
       >
         Settings
       </h3>
+      <div className="mb-6 max-w-xl rounded-2xl border border-[#e6b66b]/25 bg-[#142235] p-5">
+        <h4 className="text-lg text-[#F0EBE1]">Landing page design</h4>
+        <p className="my-3 text-sm text-[#C9B99A]">Switch the public homepage immediately. The original cosmic template and its layout are preserved.</p>
+        <div className="flex flex-wrap gap-3">{(['noir', 'classic'] as const).map(template => <button key={template} disabled={setDesign.isPending || design.isLoading} onClick={() => setDesign.mutate({template})} aria-pressed={design.data?.template === template} className={`min-h-11 rounded-full border px-4 text-sm ${design.data?.template === template ? 'border-[#e6b66b] bg-[#e6b66b] text-[#101c2b]' : 'border-white/20 text-[#F0EBE1]'}`}>{template === 'noir' ? 'Nighttime desk' : 'Restore original cosmic'}</button>)}</div>
+        <a href="/admin/design-preview" target="_blank" rel="noreferrer" className="mt-4 inline-block text-sm text-[#e6b66b] underline">View nighttime landing layout</a>
+        {setDesign.isSuccess && <p role="status" className="mt-3 text-sm text-emerald-300">Homepage design saved.</p>}
+        {setDesign.error && <p role="alert" className="mt-3 text-sm text-red-300">Could not save. Please try again.</p>}
+      </div>
       <div className="bg-white/[0.03] border border-white/[0.06] p-4 rounded max-w-[400px]">
         <div className="flex items-center gap-3 mb-4">
           <Crown size={20} className="text-[#FF9500]" />

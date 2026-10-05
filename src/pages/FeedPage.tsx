@@ -399,17 +399,10 @@ export default function FeedPage() {
         </div>
       </div>
 
-      <nav aria-label="Explore the community" className="relative z-10 mx-auto mb-6 flex max-w-6xl flex-wrap justify-center gap-2 px-4">
-        {[
-          { to: "/news-hub", label: "News", icon: Newspaper },
-          { to: "/archives", label: "Archives", icon: BookOpen },
-          { to: "/fba", label: "Heritage", icon: Landmark },
-          { to: "/brand-studio", label: "Brand Studio", icon: Star },
-        ].map(({ to, label, icon: Icon }) => (
-          <Link key={to} to={to} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-white/15 bg-[#25364B]/80 px-4 py-2 text-sm text-[#F0EBE1] transition-colors hover:border-[#FF9500]/50 hover:bg-[#30445C]">
-            <Icon size={15} className="text-[#FFB840]" />{label}
-          </Link>
-        ))}
+      <nav aria-label="Participate in the community" className="relative z-10 mx-auto mb-6 flex max-w-6xl gap-3 overflow-x-auto px-4 pb-2">
+        <button onClick={() => member || isAdmin ? document.getElementById('feed-composer')?.scrollIntoView({behavior:'smooth'}) : setShowAuth(true)} className="min-w-[200px] flex-1 rounded-2xl border border-[#FF9500]/30 bg-[#25364B]/90 p-4 text-left"><LogIn size={20} className="mb-2 text-[#FFB840]"/><span className="block text-[#F0EBE1]">Join the community</span><span className="text-xs text-[#C9B99A]">Use your member access code</span></button>
+        <button onClick={() => member || isAdmin ? document.getElementById('feed-composer')?.scrollIntoView({behavior:'smooth'}) : setShowAuth(true)} className="min-w-[200px] flex-1 rounded-2xl border border-white/15 bg-[#25364B]/90 p-4 text-left"><MessageCircle size={20} className="mb-2 text-[#FFB840]"/><span className="block text-[#F0EBE1]">Post a thought</span><span className="text-xs text-[#C9B99A]">Members: start a conversation</span></button>
+        <button onClick={() => document.getElementById('feed-dispatch')?.scrollIntoView({behavior:'smooth'})} className="min-w-[200px] flex-1 rounded-2xl border border-white/15 bg-[#25364B]/90 p-4 text-left"><Newspaper size={20} className="mb-2 text-[#FFB840]"/><span className="block text-[#F0EBE1]">Read the Dispatch</span><span className="text-xs text-[#C9B99A]">Your daily briefing</span></button>
       </nav>
 
       {/* Trending rail */}
@@ -451,11 +444,11 @@ export default function FeedPage() {
       <div className="relative z-10 max-w-6xl mx-auto px-4 pb-20 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
         {/* Left column: Composer + Feed */}
         <div className="space-y-5">
-          <DispatchRail
+          <div id="feed-dispatch" className="scroll-mt-28"><DispatchRail
             posts={(dispatches.data || []) as DispatchPost[]}
             loading={dispatches.isLoading}
             mobile
-          />
+          /></div>
           {/* Member bar */}
           <div className="rounded-lg border border-[rgba(255,149,0,0.18)] bg-[#25364B]/80 backdrop-blur-sm p-3 flex items-center justify-between">
             {member || isAdmin ? (
@@ -535,6 +528,7 @@ export default function FeedPage() {
             </div>
           )}
 
+          <div id="feed-composer" className="scroll-mt-28" />
           {/* Admin composer */}
           {isAdmin && (
             <div className="space-y-4">
