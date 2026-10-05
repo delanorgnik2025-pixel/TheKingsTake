@@ -177,7 +177,7 @@ export const RECONCILIATION_LAWS_V2: LawPolicyRecord[] = [
     relatedTribes: ['all Plains tribes', 'all western tribes'],
     relatedStates: ['Nebraska', 'Kansas', 'Oklahoma', 'all western states'],
     sourceLinks: [
-      { label: 'NARA — Homestead Records', url: 'https://www.archives.gov/research/homestead-records' },
+      { label: 'NARA — Homestead Records', url: 'https://www.archives.gov/research/land/land-records' },
     ],
     tags: ['land', 'settlement', 'federal-policy', 'West'],
     category: 'race-citizenship',
@@ -193,7 +193,7 @@ export const RECONCILIATION_LAWS_V2: LawPolicyRecord[] = [
     relatedTribes: ['all'],
     relatedStates: ['all'],
     sourceLinks: [
-      { label: 'NARA — 14th Amendment', url: 'https://www.archives.gov/founding-docs/amendments-13-15' },
+      { label: 'NARA — 14th Amendment', url: 'https://www.archives.gov/founding-docs/amendments-11-27' },
     ],
     tags: ['citizenship', 'constitution', 'race'],
     category: 'race-citizenship',

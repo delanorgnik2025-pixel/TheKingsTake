@@ -67,7 +67,7 @@ export const TRIBE_DB: Record<string, TribeDetail> = {
     currentStatus: 'Headquartered in Tahlequah, Oklahoma. The Cherokee Nation operates the largest tribal health system in the country, multiple casinos, and extensive cultural preservation programs. They have their own constitutional government with executive, legislative, and judicial branches.',
     resources: [
       { label: 'Official Website', url: 'https://www.cherokee.org' },
-      { label: 'Tribal Enrollment', url: 'https://www.cherokee.org/government/citizenship' },
+      { label: 'Tribal Enrollment', url: 'https://www.cherokee.gov/departments/tribal-registration/' },
       { label: 'Cherokee Phoenix Newspaper', url: 'https://www.cherokeephoenix.org' },
     ],
   },
@@ -3222,7 +3222,7 @@ export const STATE_DATA: Record<string, StateData> = {
     treaties: [
       { name: 'Treaty of 1794 (Passamaquoddy)', year: '1794', desc: 'Established peace and defined boundaries between Passamaquoddy and Massachusetts (which included Maine at the time).' },
     ],
-    vitalRecords: { office: 'Maine Office of Data, Research and Vital Statistics', address: '220 Capitol Street, Augusta, ME 04330', phone: '(207) 287-3181', website: 'https://www.maine.gov/dhhs/mecdc/public-health-systems/data-research/vital-records', deathCertProcess: 'Mail or in-person. $15 per copy. 5-10 business days.', birthCertProcess: 'Same process.' },
+    vitalRecords: { office: 'Maine Office of Data, Research and Vital Statistics', address: '220 Capitol Street, Augusta, ME 04330', phone: '(207) 287-3181', website: 'https://www.maine.gov/dhhs/mecdc/vital-records', deathCertProcess: 'Mail or in-person. $15 per copy. 5-10 business days.', birthCertProcess: 'Same process.' },
   },
   'Maryland': {
     tribes: ['Piscataway Conoy Tribe', 'Piscataway Indian Nation', 'Accohannock Indian Tribe', 'Nanticoke Indian Association (also in DE)'],
@@ -3345,7 +3345,7 @@ export const STATE_DATA: Record<string, StateData> = {
       { name: 'Treaty of Guadalupe Hidalgo', year: '1848', desc: 'Ended Mexican-American War. Guaranteed property rights of Pueblo peoples under U.S. law.' },
       { name: 'Navajo-Bosque Redondo Treaty', year: '1868', desc: 'Navajo returned to homeland from the Long Walk internment.' },
     ],
-    vitalRecords: { office: 'New Mexico Department of Health, Vital Records', address: '1190 St. Francis Drive, Santa Fe, NM 87505', phone: '(505) 827-2338', website: 'https://www.nmhealth.org/about/vital_records/', deathCertProcess: 'Mail or in-person. $10 per copy. Same-day if in-person.', birthCertProcess: 'Same process.', indianAffairs: 'NM Indian Affairs Department: (505) 476-1600' },
+    vitalRecords: { office: 'New Mexico Department of Health, Vital Records', address: '1190 St. Francis Drive, Santa Fe, NM 87505', phone: '(505) 827-2338', website: 'https://www.nmhealth.org/about/erd/bvrhs/vrp/', deathCertProcess: 'Mail or in-person. $10 per copy. Same-day if in-person.', birthCertProcess: 'Same process.', indianAffairs: 'NM Indian Affairs Department: (505) 476-1600' },
   },
   'New York': {
     tribes: ['Seneca Nation', 'Oneida Indian Nation', 'Onondaga Nation', 'Cayuga Nation', 'Mohawk Nation', 'Tuscarora Nation', 'Shinnecock Indian Nation', 'Unkechaug Nation', 'Saint Regis Mohawk Tribe'],

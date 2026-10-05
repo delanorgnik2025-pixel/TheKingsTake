@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react'
-import { Link } from 'react-router'
-import { motion } from 'framer-motion'
-import { ArrowRight, Calendar, Clock, Play, ExternalLink, Rss, Video, FileText } from 'lucide-react'
 import { trpc } from '@/providers/trpc'
+import { motion } from 'framer-motion'
+import { ArrowRight,Calendar,ExternalLink,Rss } from 'lucide-react'
+import { useEffect,useState } from 'react'
+import { Link } from 'react-router'
 import ScrollReveal from './ScrollReveal'
 
 // WordPress post type
@@ -79,7 +79,7 @@ interface Props {
 
 export default function BlogFeed({ wordPressUrl, title, subtitle }: Props) {
   const { data: apiPosts } = trpc.blog.list.useQuery({ limit: 6 })
-  const { posts: wpPosts, loading: wpLoading } = useWordPressPosts(wordPressUrl)
+  const { posts: wpPosts } = useWordPressPosts(wordPressUrl)
 
   // Prioritize WordPress posts if configured, then API, then fallback
   const posts = wordPressUrl

@@ -1,6 +1,6 @@
-import { Link } from 'react-router'
 import { motion } from 'framer-motion'
-import { Home, ArrowLeft, Search } from 'lucide-react'
+import { ArrowLeft,Home } from 'lucide-react'
+import { Link } from 'react-router'
 
 export default function NotFoundPage() {
   return (

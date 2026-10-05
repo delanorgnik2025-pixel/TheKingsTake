@@ -1,11 +1,27 @@
-import { useState } from 'react'
-import { Link } from 'react-router'
 import { motion } from 'framer-motion'
 import {
-  BookOpen, Globe, Dna, Scroll, Landmark, Users, Mic, Feather,
-  TreePine, Crown, ArrowLeft, ExternalLink, ChevronRight,
-  MapPin, FileText, Award, Briefcase, Heart, Eye, Target
+ArrowLeft,
+Award,
+BookOpen,
+Briefcase,
+ChevronRight,
+Crown,
+Dna,
+ExternalLink,
+Eye,
+Feather,
+Globe,
+Heart,
+Landmark,
+MapPin,
+Mic,
+Scroll,
+Target,
+TreePine,
+Users
 } from 'lucide-react'
+import { useState } from 'react'
+import { Link } from 'react-router'
 import ScrollReveal from '../components/ScrollReveal'
 
 // ============================================

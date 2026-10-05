@@ -1,4 +1,4 @@
-import { useRef, useMemo } from 'react'
+import { useMemo } from 'react'
 import * as THREE from 'three'
 
 export default function AfricanGround() {

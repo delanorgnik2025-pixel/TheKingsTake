@@ -1,7 +1,7 @@
-import BookCover from '../components/BookCover'
 import { motion } from 'framer-motion'
-import { BookOpen, Star, Quote, Clock, Shield, Sparkles } from 'lucide-react'
+import { Clock,Quote,Shield,Sparkles,Star } from 'lucide-react'
 import { useNavigate } from 'react-router'
+import BookCover from '../components/BookCover'
 import ScrollReveal from '../components/ScrollReveal'
 
 const testimonials = [
@@ -75,7 +75,7 @@ export default function BookPromoSection() {
                   </div>
                 </div>
                 <p className="text-xs text-[#C9B99A] mb-2">Hardcover Edition — Pre-Order</p>
-                <p className="text-[10px] text-[#C9B99A]/60 mb-4">Jacketed hardcover · Release date: September 11, 2026 · Ships on publication</p>
+                <p className="text-[10px] text-[#C9B99A]/60 mb-4">Jacketed hardcover · Final proof in progress · Publication date to be confirmed</p>
                 <PreOrderButton />
 
                 {/* Pre-order guarantees */}

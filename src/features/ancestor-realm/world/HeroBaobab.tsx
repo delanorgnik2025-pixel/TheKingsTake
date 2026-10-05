@@ -10,7 +10,7 @@ export default function HeroBaobab() {
   const leaves = useMemo(() => {
     const count = quality.treeDetail === 'high' ? 3000 : quality.treeDetail === 'medium' ? 1500 : 500
     return Array.from({ length: count }, () => ({
-      pos: [(Math.random() - 0.5) * 6, 10 + Math.random() * 5, (Math.random() - 0.5) * 6],
+      pos: [(Math.random() - 0.5) * 6, 10 + Math.random() * 5, (Math.random() - 0.5) * 6] as [number, number, number],
       scale: 0.08 + Math.random() * 0.15,
       hue: 100 + Math.random() * 50,
     }))

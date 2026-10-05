@@ -35,7 +35,7 @@ export default function Fireflies() {
   return (
     <points ref={ref}>
       <bufferGeometry>
-        <bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} />
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
       <pointsMaterial color="#FFE66D" size={0.15} transparent opacity={0.8} blending={THREE.AdditiveBlending} depthWrite={false} />
     </points>

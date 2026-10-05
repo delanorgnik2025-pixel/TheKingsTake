@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useMemo } from 'react'
+import React,{ createContext,useContext,useMemo,useState } from 'react'
 import type { GPUQuality } from '../types'
 
 const WorldContext = createContext<{

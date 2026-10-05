@@ -33,7 +33,7 @@ export interface LawPolicyRecord {
   relatedStates: string[]
   sourceLinks: SourceLink[]
   tags: string[]
-  category: 'foundations' | 'treaty-removal' | 'race-citizenship' | 'enrollment-allotment' | 'education' | 'court-case'
+  category: 'foundations' | 'treaty-removal' | 'race-citizenship' | 'enrollment-allotment' | 'education' | 'court-case' | 'racial-classification'
 }
 
 export interface TreatyRecord {

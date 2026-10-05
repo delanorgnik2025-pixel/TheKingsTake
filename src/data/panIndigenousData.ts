@@ -869,7 +869,7 @@ export const caribbeanNations: IndigenousNation[] = [
     history: 'The Kalinago called Dominica \'Waitukubuli\' — \'tall is her body\' — referring to the island\'s mountainous terrain. Because of its rugged interior, Dominica was the last Caribbean island to be colonized. The Kalinago used Dominica as a stronghold from which to resist European incursion. When European powers agreed to leave Dominica to the Caribs by treaty in the 18th century, it became a refuge for Indigenous peoples displaced from other islands. The 3,700-acre Carib Territory was established in 1903 by British colonial authorities. Despite land loss and cultural suppression, the Kalinago of Dominica have maintained their identity. The territory is governed by a Carib Council elected by Kalinago residents.',
     currentIssues: 'Economic challenges within the territory — limited employment opportunities. Land rights remain contentious, with ongoing disputes over territory boundaries. The Kalinago Barana Auté (model village) serves as a cultural center and tourist attraction. Chief Lorenzo Sanford has led efforts to establish a Kalinago-led governance structure. Climate change threatens coastal communities with rising seas and more intense hurricanes. The 2017 destruction of the cultural center by Hurricane Maria was a major setback.',
     resources: [
-      'https://www.discoverdominica.com/en/about-dominica/kalinago-territory',
+      'https://discoverdominica.com/kalinago/',
       'https://www.kalinagobaranaaute.com/'
     ],
     category: 'Kalinago',
@@ -2078,8 +2078,7 @@ export const mexicoNations: IndigenousNation[] = [
     history: 'The Tzotzil and Tzeltal Maya have inhabited the Chiapas highlands for millennia. They are descendants of the Classic Maya civilization that built great cities like Palenque and Yaxchilan. When the Spanish arrived in the 16th century, the highland Maya were never fully conquered, maintaining their communities in the rugged mountains. In 1994, the Zapatista Army of National Liberation (EZLN) emerged from Tzotzil, Tzeltal, and Tojolabal communities, launching an uprising that brought international attention to Indigenous rights in Mexico. The Zapatistas established autonomous municipalities governed by traditional Indigenous councils (caracoles).',
     currentIssues: 'The Zapatista movement continues to operate autonomous municipalities, though with reduced visibility since 2000. Paramilitary violence against Indigenous communities remains a serious threat. Coca-Cola and other corporations have been accused of over-extracting water from Chiapas aquifers, affecting Maya communities. Migration to the US and internal displacement are ongoing. Evangelical Christianity has created tensions with traditional Catholic-Maya syncretic practices.',
     resources: [
-      'https://enlacezapatista.ezln.org.mx/',
-      'https://www.laneta.apc.org/fzln/'
+      'https://enlacezapatista.ezln.org.mx/'
     ],
     category: 'Maya',
     researchDocument: {

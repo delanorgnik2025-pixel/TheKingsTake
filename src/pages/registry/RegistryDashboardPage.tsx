@@ -2,18 +2,28 @@
 // Route: /ancestor-root-registry/dashboard
 // Central hub for the registry
 
-import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router'
-import { motion } from 'framer-motion'
-import {
-  TreePine, Users, BookOpen, Search, Share2, Folder, Image, Lock,
-  UserPlus, Plus, FileDown, Trash2, ArrowRight, Sparkles, AlertTriangle,
-  Clock, FileText, HelpCircle
-} from 'lucide-react'
-import { loadRegistryData, getRegistrySummary, deleteRegistry, downloadRegistryBackup } from '@/lib/registry-storage'
-import type { RegistryData, RegistrySummary } from '@/types/registry'
 import RegistryBackground from '@/components/RegistryBackground'
 import ScrollReveal from '@/components/ScrollReveal'
+import { deleteRegistry,downloadRegistryBackup,getRegistrySummary,loadRegistryData } from '@/lib/registry-storage'
+import type { RegistryData,RegistrySummary } from '@/types/registry'
+import { motion } from 'framer-motion'
+import {
+AlertTriangle,
+BookOpen,
+Clock,
+FileDown,
+FileText,
+Folder,Image,Lock,
+Plus,
+Search,Share2,
+Sparkles,
+Trash2,
+TreePine,
+UserPlus,
+Users
+} from 'lucide-react'
+import { useEffect,useState } from 'react'
+import { useNavigate } from 'react-router'
 
 const sections = [
   { key: 'tree', label: 'Family Tree', icon: TreePine, desc: 'Visualize your bloodline', color: '#FF9500', route: '/ancestor-root-registry/tree' },
@@ -31,7 +41,6 @@ export default function RegistryDashboardPage() {
   const [data, setData] = useState<RegistryData | null>(null)
   const [summary, setSummary] = useState<RegistrySummary | null>(null)
   const [showResetConfirm, setShowResetConfirm] = useState(false)
-  const [saveState, setSaveState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
 
   useEffect(() => {
     load()
@@ -173,7 +182,7 @@ export default function RegistryDashboardPage() {
         <ScrollReveal delay={0.15}>
           <h2 className="text-sm text-[#C9B99A]/40 uppercase tracking-wider mb-4">Registry Sections</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-10">
-            {sections.map((section, i) => (
+            {sections.map((section) => (
               <motion.button
                 key={section.key}
                 whileHover={!section.comingSoon ? { y: -3 } : {}}

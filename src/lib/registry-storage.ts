@@ -5,15 +5,14 @@
 // ============================================================
 
 import type {
-  Registry,
-  RegistryData,
-  Person,
-  Relationship,
-  Story,
-  ResearchNote,
-  RegistryExport,
-  BuilderProgress,
-  BuilderStep,
+BuilderProgress,
+Person,
+Registry,
+RegistryData,
+RegistryExport,
+Relationship,
+ResearchNote,
+Story
 } from '@/types/registry'
 
 const STORAGE_KEY = 'thekingstake.ancestorRegistry.v1'

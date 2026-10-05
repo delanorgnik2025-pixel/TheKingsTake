@@ -1,10 +1,22 @@
-import { useState, useCallback, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { useNavigate } from 'react-router'
+import { AnimatePresence,motion } from 'framer-motion'
 import {
-  ArrowRight, ArrowLeft, User, TreePine, Globe, Users,
-  Heart, GitBranch, BookOpen, Check, Sparkles, Plus, X, Edit3, Trash2
+ArrowLeft,
+ArrowRight,
+BookOpen,Check,
+Edit3,
+GitBranch,
+Globe,
+Heart,
+Plus,
+Shield,
+Sparkles,
+Trash2,
+TreePine,
+User,
+Users
 } from 'lucide-react'
+import { useCallback,useEffect,useState } from 'react'
+import { useNavigate } from 'react-router'
 
 // ─── Types ───────────────────────────────────────────
 interface Person {
@@ -77,7 +89,7 @@ export default function RootsRegistryWizard() {
     return saved ? JSON.parse(saved) : INITIAL_DATA
   })
   const [isComplete, setIsComplete] = useState(false)
-  const [editingField, setEditingField] = useState<string | null>(null)
+  const [, setEditingField] = useState<string | null>(null)
 
   // Autosave
   useEffect(() => {
@@ -462,7 +474,7 @@ export default function RootsRegistryWizard() {
 
 // ─── Sub-components ──────────────────────────────────
 
-function StepPanel({ children, title, subtitle, direction = 1, noNav = false }: {
+function StepPanel({ children, title, subtitle, direction = 1 }: {
   children: React.ReactNode; title: string; subtitle: string; direction?: number; noNav?: boolean
 }) {
   return (
@@ -484,7 +496,7 @@ function StepPanel({ children, title, subtitle, direction = 1, noNav = false }: 
   )
 }
 
-function Input({ label, value, onChange, placeholder = '', required = false, compact = false }: {
+function Input({ label, value, onChange, placeholder = '', required = false }: {
   label: string; value: string; onChange: (v: string) => void; placeholder?: string; required?: boolean; compact?: boolean
 }) {
   return (

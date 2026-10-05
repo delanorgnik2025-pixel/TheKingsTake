@@ -1,12 +1,22 @@
-import { useState, useEffect } from 'react'
-import { Link } from 'react-router'
-import { motion } from 'framer-motion'
 import {
-  ArrowRight, Play, TrendingUp, Clock, User, ChevronRight,
-  Newspaper, Zap, Hash, Radio, Star, Video, ExternalLink,
-  Eye, Rss, Search
+ArrowRight,
+ChevronRight,
+Clock,
+Eye,
+Hash,
+Newspaper,
+Play,
+Radio,
+Rss,
+Star,
+TrendingUp,
+User,
+Video,
+Zap
 } from 'lucide-react'
-import { ARTICLES, type Article } from '../data/newsData'
+import { useState } from 'react'
+import { Link } from 'react-router'
+import { ARTICLES,type Article } from '../data/newsData'
 import ScrollReveal from './ScrollReveal'
 
 // ============================================
@@ -215,7 +225,6 @@ export default function NewsHub() {
   const [activeCategory, setActiveCategory] = useState<string>('ALL')
 
   const allArticles = ARTICLES
-  const trending = allArticles.slice(0, 5)
   const hero = allArticles[0]
   const sideStories = allArticles.slice(1, 4)
   const authorPosts = allArticles.filter(a => a.author === 'Ronald Lee King')
@@ -331,7 +340,7 @@ export default function NewsHub() {
                   <span className="text-[9px] text-[#00CED1]/40">Auto-curated • All sources verified</span>
                 </div>
                 <div className="bg-white rounded-xl border border-[rgba(0,206,209,0.12)] p-4">
-                  {wirePosts.map((post, i) => (
+                  {wirePosts.map((post) => (
                     <Link key={post.slug} to={`/article/${post.slug}`} className="group flex items-start gap-3 py-3 border-b border-[rgba(0,0,0,0.03)] last:border-b-0">
                       <div className="w-2 h-2 rounded-full bg-[#00CED1] shrink-0 mt-1.5 animate-pulse" />
                       <div className="flex-1 min-w-0">

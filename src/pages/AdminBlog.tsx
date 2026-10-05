@@ -45,6 +45,7 @@ export default function AdminBlog() {
   function handleCreate() {
     if (!form.title || !form.content) return
     createMutation.mutate({
+      category: editPost?.category || "Community",
       title: form.title,
       slug: form.slug || form.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
       excerpt: form.excerpt || form.content.slice(0, 200) + '...',
@@ -58,6 +59,7 @@ export default function AdminBlog() {
     if (!editPost || !form.title || !form.content) return
     updateMutation.mutate({
       id: editPost.id,
+      category: editPost?.category || "Community",
       title: form.title,
       slug: form.slug,
       excerpt: form.excerpt,

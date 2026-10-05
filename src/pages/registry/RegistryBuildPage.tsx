@@ -1,13 +1,14 @@
+import RegistryBackground from '@/components/RegistryBackground'
 // PAGE 5 — GUIDED FAMILY BUILDER
 // Route: /ancestor-root-registry/build
 // Step-by-step family tree construction
 
-import { useState, useEffect } from 'react'
+import { addPerson,addRelationship,generateId,loadBuilderProgress,loadRegistryData,saveRegistryData } from '@/lib/registry-storage'
+import type { BuilderStep,Gender,Person,RecordStatus,RegistryData } from '@/types/registry'
+import { AnimatePresence,motion } from 'framer-motion'
+import { ArrowLeft,Check,SkipForward,TreePine,UserPlus } from 'lucide-react'
+import { useEffect,useState } from 'react'
 import { useNavigate } from 'react-router'
-import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, ArrowRight, SkipForward, UserPlus, TreePine, HelpCircle, Check } from 'lucide-react'
-import { generateId, loadRegistryData, saveRegistryData, addPerson, addRelationship, updateBuilderProgress, loadBuilderProgress } from '@/lib/registry-storage'
-import type { Person, Gender, RecordStatus, BuilderStep, RegistryData } from '@/types/registry'
 
 interface BuildPhase {
   step: BuilderStep

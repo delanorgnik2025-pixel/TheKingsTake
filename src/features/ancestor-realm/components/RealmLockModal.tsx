@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Lock, X } from 'lucide-react'
+import { AnimatePresence,motion } from 'framer-motion'
+import { X } from 'lucide-react'
+import { useEffect,useState } from 'react'
 
 const MYSTERIOUS_MESSAGES = [
   'The Realm is being prepared.',

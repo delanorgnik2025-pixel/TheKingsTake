@@ -1,11 +1,23 @@
-import { useState } from 'react'
-import { Link } from 'react-router'
 import { motion } from 'framer-motion'
 import {
-  ArrowLeft, Mail, MessageSquare, Facebook, Instagram,
-  Send, CheckCircle, Sparkles, Users, Clock, Star,
-  PenTool, BookOpen, Mic, Globe, Feather, AlertTriangle
+ArrowLeft,
+BookOpen,
+CheckCircle,
+Clock,
+Facebook,
+Feather,
+Globe,
+Instagram,
+MessageSquare,
+Mic,
+PenTool,
+Send,
+Sparkles,
+Star,
+Users
 } from 'lucide-react'
+import { useState } from 'react'
+import { Link } from 'react-router'
 import ScrollReveal from '../components/ScrollReveal'
 
 // ============================================

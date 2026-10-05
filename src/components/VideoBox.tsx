@@ -1,6 +1,5 @@
+import { Calendar,Clock,ExternalLink,Mic,Play,Users,Video } from 'lucide-react'
 import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Play, Video, Mic, ExternalLink, Calendar, Clock, Users, ChevronRight } from 'lucide-react'
 import ScrollReveal from './ScrollReveal'
 
 interface VideoItem {
@@ -178,7 +177,7 @@ export default function VideoBox({ videos = DEFAULT_VIDEOS, title, subtitle }: P
                 <div className="p-3 border-b border-[rgba(255,149,0,0.06)]">
                   <p className="text-[10px] uppercase tracking-wider text-[#C9B99A]/40">More Videos</p>
                 </div>
-                {playlist.map((video, i) => (
+                {playlist.map((video) => (
                   <button
                     key={video.id}
                     onClick={() => setActiveVideo(video)}

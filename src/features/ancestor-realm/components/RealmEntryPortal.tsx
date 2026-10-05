@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { useEffect,useState } from 'react'
 
 interface Props {
   onEnter: () => void
@@ -151,7 +151,7 @@ function CentralPortal() {
 
 /* ─── Floating Particles Background ─── */
 function StarField() {
-  const stars = Array.from({ length: 40 }, (_, i) => ({
+  const stars = Array.from({ length: 40 }, () => ({
     left: `${Math.random() * 100}%`,
     top: `${Math.random() * 100}%`,
     size: 1 + Math.random() * 2,

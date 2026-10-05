@@ -1,5 +1,5 @@
-import { useRef, useMemo, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { useMemo,useRef } from 'react'
 import * as THREE from 'three'
 import { useWorld } from '../scene/WorldManager'
 
@@ -35,7 +35,7 @@ export default function RainSystem() {
   return (
     <points ref={ref}>
       <bufferGeometry>
-        <bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} />
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
       <pointsMaterial color="#A0C4FF" size={0.06} transparent opacity={0.4} blending={THREE.AdditiveBlending} depthWrite={false} />
     </points>

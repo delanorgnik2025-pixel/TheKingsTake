@@ -1,9 +1,9 @@
+import { motion } from 'framer-motion'
+import { AlertTriangle,ArrowLeft,BookOpen,ExternalLink,Gavel,GraduationCap,Heart,Phone,Scale,Shield,Users } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router'
-import { motion } from 'framer-motion'
-import { ArrowLeft, ExternalLink, Shield, Scale, Users, BookOpen, Phone, MapPin, AlertTriangle, Heart, Gavel, GraduationCap } from 'lucide-react'
-import ScrollReveal from '../components/ScrollReveal'
 import MarqueeDivider from '../components/MarqueeDivider'
+import ScrollReveal from '../components/ScrollReveal'
 
 const RESOURCE_CATEGORIES = [
   {

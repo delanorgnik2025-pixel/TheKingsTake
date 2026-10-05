@@ -1,11 +1,25 @@
-import BookCover from '../components/BookCover'
-import { Link } from 'react-router'
-import { motion } from 'framer-motion'
 import {
-  BookOpen, Globe, TreePine, Mic, Landmark, Feather, Crown,
-  ArrowLeft, ChevronRight, Target, Heart, Eye, Users, Sparkles,
-  Scroll, FileText, Dna, MapPin, Award, Briefcase, Radio
+ArrowLeft,
+Award,
+BookOpen,
+Briefcase,
+ChevronRight,
+Crown,
+Eye,
+Feather,
+Globe,
+Heart,
+Landmark,
+Mic,
+Radio,
+Scroll,
+Sparkles,
+Target,
+TreePine,
+Users
 } from 'lucide-react'
+import { Link } from 'react-router'
+import BookCover from '../components/BookCover'
 import ScrollReveal from '../components/ScrollReveal'
 
 // ============================================

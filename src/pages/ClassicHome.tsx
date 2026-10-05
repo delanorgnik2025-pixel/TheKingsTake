@@ -1,18 +1,17 @@
-import { Link } from 'react-router'
-import HeroSection from '../sections/HeroSection'
-import HeroPortraitSection from '../sections/HeroPortraitSection'
-import HeritageSection from '../sections/HeritageSection'
-import ResearchPreview from '../components/ResearchPreview'
-import AncestryResearchSection from '../sections/AncestryResearchSection'
-import AboutSection from '../sections/AboutSection'
-import ServicesSection from '../sections/ServicesSection'
-import WritingMarketSection from '../sections/WritingMarketSection'
 import MarqueeDivider from '../components/MarqueeDivider'
 import NewsTicker from '../components/NewsTicker'
+import ResearchPreview from '../components/ResearchPreview'
+import AboutSection from '../sections/AboutSection'
+import AncestryResearchSection from '../sections/AncestryResearchSection'
 import FeedSection from '../sections/FeedSection'
+import HeritageSection from '../sections/HeritageSection'
+import HeroPortraitSection from '../sections/HeroPortraitSection'
+import HeroSection from '../sections/HeroSection'
+import ServicesSection from '../sections/ServicesSection'
+import WritingMarketSection from '../sections/WritingMarketSection'
 
-import ContactSection from '../sections/ContactSection'
 import ActionCTASection from '../sections/ActionCTASection'
+import ContactSection from '../sections/ContactSection'
 
 export default function ClassicHomePage() {
   return (
