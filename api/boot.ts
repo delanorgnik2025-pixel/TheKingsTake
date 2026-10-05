@@ -1,3 +1,4 @@
+import {startResearchAgent, verifyResearchConnections} from "./research/agent";
 import { studioWebhook } from './studio-payments';
 import "./env-shim";
 import { Hono } from "hono";
@@ -85,6 +86,8 @@ if (env.isProduction) {
   serve({ fetch: app.fetch, port }, () => {
     console.log(`Server running on http://localhost:${port}/`);
   });
+  startResearchAgent();
+  void verifyResearchConnections().then(r=>console.log("[research-agent] connections",JSON.stringify(r))).catch(()=>console.error("[research-agent] Connection verification unavailable."));
   startDailyNewsAutomation();
   startNewsletterDeliveryWorker();
 }

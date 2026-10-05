@@ -1,3 +1,4 @@
+import ResearchAgentAdmin from "@/components/ResearchAgentAdmin";
 import StudioOrders from '@/components/StudioOrders';
 import { useState, useEffect } from "react";
 import { useNavigate, Link, useSearchParams } from "react-router";
@@ -36,6 +37,7 @@ const NAV_ITEMS = [
   { id: "audience", label: "Audience & Leads", icon: Mail },
   { id: "applications", label: "Work Applications", icon: BriefcaseBusiness },
   { id: "newsletter", label: "The King's Dispatch", icon: Newspaper },
+  { id: "research", label: "Research Agent", icon: BarChart3 },
   { id: "settings", label: "Settings", icon: Settings },
 ];
 
@@ -857,6 +859,8 @@ export default function AdminDashboard() {
         return <ApplicationsModule />;
       case "newsletter":
         return <NewsletterModule />;
+      case "research":
+        return <ResearchAgentAdmin />;
       case "settings":
         return <SettingsModule onLogout={handleLogout} />;
       default:

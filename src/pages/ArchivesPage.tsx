@@ -1,3 +1,4 @@
+import ResearchPlaces from "../components/ResearchPlaces";
 import { Link, useSearchParams } from "react-router";
 import { ArrowLeft, Database, Map } from "lucide-react";
 import { PublicArchiveSearch } from "../sections/AncestryResearchSection";
@@ -29,6 +30,7 @@ export default function ArchivesPage() {
             Search National Archives and Library of Congress catalog records without leaving The King&apos;s Take. Digitized NARA records open in our document viewer when the archive supplies usable files.
           </p>
         </header>
+        <ResearchPlaces />
         <PublicArchiveSearch key={`${query}|${state || ""}`} initialQuery={query} stateName={state} />
       </div>
     </main>
