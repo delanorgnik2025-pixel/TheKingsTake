@@ -27,11 +27,11 @@ function replaceMeta(html: string, attribute: "name" | "property", key: string, 
   return pattern.test(html) ? html.replace(pattern, tag) : html.replace("</head>", `    ${tag}\n  </head>`);
 }
 
-export function serveStaticFiles(app: App) {
+export function serveStaticFiles(app: App, buildRoot?: string) {
   // In production, compiled server lives at dist/api/lib/vite.js
   // so import.meta.dirname = dist/api/lib/
   // We need ../../dist/public to reach dist/public
-  const distPath = path.resolve(import.meta.dirname, "../../dist/public");
+  const distPath = buildRoot || path.resolve(import.meta.dirname, "../../dist/public");
   const staticRoot = path.relative(process.cwd(), distPath) || ".";
 
   // Existing saved article/image URLs also resolve to the confirmed original cover.
@@ -44,6 +44,8 @@ export function serveStaticFiles(app: App) {
   app.use("/images/*", serveStatic({ root: staticRoot }));
   app.use("/favicon.ico", serveStatic({ root: staticRoot }));
   app.use("/site.webmanifest", serveStatic({ root: staticRoot }));
+  app.use("/robots.txt", serveStatic({ root: staticRoot }));
+  app.use("/sitemap.xml", serveStatic({ root: staticRoot }));
 
   const sharedPostHandler = async (c: Context<{ Bindings: HttpBindings }>) => {
     const postId = Number(c.req.param("id"));
