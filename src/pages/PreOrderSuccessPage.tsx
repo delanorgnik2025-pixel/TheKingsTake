@@ -26,11 +26,11 @@ export default function PreOrderSuccessPage() {
           </motion.div>
 
           <h1 className="text-2xl sm:text-3xl text-[#F0EBE1] font-medium mb-3" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
-            Pre-Order Confirmed
+            Thank You for Your Support
           </h1>
 
           <p className="text-sm text-[#C9B99A]/70 mb-2">
-            You are now a <span className="text-[#FF9500]">Founding Reader</span> of the first independent digital release from Ronald Lee King.
+            If you completed checkout, check your Stripe receipt to confirm your hardcover pre-order. This page alone does not verify payment.
           </p>
 
           <p className="text-xs text-[#C9B99A]/50 mb-8">
@@ -45,21 +45,21 @@ export default function PreOrderSuccessPage() {
                 <Mail size={14} className="text-[#FF9500] shrink-0 mt-0.5" />
                 <div>
                   <p className="text-sm text-[#F0EBE1]">Order Confirmation Email</p>
-                  <p className="text-[11px] text-[#C9B99A]/50">You will receive a confirmation from Stripe shortly</p>
+                  <p className="text-[11px] text-[#C9B99A]/50">Your Stripe receipt confirms a completed payment. Contact us if you need help locating it.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <Clock size={14} className="text-[#FF9500] shrink-0 mt-0.5" />
                 <div>
                   <p className="text-sm text-[#F0EBE1]">Production Updates</p>
-                  <p className="text-[11px] text-[#C9B99A]/50">Behind-the-scenes emails as the book moves through final production</p>
+                  <p className="text-[11px] text-[#C9B99A]/50">Final editing and proof approval are in progress. Join the newsletter for book updates.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <BookOpen size={14} className="text-[#FF9500] shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-sm text-[#F0EBE1]">Early Access Delivery</p>
-                  <p className="text-[11px] text-[#C9B99A]/50">Your digital copy (PDF + ePub) delivered 48 hours before public release</p>
+                  <p className="text-sm text-[#F0EBE1]">Hardcover Delivery</p>
+                  <p className="text-[11px] text-[#C9B99A]/50">Publication and shipping dates will be confirmed after the final proof is approved.</p>
                 </div>
               </div>
             </div>

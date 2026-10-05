@@ -3,7 +3,7 @@ import { trackMarketingEvent } from '@/lib/marketing-analytics'
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { motion } from 'framer-motion'
-import { Shield, ArrowLeft, Sparkles, Mail, FileText, Star, Clock, CheckCircle } from 'lucide-react'
+import { Shield, ArrowLeft, Sparkles,  Mail, FileText,  Clock, CheckCircle } from 'lucide-react'
 import ScrollReveal from '../components/ScrollReveal'
 import { STRIPE_LINKS }  from '../config/stripe'
 
@@ -13,12 +13,10 @@ import { STRIPE_LINKS }  from '../config/stripe'
 const STRIPE_PAYMENT_LINK = STRIPE_LINKS.bookPreOrder
 
 const benefits = [
-  { icon: <FileText size={16} />, title: 'Digital Edition', desc: 'PDF + ePub formats for all devices' },
-  { icon: <Clock size={16} />, title: 'Early Access', desc: 'Receive the book 48 hours before public release' },
-  { icon: <Mail size={16} />, title: 'Exclusive Updates', desc: 'Behind-the-scenes emails from Ronald Lee King during production' },
-  { icon: <Star size={16} />, title: 'Founding Reader Status', desc: 'Your name listed in the book\'s acknowledgments section' },
-  { icon: <Shield size={16} />, title: 'Full Refund Guarantee', desc: 'Cancel anytime before release for a complete refund' },
-  { icon: <Sparkles size={16} />, title: 'Discount Locked In', desc: 'Pre-order price is the lowest the book will ever be' },
+  { icon: <FileText size={16} />, title: 'Jacketed Hardcover', desc: 'Reserve the first edition hardcover at $39.99' },
+  { icon: <Clock size={16} />, title: 'Final Proof in Progress', desc: 'Publication and shipping dates will be confirmed after proof approval' },
+  { icon: <Mail size={16} />, title: 'Stay Informed', desc: 'Join the newsletter below for book updates' },
+  { icon: <Shield size={16} />, title: 'Full Refund Before Release', desc: 'Request a full refund anytime before publication' },
 ]
 
 export default function PreOrderPage() {
@@ -145,7 +143,7 @@ export default function PreOrderPage() {
                 <strong className="text-[#F0EBE1]">The African American State of the Union: From the Loins of the Beast</strong> is being released independently by Ronald Lee King through AASOTU Media Group LLC.
               </p>
               <p>
-                This book was written during one of the most challenging periods of the author's life: navigating a filed 1983 Civil Rights Action, an open EEOC case, and the loss of employment — all while building this platform and preparing this historic digital release.
+                This book was written during one of the most challenging periods of the author's life: navigating a filed 1983 Civil Rights Action, an open EEOC case, and the loss of employment — all while building this platform and preparing this independent hardcover release.
               </p>
               <p>
                 Your pre-order directly supports an independent Black author, father, and entrepreneur who is doing this entirely on his own. Every dollar goes toward final production costs: ISBN registration, professional formatting, proofreading, and cover design.
@@ -166,11 +164,11 @@ export default function PreOrderPage() {
           <div className="space-y-3 mb-16">
             {[
               { q: 'When will I receive my copy?', a: 'Publication and shipping dates will be confirmed after the final proof is approved. Delivery time will depend on your location.' },
-              { q: 'Can I get a refund?', a: 'Yes. You can request a full refund at any time before the book is released. After release, standard digital goods policies apply.' },
+              { q: 'Can I get a refund?', a: 'Yes. You can request a full refund at any time before the book is released. For questions about an order after release, contact us before arranging a return.' },
               { q: 'What edition is this?', a: 'The first edition jacketed hardcover, ISBN 979-8-234-19970-6. Final trim size, page count and print specifications will be confirmed during IngramSpark proof approval.' },
               { q: 'Will there be a paperback version?', a: 'Yes. A paperback edition is planned after the hardcover release. Pre-order customers will be notified first.' },
               { q: 'Is my payment secure?', a: 'All payments are processed through Stripe, the same payment platform used by major companies worldwide. Your card information is never stored on our servers.' },
-              { q: 'Why pre-order instead of waiting?', a: 'Pre-order customers reserve a copy ahead of the confirmed publication date, get exclusive updates from the author, and receive founding reader acknowledgment. First-edition hardcovers are printed to demand — pre-ordering guarantees your copy.' },
+              { q: 'Why pre-order instead of waiting?', a: 'Pre-ordering reserves a first edition hardcover and supports final production. Publication and shipping dates remain pending final proof approval.' },
             ].map((faq, i) => (
               <div key={i} className="bg-[rgba(37,54,75,0.3)] border border-[rgba(255,149,0,0.06)] rounded-lg p-4">
                 <p className="text-sm text-[#F0EBE1] font-medium mb-1">{faq.q}</p>
