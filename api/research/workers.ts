@@ -26,10 +26,10 @@ export async function runAutonomousWorker(kind:'feed'|'map',now=new Date()){
  try {
   const [lock]=await c.query<RowDataPacket[]>('SELECT GET_LOCK(?,0) AS acquired',[`aasotu_${kind}_worker`]);locked=lock[0]?.acquired===1;if(!locked)return {status:'busy'};
   const [controls]=await c.query<RowDataPacket[]>('SELECT * FROM agent_controls WHERE id=1');if(!controls[0]?.[`${kind}_enabled`])return {status:'paused'};
-  const [old]=await c.query<RowDataPacket[]>('SELECT status FROM agent_worker_runs WHERE kind=? AND slot_key=?',[kind,slot]);if(old.length)return {status:old[0].status,alreadyRan:true};
+  const [old]=await c.query<RowDataPacket[]>('SELECT status FROM agent_worker_runs WHERE kind=? AND slot_key=?',[kind,slot]);if(old.length && old[0].status!=='retry')return {status:old[0].status,alreadyRan:true};
   // No restart catch-up bursts. A slot is attempted once even if a provider fails.
   if(kind==='feed'){const [recent]=await c.query<RowDataPacket[]>("SELECT slot_key FROM agent_worker_runs WHERE kind='feed' AND status='completed' AND started_at>DATE_SUB(CURRENT_TIMESTAMP,INTERVAL 3 HOUR)");if(recent.length)return {status:'spacing guard'};}
-  await c.execute("INSERT INTO agent_worker_runs (kind,slot_key,status) VALUES (?,?,'running')",[kind,slot]);claimed=true;
+  await c.execute("INSERT INTO agent_worker_runs (kind,slot_key,status) VALUES (?,?,'running') ON DUPLICATE KEY UPDATE status='running',notes=NULL,completed_at=NULL",[kind,slot]);claimed=true;
   let notes='';
   if(kind==='map'){
    const [settings]=await c.query<RowDataPacket[]>('SELECT * FROM research_agent_settings WHERE id=1');let added=0,mapped=0;
@@ -53,7 +53,7 @@ export async function runAutonomousWorker(kind:'feed'|'map',now=new Date()){
    if(!process.env.OPENAI_API_KEY)throw new Error('OpenAI key missing');
    const h=Number(slot.slice(-2));const day=Number(slot.slice(8,10));const beat=NEWS_BEATS[(day+Math.floor((h-8)/4))%NEWS_BEATS.length];
    const [recentTitles]=await c.query<RowDataPacket[]>("SELECT title FROM posts WHERE published=1 AND createdAt>DATE_SUB(CURRENT_TIMESTAMP,INTERVAL 24 HOUR) ORDER BY createdAt DESC LIMIT 20");
-   const research=await researchCurrentNews(process.env.OPENAI_API_KEY,`${beat.focus} Avoid individual crime or missing-person allegations. Avoid repeating these recent published headlines: ${JSON.stringify(recentTitles.map(r=>r.title))}. This is for scheduled website publication: use a dated context brief if there is no confirmed fresh development.`);
+   const research=await researchCurrentNews(process.env.OPENAI_API_KEY,`${beat.focus} Avoid individual crime or missing-person allegations. Prefer reporting corroborated by at least two independent sources from primary agencies, universities, Reuters, AP or BBC. Avoid repeating these recent published headlines: ${JSON.stringify(recentTitles.map(r=>r.title))}. This is for scheduled website publication: use a dated context brief if there is no confirmed fresh development.`);
    const sources=trustedSources(research.sources);if(sources.length<2)throw new Error('Fewer than two trusted independent sources; publication withheld');
    const draft=await writeDraft(process.env.OPENAI_API_KEY,research.text,sources);const image=await findCommonsImage(draft.imageSearchTerm,beat.id);
    if(draft.articleTitle.length<10||draft.articleContent.length<300)throw new Error('Article validation failed');
@@ -70,7 +70,20 @@ export async function runAutonomousWorker(kind:'feed'|'map',now=new Date()){
   }
   if(kind==='map')await c.execute("UPDATE agent_worker_runs SET status='completed',notes=?,completed_at=CURRENT_TIMESTAMP WHERE kind=? AND slot_key=?",[notes,kind,slot]);
   console.log(`[${kind}-agent] ${slot}: ${notes}`);return {status:'completed',notes};
- }catch(e){const message=(e as Error).message.replace(/Bearer\s+\S+/g,'[redacted]').slice(0,200);if(claimed)await c.execute("UPDATE agent_worker_runs SET status='failed',notes=?,completed_at=CURRENT_TIMESTAMP WHERE kind=? AND slot_key=?",[message,kind,slot]);console.error(`[${kind}-agent] ${slot}: ${message}`);return {status:'failed',notes:message};
+ }catch(e){
+  // A failed fresh-news check can spotlight an existing published article, never invent a replacement.
+  if(kind==='feed' && claimed){try {
+   const [archive]=await c.query<RowDataPacket[]>("SELECT p.title,p.slug,p.coverImage,p.createdAt FROM posts p WHERE p.published=1 AND p.coverImage IS NOT NULL AND p.category IN ('DAILY NEWS','INVESTIGATION') AND NOT EXISTS (SELECT 1 FROM feed_posts f WHERE f.link_url=CONCAT('https://thekingstake.com/blog/',p.slug) AND f.created_at>DATE_SUB(CURRENT_TIMESTAMP,INTERVAL 30 DAY)) ORDER BY p.createdAt DESC LIMIT 1");
+   const article=archive[0];if(article){
+    const date=new Date(article.createdAt).toLocaleDateString('en-US',{timeZone:'America/New_York',year:'numeric',month:'long',day:'numeric'});
+    await c.beginTransaction();
+    try {const [r]=await c.execute<ResultSetHeader>('INSERT INTO feed_posts (body,link_url,link_title,image_url) VALUES (?,?,?,?)',[`From our published archive (${date}): ${article.title}\n\nExplore the full article and its sources on The King’s Take.`, `https://thekingstake.com/blog/${article.slug}`,article.title,article.coverImage]);
+     const notes=`Archive spotlight feed post #${r.insertId}; fresh-news validation did not pass; ${article.slug}`;
+     await c.execute("UPDATE agent_worker_runs SET status='completed',notes=?,completed_at=CURRENT_TIMESTAMP WHERE kind=? AND slot_key=?",[notes,kind,slot]);await c.commit();console.log(`[feed-agent] ${slot}: ${notes}`);return {status:'completed',notes};
+    }catch(fallbackError){await c.rollback();throw fallbackError;}
+   }
+  }catch{console.error('[feed-agent] Archive fallback unavailable');}}
+  const message=(e as Error).message.replace(/Bearer\s+\S+/g,'[redacted]').slice(0,200);if(claimed)await c.execute("UPDATE agent_worker_runs SET status='failed',notes=?,completed_at=CURRENT_TIMESTAMP WHERE kind=? AND slot_key=?",[message,kind,slot]);console.error(`[${kind}-agent] ${slot}: ${message}`);return {status:'failed',notes:message};
  }finally{if(locked)await c.query('SELECT RELEASE_LOCK(?)',[`aasotu_${kind}_worker`]);await c.end();}
 }
 export function startAutonomousWorkers(){
