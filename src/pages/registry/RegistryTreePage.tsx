@@ -2,16 +2,17 @@
 // Route: /ancestor-root-registry/tree
 // Custom SVG tree renderer — no heavy genealogy libraries
 
-import { useEffect, useState, useMemo, useRef } from 'react'
-import { useNavigate } from 'react-router'
-import { motion } from 'framer-motion'
-import {
-  ArrowLeft, ZoomIn, ZoomOut, Maximize2, ChevronDown, ChevronUp,
-  TreePine, User, AlertTriangle
-} from 'lucide-react'
 import RegistryBackground from '@/components/RegistryBackground'
-import { loadRegistryData, getPersonWithRelations } from '@/lib/registry-storage'
-import type { RegistryData, Person } from '@/types/registry'
+import { loadRegistryData } from '@/lib/registry-storage'
+import type { Person,RegistryData } from '@/types/registry'
+import {
+ArrowLeft,
+Maximize2,
+TreePine,
+ZoomIn,ZoomOut
+} from 'lucide-react'
+import { useEffect,useMemo,useRef,useState } from 'react'
+import { useNavigate } from 'react-router'
 
 interface TreeLayoutNode {
   person: Person
@@ -128,7 +129,7 @@ export default function RegistryTreePage() {
   const [data, setData] = useState<RegistryData | null>(null)
   const [zoom, setZoom] = useState(1)
   const [pan, setPan] = useState({ x: 0, y: 0 })
-  const [collapsedGens, setCollapsedGens] = useState<Set<number>>(new Set())
+  const [collapsedGens] = useState<Set<number>>(new Set())
   const [dragging, setDragging] = useState(false)
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
   const svgRef = useRef<SVGSVGElement>(null)

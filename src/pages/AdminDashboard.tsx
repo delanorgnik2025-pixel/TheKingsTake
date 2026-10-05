@@ -1,29 +1,29 @@
 import ResearchAgentAdmin from "@/components/ResearchAgentAdmin";
 import StudioOrders from '@/components/StudioOrders';
-import { useState, useEffect } from "react";
-import { useNavigate, Link, useSearchParams } from "react-router";
 import { trpc } from "@/providers/trpc";
 import {
-  LayoutDashboard,
-  ShoppingCart,
-  Users,
-  ScrollText,
-  Settings,
-  LogOut,
-  BarChart3,
-  Calendar,
-  Megaphone,
-  Crown,
-  Radio,
-  KeyRound,
-  Copy,
-  Mail,
-  BriefcaseBusiness,
-  Newspaper,
-  Send,
-  Menu,
-  X,
+BarChart3,
+BriefcaseBusiness,
+Calendar,
+Copy,
+Crown,
+KeyRound,
+LayoutDashboard,
+LogOut,
+Mail,
+Megaphone,
+Menu,
+Newspaper,
+Radio,
+ScrollText,
+Send,
+Settings,
+ShoppingCart,
+Users,
+X,
 } from "lucide-react";
+import { useEffect,useState } from "react";
+import { Link,useNavigate,useSearchParams } from "react-router";
 
 // ─── Sidebar navigation items ───
 const NAV_ITEMS = [
@@ -767,7 +767,7 @@ function NewsletterModule() {
   const [notice, setNotice] = useState("");
   const refresh = async () => { await Promise.all([utils.engagement.adminNewsletterCampaigns.invalidate(), utils.engagement.adminNewsletterAutomationStatus.invalidate()]); };
   const generate = trpc.engagement.adminGenerateDailyNewsDraft.useMutation({
-    onSuccess: async result => { setNotice("Research is running in the background. Completed editions appear below automatically; nothing publishes or emails until you approve."); await refresh(); },
+    onSuccess: async () => { setNotice("Research is running in the background. Completed editions appear below automatically; nothing publishes or emails until you approve."); await refresh(); },
     onError: error => setNotice(error.message),
   });
   const create = trpc.engagement.adminCreateNewsletterCampaign.useMutation({

@@ -1,6 +1,6 @@
-import { useNavigate } from 'react-router'
 import { motion } from 'framer-motion'
-import { CheckCircle, Clock, Mail, BookOpen, ArrowLeft, Sparkles, Share2 } from 'lucide-react'
+import { ArrowLeft,BookOpen,CheckCircle,Clock,Mail,Share2 } from 'lucide-react'
+import { useNavigate } from 'react-router'
 import ScrollReveal from '../components/ScrollReveal'
 
 export default function PreOrderSuccessPage() {

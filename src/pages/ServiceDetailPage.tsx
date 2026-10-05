@@ -265,7 +265,7 @@ export default function ServiceDetailPage() {
           )}
 
           {/* Payment Options */}
-          {service.price >= 50 && (
+          {'price' in service && service.price >= 50 && (
             <div className="mb-4 p-4 bg-[rgba(42,58,74,0.4)] rounded border border-[rgba(255,149,0,0.15)]">
               <p className="text-sm text-[#C9B99A] mb-2">
                 <strong className="text-[#FF9500]">Pay in full</strong> — or <strong className="text-[#FF9500]">4 interest-free payments</strong> with Klarna, Afterpay, or Affirm.

@@ -1,4 +1,5 @@
 import { StudioCheckout, StudioPaymentResult } from '@/components/StudioCheckout';
+import { trackMarketingEvent } from '@/lib/marketing-analytics';
 import { useState, type FormEvent } from 'react';
 import { Link } from 'react-router';
 import { ArrowUpRight, Check, Crown, Globe, BookOpen, CalendarDays, LayoutDashboard, PenTool, ArrowRight, CheckCircle2 } from 'lucide-react';
@@ -9,7 +10,7 @@ const linkClass = 'inline-flex items-center justify-center gap-2 rounded-full bg
 export default function BrandStudioPage() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', business: '', package: 'Business Identity' as StudioInquiry['package'], budget: 'Need guidance' as StudioInquiry['budget'], timeline: 'Exploring options' as StudioInquiry['timeline'], website: '', message: '', consent: false, companyWebsite: '' });
   const [sent, setSent] = useState(false);
-  const inquiry = trpc.brandStudio.inquire.useMutation({ onSuccess: () => setSent(true) });
+  const inquiry = trpc.brandStudio.inquire.useMutation({ onSuccess: () => { setSent(true); trackMarketingEvent('generate_lead'); } });
   const choose = (name: StudioInquiry['package']) => { setForm(current => ({ ...current, package: name })); document.getElementById('studio-inquiry')?.scrollIntoView({ behavior: 'smooth' }); };
   const submit = (event: FormEvent) => { event.preventDefault(); if (!form.consent) return; inquiry.mutate({ ...form, consent: true }); };
   return <main className="min-h-screen overflow-x-hidden bg-[#101b28] bg-cover bg-center text-[#F0EBE1]" style={{ backgroundImage: 'linear-gradient(rgba(16,27,40,.88),rgba(16,27,40,.95)),url(/images/bg-services.jpg)' }}>

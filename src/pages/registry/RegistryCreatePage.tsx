@@ -2,13 +2,13 @@
 // Route: /ancestor-root-registry/create
 // Guided, one-step-at-a-time experience
 
+import RegistryBackground from '@/components/RegistryBackground'
+import { createRegistryData,generateId } from '@/lib/registry-storage'
+import type { PrivacyMode } from '@/types/registry'
+import { AnimatePresence,motion } from 'framer-motion'
+import { AlertTriangle,ArrowLeft,ArrowRight,ShieldCheck } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
-import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, ArrowRight, TreePine, ShieldCheck, AlertTriangle } from 'lucide-react'
-import { generateId, createRegistryData } from '@/lib/registry-storage'
-import type { PrivacyMode } from '@/types/registry'
-import RegistryBackground from '@/components/RegistryBackground'
 
 interface FormStep {
   key: string

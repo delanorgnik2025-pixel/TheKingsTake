@@ -1,16 +1,19 @@
 // PAGE 9 — PEOPLE DIRECTORY
 // Route: /ancestor-root-registry/people
 
-import { useEffect, useState, useMemo } from 'react'
-import { useNavigate } from 'react-router'
-import { motion } from 'framer-motion'
-import {
-  ArrowLeft, Search, Filter, Grid3X3, List, User, TreePine,
-  Plus, Edit, BookOpen, Search as SearchIcon
-} from 'lucide-react'
 import RegistryBackground from '@/components/RegistryBackground'
 import { loadRegistryData } from '@/lib/registry-storage'
-import type { RegistryData, Person } from '@/types/registry'
+import type { Person,RegistryData } from '@/types/registry'
+import { motion } from 'framer-motion'
+import {
+ArrowLeft,
+Grid3X3,List,
+Plus,
+Search,
+User
+} from 'lucide-react'
+import { useEffect,useMemo,useState } from 'react'
+import { useNavigate } from 'react-router'
 
 export default function RegistryPeoplePage() {
   const navigate = useNavigate()

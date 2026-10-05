@@ -42,12 +42,11 @@ export function trackConversion(
     .then(d => d.ip as string)
     .catch(() => undefined)
     .then(clientIp => {
-      payload.json.clientIp = clientIp
 
       return fetch('/api/trpc/conversions.sendEvent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ ...payload, json: { ...payload.json, clientIp } }),
       })
     })
     .then(r => r.json())

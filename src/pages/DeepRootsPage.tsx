@@ -1,12 +1,20 @@
+import ScrollReveal from '@/components/ScrollReveal'
+import { STRIPE_LINKS,isPlaceholder } from '@/config/stripe'
+import {
+Archive,
+ArrowLeft,
+BookOpen,
+ChevronDown,
+Crown,
+FileText,
+Landmark,
+Map,
+Radio,
+Shield,
+Sparkles
+} from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router'
-import { motion } from 'framer-motion'
-import {
-  Crown, Map, FileText, BookOpen, Landmark, Archive, Radio,
-  Check, ChevronDown, ArrowLeft, Sparkles, Shield,
-} from 'lucide-react'
-import ScrollReveal from '@/components/ScrollReveal'
-import { STRIPE_LINKS, isPlaceholder } from '@/config/stripe'
 
 
 

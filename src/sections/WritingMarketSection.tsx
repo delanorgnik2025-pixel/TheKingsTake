@@ -85,7 +85,7 @@ const writingServices = [
     title: "Consulting & Strategy",
     price: "$100/hr",
     desc: "1-on-1 creative strategy for storytellers, advocates, and builders.",
-    link: "/services/consulting-strategy",
+    link: "/consultation",
   },
   {
     icon: Sparkles,
@@ -233,7 +233,7 @@ export default function WritingMarketSection() {
                 <Sparkles size={16} /> Hire Me to Write
               </Link>
               <Link
-                to="/services/consulting-strategy"
+                to="/consultation"
                 className="inline-flex items-center justify-center gap-2 rounded-full h-12 px-8 text-sm border border-[#FF9500] text-[#FF9500] hover:bg-[rgba(255,149,0,0.1)] transition-colors font-['Newsreader'] tracking-[0.02em]"
               >
                 Learn the Craft — $100/hr

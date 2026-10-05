@@ -1,9 +1,15 @@
 import { motion } from 'framer-motion'
-import { useNavigate } from 'react-router'
 import {
-  X, MapPin, Users, BookOpen, Globe, ChevronRight,
-  ExternalLink, Scroll, Dna
+BookOpen,
+ChevronRight,
+Dna,
+Globe,
+MapPin,
+Scroll,
+Users,
+X
 } from 'lucide-react'
+import { useNavigate } from 'react-router'
 import type { IndigenousNation } from '../data/panIndigenousData'
 
 interface CountryDetailModalProps {

@@ -1,11 +1,9 @@
-import { useRef, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { useMemo,useRef } from 'react'
 import * as THREE from 'three'
-import { useWorld } from '../scene/WorldManager'
 
 export default function SacredTree() {
   const groupRef = useRef<THREE.Group>(null)
-  const { quality } = useWorld()
 
   const trunkGeo = useMemo(() => {
     const geo = new THREE.CylinderGeometry(0.3, 1.2, 6, 8)

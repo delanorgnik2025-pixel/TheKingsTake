@@ -1,8 +1,7 @@
+import { trpc } from '@/providers/trpc'
+import { AlertTriangle,ArrowLeft,BookOpen,CheckCircle,Gavel,Megaphone,MessageSquare,ScrollText,Send,Share2,Users } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router'
-import { motion } from 'framer-motion'
-import { ArrowLeft, Send, CheckCircle, Users, BookOpen, MessageSquare, Heart, Share2, Megaphone, ScrollText, Gavel, AlertTriangle } from 'lucide-react'
-import { trpc } from '@/providers/trpc'
 import ScrollReveal from '../components/ScrollReveal'
 
 const SERVICE_OPTIONS = [

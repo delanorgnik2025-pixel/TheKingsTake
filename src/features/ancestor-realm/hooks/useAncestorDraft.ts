@@ -32,7 +32,7 @@ export function useAncestorDraft() {
     return saved || { tree: defaultTree, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
   })
 
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>()
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   const updateTree = useCallback((partial: Partial<AncestorTree>) => {
     setDraft(prev => {

@@ -1,16 +1,22 @@
 // PAGE 10 — PERSON PROFILE
 // Route: /ancestor-root-registry/person/:personId
 
-import { useEffect, useState } from 'react'
-import { useParams, useNavigate } from 'react-router'
+import RegistryBackground from '@/components/RegistryBackground'
+import { getPersonWithRelations,loadRegistryData,updatePerson } from '@/lib/registry-storage'
+import type { PersonWithRelations,RegistryData } from '@/types/registry'
 import { motion } from 'framer-motion'
 import {
-  ArrowLeft, Edit2, UserPlus, BookOpen, Search, TreePine,
-  Heart, MapPin, Calendar, Circle, Sparkles
+ArrowLeft,
+BookOpen,
+Calendar,Circle,
+Edit2,
+MapPin,
+Search,
+Sparkles,
+TreePine
 } from 'lucide-react'
-import RegistryBackground from '@/components/RegistryBackground'
-import { loadRegistryData, getPersonWithRelations, updatePerson } from '@/lib/registry-storage'
-import type { RegistryData, PersonWithRelations } from '@/types/registry'
+import { useEffect,useState } from 'react'
+import { useNavigate,useParams } from 'react-router'
 
 export default function RegistryPersonPage() {
   const { personId } = useParams<{ personId: string }>()
@@ -62,12 +68,6 @@ export default function RegistryPersonPage() {
     }
   }
 
-  function getLifeSpan(p: PersonWithRelations): string {
-    const birth = p.birthDate || '?'
-    const death = p.isLiving === false && p.deathDate ? p.deathDate : p.isLiving ? '' : ''
-    return death ? `${birth} — ${death}` : `${birth} — `
-  }
-
   if (!person || !data) return null
 
   return (
@@ -83,7 +83,7 @@ export default function RegistryPersonPage() {
           </button>
           <div className="flex items-center gap-2">
             <button
-              onClick={() => { setEditForm({ ...person }); setEditing(!editing) }}
+              onClick={() => { setEditForm(Object.fromEntries(['fullName', 'preferredName', 'birthSurname', 'biography', 'birthDate', 'deathDate', 'birthPlace', 'primaryLocation'].map(key => [key, String(person[key as keyof typeof person] ?? '')]))); setEditing(!editing) }}
               className="flex items-center gap-1 text-xs text-[#C9B99A] hover:text-[#FF9500] cursor-pointer"
             >
               <Edit2 size={12} /> {editing ? 'Cancel' : 'Edit'}

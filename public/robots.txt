@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /pre-order/success
+Disallow: /newsletter/unsubscribe
+
+Sitemap: https://thekingstake.com/sitemap.xml

@@ -46,7 +46,7 @@ export default function SimulatorPreviewSection() {
       <div className="absolute inset-0 bg-[#25364B]/90" />
 
       <div className="relative z-10 max-w-7xl mx-auto">
-        
+
         {/* Header */}
         <ScrollReveal>
           <div className="flex items-center gap-3 mb-4">
@@ -63,11 +63,11 @@ export default function SimulatorPreviewSection() {
 
         <ScrollReveal delay={0.25}>
           <p className="text-lg text-[#C9B99A] max-w-3xl mb-4 leading-relaxed">
-            Walk into a virtual courtroom. Face an AI Judge, an AI Prosecutor, a full AI Jury, and witnesses. 
+            Walk into a virtual courtroom. Face an AI Judge, an AI Prosecutor, a full AI Jury, and witnesses.
             File motions. Present evidence. Cross-examine. Get a verdict. All powered by real case law.
           </p>
           <p className="text-sm text-[rgba(201,185,154,0.5)] italic mb-12">
-            *Disclaimer: This is a simulation of real-life events for educational purposes only. 
+            *Disclaimer: This is a simulation of real-life events for educational purposes only.
             Not legal advice. Consult a licensed attorney.
           </p>
         </ScrollReveal>
@@ -76,7 +76,7 @@ export default function SimulatorPreviewSection() {
         <ScrollReveal delay={0.3}>
           <h3 className="text-lg text-[#F0EBE1] uppercase tracking-[0.04em] mb-6">How It Works</h3>
         </ScrollReveal>
-        
+
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-16">
           {simulatorFeatures.map((feature, i) => {
             const Icon = feature.icon
@@ -111,8 +111,8 @@ export default function SimulatorPreviewSection() {
               viewport={{ once: true }}
               transition={{ delay: 0.5 + i * 0.15, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
               className={`relative rounded border p-8 transition-all hover:-translate-y-1 ${
-                tier.highlight 
-                  ? 'bg-[rgba(255,149,0,0.1)] border-[rgba(255,149,0,0.4)]' 
+                tier.highlight
+                  ? 'bg-[rgba(255,149,0,0.1)] border-[rgba(255,149,0,0.4)]'
                   : 'bg-[rgba(37,54,75,0.8)] border-[rgba(255,149,0,0.2)] hover:border-[rgba(255,149,0,0.4)]'
               }`}
               style={{ boxShadow: tier.highlight ? '0 8px 32px rgba(255,149,0,0.15)' : '0 8px 32px rgba(0,0,0,0.3)' }}
@@ -122,14 +122,14 @@ export default function SimulatorPreviewSection() {
                   Most Popular
                 </div>
               )}
-              
+
               <Lock size={16} className="text-[#FFB840] mb-4" />
               <h4 className="text-xl text-[#F0EBE1] uppercase tracking-[0.04em] mb-1">{tier.name}</h4>
               <div className="flex items-baseline gap-1 mb-6">
                 <span className="text-3xl text-[#FF9500] font-medium">{tier.price}</span>
                 <span className="text-sm text-[#C9B99A]">{tier.period}</span>
               </div>
-              
+
               <ul className="space-y-3 mb-8">
                 {tier.features.map(f => (
                   <li key={f} className="flex items-start gap-2 text-sm text-[#C9B99A]">
@@ -138,8 +138,8 @@ export default function SimulatorPreviewSection() {
                   </li>
                 ))}
               </ul>
-              
-              <button 
+
+              <button
                 onClick={() => alert('Simulator coming soon! Subscribe to get notified when it launches.')}
                 className={`w-full flex items-center justify-center gap-2 rounded-full h-12 text-sm font-['Newsreader'] tracking-[0.02em] transition-colors ${
                   tier.highlight
@@ -158,11 +158,11 @@ export default function SimulatorPreviewSection() {
         <ScrollReveal delay={0.6}>
           <div className="mt-12 text-center">
             <p className="text-sm text-[#C9B99A] mb-4">
-              Want early access? <span className="text-[#FF9500]">Subscribe to The Movement ($299/mo)</span> and get 
+              Want early access? <span className="text-[#FF9500]">Subscribe to The Movement ($299/mo)</span> and get
               unlimited simulator access included.
             </p>
-            <Link 
-              to="/services/movement" 
+            <Link
+              to="/services"
               className="inline-flex items-center gap-2 text-sm text-[#FF9500] hover:underline"
             >
               Learn about The Movement <ArrowRight size={14} />

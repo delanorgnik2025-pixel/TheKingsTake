@@ -1,8 +1,8 @@
-import BookCover from '../components/BookCover'
+import { motion,useScroll,useTransform } from 'framer-motion'
+import { BookOpen,Globe,Map,PenTool,Sparkles } from 'lucide-react'
 import { useRef } from 'react'
 import { Link } from 'react-router'
-import { motion, useScroll, useTransform } from 'framer-motion'
-import { Globe, PenTool, Sparkles, BookOpen, ArrowRight, TrendingUp, Map } from 'lucide-react'
+import BookCover from '../components/BookCover'
 
 function PreOrderButton({ className }: { className?: string }) {
   return (

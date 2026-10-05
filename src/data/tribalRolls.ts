@@ -17,7 +17,7 @@ export const TRIBAL_ROLLS: TribalRollRecord[] = [
     sourceLinks: [
       { label: 'Oklahoma Historical Society — Dawes Rolls', url: 'https://www.okhistory.org/research/dawes' },
       { label: 'NARA — Dawes Rolls', url: 'https://www.archives.gov/research/native-americans/dawes' },
-      { label: 'FamilySearch — Dawes Enrollment Cards', url: 'https://www.familysearch.org/en/search/collection/2761958' },
+      { label: 'FamilySearch — Dawes Enrollment Records', url: 'https://www.familysearch.org/en/search/collection/1852353' },
     ],
     cautionNote: 'The Dawes Rolls are one major record set, but they are not the only record set. Many Indigenous ancestors never enrolled, were excluded, belonged to other tribal nations, remained in the Southeast, moved through migration networks, or were later reclassified in federal, state, church, military, or local records. Not appearing on one roll does not automatically mean a person had no Indigenous ancestry.',
     tags: ['enrollment', 'allotment', 'five-tribes', 'Oklahoma', 'land', 'freedmen', 'blood-quantum'],
@@ -194,7 +194,7 @@ export const TRIBAL_ROLLS: TribalRollRecord[] = [
     relatedTreaties: [],
     relatedStates: ['North Carolina', 'Tennessee', 'Georgia', 'Alabama', 'all states with Cherokee applicants'],
     sourceLinks: [
-      { label: 'NARA — Guion Miller Roll', url: 'https://www.archives.gov/research/native-americans/guion-miller-rolls' },
+      { label: 'NARA — Guion Miller Roll', url: 'https://www.archives.gov/research/native-americans/rolls/guion-miller-rolls' },
       { label: 'Access Genealogy — Guion Miller', url: 'https://accessgenealogy.com/native/guion-miller-roll.htm' },
     ],
     cautionNote: 'Over 90,000 people applied. Only about 45,000 were approved. Denied applications may still contain accurate family information.',
@@ -323,7 +323,7 @@ export const TRIBAL_ROLLS: TribalRollRecord[] = [
     relatedTreaties: [],
     relatedStates: ['all states'],
     sourceLinks: [
-      { label: 'NARA — Eastern Cherokee Applications', url: 'https://www.archives.gov/research/native-americans/guion-miller-rolls' },
+      { label: 'NARA — Eastern Cherokee Applications', url: 'https://www.archives.gov/research/native-americans/rolls/guion-miller-rolls' },
       { label: 'Fold3 — Eastern Cherokee Apps', url: 'https://www.fold3.com/browse/326' },
     ],
     cautionNote: 'Applications were filed from across the United States. Even denied applications contain valuable family information.',
@@ -346,7 +346,7 @@ export const TRIBAL_ROLLS: TribalRollRecord[] = [
     sourceLinks: [
       { label: 'NARA — Indian Census Rolls', url: 'https://www.archives.gov/research/census/native-americans/1885-1940.html' },
       { label: 'FamilySearch — Indian Census', url: 'https://www.familysearch.org/en/search/collection/2761958' },
-      { label: 'Access Genealogy — Indian Census', url: 'https://accessgenealogy.com/native/indian-census-rolls-1885-1940' },
+      { label: 'NARA — Indian Census Research', url: 'https://www.archives.gov/research/census/native-americans/1885-1940.html' },
     ],
     cautionNote: 'Indian Census Rolls cover many tribes not included in the Dawes Rolls. Not all reservations were included every year. Some rolls are incomplete or missing.',
     tags: ['census', 'reservation', 'all-tribes', 'federal'],
@@ -365,7 +365,7 @@ export const TRIBAL_ROLLS: TribalRollRecord[] = [
     relatedTreaties: [],
     relatedStates: ['all states'],
     sourceLinks: [
-      { label: 'FamilySearch — Federal Census', url: 'https://www.familysearch.org/en/search/collection' },
+      { label: 'FamilySearch — Federal Census', url: 'https://www.familysearch.org/en/search/collection/list/' },
       { label: 'Ancestry.com — Census Records', url: 'https://www.ancestry.com/search/categories/census/' },
     ],
     cautionNote: 'Census racial categories were assigned by census takers and did not always reflect how people identified themselves. Categories changed across census years.',
@@ -385,7 +385,7 @@ export const TRIBAL_ROLLS: TribalRollRecord[] = [
     relatedTreaties: [],
     relatedStates: ['all former Confederate states'],
     sourceLinks: [
-      { label: 'FamilySearch — Freedmen\'s Bureau', url: 'https://www.familysearch.org/en/search/collection/1923888' },
+      { label: 'FamilySearch — Freedmen\'s Bureau', url: 'https://www.familysearch.org/en/search/collection/list/?cqs=freedmen%27s+bureau' },
     ],
     cautionNote: 'Freedmen\'s Bureau records may contain information about Indigenous peoples who were classified as "colored" during Reconstruction.',
     tags: ['freedmen', 'Reconstruction', 'civil-war', 'South'],

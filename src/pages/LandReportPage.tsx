@@ -1,11 +1,17 @@
+import ScrollReveal from '@/components/ScrollReveal'
+import { STRIPE_LINKS,isPlaceholder } from '@/config/stripe'
+import { trpc } from '@/providers/trpc'
+import {
+AlertTriangle,
+Archive,ArrowLeft,
+Check,
+FileSearch,
+Loader2,
+MapPin,
+Shield
+} from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router'
-import {
-  Crown, MapPin, FileSearch, Archive, ArrowLeft, Loader2, Check, Shield, AlertTriangle,
-} from 'lucide-react'
-import ScrollReveal from '@/components/ScrollReveal'
-import { trpc } from '@/providers/trpc'
-import { STRIPE_LINKS, isPlaceholder } from '@/config/stripe'
 
 
 

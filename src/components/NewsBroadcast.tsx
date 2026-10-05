@@ -1,11 +1,23 @@
-import { useState, useEffect } from 'react'
-import { Link } from 'react-router'
-import { motion } from 'framer-motion'
 import {
-  ArrowRight, Calendar, Play, ExternalLink, Rss, Video,
-  Radio, TrendingUp, Clock, User, ChevronRight, Mic,
-  Newspaper, Zap, Eye, Share2, MessageCircle, Hash
+ArrowRight,Calendar,
+ChevronRight,
+Clock,
+ExternalLink,
+Eye,
+Hash,
+MessageCircle,
+Mic,
+Newspaper,
+Play,
+Radio,
+Share2,
+TrendingUp,
+User,
+Video,
+Zap
 } from 'lucide-react'
+import { useEffect,useState } from 'react'
+import { Link } from 'react-router'
 import ScrollReveal from './ScrollReveal'
 
 // ============================================

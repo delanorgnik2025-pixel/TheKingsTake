@@ -1,4 +1,4 @@
-import { Environment, Sky } from '@react-three/drei'
+import { Sky } from '@react-three/drei'
 import { useEnvironment } from './EnvironmentManager'
 
 export default function HDRSky() {

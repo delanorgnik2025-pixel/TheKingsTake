@@ -1,13 +1,14 @@
 import { motion } from 'framer-motion'
 import {
-  ClipboardList, Search, Microscope, Fingerprint, HeartPulse,
-  Smartphone, Clock, BookOpen, Award, Lock, CheckCircle, MapPin
+CheckCircle,
+Lock,
+MapPin
 } from 'lucide-react'
 
 export interface MapLocation {
   id: string
   label: string
-  icon: React.ElementType
+  icon: React.ElementType<{ size?: number }>
   status: 'locked' | 'available' | 'in-progress' | 'complete'
   progress?: string
 }

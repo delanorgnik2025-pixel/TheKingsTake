@@ -1,13 +1,28 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
-import { Link } from 'react-router'
-import { motion, AnimatePresence } from 'framer-motion'
+import { AnimatePresence,motion } from 'framer-motion'
 import {
-  ArrowLeft, Map, Scroll, BookOpen, Scale, ChevronDown, ChevronUp,
-  ExternalLink, AlertTriangle, Feather, Gem, Globe, Landmark,
-  FileText, Dna, Pyramid, Mountain, History, Search, CheckCircle
+AlertTriangle,
+ArrowLeft,
+BookOpen,
+CheckCircle,
+ChevronDown,ChevronUp,
+Dna,
+ExternalLink,
+Feather,
+FileText,
+Gem,Globe,
+History,
+Landmark,
+Map,
+Mountain,
+Pyramid,
+Scale,
+Scroll,
+Search
 } from 'lucide-react'
-import ScrollReveal from '../components/ScrollReveal'
+import { useEffect,useRef,useState } from 'react'
+import { Link } from 'react-router'
 import MarqueeDivider from '../components/MarqueeDivider'
+import ScrollReveal from '../components/ScrollReveal'
 
 // ============================================
 // STATISTICS

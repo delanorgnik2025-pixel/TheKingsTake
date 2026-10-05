@@ -9,6 +9,7 @@ import AudioExperience from './components/AudioExperience'
 import ScrollToTop from './components/ScrollToTop'
 import VisitorAssistant from './components/VisitorAssistant'
 import ResearchPreview from './components/ResearchPreview'
+import MarketingAnalytics from './components/MarketingAnalytics'
 
 // ============================================
 // LAZY-LOADED PAGES — Prevents eager import crashes
@@ -55,7 +56,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
   }, [])
   const lenisRef = useRef<Lenis | null>(null)
   const location = useLocation()
-  const publicSalesPage = location.pathname === '/brand-studio'
+  const publicSalesPage = location.pathname === '/brand-studio' || location.pathname === '/pre-order' || location.pathname === '/pre-order/success' || location.pathname === '/about-author'
   const publicUtilityPage = publicSalesPage || location.pathname.startsWith('/admin') || location.pathname === '/privacy-policy' || location.pathname === '/newsletter/unsubscribe'
   const hideNav = location.pathname === '/ancestor-root-registry' || location.pathname.startsWith('/ancestor-root-registry/')
 
@@ -78,13 +79,14 @@ function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <CustomCursor />
+      <MarketingAnalytics />
       {!publicUtilityPage && <AudioExperience onAccessChange={updateAdmission} />}
       {(publicUtilityPage || visitorAdmitted) && <>
         {!hideNav && <Navigation onMenuToggle={() => setMenuOpen(true)} />}
         <MenuOverlay isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
         {children}
         {!publicUtilityPage && !ownerSession && <VisitorAssistant />}
-        {!hideNav && <Footer onNavClick={scrollToSection} hideNewsletter={publicSalesPage} />}
+        {!hideNav && <Footer onNavClick={scrollToSection} hideNewsletter={location.pathname === '/brand-studio'} />}
       </>}
     </>
   )

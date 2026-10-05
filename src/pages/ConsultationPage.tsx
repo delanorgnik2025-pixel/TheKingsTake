@@ -1,10 +1,19 @@
-import { useState } from 'react'
-import { motion } from 'framer-motion'
 import { trpc } from '@/providers/trpc'
+import { motion } from 'framer-motion'
 import {
-  Calendar, Clock, User, Mail, Phone, MessageSquare,
-  ChevronRight, CheckCircle, Crown, Star, Zap, Target
+Calendar,
+CheckCircle,
+Clock,
+Crown,
+Mail,
+MessageSquare,
+Phone,
+Star,
+Target,
+User,
+Zap
 } from 'lucide-react'
+import { useState } from 'react'
 
 const CONSULTATION_TYPES = [
   {

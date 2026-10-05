@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import * as THREE from 'three'
 
 export default function StonePathway() {
   const stones = useMemo(() => {

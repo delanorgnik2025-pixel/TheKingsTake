@@ -36,7 +36,7 @@ export default function Waterfall() {
   return (
     <points ref={ref}>
       <bufferGeometry>
-        <bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} />
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
       <pointsMaterial color="#B0E0FF" size={0.12} transparent opacity={0.5} blending={THREE.AdditiveBlending} depthWrite={false} />
     </points>

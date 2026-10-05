@@ -1,18 +1,38 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { AnimatePresence,motion } from 'framer-motion'
 import {
-  Map, ChevronUp, ChevronDown, ExternalLink, Phone, Globe, FileText,
-  Landmark, Dna, Scroll, BookOpen, Users, MapPin, AlertTriangle, X,
-  Plus, Minus, Maximize2, MousePointerClick, Database, ChevronRight,
-  Search, Mic, MicOff, Info, Feather, Crown
+AlertTriangle,
+BookOpen,
+ChevronDown,
+ChevronUp,
+Crown,
+Database,
+Dna,
+ExternalLink,
+FileText,
+Globe,
+Info,
+Landmark,
+Map,
+MapPin,
+Maximize2,
+Mic,MicOff,
+Minus,
+MousePointerClick,
+Phone,
+Plus,
+Scroll,
+Search,
+Users,
+X
 } from 'lucide-react'
+import { useCallback,useEffect,useRef,useState } from 'react'
+import CountryDetailModal from '../components/CountryDetailModal'
 import ResearchPlaces from '../components/ResearchPlaces'
 import ScrollReveal from '../components/ScrollReveal'
-import { STATE_DATA, POPULAR_STATES, STATE_COORDS, TRIBE_DB, TREATY_DB } from '../data/heritageData'
 import type { TribeDetail } from '../data/heritageData'
-import { jamaicaNations, haitiNations, caribbeanNations, canadaNations, mexicoNations, centralAmericaNations, southAmericaNations } from '../data/panIndigenousData'
-import CountryDetailModal from '../components/CountryDetailModal'
-import { ALL_TERRITORIES, TERRITORY_BY_ID, searchTerritories, type TerritoryMarker, REGION_LABELS } from '../data/territoryMarkers'
+import { POPULAR_STATES,STATE_COORDS,STATE_DATA,TREATY_DB,TRIBE_DB } from '../data/heritageData'
+import { canadaNations,caribbeanNations,centralAmericaNations,haitiNations,jamaicaNations,mexicoNations,southAmericaNations } from '../data/panIndigenousData'
+import { ALL_TERRITORIES,REGION_LABELS,TERRITORY_BY_ID,searchTerritories,type TerritoryMarker } from '../data/territoryMarkers'
 
 // Public Mapbox token
 const _t1 = 'pk.eyJ1IjoidGFzYXR1IiwiYSI6ImNtcXI4azdsYjBqMmYycXB5cjIzdDR5a24ifQ'
@@ -589,11 +609,15 @@ function HeritageMap({
   onStateSelect,
   mapRef: externalMapRef,
   archiveQuery,
+  countrySelection,
+  onCountryClose,
 }: {
   onTerritorySelect: (t: TerritoryMarker) => void
   onStateSelect: (state: string) => void
   mapRef?: React.MutableRefObject<any>
   archiveQuery?: string
+  countrySelection?: string | null
+  onCountryClose?: () => void
 }) {
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<any>(null)
@@ -604,6 +628,8 @@ function HeritageMap({
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null)
   const [focusedTerritory, setFocusedTerritory] = useState<string | null>(null)
   const [mapError, setMapError] = useState<string | null>(null)
+
+  useEffect(() => { if (countrySelection) setSelectedCountry(countrySelection) }, [countrySelection])
 
   // Expose map ref to parent
   useEffect(() => {
@@ -631,10 +657,10 @@ function HeritageMap({
         preserveDrawingBuffer: true,
         antialias: true,
         touchPitch: false,
-        dragPan: { enabled: true },
+        dragPan: true,
         dragRotate: false,
-        scrollZoom: { enabled: true },
-        touchZoomRotate: { enabled: true },
+        scrollZoom: true,
+        touchZoomRotate: true,
         doubleClickZoom: true,
       })
       mapRef.current = map
@@ -849,7 +875,7 @@ function HeritageMap({
         {selectedCountry && (() => {
           const cm = COUNTRY_MARKERS[selectedCountry]
           if (!cm) return null
-          return <CountryDetailModal country={cm.name} countryCode={selectedCountry} nations={cm.nations} onClose={() => { setSelectedCountry(null); setSelectedTerritory(null) }} />
+          return <CountryDetailModal country={cm.name} countryCode={selectedCountry} nations={cm.nations} onClose={() => { setSelectedCountry(null); onCountryClose?.() }} />
         })()}
       </AnimatePresence>
     </div>
@@ -1068,6 +1094,8 @@ export default function HeritageSection() {
             onStateSelect={handleStateSelect}
             mapRef={mapScrollRef}
             archiveQuery={searchQuery}
+            countrySelection={selectedCountry}
+            onCountryClose={() => setSelectedCountry(null)}
           />
         </ScrollReveal>
 

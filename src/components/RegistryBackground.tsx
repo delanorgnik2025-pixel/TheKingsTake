@@ -1,7 +1,7 @@
 // Shared background component for all Registry pages
 // Uses the old-world study image for the landing, warm dark overlay for sub-pages
 
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 interface Props {
   children: ReactNode

@@ -2,13 +2,13 @@
 // Route: /ancestor-root-registry/share
 // Privacy-safe share cards
 
-import { useEffect, useState, useRef } from 'react'
-import { useNavigate } from 'react-router'
-import { motion } from 'framer-motion'
-import { ArrowLeft, Share2, Copy, Check, TreePine, Users, BookOpen } from 'lucide-react'
 import RegistryBackground from '@/components/RegistryBackground'
-import { loadRegistryData, getRegistrySummary } from '@/lib/registry-storage'
-import type { RegistryData, RegistrySummary } from '@/types/registry'
+import { getRegistrySummary,loadRegistryData } from '@/lib/registry-storage'
+import type { RegistryData,RegistrySummary } from '@/types/registry'
+import { motion } from 'framer-motion'
+import { ArrowLeft,Check,Copy,Share2,TreePine } from 'lucide-react'
+import { useEffect,useRef,useState } from 'react'
+import { useNavigate } from 'react-router'
 
 export default function RegistrySharePage() {
   const navigate = useNavigate()
