@@ -155,7 +155,7 @@ function VideoSection() {
   const [activeId, setActiveId] = useState<string | null>(null)
 
   const videos = [
-    { id: 'v1', title: 'The State of Our Union: Talk 1', desc: 'Ronald Lee King breaks down what "From the Loins of the Beast" means for our community.', thumb: '/images/book-cover.jpg', duration: '12:34', youtubeId: '' },
+    { id: 'v1', title: 'The State of Our Union: Talk 1', desc: 'Ronald Lee King breaks down what "From the Loins of the Beast" means for our community.', thumb: '/images/book-cover-confirmed-v1.png', duration: '12:34', youtubeId: '' },
     { id: 'v2', title: 'Know Your Rights: Police Encounters', desc: 'What to say, what not to say, and how to protect yourself.', thumb: '/images/blog-post-2.jpg', duration: '18:45', youtubeId: '' },
     { id: 'v3', title: 'Building the AASOTU Movement', desc: 'How we turn knowledge into power and community into protection.', thumb: '/images/blog-post-3.jpg', duration: '24:12', youtubeId: '' },
   ]

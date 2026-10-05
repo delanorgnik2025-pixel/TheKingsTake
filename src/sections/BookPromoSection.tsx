@@ -1,3 +1,4 @@
+import BookCover from '../components/BookCover'
 import { motion } from 'framer-motion'
 import { BookOpen, Star, Quote, Clock, Shield, Sparkles } from 'lucide-react'
 import { useNavigate } from 'react-router'
@@ -54,11 +55,7 @@ export default function BookPromoSection() {
             <ScrollReveal delay={0.15}>
               <div className="relative mb-8">
                 <div className="p-1" style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(255,149,0,0.15)' }}>
-                  <img 
-                    src="/images/book-cover.jpg" 
-                    alt="The African American State of the Union: From the Loins of the Beast"
-                    className="w-full h-auto object-cover rounded-lg"
-                  />
+                  <BookCover className="w-full h-auto object-contain rounded-lg" />
                 </div>
               </div>
             </ScrollReveal>

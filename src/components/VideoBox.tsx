@@ -23,7 +23,7 @@ const DEFAULT_VIDEOS: VideoItem[] = [
     title: 'Featured Talk: The State of Our Union',
     description: 'Ronald Lee King breaks down what "From the Loins of the Beast" really means for our community.',
     youtubeId: '', // Add YouTube ID when available
-    thumbnail: '/images/book-cover.jpg',
+    thumbnail: '/images/book-cover-confirmed-v1.png',
     duration: '12:34',
     date: 'Coming Soon',
     isLive: false,

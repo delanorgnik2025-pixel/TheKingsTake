@@ -34,6 +34,9 @@ export function serveStaticFiles(app: App) {
   const distPath = path.resolve(import.meta.dirname, "../../dist/public");
   const staticRoot = path.relative(process.cwd(), distPath) || ".";
 
+  // Existing saved article/image URLs also resolve to the confirmed original cover.
+  app.get("/images/book-cover.jpg", c => c.redirect("/images/book-cover-confirmed-v1.png", 302));
+
   // Serve static files — only for actual files, not for SPA routes
   app.use("/assets/*", serveStatic({ root: staticRoot }));
   app.use("/images/*", serveStatic({ root: staticRoot }));

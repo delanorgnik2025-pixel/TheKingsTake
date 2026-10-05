@@ -1,3 +1,4 @@
+import BookCover from '../components/BookCover'
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { motion } from 'framer-motion'
@@ -69,7 +70,7 @@ export default function PreOrderPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
           <ScrollReveal delay={0.1}>
             <div style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(255,149,0,0.15)' }}>
-              <img src="/images/book-cover.jpg" alt="Book Cover" className="w-full h-auto rounded-lg" />
+              <BookCover className="w-full h-auto rounded-lg" />
             </div>
           </ScrollReveal>
 

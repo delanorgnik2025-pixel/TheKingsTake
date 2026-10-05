@@ -1,3 +1,4 @@
+import BookCover from '../components/BookCover'
 import { useRef } from 'react'
 import { Link } from 'react-router'
 import { motion, useScroll, useTransform } from 'framer-motion'
@@ -101,14 +102,10 @@ export default function HeroSection() {
           >
             <div className="relative group">
               <div className="rounded-lg overflow-hidden" style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(255,149,0,0.2)' }}>
-                <img 
-                  src="/images/book-cover.jpg" 
-                  alt="The African American State of the Union: From the Loins of the Beast by Ronald Lee King"
-                  className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-500"
-                />
+                <BookCover className="w-full h-auto object-contain group-hover:scale-[1.02] transition-transform duration-500" />
               </div>
               {/* Floating badge */}
-              <div className="absolute -top-3 -right-3 bg-[#FF9500] text-[#25364B] text-xs font-bold px-3 py-1 rounded uppercase tracking-wider">
+              <div className="absolute -top-8 right-0 bg-[#FF9500] text-[#25364B] text-xs font-bold px-3 py-1 rounded uppercase tracking-wider">
                 Pre-Order
               </div>
             </div>
