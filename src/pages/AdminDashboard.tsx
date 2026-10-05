@@ -246,6 +246,7 @@ function SettingsModule({ onLogout }: { onLogout: () => void }) {
         <p className="my-3 text-sm text-[#C9B99A]">Switch the public homepage immediately. The original cosmic template and its layout are preserved.</p>
         <div className="flex flex-wrap gap-3">{(['noir', 'classic'] as const).map(template => <button key={template} disabled={setDesign.isPending || design.isLoading} onClick={() => setDesign.mutate({template})} aria-pressed={design.data?.template === template} className={`min-h-11 rounded-full border px-4 text-sm ${design.data?.template === template ? 'border-[#e6b66b] bg-[#e6b66b] text-[#101c2b]' : 'border-white/20 text-[#F0EBE1]'}`}>{template === 'noir' ? 'Nighttime desk' : 'Restore original cosmic'}</button>)}</div>
         <a href="/admin/design-preview" target="_blank" rel="noreferrer" className="mt-4 inline-block text-sm text-[#e6b66b] underline">View nighttime landing layout</a>
+        <a href="/admin/design-preview?mobile=1" target="_blank" rel="noreferrer" className="ml-4 mt-4 inline-block text-sm text-[#e6b66b] underline">View mobile layout</a>
         {setDesign.isSuccess && <p role="status" className="mt-3 text-sm text-emerald-300">Homepage design saved.</p>}
         {setDesign.error && <p role="alert" className="mt-3 text-sm text-red-300">Could not save. Please try again.</p>}
       </div>
