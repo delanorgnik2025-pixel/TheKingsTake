@@ -26,10 +26,13 @@ export async function resolvePlace(record:ArchiveRecord,suggestion:PlaceSuggesti
  return chooseGazetteerMatch(record,suggestion,await r.json());
 }
 
-// Only a source-supported geographical quote permits a general-area fallback.
-// Never use the catalog search query or the archive repository address as evidence.
+// Prefer quoted place evidence, but do not discard a useful historical record merely because
+// a precise feature cannot be resolved. If the source title/description itself names exactly
+// one supported state, publish a clearly labeled state-area anchor rather than inventing precision.
+// Never use the catalog search query or repository-office metadata as geographic evidence.
 export function generalAreaMatch(record:ArchiveRecord,suggestions:PlaceSuggestion[]):GazetteerMatch|null {
- const text=`${record.title} ${record.description || ''}`.toLowerCase();
+ const sourceText=`${record.title} ${record.description || ''}`;
+ const text=sourceText.toLowerCase();
  for(const suggestion of suggestions){
   const quote=suggestion.evidence.toLowerCase();
   if(!text.includes(quote)||!quote.includes(suggestion.place.toLowerCase())||/repository|archive office|reference unit|stored at|held at/i.test(quote))continue;
@@ -40,6 +43,12 @@ export function generalAreaMatch(record:ArchiveRecord,suggestions:PlaceSuggestio
   if(states.length!==1)continue;
   const state=states[0],[longitude,latitude]=RESEARCH_STATE_AREAS[state];
   return {name:`${state} — general area`,state,featureId:`state-${state}`,longitude,latitude,scope:'state area',evidence:suggestion.evidence,source:record.recordUrl};
+ }
+ const safeText=sourceText.replace(/repository|archive office|reference unit|stored at|held at/ig,' ');
+ const states=Object.keys(RESEARCH_STATE_AREAS).filter(state=>new RegExp(`\\b${state}\\b`,'i').test(safeText));
+ if(states.length===1){
+  const state=states[0],[longitude,latitude]=RESEARCH_STATE_AREAS[state];
+  return {name:`${state} — general area`,state,featureId:`state-${state}`,longitude,latitude,scope:'state area',evidence:`State named in National Archives title/description: ${state}`,source:record.recordUrl};
  }
  return null;
 }
