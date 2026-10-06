@@ -1,3 +1,4 @@
+import { NOLAN_RECORDS_PATH, NOLAN_RECORDS_TITLE, NOLAN_RECORDS_DESCRIPTION, NOLAN_RECORDS_IMAGE } from '../../contracts/nolan-records';
 import type { Context, Hono } from "hono";
 import type { HttpBindings } from "@hono/node-server";
 import { serveStatic } from "@hono/node-server/serve-static";
@@ -112,6 +113,25 @@ export function serveStaticFiles(app: App, buildRoot?: string) {
       ["name", "twitter:title", title], ["name", "twitter:description", description],
     ] as const) html = replaceMeta(html, attribute, key, value);
     html = html.replace(/<link[^>]+rel="canonical"[^>]*>/gi, "").replace("</head>", '<link rel="canonical" href="https://thekingstake.com/brand-studio" /></head>');
+    return c.html(html);
+  });
+
+  app.get(NOLAN_RECORDS_PATH, c => {
+    const indexPath = path.resolve(distPath, "index.html");
+    if (!fs.existsSync(indexPath)) return c.json({ error: "Frontend build not found" }, 500);
+    let html = fs.readFileSync(indexPath, "utf-8").replace(/<title>[^<]*<\/title>/i, `<title>${escapeAttribute(NOLAN_RECORDS_TITLE)} | The King’s Take</title>`);
+    const canonical = `https://thekingstake.com${NOLAN_RECORDS_PATH}`;
+    for (const [attribute, key, value] of [
+      ["name", "description", NOLAN_RECORDS_DESCRIPTION], ["property", "og:title", NOLAN_RECORDS_TITLE],
+      ["property", "og:description", NOLAN_RECORDS_DESCRIPTION], ["property", "og:url", canonical],
+      ["property", "og:type", "article"], ["property", "og:image", `https://thekingstake.com${NOLAN_RECORDS_IMAGE}`],
+      ["property", "og:image:alt", "Branded Nolan Wells investigation image; editorial illustration, not case evidence"],
+      ["name", "twitter:card", "summary_large_image"], ["name", "twitter:title", NOLAN_RECORDS_TITLE],
+      ["name", "twitter:description", NOLAN_RECORDS_DESCRIPTION], ["name", "twitter:image", `https://thekingstake.com${NOLAN_RECORDS_IMAGE}`],
+    ] as const) html = replaceMeta(html, attribute, key, value);
+    html = html.replace(/<meta\s+property="og:image:(width|height)"[^>]*>/gi, "");
+    html = html.replace(/<link[^>]+rel="canonical"[^>]*>/gi, "").replace("</head>", `<link rel="canonical" href="${canonical}" /></head>`);
+    c.header("Cache-Control", "public, max-age=60");
     return c.html(html);
   });
 

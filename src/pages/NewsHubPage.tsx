@@ -1,3 +1,4 @@
+import { NolanRecordsCard } from '@/components/NolanRecordsCard';
 import { Link, useSearchParams } from "react-router";
 import { ArrowRight, ChevronDown, CloudLightning, FileSearch, Globe2, Landmark, Radio, ShieldCheck, Leaf } from "lucide-react";
 import { NEWS_IMAGES, newsImageForUrl } from "@contracts/news-images";
@@ -33,6 +34,7 @@ export default function NewsHubPage() {
       </header>
 
       <section className="mx-auto max-w-7xl px-6 py-12 md:px-12">
+        <NolanRecordsCard />
         {isLoading ? <p className="text-[#C9B99A]">Loading the newsroom…</p> : lead ? (
           <article className="grid overflow-hidden rounded-2xl border border-[#FF9500]/25 bg-[#1b2a3a] lg:grid-cols-[1.1fr_.9fr]">
             <div className="min-h-72 bg-gradient-to-br from-[#283d55] via-[#182635] to-[#0b121d] p-8 md:p-12"><p className="text-xs uppercase tracking-[0.18em] text-[#FF9500]">Lead report · {lead.category}</p><h2 className="mt-5 text-3xl leading-tight md:text-5xl">{lead.title}</h2><p className="mt-5 leading-relaxed text-[#C9B99A]">{lead.excerpt}</p><Link to={`/blog/${lead.slug}`} className="mt-8 inline-flex items-center gap-2 rounded bg-[#FF9500] px-5 py-3 text-sm font-bold text-[#101b28]">Read the full report <ArrowRight size={16}/></Link></div>
