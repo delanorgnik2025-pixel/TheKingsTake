@@ -42,6 +42,7 @@ const FoundationalBlackAmericanPage = lazy(() => import('./pages/FoundationalBla
 const ArchivesPage = lazy(() => import('./pages/ArchivesPage'))
 const NaraRecordPage = lazy(() => import('./pages/NaraRecordPage'))
 const InvestigationsPage = lazy(() => import('./pages/InvestigationsPage'))
+const NolanRecordsPage = lazy(() => import('./pages/NolanRecordsPage'))
 const NewsHubPage = lazy(() => import('./pages/NewsHubPage'))
 const NewsletterUnsubscribePage = lazy(() => import('./pages/NewsletterUnsubscribePage'))
 // Ancestor Root Registry & Ancestor Realm pages retained in repo for future development; routes currently offline.
@@ -57,7 +58,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null)
   const location = useLocation()
   const publicSalesPage = location.pathname === '/brand-studio' || location.pathname === '/pre-order' || location.pathname === '/pre-order/success' || location.pathname === '/about-author'
-  const publicUtilityPage = publicSalesPage || location.pathname.startsWith('/admin') || location.pathname === '/privacy-policy' || location.pathname === '/newsletter/unsubscribe'
+  const publicUtilityPage = location.pathname === '/investigations/nolan-wells/captured-report-pages' || publicSalesPage || location.pathname.startsWith('/admin') || location.pathname === '/privacy-policy' || location.pathname === '/newsletter/unsubscribe'
   const hideNav = location.pathname === '/ancestor-root-registry' || location.pathname.startsWith('/ancestor-root-registry/')
 
   useEffect(() => {
@@ -106,6 +107,7 @@ function AppRoutes() {
           <Route path="/blog" element={<Navigate to="/feed" replace />} />
           <Route path="/news" element={<Navigate to="/feed" replace />} />
           <Route path="/blog/:slug" element={<BlogPostPage />} />
+          <Route path="/investigations/nolan-wells/captured-report-pages" element={<NolanRecordsPage />} />
           <Route path="/investigations" element={<InvestigationsPage />} />
           <Route path="/news-hub" element={<NewsHubPage />} />
           <Route path="/brand-studio" element={<BrandStudioPage />} />

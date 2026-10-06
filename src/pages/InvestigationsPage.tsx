@@ -1,3 +1,4 @@
+import { NolanRecordsCard } from '@/components/NolanRecordsCard';
 import { Link } from "react-router";
 import { ArrowRight, FileSearch, ShieldCheck } from "lucide-react";
 import { trpc } from "@/providers/trpc";
@@ -25,6 +26,7 @@ export default function InvestigationsPage() {
           </div>
         </div>
 
+        <NolanRecordsCard />
         {isLoading ? (
           <div className="rounded-xl border border-white/10 bg-[#1b2a3a] p-8 text-[#C9B99A]">Loading investigations…</div>
         ) : investigations.length === 0 ? (
