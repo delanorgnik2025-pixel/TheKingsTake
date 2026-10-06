@@ -13,9 +13,9 @@ describe('automatic geographic publication',()=>{
 
 describe('source-supported general areas',()=>{
  it('uses a state viewing anchor without pretending to locate a site',()=>{const match=generalAreaMatch(record,[quote]);expect(match?.name).toBe('Utah — general area');expect(match?.scope).toBe('state area');expect(match?.latitude).toBe(39.3);});
- it('does not use a search term or fabricated quote as evidence',()=>expect(generalAreaMatch(record,[{place:'Florida',evidence:'Florida shoreline'}])).toBeNull());
+ it('falls back to the one state named by the source even when a suggested place is unusable',()=>{const match=generalAreaMatch(record,[{place:'Florida',evidence:'Florida shoreline'}]);expect(match?.state).toBe('Utah');expect(match?.scope).toBe('state area');});
  it('leaves multiple-state geography unresolved instead of choosing arbitrarily',()=>expect(generalAreaMatch({title:'Utah and Nevada',description:''} as ArchiveRecord,[{place:'Utah',evidence:'Utah and Nevada'}])).toBeNull());
  it('does not confuse West Virginia with Virginia',()=>expect(generalAreaMatch({title:'West Virginia landscapes'} as ArchiveRecord,[{place:'West Virginia',evidence:'West Virginia landscapes'}])?.state).toBe('West Virginia'));
  it('allows sensitive records only at the supported state level',()=>expect(generalAreaMatch({...record,title:'Burial places in Utah'},[{place:'Utah',evidence:'Burial places in Utah'}])?.scope).toBe('state area'));
- it('rejects an archive office quote',()=>expect(generalAreaMatch({title:'Held at the archive office in Utah'} as ArchiveRecord,[{place:'Utah',evidence:'Held at the archive office in Utah'}])).toBeNull());
+ it('rejects a repository-only state reference',()=>expect(generalAreaMatch({title:'Held at the archive office in Utah'} as ArchiveRecord,[{place:'Utah',evidence:'Held at the archive office in Utah'}])).toBeNull());
 });
