@@ -10,7 +10,8 @@ import {easternHour} from '../newsletter-automation-utils';
 import type {ArchiveRecord} from '../archive';
 export function workerSlot(kind:'feed'|'map',now=new Date()){
  const h=easternHour(now);if(kind==='feed' && (h<8 || h>=24))return null;
- return `${researchDay(now)}-${String(kind==='feed'?8+4*Math.floor((h-8)/4):h).padStart(2,'0')}`;
+ const slotHour=kind==='feed'?8+4*Math.floor((h-8)/4):6*Math.floor(h/6);
+ return `${researchDay(now)}-${String(slotHour).padStart(2,'0')}`;
 }
 const trusted=(raw:string)=>{try {const h=new URL(raw).hostname;return /(^|\.)(gov|mil)$/.test(h)||['reuters.com','apnews.com','bbc.com','bbc.co.uk','un.org','who.int','wmo.int','nature.com','science.org','sciencedirect.com','ecowas.int','au.int','energy.gov'].some(d=>h===d||h.endsWith('.'+d));}catch{return false;}};
 export function trustedSources<T extends {url:string}>(sources:T[]){return sources.filter(s=>trusted(s.url));}
@@ -47,23 +48,27 @@ export async function runAutonomousWorker(kind:'feed'|'map',now=new Date()){
    if(settings[0]?.enabled){
     const [count]=await c.query<RowDataPacket[]>("SELECT COUNT(*) AS total FROM agent_worker_runs WHERE kind='map'");const index=Math.max(0,Number(count[0]?.total || 1)-1);
     const topics=[...new Set([...(JSON.parse(settings[0].topics) as string[]).slice(0,2),...HISTORY_RESEARCH_TOPICS])];
-    const cycles=Math.ceil(topics.length/2),page=1+Math.floor(index/cycles);
-    for(const topic of [topics[(index*2)%topics.length],topics[(index*2+1)%topics.length]]){
+    const cycles=Math.ceil(topics.length/4),page=1+Math.floor(index/cycles);
+    // Each six-hour drop deliberately over-collects so duplicates and weak geography do not starve the public map.
+    for(const topic of [0,1,2,3].map(offset=>topics[(index*4+offset)%topics.length])){
      const records=await archiveBatch(topic,page);
-     // Up to ten new records/hour, deduplicated by catalog identifier.
-     for(const record of records.slice(0,5)){
-     const [exists]=await c.query<RowDataPacket[]>('SELECT id FROM research_agent_records WHERE id=?',[record.id]);if(exists.length)continue;
-     const suggestions=process.env.OPENAI_API_KEY?await suggest(record):[];
-     await c.execute('INSERT IGNORE INTO research_agent_records (id,title,record_json,suggestions_json,query_text) VALUES (?,?,?,?,?)',[record.id,record.title,JSON.stringify(record),JSON.stringify(suggestions),topic]);added++;
+     for(const record of records.slice(0,10)){
+      if(added>=20)break;
+      const [exists]=await c.query<RowDataPacket[]>('SELECT id FROM research_agent_records WHERE id=?',[record.id]);if(exists.length)continue;
+      const suggestions=process.env.OPENAI_API_KEY?await suggest(record):[];
+      await c.execute('INSERT IGNORE INTO research_agent_records (id,title,record_json,suggestions_json,query_text) VALUES (?,?,?,?,?)',[record.id,record.title,JSON.stringify(record),JSON.stringify(suggestions),topic]);added++;
      }
+     if(added>=20)break;
     }
    }
-   const [pending]=await c.query<RowDataPacket[]>("SELECT * FROM research_agent_records WHERE status='draft' AND (location_retry_at IS NULL OR location_retry_at<=CURRENT_TIMESTAMP) ORDER BY COALESCE(location_checked_at,created_at) LIMIT 25");
+   const [pending]=await c.query<RowDataPacket[]>("SELECT * FROM research_agent_records WHERE status='draft' AND (location_retry_at IS NULL OR location_retry_at<=CURRENT_TIMESTAMP) ORDER BY COALESCE(location_checked_at,created_at) LIMIT 50");
    for(const row of pending){
-    try{if(await autoLocate(c,row))mapped++;else await c.execute("UPDATE research_agent_records SET geo_source=?,location_checked_at=CURRENT_TIMESTAMP,location_retry_at=DATE_ADD(CURRENT_TIMESTAMP,INTERVAL 7 DAY) WHERE id=?",["No supported geographic area yet; automatically reconsidered in seven days.",row.id]);}
-    catch{unavailable++;await c.execute("UPDATE research_agent_records SET geo_source=?,location_checked_at=CURRENT_TIMESTAMP,location_retry_at=DATE_ADD(CURRENT_TIMESTAMP,INTERVAL 1 DAY) WHERE id=?",["Location provider unavailable; automatic retry in one day.",row.id]);}
+    try{
+     if(await autoLocate(c,row)){mapped++;if(mapped>=10)break;}
+     else await c.execute("UPDATE research_agent_records SET geo_source=?,location_checked_at=CURRENT_TIMESTAMP,location_retry_at=DATE_ADD(CURRENT_TIMESTAMP,INTERVAL 7 DAY) WHERE id=?",["No supported geographic area yet; automatically reconsidered in seven days.",row.id]);
+    }catch{unavailable++;await c.execute("UPDATE research_agent_records SET geo_source=?,location_checked_at=CURRENT_TIMESTAMP,location_retry_at=DATE_ADD(CURRENT_TIMESTAMP,INTERVAL 1 DAY) WHERE id=?",["Location provider unavailable; automatic retry in one day.",row.id]);}
    }
-   notes=`${added} new records; ${mapped} automatic location matches (including supported general areas); ${pending.length-mapped-unavailable} without supported geography; ${unavailable} provider failures queued for retry`;
+   notes=`${added} new records researched for this six-hour drop; ${mapped} automatic location matches published (target 10, including supported general areas); ${unavailable} provider failures queued for retry`;
   }else{
    if(!process.env.OPENAI_API_KEY)throw new Error('OpenAI key missing');
    const h=Number(slot.slice(-2));const day=Number(slot.slice(8,10));const beat=NEWS_BEATS[(day+Math.floor((h-8)/4))%NEWS_BEATS.length];
@@ -103,5 +108,5 @@ export async function runAutonomousWorker(kind:'feed'|'map',now=new Date()){
 }
 export function startAutonomousWorkers(){
  const tick=()=>{void runAutonomousWorker('map').catch(()=>console.error('[map-agent] Database unavailable'));void runAutonomousWorker('feed').catch(()=>console.error('[feed-agent] Database unavailable'));};
- setTimeout(tick,30000).unref();setInterval(tick,5*60*1000).unref();console.log('[agents] Hourly map research and 08:00/12:00/16:00/20:00 Eastern feed schedule enabled.');
+ setTimeout(tick,30000).unref();setInterval(tick,5*60*1000).unref();console.log('[agents] Map archive drops at 00:00/06:00/12:00/18:00 Eastern and feed at 08:00/12:00/16:00/20:00 Eastern enabled.');
 }
