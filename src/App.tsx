@@ -44,6 +44,7 @@ const NaraRecordPage = lazy(() => import('./pages/NaraRecordPage'))
 const InvestigationsPage = lazy(() => import('./pages/InvestigationsPage'))
 const NolanRecordsPage = lazy(() => import('./pages/NolanRecordsPage'))
 const NewsHubPage = lazy(() => import('./pages/NewsHubPage'))
+const NewsSectionPage = lazy(() => import('./pages/NewsSectionPage'))
 const NewsletterUnsubscribePage = lazy(() => import('./pages/NewsletterUnsubscribePage'))
 // Ancestor Root Registry & Ancestor Realm pages retained in repo for future development; routes currently offline.
 
@@ -110,6 +111,7 @@ function AppRoutes() {
           <Route path="/investigations/nolan-wells/captured-report-pages" element={<NolanRecordsPage />} />
           <Route path="/investigations" element={<InvestigationsPage />} />
           <Route path="/news-hub" element={<NewsHubPage />} />
+          <Route path="/news-hub/:sectionId" element={<NewsSectionPage />} />
           <Route path="/brand-studio" element={<BrandStudioPage />} />
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/writing-services" element={<WritingServicesPage />} />
