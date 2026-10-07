@@ -123,11 +123,12 @@ export default function NewsHubPage() {
 
       {selectedSection && (
         <section className="mx-auto mt-12 max-w-7xl border-t border-white/10 px-6 pt-10 md:px-12">
-          <div className="flex flex-wrap items-center justify-between gap-4"><div><p className="text-xs uppercase tracking-[0.18em] text-[#FF9500]">Section archive</p><h2 className="mt-2 text-3xl">{selectedSection.label}</h2></div><Link to="/news-hub" className="text-sm text-[#FFB840]">All newsroom sections →</Link></div>
-          <div className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {visible.map(post => <article key={post.id} className="overflow-hidden rounded-2xl border border-white/10 bg-[#182635]">
-              {post.coverImage && <Link to={`/blog/${post.slug}`} className="block overflow-hidden"><img src={post.coverImage} alt="" className="aspect-[16/9] w-full object-cover transition-transform duration-500 hover:scale-[1.025]" loading="lazy" /></Link>}
-              <div className="p-6"><p className="text-[10px] uppercase tracking-[0.15em] text-[#FF9500]">{post.category}</p><h3 className="mt-3 text-xl leading-snug">{post.title}</h3><p className="mt-3 line-clamp-3 text-sm leading-relaxed text-[#C9B99A]">{post.excerpt}</p><Link to={`/blog/${post.slug}`} className="mt-5 inline-flex items-center gap-2 text-sm text-[#FFB840]">Continue reading <ArrowRight size={14}/></Link></div>
+          <div className="flex flex-wrap items-center justify-between gap-4"><div><p className="text-xs uppercase tracking-[0.18em] text-[#FF9500]">Section archive</p><h2 className="mt-2 text-3xl">{selectedSection.label}</h2><p className="mt-2 max-w-2xl text-sm text-[#C9B99A]">A text-forward archive keeps repeated context imagery from overpowering the reporting.</p></div><Link to="/news-hub" className="text-sm text-[#FFB840]">All newsroom sections →</Link></div>
+          <div className="mt-7 overflow-hidden rounded-3xl border border-white/10 bg-[#182635]">
+            {visible.map((post, index) => <article key={post.id} className="grid gap-4 border-b border-white/10 p-6 last:border-b-0 md:grid-cols-[120px_1fr_auto] md:items-center">
+              <div><p className="text-[10px] uppercase tracking-[0.15em] text-[#FF9500]">{post.category}</p><p className="mt-2 text-xs text-[#C9B99A]/55">Story {String(index + 1).padStart(2,"0")}</p></div>
+              <div><h3 className="text-xl leading-snug">{post.title}</h3><p className="mt-2 line-clamp-2 text-sm leading-relaxed text-[#C9B99A]">{post.excerpt}</p></div>
+              <Link to={`/blog/${post.slug}`} className="inline-flex items-center gap-2 whitespace-nowrap text-sm text-[#FFB840]">Read report <ArrowRight size={14}/></Link>
             </article>)}
           </div>
         </section>
