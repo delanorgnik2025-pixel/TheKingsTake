@@ -1,5 +1,5 @@
 import Marquee from 'react-fast-marquee'
-import { Zap } from 'lucide-react'
+import { Newspaper } from 'lucide-react'
 import { trpc } from '@/providers/trpc'
 
 const FALLBACK_HEADLINES = [
@@ -26,16 +26,10 @@ export default function NewsTicker() {
 
   return (
     <div className="relative h-11 flex items-center overflow-hidden border-b border-[rgba(255,149,0,0.35)] bg-[#101C29]/85 backdrop-blur-sm">
-      {/* BREAKING flag with pulse */}
-      <div className="relative z-20 h-full flex items-center gap-2 px-4 shrink-0 bg-gradient-to-r from-red-600 to-red-500">
-        <span className="relative flex h-2 w-2">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-80" />
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
-        </span>
-        <Zap size={13} className="text-white" fill="white" />
-        <span className="text-[11px] font-black uppercase tracking-[0.25em] text-white">Breaking</span>
-        {/* slanted edge */}
-        <div className="absolute right-0 top-0 bottom-0 translate-x-full w-0 border-y-[22px] border-y-transparent border-l-[14px] border-l-red-500" />
+      <div className="relative z-20 h-full flex items-center gap-2 px-4 shrink-0 bg-gradient-to-r from-[#D99127] to-[#FFB840]">
+        <Newspaper size={13} className="text-[#101C29]" />
+        <span className="text-[11px] font-black uppercase tracking-[0.25em] text-[#101C29]">Latest</span>
+        <div className="absolute right-0 top-0 bottom-0 translate-x-full w-0 border-y-[22px] border-y-transparent border-l-[14px] border-l-[#FFB840]" />
       </div>
 
       <Marquee speed={60} gradient={false} pauseOnHover className="relative z-10">
