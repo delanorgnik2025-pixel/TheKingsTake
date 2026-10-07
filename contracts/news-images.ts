@@ -1,15 +1,15 @@
 export const NEWS_IMAGES = {
   "ai-policy": {
-    "title": "The King's Take editorial technology image",
-    "url": "https://thekingstake.com/images/bg-blog.jpg",
-    "sourceUrl": "",
-    "credit": "The King's Take · House editorial artwork",
-    "licenseUrl": "",
-    "date": "",
-    "description": "The King's Take editorial image for artificial intelligence and technology policy coverage.",
+    "title": "Sam Altman speaking at TED (cropped).jpg",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/2/2f/Sam_Altman_speaking_at_TED_%28cropped%29.jpg",
+    "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sam_Altman_speaking_at_TED_(cropped).jpg",
+    "credit": "Steve Jurvetson · CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "date": "2025-04-11",
+    "description": "Sam Altman speaking at TED in April 2025.",
     "sha256": "",
-    "alt": "The King's Take technology coverage illustration.",
-    "caption": "The King's Take editorial illustration; not a documentary photograph."
+    "alt": "Sam Altman speaking at TED in April 2025.",
+    "caption": "Sam Altman speaking at TED, April 2025. Archive photograph."
   },
   "weather": {
     "title": "Hurricane Polo is a Monster Category 5 Storm (CIRA 2026-09-22).png",
