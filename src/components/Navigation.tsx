@@ -50,12 +50,11 @@ export default function Navigation({ onMenuToggle }: NavigationProps) {
           <Link to="/news-hub" className="flex items-center gap-1 text-sm text-[#FFB840] transition-colors hover:text-[#FF9500]">News Hub <ChevronDown size={14}/></Link>
           <div className="invisible absolute left-0 top-full z-50 mt-2 w-64 translate-y-1 rounded border border-[#FF9500]/20 bg-[#25364B]/95 p-2 opacity-0 shadow-2xl backdrop-blur-xl transition-all group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
             <Link to="/news-hub" className="block rounded px-3 py-2 text-sm text-[#F0EBE1] hover:bg-[#FF9500]/10 hover:text-[#FF9500]">News Hub Home</Link>
-            <Link to="/news-hub?beat=weather" className="block rounded px-3 py-2 text-xs text-[#C9B99A] hover:bg-[#FF9500]/10 hover:text-[#FF9500]">Breaking Weather</Link>
-            <Link to="/news-hub?beat=us-conflicts" className="block rounded px-3 py-2 text-xs text-[#C9B99A] hover:bg-[#FF9500]/10 hover:text-[#FF9500]">U.S. Conflicts</Link>
-            <Link to="/news-hub?beat=gaza-israel" className="block rounded px-3 py-2 text-xs text-[#C9B99A] hover:bg-[#FF9500]/10 hover:text-[#FF9500]">Gaza & Israel</Link>
-            <Link to="/news-hub?beat=ukraine" className="block rounded px-3 py-2 text-xs text-[#C9B99A] hover:bg-[#FF9500]/10 hover:text-[#FF9500]">Ukraine</Link>
-            <Link to="/news-hub?beat=sahel" className="block rounded px-3 py-2 text-xs text-[#C9B99A] hover:bg-[#FF9500]/10 hover:text-[#FF9500]">Burkina Faso & Sahel</Link>
-            <Link to="/news-hub?beat=africa" className="block rounded px-3 py-2 text-xs text-[#C9B99A] hover:bg-[#FF9500]/10 hover:text-[#FF9500]">Africa & Decolonization</Link>
+            <Link to="/news-hub/weather-safety" className="block rounded px-3 py-2 text-xs text-[#C9B99A] hover:bg-[#FF9500]/10 hover:text-[#FF9500]">Weather & Public Safety</Link>
+            <Link to="/news-hub/world-affairs" className="block rounded px-3 py-2 text-xs text-[#C9B99A] hover:bg-[#FF9500]/10 hover:text-[#FF9500]">U.S. & World Affairs</Link>
+            <Link to="/news-hub/ai-tech" className="block rounded px-3 py-2 text-xs text-[#C9B99A] hover:bg-[#FF9500]/10 hover:text-[#FF9500]">AI & Technology</Link>
+            <Link to="/news-hub/science-earth" className="block rounded px-3 py-2 text-xs text-[#C9B99A] hover:bg-[#FF9500]/10 hover:text-[#FF9500]">Science, Energy & Earth</Link>
+            <Link to="/news-hub/africa-sovereignty" className="block rounded px-3 py-2 text-xs text-[#C9B99A] hover:bg-[#FF9500]/10 hover:text-[#FF9500]">Africa & Sovereignty</Link>
           </div>
         </div>
         <Link to="/investigations" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200">Investigations</Link>
@@ -137,12 +136,11 @@ export default function Navigation({ onMenuToggle }: NavigationProps) {
             <Link to="/feed" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">The Feed</Link>
             <Link to="/news-hub" onClick={() => setMobileOpen(false)} className="block text-[#FFB840] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">News Hub</Link>
             <div className="pl-4">
-              <Link to="/news-hub?beat=weather" onClick={() => setMobileOpen(false)} className="block py-2 text-sm text-[#C9B99A]">Breaking Weather</Link>
-              <Link to="/news-hub?beat=us-conflicts" onClick={() => setMobileOpen(false)} className="block py-2 text-sm text-[#C9B99A]">U.S. Conflicts</Link>
-              <Link to="/news-hub?beat=gaza-israel" onClick={() => setMobileOpen(false)} className="block py-2 text-sm text-[#C9B99A]">Gaza & Israel</Link>
-              <Link to="/news-hub?beat=ukraine" onClick={() => setMobileOpen(false)} className="block py-2 text-sm text-[#C9B99A]">Ukraine</Link>
-              <Link to="/news-hub?beat=sahel" onClick={() => setMobileOpen(false)} className="block py-2 text-sm text-[#C9B99A]">Burkina Faso & Sahel</Link>
-              <Link to="/news-hub?beat=africa" onClick={() => setMobileOpen(false)} className="block py-2 text-sm text-[#C9B99A]">Africa & Decolonization</Link>
+              <Link to="/news-hub/weather-safety" onClick={() => setMobileOpen(false)} className="block py-2 text-sm text-[#C9B99A]">Weather & Public Safety</Link>
+              <Link to="/news-hub/world-affairs" onClick={() => setMobileOpen(false)} className="block py-2 text-sm text-[#C9B99A]">U.S. & World Affairs</Link>
+              <Link to="/news-hub/ai-tech" onClick={() => setMobileOpen(false)} className="block py-2 text-sm text-[#C9B99A]">AI & Technology</Link>
+              <Link to="/news-hub/science-earth" onClick={() => setMobileOpen(false)} className="block py-2 text-sm text-[#C9B99A]">Science, Energy & Earth</Link>
+              <Link to="/news-hub/africa-sovereignty" onClick={() => setMobileOpen(false)} className="block py-2 text-sm text-[#C9B99A]">Africa & Sovereignty</Link>
             </div>
             <Link to="/investigations" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Investigations</Link>
             <Link to="/archives" onClick={() => setMobileOpen(false)} className="block text-[#FFB840] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">Search Archives</Link>
