@@ -1,4 +1,16 @@
 export const NEWS_IMAGES = {
+  "ai-policy": {
+    "title": "The King's Take editorial technology image",
+    "url": "https://thekingstake.com/images/bg-blog.jpg",
+    "sourceUrl": "",
+    "credit": "The King's Take · House editorial artwork",
+    "licenseUrl": "",
+    "date": "",
+    "description": "The King's Take editorial image for artificial intelligence and technology policy coverage.",
+    "sha256": "",
+    "alt": "The King's Take technology coverage illustration.",
+    "caption": "The King's Take editorial illustration; not a documentary photograph."
+  },
   "weather": {
     "title": "Hurricane Polo is a Monster Category 5 Storm (CIRA 2026-09-22).png",
     "url": "https://thekingstake.com/images/news-real-weather-20260929.jpg",
