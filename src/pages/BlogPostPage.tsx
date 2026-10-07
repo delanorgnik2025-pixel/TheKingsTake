@@ -1,5 +1,6 @@
 import { NolanRecordsCard } from '@/components/NolanRecordsCard';
 import { newsImageForUrl } from "@contracts/news-images";
+import { NEWS_SECTIONS } from "@contracts/news-sections";
 import { trpc } from "@/providers/trpc";
 import { Link, useParams } from "react-router";
 import { ArrowLeft, Calendar, Tag, User } from "lucide-react";
@@ -573,6 +574,7 @@ export default function BlogPostPage() {
     return null;
   }, [apiPost, slug]);
   const beat = apiPost?.newsBeat;
+  const section = NEWS_SECTIONS.find(item => beat && item.beats.includes(beat as any));
   const { data: related = [] } = trpc.blog.list.useQuery({ beat: beat || "", limit: 6 }, { enabled: Boolean(beat) });
   const isInvestigation = post?.category === "INVESTIGATIONS";
   const isNews = post?.category === "DAILY NEWS";
@@ -645,7 +647,7 @@ export default function BlogPostPage() {
           />
         </div>
 
-        {beat && <section className="mt-10"><Link to={`/news-hub?beat=${beat}`} className="text-sm text-[#FFB840]">Explore this coverage desk →</Link><h2 className="mt-5 text-2xl text-[#F0EBE1]">Continue the story</h2><div className="mt-4 grid gap-4 sm:grid-cols-2">{related.filter(item => item.slug !== post.slug).slice(0, 4).map(item => <Link key={item.id} to={`/blog/${item.slug}`} className="overflow-hidden rounded-lg border border-white/10 bg-[#182635]">{item.coverImage && <img src={item.coverImage} alt="" loading="lazy" className="aspect-video w-full object-cover" />}<h3 className="p-4 text-lg text-[#F0EBE1]">{item.title}</h3></Link>)}</div></section>}
+        {beat && <section className="mt-10"><Link to={section ? `/news-hub/${section.id}` : "/news-hub"} className="text-sm text-[#FFB840]">Explore this coverage section →</Link><h2 className="mt-5 text-2xl text-[#F0EBE1]">Continue the story</h2><div className="mt-4 grid gap-4 sm:grid-cols-2">{related.filter(item => item.slug !== post.slug).slice(0, 4).map(item => <Link key={item.id} to={`/blog/${item.slug}`} className="overflow-hidden rounded-lg border border-white/10 bg-[#182635]">{item.coverImage && <img src={item.coverImage} alt="" loading="lazy" className="aspect-video w-full object-cover" />}<h3 className="p-4 text-lg text-[#F0EBE1]">{item.title}</h3></Link>)}</div></section>}
 
         <div className="mt-12 p-6 bg-[rgba(42,58,74,0.7)] rounded-lg border border-[rgba(255,149,0,0.2)]">
           <div className="flex items-center gap-4">
