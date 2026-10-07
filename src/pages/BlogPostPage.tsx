@@ -632,9 +632,13 @@ export default function BlogPostPage() {
         {post.slug === 'nolan-wells-garrett-discovery-phone-timeline' && <NolanRecordsCard />}
         {post.coverImage && <figure className="mb-8 overflow-hidden rounded-lg border border-white/10"><img src={post.coverImage} alt={newsImageForUrl(post.coverImage)?.alt || post.title} className="aspect-video w-full object-cover" />{newsImageForUrl(post.coverImage) && <figcaption className="bg-[#182635] px-4 py-3 text-xs leading-relaxed text-[#C9B99A]">{newsImageForUrl(post.coverImage)?.caption} {newsImageForUrl(post.coverImage)?.credit} · <a href={newsImageForUrl(post.coverImage)?.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline">Source and license</a></figcaption>}</figure>}
 
-        <div className="bg-[rgba(37,54,75,0.9)] backdrop-blur-lg rounded-lg border border-[rgba(255,149,0,0.2)] p-5 sm:p-8">
+        <div className="rounded-xl border border-[#D9C6A5]/40 bg-[#F4EBDD] p-5 shadow-[0_24px_70px_rgba(0,0,0,0.24)] sm:p-8">
+          <div className="mb-6 flex items-center justify-between gap-4 border-b border-[#6F5A3A]/15 pb-4">
+            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#8B5A1F]">The King's Take · Editorial Reading</p>
+            <span className="rounded-full border border-[#3F7D5B]/25 bg-[#E6F1E9] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.15em] text-[#2F6A4C]">Published</span>
+          </div>
           <div
-            className="prose prose-invert max-w-none text-[#C9B99A] leading-relaxed break-words [overflow-wrap:anywhere]"
+            className="prose max-w-none text-[#2A241D] leading-relaxed break-words prose-headings:text-[#101820] prose-strong:text-[#101820] prose-a:text-[#9A5C00] prose-blockquote:border-[#D99127] prose-blockquote:text-[#514638] [overflow-wrap:anywhere]"
             dangerouslySetInnerHTML={{
               __html: renderArticleMarkdown(post.content),
             }}
