@@ -1,11 +1,11 @@
 import { NolanRecordsCard } from '@/components/NolanRecordsCard';
 import { Link, useSearchParams } from "react-router";
-import { ArrowRight, ChevronDown, CloudLightning, FileSearch, Globe2, Landmark, Radio, ShieldCheck, Leaf } from "lucide-react";
+import { ArrowRight, ChevronDown, CloudLightning, FileSearch, Globe2, Landmark, Radio, ShieldCheck, Leaf, Cpu } from "lucide-react";
 import { NEWS_IMAGES, newsImageForUrl } from "@contracts/news-images";
 import { NEWS_BEATS } from "@contracts/news-beats";
 import { trpc } from "@/providers/trpc";
 
-const icons = { weather: CloudLightning, "us-conflicts": ShieldCheck, "gaza-israel": Landmark, ukraine: Globe2, sahel: Radio, africa: FileSearch, environment: Leaf };
+const icons = { "ai-policy": Cpu, weather: CloudLightning, "us-conflicts": ShieldCheck, "gaza-israel": Landmark, ukraine: Globe2, sahel: Radio, africa: FileSearch, environment: Leaf };
 const beats = NEWS_BEATS.map(beat => ({ ...beat, icon: icons[beat.id] }));
 
 export default function NewsHubPage() {
@@ -44,7 +44,7 @@ export default function NewsHubPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-6 py-6 md:px-12">
-        <div className="mb-7 flex items-end justify-between gap-4"><div><p className="text-xs uppercase tracking-[0.18em] text-[#FF9500]">Daily coverage desk</p><h2 className="mt-2 text-3xl">Seven continuing news beats</h2></div><Link to="/investigations" className="hidden text-sm text-[#FFB840] hover:text-[#FF9500] sm:inline">View Investigations →</Link></div>
+        <div className="mb-7 flex items-end justify-between gap-4"><div><p className="text-xs uppercase tracking-[0.18em] text-[#FF9500]">Independent coverage desks</p><h2 className="mt-2 text-3xl">Eight continuing news beats</h2></div><Link to="/investigations" className="hidden text-sm text-[#FFB840] hover:text-[#FF9500] sm:inline">View Investigations →</Link></div>
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {beats.map(beat => <Link to={`/news-hub?beat=${beat.id}`} id={beat.id} key={beat.id} className={`scroll-mt-24 overflow-hidden rounded-xl border bg-[#182635] transition hover:border-[#FF9500]/70 ${selected?.id === beat.id ? "border-[#FF9500]" : "border-white/10"}`}><img src={NEWS_IMAGES[beat.id].url} alt={NEWS_IMAGES[beat.id].alt} className="aspect-[2/1] w-full object-cover" loading="lazy" /><div className="px-6 pt-3 text-[10px] leading-relaxed text-[#C9B99A]/80">{NEWS_IMAGES[beat.id].caption} <span>{NEWS_IMAGES[beat.id].credit}</span></div><div className="p-6"><beat.icon className="text-[#FF9500]" size={23}/><h3 className="mt-5 text-xl">{beat.label}</h3><p className="mt-3 text-sm leading-relaxed text-[#C9B99A]">{beat.detail}</p><p className="mt-5 text-xs text-[#FFB840]">Explore stories · {news.filter(post => post.newsBeat === beat.id).length} published →</p></div></Link>)}
         </div>
