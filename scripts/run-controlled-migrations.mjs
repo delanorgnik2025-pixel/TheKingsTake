@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import mysql from "mysql2/promise";
 
 const migrations = [
+  ["20261007_ai_image_brand_safety", "db/manual/20261007_ai_image_brand_safety.sql"],
   ["20261006_ai_policy_altman", "db/manual/20261006_ai_policy_altman.sql"],
   ["20261005_autonomous_workers", "db/manual/20261005_autonomous_workers.sql"],
   ["20261005_feed_fallback", "db/manual/20261005_feed_fallback.sql"],

@@ -632,13 +632,13 @@ export default function BlogPostPage() {
         {post.slug === 'nolan-wells-garrett-discovery-phone-timeline' && <NolanRecordsCard />}
         {post.coverImage && <figure className="mb-8 overflow-hidden rounded-lg border border-white/10"><img src={post.coverImage} alt={newsImageForUrl(post.coverImage)?.alt || post.title} className="aspect-video w-full object-cover" />{newsImageForUrl(post.coverImage) && <figcaption className="bg-[#182635] px-4 py-3 text-xs leading-relaxed text-[#C9B99A]">{newsImageForUrl(post.coverImage)?.caption} {newsImageForUrl(post.coverImage)?.credit} · <a href={newsImageForUrl(post.coverImage)?.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline">Source and license</a></figcaption>}</figure>}
 
-        <div className="rounded-xl border border-[#D9C6A5]/40 bg-[#F4EBDD] p-5 shadow-[0_24px_70px_rgba(0,0,0,0.24)] sm:p-8">
-          <div className="mb-6 flex items-center justify-between gap-4 border-b border-[#6F5A3A]/15 pb-4">
-            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#8B5A1F]">The King's Take · Editorial Reading</p>
-            <span className="rounded-full border border-[#3F7D5B]/25 bg-[#E6F1E9] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.15em] text-[#2F6A4C]">Published</span>
+        <div className="rounded-2xl border border-[rgba(255,149,0,0.18)] bg-[rgba(24,38,53,0.94)] p-5 shadow-[0_24px_70px_rgba(0,0,0,0.2)] backdrop-blur-lg sm:p-8">
+          <div className="mb-6 flex items-center justify-between gap-4 border-b border-white/10 pb-4">
+            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#FFB840]">The King's Take · Editorial Reading</p>
+            <span className="rounded-full border border-emerald-300/20 bg-emerald-300/[0.06] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.15em] text-emerald-300">Published</span>
           </div>
           <div
-            className="prose max-w-none text-[#2A241D] leading-relaxed break-words prose-headings:text-[#101820] prose-strong:text-[#101820] prose-a:text-[#9A5C00] prose-blockquote:border-[#D99127] prose-blockquote:text-[#514638] [overflow-wrap:anywhere]"
+            className="prose prose-invert max-w-none text-[#C9B99A] leading-relaxed break-words prose-headings:text-[#F0EBE1] prose-strong:text-[#F0EBE1] prose-a:text-[#FFB840] prose-blockquote:border-[#FF9500] prose-blockquote:text-[#D9CDB8] [overflow-wrap:anywhere]"
             dangerouslySetInnerHTML={{
               __html: renderArticleMarkdown(post.content),
             }}

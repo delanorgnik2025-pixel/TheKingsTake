@@ -107,7 +107,7 @@ export async function writeDraft(apiKey: string, research: string, sources: Sour
       messages: [
         {
           role: "system",
-          content: `You are the careful editorial desk for The King's Take, published by AASOTU Media Group LLC. Write a clear, original, serious daily news analysis for a general audience. Separate verified fact from interpretation. Do not fabricate quotes, numbers, links, or Ronald Lee King's personal views. Do not make legal conclusions. Use only the supplied research. The article should be 350-600 words, or shorter if the verified evidence is limited with concise Markdown headings. The newsletter should be 60-100 words and invite readers to read the full article. Return strict JSON with exactly these string keys: subject, previewText, articleTitle, articleExcerpt, articleContent, newsletterContent, imageSearchTerm. Do not put source lists in the copy; the application appends the verified sources. imageSearchTerm must describe a factual newsworthy subject suitable for a Wikimedia Commons photo, not an abstract illustration.`,
+          content: `You are the careful editorial desk for The King's Take, published by AASOTU Media Group LLC. Write a clear, original, serious daily news analysis for a general audience. Separate verified fact from interpretation. Do not fabricate quotes, numbers, links, or Ronald Lee King's personal views. Do not make legal conclusions. Use only the supplied research. The article should be 350-600 words, or shorter if the verified evidence is limited with concise Markdown headings. The newsletter should be 60-100 words and invite readers to read the full article. Return strict JSON with exactly these string keys: subject, previewText, articleTitle, articleExcerpt, articleContent, newsletterContent, imageSearchTerm. Do not put source lists in the copy; the application appends the verified sources. imageSearchTerm must describe a factual newsworthy subject suitable for a Wikimedia Commons photo, not an abstract illustration. When house artwork is used, an original gritty urban editorial-poster or cinematic satirical video-game aesthetic is allowed, but do not use third-party game titles, logos, branded characters, trademark-heavy packaging, or imagery that could imply sponsorship or endorsement. For sourced photography, prefer neutral documentary images of people, places, institutions, public infrastructure or events.`,
         },
         {
           role: "user",
@@ -137,7 +137,7 @@ export async function findCommonsImage(searchTerm: string, beat: NewsBeatId): Pr
       format: "json",
       origin: "*",
       generator: "search",
-      gsrsearch: `${searchTerm} filetype:bitmap -artificial -illustration -drawing -diagram -logo`,
+      gsrsearch: `${searchTerm} filetype:bitmap -artificial -illustration -drawing -diagram -logo -poster -game -videogame -trademark`,
       gsrnamespace: "6",
       gsrlimit: "8",
       prop: "imageinfo",
@@ -159,7 +159,7 @@ export async function findCommonsImage(searchTerm: string, beat: NewsBeatId): Pr
       if (!url?.startsWith("https://upload.wikimedia.org/")) continue;
       const metadata = info.extmetadata || {};
       const description = stripHtml(metadata.ImageDescription?.value || "");
-      if (/AI.generated|AI generated|artificial intelligence|illustration|drawing|diagram|rendering|computer.generated/i.test(`${page.title} ${description}`)) continue;
+      if (/AI.generated|AI generated|artificial intelligence|illustration|drawing|diagram|rendering|computer.generated|video game|videogame|game cover|poster|logo|trademark|promotional artwork/i.test(`${page.title} ${description}`)) continue;
       const license = stripHtml(metadata.LicenseShortName?.value || "Wikimedia Commons license");
       if (!/^(CC BY|CC0|Public domain)/i.test(license)) continue;
       const artist = stripHtml(metadata.Artist?.value || metadata.Credit?.value || "Wikimedia Commons contributor");
@@ -222,14 +222,14 @@ export async function generateDailyNewsDraft() {
   }
   const articles = await db.select().from(posts).where(eq(posts.newsEdition, dailyKey)).orderBy(posts.newsBeat);
   if (articles.length !== NEWS_BEATS.length) throw new Error("Some coverage beats are still being researched; completed drafts are saved for the next attempt.");
-  const lead = articles.find(article => article.newsBeat === "environment") || articles[0];
+  const lead = articles.find(article => article.newsBeat === "ai-policy") || articles.find(article => article.newsBeat === "environment") || articles[0];
   const digest = articles.map(article => `## ${NEWS_BEATS.find(beat => beat.id === article.newsBeat)?.label}\n${article.title}\n\n${article.excerpt}\n\n[Read the full report](https://thekingstake.com/blog/${article.slug})`).join("\n\n");
   const sources = [...new Set(articles.flatMap(article => [...article.content.matchAll(/\]\((https?:[^)]+)\)/g)].map(match => match[1])))];
   const [result] = await db.insert(newsletterCampaigns).values({
-    subject: `The King's Dispatch · ${easternDailyKey()} · Seven coverage desks`,
-    previewText: "Weather, conflicts, Africa, environment and science — today's sourced reporting.",
+    subject: `The King's Dispatch · ${easternDailyKey()} · Eight research beats`,
+    previewText: "AI, weather, world affairs, Africa, science and policy — today's sourced reporting.",
     content: digest, sourceUrls: JSON.stringify(sources), automated: true, dailyKey,
-    researchSummary: "Seven individually sourced articles. Review the full newsroom bundle before approving this single digest.",
+    researchSummary: "Eight individually sourced research briefs. Review the full newsroom bundle before approving this single digest.",
     imageUrl: lead.coverImage, imageAlt: lead.title, imageCredit: "See the image credit in the linked article.",
     articleTitle: lead.title, articleSlug: lead.slug, articleExcerpt: lead.excerpt, articleContent: lead.content,
   });
