@@ -578,6 +578,10 @@ export default function BlogPostPage() {
   const { data: related = [] } = trpc.blog.list.useQuery({ beat: beat || "", limit: 6 }, { enabled: Boolean(beat) });
   const isInvestigation = post?.category === "INVESTIGATIONS";
   const isNews = post?.category === "DAILY NEWS";
+  const organizationByline = Boolean(post?.content?.includes("AASOTU Media Group LLC | #TheKingsTake"));
+  const displayAuthor = organizationByline ? "AASOTU Media Group LLC | #TheKingsTake" : "Ronald Lee King";
+  const isDeveloping = Boolean(post?.content?.includes("**BREAKING / DEVELOPING**"));
+  const displayCategory = section?.label || post?.category;
 
   if (!post) {
     return (
@@ -606,10 +610,11 @@ export default function BlogPostPage() {
           {isInvestigation ? "Back to Investigations" : isNews ? "Back to News Hub" : "Back to The Feed"}
         </Link>
 
+        {isDeveloping && <div className="mb-4 inline-flex items-center rounded-full border border-red-400/30 bg-red-500/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-red-300">Breaking / Developing</div>}
         <div className="flex flex-wrap items-center gap-4 mb-4">
           <span className="flex items-center gap-1 text-xs text-[#FF9500] uppercase tracking-[0.08em]">
             <Tag size={12} />
-            {post.category}
+            {displayCategory}
           </span>
           <span className="flex items-center gap-1 text-xs text-dimmed">
             <Calendar size={12} />
@@ -617,7 +622,7 @@ export default function BlogPostPage() {
           </span>
           <span className="flex items-center gap-1 text-xs text-dimmed">
             <User size={12} />
-            Ronald Lee King
+            {displayAuthor}
           </span>
         </div>
 
@@ -655,8 +660,8 @@ export default function BlogPostPage() {
               RK
             </div>
             <div>
-              <p className="text-[#F0EBE1] font-medium">Ronald Lee King</p>
-              <p className="text-sm text-[#C9B99A]">Author, Founder of AASOTU Media Group LLC</p>
+              <p className="text-[#F0EBE1] font-medium">{organizationByline ? "AASOTU Media Group LLC" : "Ronald Lee King"}</p>
+              <p className="text-sm text-[#C9B99A]">{organizationByline ? "#TheKingsTake independent newsroom" : "Author, Founder of AASOTU Media Group LLC"}</p>
             </div>
           </div>
         </div>

@@ -1,4 +1,16 @@
 export const NEWS_IMAGES = {
+  "crime-justice": {
+    "title": "The King's Take Crime & Justice house image",
+    "url": "https://thekingstake.com/images/og-image.jpg",
+    "sourceUrl": "",
+    "credit": "AASOTU Media Group LLC · #TheKingsTake",
+    "licenseUrl": "",
+    "date": "",
+    "description": "The King's Take branded fallback image for Crime & Justice coverage when no appropriately licensed documentary photograph is available.",
+    "sha256": "",
+    "alt": "The King's Take Crime and Justice coverage.",
+    "caption": "AASOTU Media Group LLC · #TheKingsTake branded editorial image."
+  },
   "ai-policy": {
     "title": "Sam Altman speaking at TED (cropped).jpg",
     "url": "https://upload.wikimedia.org/wikipedia/commons/2/2f/Sam_Altman_speaking_at_TED_%28cropped%29.jpg",
