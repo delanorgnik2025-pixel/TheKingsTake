@@ -1,9 +1,10 @@
 import { Link, Navigate, useParams } from "react-router";
-import { ArrowLeft, ArrowRight, CloudLightning, Cpu, Globe2, Landmark, Leaf } from "lucide-react";
+import { ArrowLeft, ArrowRight, CloudLightning, Cpu, Globe2, Landmark, Leaf, Scale } from "lucide-react";
 import { NEWS_SECTIONS } from "@contracts/news-sections";
 import { trpc } from "@/providers/trpc";
 
 const icons = {
+  "crime-justice": Scale,
   "ai-tech": Cpu,
   "world-affairs": Globe2,
   "weather-safety": CloudLightning,
