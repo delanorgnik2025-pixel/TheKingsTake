@@ -50,6 +50,7 @@ export default function Navigation({ onMenuToggle }: NavigationProps) {
           <Link to="/news-hub" className="flex items-center gap-1 text-sm text-[#FFB840] transition-colors hover:text-[#FF9500]">News Hub <ChevronDown size={14}/></Link>
           <div className="invisible absolute left-0 top-full z-50 mt-2 w-64 translate-y-1 rounded border border-[#FF9500]/20 bg-[#25364B]/95 p-2 opacity-0 shadow-2xl backdrop-blur-xl transition-all group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
             <Link to="/news-hub" className="block rounded px-3 py-2 text-sm text-[#F0EBE1] hover:bg-[#FF9500]/10 hover:text-[#FF9500]">News Hub Home</Link>
+            <Link to="/news-hub/crime-justice" className="block rounded px-3 py-2 text-xs text-[#C9B99A] hover:bg-[#FF9500]/10 hover:text-[#FF9500]">Crime & Justice</Link>
             <Link to="/news-hub/weather-safety" className="block rounded px-3 py-2 text-xs text-[#C9B99A] hover:bg-[#FF9500]/10 hover:text-[#FF9500]">Weather & Public Safety</Link>
             <Link to="/news-hub/world-affairs" className="block rounded px-3 py-2 text-xs text-[#C9B99A] hover:bg-[#FF9500]/10 hover:text-[#FF9500]">U.S. & World Affairs</Link>
             <Link to="/news-hub/ai-tech" className="block rounded px-3 py-2 text-xs text-[#C9B99A] hover:bg-[#FF9500]/10 hover:text-[#FF9500]">AI & Technology</Link>
@@ -136,6 +137,7 @@ export default function Navigation({ onMenuToggle }: NavigationProps) {
             <Link to="/feed" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">The Feed</Link>
             <Link to="/news-hub" onClick={() => setMobileOpen(false)} className="block text-[#FFB840] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">News Hub</Link>
             <div className="pl-4">
+              <Link to="/news-hub/crime-justice" onClick={() => setMobileOpen(false)} className="block py-2 text-sm text-[#C9B99A]">Crime & Justice</Link>
               <Link to="/news-hub/weather-safety" onClick={() => setMobileOpen(false)} className="block py-2 text-sm text-[#C9B99A]">Weather & Public Safety</Link>
               <Link to="/news-hub/world-affairs" onClick={() => setMobileOpen(false)} className="block py-2 text-sm text-[#C9B99A]">U.S. & World Affairs</Link>
               <Link to="/news-hub/ai-tech" onClick={() => setMobileOpen(false)} className="block py-2 text-sm text-[#C9B99A]">AI & Technology</Link>
