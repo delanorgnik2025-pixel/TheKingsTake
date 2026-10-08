@@ -226,10 +226,10 @@ export async function generateDailyNewsDraft() {
   const digest = articles.map(article => `## ${NEWS_BEATS.find(beat => beat.id === article.newsBeat)?.label}\n${article.title}\n\n${article.excerpt}\n\n[Read the full report](https://thekingstake.com/blog/${article.slug})`).join("\n\n");
   const sources = [...new Set(articles.flatMap(article => [...article.content.matchAll(/\]\((https?:[^)]+)\)/g)].map(match => match[1])))];
   const [result] = await db.insert(newsletterCampaigns).values({
-    subject: `The King's Dispatch · ${easternDailyKey()} · Eight research beats`,
-    previewText: "AI, weather, world affairs, Africa, science and policy — today's sourced reporting.",
+    subject: `The King's Dispatch · ${easternDailyKey()} · Nine research beats`,
+    previewText: "Crime and justice, AI, weather, world affairs, Africa, science and policy — today's sourced reporting.",
     content: digest, sourceUrls: JSON.stringify(sources), automated: true, dailyKey,
-    researchSummary: "Eight individually sourced research briefs. Review the full newsroom bundle before approving this single digest.",
+    researchSummary: "Nine individually sourced research briefs. Review the full newsroom bundle before approving this single digest.",
     imageUrl: lead.coverImage, imageAlt: lead.title, imageCredit: "See the image credit in the linked article.",
     articleTitle: lead.title, articleSlug: lead.slug, articleExcerpt: lead.excerpt, articleContent: lead.content,
   });
