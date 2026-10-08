@@ -578,6 +578,8 @@ export default function BlogPostPage() {
   const { data: related = [] } = trpc.blog.list.useQuery({ beat: beat || "", limit: 6 }, { enabled: Boolean(beat) });
   const isInvestigation = post?.category === "INVESTIGATIONS";
   const isNews = post?.category === "DAILY NEWS";
+  const organizationByline = Boolean(post?.content?.includes("AASOTU Media Group LLC | #TheKingsTake"));
+  const displayAuthor = organizationByline ? "AASOTU Media Group LLC | #TheKingsTake" : "Ronald Lee King";
 
   if (!post) {
     return (
@@ -617,7 +619,7 @@ export default function BlogPostPage() {
           </span>
           <span className="flex items-center gap-1 text-xs text-dimmed">
             <User size={12} />
-            Ronald Lee King
+            {displayAuthor}
           </span>
         </div>
 
@@ -655,8 +657,8 @@ export default function BlogPostPage() {
               RK
             </div>
             <div>
-              <p className="text-[#F0EBE1] font-medium">Ronald Lee King</p>
-              <p className="text-sm text-[#C9B99A]">Author, Founder of AASOTU Media Group LLC</p>
+              <p className="text-[#F0EBE1] font-medium">{organizationByline ? "AASOTU Media Group LLC" : "Ronald Lee King"}</p>
+              <p className="text-sm text-[#C9B99A]">{organizationByline ? "#TheKingsTake independent newsroom" : "Author, Founder of AASOTU Media Group LLC"}</p>
             </div>
           </div>
         </div>
