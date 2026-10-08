@@ -2,6 +2,13 @@ import type { NewsBeatId } from "./news-beats";
 
 export const NEWS_SECTIONS = [
   {
+    id: "crime-justice",
+    label: "Crime & Justice",
+    kicker: "Cases, courts & accountability",
+    detail: "Major criminal cases, court proceedings, policing, public safety and the evidence behind developing allegations.",
+    beats: ["crime-justice"] as NewsBeatId[],
+  },
+  {
     id: "ai-tech",
     label: "AI & Technology",
     kicker: "Power, products & policy",
