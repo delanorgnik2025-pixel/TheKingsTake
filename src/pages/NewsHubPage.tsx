@@ -44,7 +44,7 @@ export default function NewsHubPage() {
 
       <section className="mx-auto max-w-7xl px-6 py-4 md:px-12">
         <div className="mb-6"><p className="text-xs uppercase tracking-[0.18em] text-[#D99127]">Sections</p><h2 className="mt-2 text-3xl">Go deeper by desk.</h2></div>
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {NEWS_SECTIONS.map(section => {
             const count=news.filter(post=>post.newsBeat && section.beats.includes(post.newsBeat as any)).length;
             return <Link key={section.id} to={`/news-hub/${section.id}`} className="rounded-3xl border border-white/10 bg-[#182635] p-6 transition hover:-translate-y-0.5 hover:border-[#FF9500]/45"><p className="text-[9px] uppercase tracking-[0.18em] text-[#C9B99A]/55">{section.kicker}</p><h3 className="mt-2 text-xl">{section.label}</h3><p className="mt-3 line-clamp-3 text-sm leading-relaxed text-[#C9B99A]">{section.detail}</p><div className="mt-5 flex items-center justify-between text-sm text-[#FFB840]"><span>{count} stories</span><ArrowRight size={14}/></div></Link>
