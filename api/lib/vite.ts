@@ -126,7 +126,7 @@ export function serveStaticFiles(app: App, buildRoot?: string) {
     for (const [attribute, key, value] of [
       ["name", "description", description], ["property", "og:title", title],
       ["property", "og:description", description], ["property", "og:url", "https://thekingstake.com/hip-hop"],
-      ["property", "og:image", "https://thekingstake.com/images/culture-music-desk.svg"],
+      ["property", "og:image", "https://thekingstake.com/images/culture-city-mobile-v2.webp"],
       ["name", "twitter:title", title], ["name", "twitter:description", description],
     ] as const) html = replaceMeta(html, attribute, key, value);
     html = html.replace(/<link[^>]+rel="canonical"[^>]*>/gi, "").replace("</head>", '<link rel="canonical" href="https://thekingstake.com/hip-hop" /></head>');

@@ -1,3 +1,4 @@
+import VisitorJourney from "./components/VisitorJourney";
 import { Routes, Route, useLocation, Navigate } from 'react-router'
 import { useEffect, useRef, useCallback, useState, Suspense, lazy } from 'react'
 import Lenis from 'lenis'
@@ -89,6 +90,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
       {(publicUtilityPage || visitorAdmitted) && <>
         {!hideNav && <Navigation onMenuToggle={() => setMenuOpen(true)} />}
         <MenuOverlay isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
+        <VisitorJourney />
         {children}
         {!publicUtilityPage && !ownerSession && <VisitorAssistant />}
         {!hideNav && <Footer onNavClick={scrollToSection} hideNewsletter={location.pathname === '/brand-studio'} />}

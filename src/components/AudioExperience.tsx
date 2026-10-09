@@ -39,6 +39,8 @@ function VisitorEntry({ onComplete }: { onComplete: () => void }) {
   const [newsletterConsent, setNewsletterConsent] = useState(false);
   const [step, setStep] = useState(0);
   const enter = trpc.visitor.enter.useMutation();
+  const journey = trpc.visitor.recordJourney.useMutation();
+  if(step===2)return <div className="fixed inset-0 z-[110] flex items-center justify-center bg-[#14202E] px-5 text-[#F0EBE1]" role="dialog" aria-modal="true" aria-label="Explore writing services"><div className="max-w-lg rounded-2xl border border-[#FFB840]/30 bg-[#1B2B3B] p-8"><p className="text-xs uppercase tracking-widest text-[#FFB840]">Your next stop</p><h2 className="mt-3 text-3xl">Bring your project to life.</h2><p className="my-5 text-[#C9B99A]">Explore writing, editing and web design, or keep browsing the newsroom.</p><Link to="/writing-services" onClick={()=>{journey.mutate({event:'service_interest_click',path:'/writing-services'});onComplete();}} className="block rounded bg-[#FFB840] px-5 py-3 font-semibold text-[#14202E]">Explore writing services →</Link><Link to="/brand-studio" onClick={()=>{journey.mutate({event:'service_interest_click',path:'/brand-studio'});onComplete();}} className="mt-3 block rounded border border-[#FFB840]/40 px-5 py-3 text-[#FFB840]">Explore web design →</Link><button onClick={onComplete} className="mt-5 text-sm text-[#C9B99A] underline">Continue to the site</button></div></div>;
   return <div className="fixed inset-0 z-[110] overflow-y-auto bg-[#14202E] px-5 py-12 text-[#F0EBE1]" role="dialog" aria-modal="true" aria-label="Visitor entry">
     <div className="mx-auto max-w-lg rounded-2xl border border-[#FF9500]/30 bg-[#1B2B3B] p-6 shadow-2xl sm:p-9">
       <p className="mb-3 text-xs uppercase tracking-[.2em] text-[#FF9500]">The King’s Take · Visitor entry</p>
@@ -52,7 +54,7 @@ function VisitorEntry({ onComplete }: { onComplete: () => void }) {
       </form> : <form onSubmit={async e => {
         e.preventDefault();
         if (!interests.length) return;
-        try { await enter.mutateAsync({ email, interests: interests as (typeof INTERESTS)[number][], lookingFor, facebookSubscriber, newsletterConsent, sessionId: visitorSessionId(), sourcePage: location.pathname }); onComplete(); }
+        try { await enter.mutateAsync({ email, interests: interests as (typeof INTERESTS)[number][], lookingFor, facebookSubscriber, newsletterConsent, sessionId: visitorSessionId(), sourcePage: location.pathname }); if(interests.includes("Writing services"))setStep(2);else onComplete(); }
         catch { /* error displayed below */ }
       }} className="space-y-5">
         <fieldset><legend className="mb-2 text-sm font-semibold">Your interests *</legend><div className="grid grid-cols-2 gap-2">{INTERESTS.map(option => <label key={option} className="flex cursor-pointer items-center gap-2 rounded border border-white/15 p-2 text-xs"><input type="checkbox" checked={interests.includes(option)} onChange={() => setInterests(current => current.includes(option) ? current.filter(value => value !== option) : [...current, option])} className="accent-[#FF9500]" />{option}</label>)}</div></fieldset>

@@ -1,10 +1,12 @@
+import {journeyInput} from "../contracts/visitor-journey";
+import {recordJourney} from "./visitor-journey";
 import { z } from "zod";
 import { and, desc, eq, sql } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
 import { nanoid } from "nanoid";
 import { adminQuery, createRouter, publicQuery } from "./middleware";
 import { getDb } from "./queries/connection";
-import { newsletterSubscribers, siteVisitorSessions, visitorContacts, visitorMessages } from "@db/schema";
+import { newsletterSubscribers, siteVisitorSessions, visitorContacts, visitorMessages, visitorJourneyEvents } from "@db/schema";
 import { createVisitorSession, visitorCookie, visitorFromRequest } from "./security/visitor-session";
 import { visitorAccessStatus } from "./security/visitor-access";
 import { toolPreview } from "./security/tool-preview";
@@ -68,9 +70,22 @@ export const visitorRouter = createRouter({
         interests: JSON.stringify(input.interests), status: "subscribed", consentedAt: new Date(),
       } });
     }
+    await recordJourney(saved.id,input.sessionId,"entry",input.sourcePage.split("?")[0].slice(0,100));
     const token = await createVisitorSession(saved.id, input.sessionId);
     ctx.resHeaders.append("Set-Cookie", visitorCookie(token, ctx.req));
     return { admitted: true, newsletterSubscribed: newsletterConsent };
+  }),
+  recordJourney: publicQuery.input(journeyInput).mutation(async ({ctx,input})=>{
+    const visitor=await visitorFromRequest(ctx.req);if(!visitor)return {recorded:false};
+    throttle(`journey:${visitor.sessionId}`);
+    return {recorded:await recordJourney(visitor.contactId,visitor.sessionId,input.event,input.path)};
+  }),
+  adminServiceJourney: adminQuery.query(async()=>{
+    const db=getDb();
+    const visible = sql`LOWER(${visitorContacts.email}) NOT LIKE '%@example.invalid' AND NOT EXISTS (SELECT 1 FROM users u WHERE u.role='admin' AND LOWER(u.email)=LOWER(${visitorContacts.email}))`;
+    const counts=await db.select({event:visitorJourneyEvents.event,people:sql<number>`count(distinct ${visitorJourneyEvents.contactId})`,first:sql<string>`min(${visitorJourneyEvents.createdAt})`}).from(visitorJourneyEvents).innerJoin(visitorContacts,eq(visitorContacts.id,visitorJourneyEvents.contactId)).where(visible).groupBy(visitorJourneyEvents.event);
+    const [interested]=await db.select({total:sql<number>`count(*)`}).from(visitorContacts).where(and(visible,sql`JSON_VALID(${visitorContacts.interests}) AND JSON_CONTAINS(${visitorContacts.interests}, JSON_QUOTE('Writing services'))`));
+    return {counts:counts.map(row=>({...row,people:Number(row.people)})),serviceInterested:Number(interested?.total||0),historicalNote:'Interest selections predate journey recording. Earlier service visits cannot be reconstructed. Known admin account emails and example.invalid test records are excluded.'};
   }),
   myMessages: publicQuery.query(async ({ ctx }) => {
     const { visitor } = await contact(ctx.req);
