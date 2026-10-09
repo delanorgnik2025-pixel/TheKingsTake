@@ -1,4 +1,6 @@
 export const NEWS_IMAGES = {
+  "hip-hop": { url: "https://thekingstake.com/images/culture-music-desk.svg", alt: "Original Hip-Hop & Entertainment editorial illustration", caption: "Editorial illustration, not a documentary photograph.", credit: "AASOTU Media Group LLC / #TheKingsTake", sourceUrl: "" },
+  "creator-culture": { url: "https://thekingstake.com/images/culture-creators-desk.svg", alt: "Original Black Creator Culture editorial illustration", caption: "Editorial illustration, not a portrait of a creator.", credit: "AASOTU Media Group LLC / #TheKingsTake", sourceUrl: "" },
   "crime-justice": {
     "title": "The King's Take Crime & Justice house image",
     "url": "https://thekingstake.com/images/og-image.jpg",

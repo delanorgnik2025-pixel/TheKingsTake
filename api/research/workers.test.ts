@@ -2,7 +2,8 @@ import {beforeEach,describe,it,expect,vi} from 'vitest';
 const m=vi.hoisted(()=>({query:vi.fn(),execute:vi.fn(),end:vi.fn(),beginTransaction:vi.fn(),commit:vi.fn(),rollback:vi.fn(),enabled:true,existing:false,research:vi.fn(),draft:vi.fn(),image:vi.fn()}));
 vi.mock('./agent',()=>({agentDb:async()=>m,archiveBatch:vi.fn(),suggest:vi.fn()}));
 vi.mock('../newsletter-automation',()=>({researchCurrentNews:m.research,writeDraft:m.draft,findCommonsImage:m.image}));
-import {runAutonomousWorker,workerSlot,trustedSources} from './workers';
+import {DISPATCH_BEATS} from '../../contracts/news-beats';
+import {runAutonomousWorker,workerSlot,trustedSources,scheduledFeedBeat} from './workers';
 beforeEach(()=>{vi.clearAllMocks();m.enabled=true;m.existing=false;m.query.mockImplementation(async(s:string)=>{
  if(s.includes('GET_LOCK'))return [[{acquired:1}]];
  if(s.includes('agent_controls'))return [[{feed_enabled:m.enabled,map_enabled:m.enabled}]];
@@ -14,6 +15,10 @@ describe('autonomous worker schedule and publication',()=>{
  it('publishes article and internal feed link atomically without emailing',async()=>{const r=await runAutonomousWorker('feed',new Date('2026-10-05T16:00Z'));expect(r.status).toBe('completed');expect(m.beginTransaction).toHaveBeenCalled();expect(m.commit).toHaveBeenCalled();const feed=m.execute.mock.calls.find(([s])=>s.includes('INSERT INTO feed_posts'));expect(feed?.[1][1]).toMatch(/^https:\/\/thekingstake.com\/blog\//);expect(m.research).toHaveBeenCalledTimes(1)});
  it('withholds publishing when trusted source minimum fails',async()=>{m.research.mockResolvedValue({text:'Unsupported brief',sources:[{url:'https://random-blog.example/a',title:'Blog'}]});expect((await runAutonomousWorker('feed',new Date('2026-10-05T16:00Z'))).status).toBe('failed');expect(m.beginTransaction).not.toHaveBeenCalled()});
  it('uses a dated on-site archive spotlight when fresh reporting fails validation',async()=>{m.research.mockRejectedValue(new Error('Insufficient verified sources'));const previous=m.query.getMockImplementation()!;m.query.mockImplementation(async(s:string,...args:any[])=>s.includes('SELECT p.title')?[[{title:'Published investigation',slug:'published-investigation',coverImage:'https://thekingstake.com/images/photo.jpg',createdAt:new Date('2026-10-01T12:00Z')}]]:previous(s,...args));const r=await runAutonomousWorker('feed',new Date('2026-10-05T16:00Z'));expect(r.status).toBe('completed');expect(r.notes).toContain('Archive spotlight');const post=m.execute.mock.calls.find(([s])=>s.includes('INSERT INTO feed_posts'));expect(post?.[1][0]).toContain('From our published archive');expect(post?.[1][1]).toBe('https://thekingstake.com/blog/published-investigation');expect(m.commit).toHaveBeenCalled()});
+ it('keeps the Dispatch at nine existing research beats',()=>{expect(DISPATCH_BEATS).toHaveLength(9);expect(DISPATCH_BEATS.some(beat=>String(beat.id)==='hip-hop')).toBe(false)});
+ it('uses one existing evening slot for culture without adding drops',()=>{expect(scheduledFeedBeat('2026-10-09-20').id).toBe('hip-hop');expect(scheduledFeedBeat('2026-10-10-20').id).toBe('creator-culture');expect(scheduledFeedBeat('2026-10-09-12').id).not.toBe('hip-hop')});
+ it('requires distinct culture publishers and refuses lookalikes and insecure sources',()=>{expect(trustedSources([{url:'https://kick.com/ddg'},{url:'https://kick.com/deshaefrost'},{url:'https://newsroom.spotify.com/story'},{url:'https://billboard.com.fake.example/a'},{url:'http://variety.com/a'}],'creator-culture')).toHaveLength(2);expect(trustedSources([{url:'https://kick.com/ddg'}],'crime-justice')).toHaveLength(0)});
+ it('withholds a culture story with two URLs from one publisher',async()=>{m.research.mockResolvedValue({text:'Platform claim',sources:[{url:'https://kick.com/ddg',title:'DDG'},{url:'https://kick.com/deshaefrost',title:'Frost'}]});expect((await runAutonomousWorker('feed',new Date('2026-10-10T00:00Z'))).status).toBe('failed');expect(m.beginTransaction).not.toHaveBeenCalled()});
  it('rejects lookalike provider hostnames' ,()=>expect(trustedSources([{url:'https://apnews.com.fake.example/a'},{url:'https://www.noaa.gov/a'}])).toHaveLength(1));
 });
 

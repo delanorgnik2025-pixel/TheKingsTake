@@ -14,7 +14,7 @@ import {
   visitorContacts,
   workApplications,
 } from "@db/schema";
-import { NEWS_BEATS } from "../contracts/news-beats";
+import { NEWS_BEATS, DISPATCH_BEATS } from "../contracts/news-beats";
 import { queueDailyNewsGeneration, latestAutomatedCampaign, newsroomGenerationStatus } from "./newsletter-automation";
 import { visitorFromRequest } from "./security/visitor-session";
 
@@ -181,8 +181,8 @@ async function validateCampaignForApproval(campaign: typeof newsletterCampaigns.
     throw new TRPCError({ code: "PRECONDITION_FAILED", message: "Automated editions require at least two source links before approval." });
   if (campaign.dailyKey?.endsWith("-newsroom")) {
     const bundle = await getDb().select().from(posts).where(eq(posts.newsEdition, campaign.dailyKey));
-    if (NEWS_BEATS.some(beat => !bundle.some(post => post.newsBeat === beat.id && post.title.trim() && post.content.trim() && post.coverImage)))
-      throw new TRPCError({ code: "PRECONDITION_FAILED", message: "All seven newsroom articles need complete copy and an image before this edition can be approved." });
+    if (DISPATCH_BEATS.some(beat => !bundle.some(post => post.newsBeat === beat.id && post.title.trim() && post.content.trim() && post.coverImage)))
+      throw new TRPCError({ code: "PRECONDITION_FAILED", message: "All nine newsroom articles need complete copy and an image before this edition can be approved." });
   }
   if (campaign.automated && (!campaign.articleTitle || !campaign.articleSlug || !campaign.articleContent))
     throw new TRPCError({ code: "PRECONDITION_FAILED", message: "The website article is incomplete. Edit and save the draft before approval." });

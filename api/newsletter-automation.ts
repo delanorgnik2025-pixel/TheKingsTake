@@ -4,7 +4,7 @@ import { newsletterCampaigns, posts } from "../db/schema";
 import { getDb } from "./queries/connection";
 import { easternDailyKey, easternHour, selectIndependentSources, type NewsSource as Source } from "./newsletter-automation-utils";
 
-import { NEWS_BEATS, type NewsBeatId } from "../contracts/news-beats";
+import { NEWS_BEATS, DISPATCH_BEATS, type NewsBeatId } from "../contracts/news-beats";
 
 export { easternDailyKey, easternHour, selectIndependentSources } from "./newsletter-automation-utils";
 
@@ -202,7 +202,7 @@ export async function generateDailyNewsDraft() {
   const dailyKey = `${easternDailyKey()}-newsroom`;
   const [existing] = await db.select().from(newsletterCampaigns).where(eq(newsletterCampaigns.dailyKey, dailyKey)).limit(1);
   if (existing) return { created: false as const, campaign: existing };
-  for (const beat of NEWS_BEATS) {
+  for (const beat of DISPATCH_BEATS) {
     const [saved] = await db.select({ id: posts.id }).from(posts).where(and(eq(posts.newsEdition, dailyKey), eq(posts.newsBeat, beat.id))).limit(1);
     if (saved) continue;
     const research = await researchCurrentNews(apiKey, beat.focus);
@@ -221,7 +221,7 @@ export async function generateDailyNewsDraft() {
     console.log(`[daily-news] Prepared ${beat.id} for editorial review`);
   }
   const articles = await db.select().from(posts).where(eq(posts.newsEdition, dailyKey)).orderBy(posts.newsBeat);
-  if (articles.length !== NEWS_BEATS.length) throw new Error("Some coverage beats are still being researched; completed drafts are saved for the next attempt.");
+  if (articles.length !== DISPATCH_BEATS.length) throw new Error("Some coverage beats are still being researched; completed drafts are saved for the next attempt.");
   const lead = articles.find(article => article.newsBeat === "ai-policy") || articles.find(article => article.newsBeat === "environment") || articles[0];
   const digest = articles.map(article => `## ${NEWS_BEATS.find(beat => beat.id === article.newsBeat)?.label}\n${article.title}\n\n${article.excerpt}\n\n[Read the full report](https://thekingstake.com/blog/${article.slug})`).join("\n\n");
   const sources = [...new Set(articles.flatMap(article => [...article.content.matchAll(/\]\((https?:[^)]+)\)/g)].map(match => match[1])))];

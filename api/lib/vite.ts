@@ -116,6 +116,23 @@ export function serveStaticFiles(app: App, buildRoot?: string) {
     return c.html(html);
   });
 
+  app.get("/news-hub/hip-hop", c => c.redirect("/hip-hop", 301));
+  app.get("/hip-hop", c => {
+    const indexPath = path.resolve(distPath, "index.html");
+    if (!fs.existsSync(indexPath)) return c.json({ error: "Frontend build not found" }, 500);
+    const title = "Hip-Hop & Creator Culture | The King's Take";
+    const description = "Hip-hop news, Black creators, Kick coverage and music industry reports from AASOTU Media Group LLC / #TheKingsTake.";
+    let html = fs.readFileSync(indexPath, "utf-8").replace(/<title>[^<]*<\/title>/i, `<title>${escapeAttribute(title)}</title>`);
+    for (const [attribute, key, value] of [
+      ["name", "description", description], ["property", "og:title", title],
+      ["property", "og:description", description], ["property", "og:url", "https://thekingstake.com/hip-hop"],
+      ["property", "og:image", "https://thekingstake.com/images/culture-music-desk.svg"],
+      ["name", "twitter:title", title], ["name", "twitter:description", description],
+    ] as const) html = replaceMeta(html, attribute, key, value);
+    html = html.replace(/<link[^>]+rel="canonical"[^>]*>/gi, "").replace("</head>", '<link rel="canonical" href="https://thekingstake.com/hip-hop" /></head>');
+    return c.html(html);
+  });
+
   app.get(NOLAN_RECORDS_PATH, c => {
     const indexPath = path.resolve(distPath, "index.html");
     if (!fs.existsSync(indexPath)) return c.json({ error: "Frontend build not found" }, 500);
