@@ -44,7 +44,7 @@ export function generalAreaMatch(record:ArchiveRecord,suggestions:PlaceSuggestio
   const state=states[0],[longitude,latitude]=RESEARCH_STATE_AREAS[state];
   return {name:`${state} — general area`,state,featureId:`state-${state}`,longitude,latitude,scope:'state area',evidence:suggestion.evidence,source:record.recordUrl};
  }
- const safeText=sourceText.replace(/repository|archive office|reference unit|stored at|held at/ig,' ');
+ const safeText=sourceText.split(/[.\n]+/).filter(sentence => !/repository|archive office|reference unit|stored at|held at/i.test(sentence)).join(' ');
  const states=Object.keys(RESEARCH_STATE_AREAS).filter(state=>new RegExp(`\\b${state}\\b`,'i').test(safeText));
  if(states.length===1){
   const state=states[0],[longitude,latitude]=RESEARCH_STATE_AREAS[state];

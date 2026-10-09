@@ -1,3 +1,6 @@
+import VideoNewsPlayer from "@/components/VideoNewsPlayer";
+import NewsMemberCTA from "@/components/NewsMemberCTA";
+import { parseUpdates } from "@contracts/video-news";
 import { NolanRecordsCard } from '@/components/NolanRecordsCard';
 import { newsImageForUrl } from "@contracts/news-images";
 import { NEWS_SECTIONS } from "@contracts/news-sections";
@@ -639,7 +642,8 @@ export default function BlogPostPage() {
         {post.slug === 'nolan-wells-garrett-discovery-phone-timeline' && <NolanRecordsCard />}
         {post.coverImage && <figure className="mb-8 overflow-hidden rounded-lg border border-white/10"><img src={post.coverImage} alt={newsImageForUrl(post.coverImage)?.alt || post.title} className="aspect-video w-full object-cover" />{newsImageForUrl(post.coverImage) && <figcaption className="bg-[#182635] px-4 py-3 text-xs leading-relaxed text-[#C9B99A]">{newsImageForUrl(post.coverImage)?.caption} {newsImageForUrl(post.coverImage)?.credit} · <a href={newsImageForUrl(post.coverImage)?.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline">Source and license</a></figcaption>}</figure>}
 
-        <div className="rounded-2xl border border-[rgba(255,149,0,0.18)] bg-[rgba(24,38,53,0.94)] p-5 shadow-[0_24px_70px_rgba(0,0,0,0.2)] backdrop-blur-lg sm:p-8">
+        <VideoNewsPlayer value={apiPost?.videoNews} />
+        <div id="full-report" className="scroll-mt-24 rounded-2xl border border-[rgba(255,149,0,0.18)] bg-[rgba(24,38,53,0.94)] p-5 shadow-[0_24px_70px_rgba(0,0,0,0.2)] backdrop-blur-lg sm:p-8">
           <div className="mb-6 flex items-center justify-between gap-4 border-b border-white/10 pb-4">
             <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#FFB840]">The King's Take · Editorial Reading</p>
             <span className="rounded-full border border-emerald-300/20 bg-emerald-300/[0.06] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.15em] text-emerald-300">Published</span>
@@ -652,6 +656,8 @@ export default function BlogPostPage() {
           />
         </div>
 
+        {parseUpdates(apiPost?.storyUpdates).length > 0 && <section className="mt-8 text-[#F0EBE1]"><h2 className="text-2xl">Developing-story timeline</h2><ol className="mt-4 space-y-4">{parseUpdates(apiPost?.storyUpdates).map((update, i) => <li key={i} className="border-l-2 border-[#FFB840] pl-4"><time className="text-xs text-[#FFB840]" dateTime={update.date}>{new Date(update.date).toLocaleString()}</time><p className="whitespace-pre-wrap">{update.text}</p></li>)}</ol></section>}
+        <NewsMemberCTA />
         {beat && <section className="mt-10"><Link to={section ? `/news-hub/${section.id}` : "/news-hub"} className="text-sm text-[#FFB840]">Explore this coverage section →</Link><h2 className="mt-5 text-2xl text-[#F0EBE1]">Continue the story</h2><div className="mt-4 grid gap-4 sm:grid-cols-2">{related.filter(item => item.slug !== post.slug).slice(0, 4).map(item => <Link key={item.id} to={`/blog/${item.slug}`} className="overflow-hidden rounded-lg border border-white/10 bg-[#182635]">{item.coverImage && <img src={item.coverImage} alt="" loading="lazy" className="aspect-video w-full object-cover" />}<h3 className="p-4 text-lg text-[#F0EBE1]">{item.title}</h3></Link>)}</div></section>}
 
         <div className="mt-12 p-6 bg-[rgba(42,58,74,0.7)] rounded-lg border border-[rgba(255,149,0,0.2)]">

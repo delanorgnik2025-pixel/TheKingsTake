@@ -43,6 +43,8 @@ const ArchivesPage = lazy(() => import('./pages/ArchivesPage'))
 const NaraRecordPage = lazy(() => import('./pages/NaraRecordPage'))
 const InvestigationsPage = lazy(() => import('./pages/InvestigationsPage'))
 const NolanRecordsPage = lazy(() => import('./pages/NolanRecordsPage'))
+const VideoNewsPage = lazy(() => import('./pages/VideoNewsPage'))
+const AdminArticlesPage = lazy(() => import('./pages/AdminBlog'))
 const NewsHubPage = lazy(() => import('./pages/NewsHubPage'))
 const NewsSectionPage = lazy(() => import('./pages/NewsSectionPage'))
 const NewsletterUnsubscribePage = lazy(() => import('./pages/NewsletterUnsubscribePage'))
@@ -110,6 +112,8 @@ function AppRoutes() {
           <Route path="/blog/:slug" element={<BlogPostPage />} />
           <Route path="/investigations/nolan-wells/captured-report-pages" element={<NolanRecordsPage />} />
           <Route path="/investigations" element={<InvestigationsPage />} />
+          <Route path="/video-news" element={<VideoNewsPage />} />
+          <Route path="/admin/articles" element={<AdminArticlesPage />} />
           <Route path="/news-hub" element={<NewsHubPage />} />
           <Route path="/news-hub/:sectionId" element={<NewsSectionPage />} />
           <Route path="/brand-studio" element={<BrandStudioPage />} />
