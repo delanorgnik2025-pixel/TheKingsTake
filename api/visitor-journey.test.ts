@@ -1,0 +1,10 @@
+import {beforeEach,expect,it,vi} from 'vitest';
+const mocks=vi.hoisted(()=>({write:vi.fn(),visitor:vi.fn()}));
+vi.mock('./queries/connection',()=>({getDb:()=>({insert:()=>({values:()=>({onDuplicateKeyUpdate:mocks.write})})})}));
+vi.mock('./security/visitor-session',()=>({visitorFromRequest:mocks.visitor}));
+import {recordInquiryJourney,recordJourney} from './visitor-journey';
+import {journeyInput} from '../contracts/visitor-journey';
+beforeEach(()=>{vi.clearAllMocks();mocks.write.mockResolvedValue(undefined);});
+it('does not report a database failure as a recorded visit',async()=>{mocks.write.mockRejectedValueOnce(new Error('offline'));expect(await recordJourney(1,'session','service_view','/brand-studio')).toBe(false);});
+it('records an inquiry only for an identified visitor',async()=>{mocks.visitor.mockResolvedValue(null);await recordInquiryJourney(new Request('https://example.com'));expect(mocks.write).not.toHaveBeenCalled();mocks.visitor.mockResolvedValue({contactId:1,sessionId:'session'});await recordInquiryJourney(new Request('https://example.com'));expect(mocks.write).toHaveBeenCalledTimes(1);});
+it('rejects client supplied contact identity, inquiry claims and arbitrary URL paths',()=>{expect(journeyInput.safeParse({event:'inquiry_submitted',path:'/brand-studio'}).success).toBe(false);expect(journeyInput.safeParse({event:'service_view',path:'https://elsewhere.example/email'}).success).toBe(false);expect(journeyInput.parse({event:'service_view',path:'/brand-studio',contactId:99})).not.toHaveProperty('contactId');});

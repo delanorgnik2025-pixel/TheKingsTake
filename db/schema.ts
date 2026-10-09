@@ -486,3 +486,12 @@ export const studioOrders = mysqlTable('studio_orders', {
   status: varchar('status', { length: 30 }).notNull().default('pending'), refundedCents: int('refunded_cents').notNull().default(0),
   createdAt: timestamp('created_at').defaultNow().notNull(), paidAt: timestamp('paid_at'), updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
+
+export const visitorJourneyEvents = mysqlTable("visitor_journey_events", {
+ id: serial("id").primaryKey(),
+ contactId: bigint("contact_id", {mode:"number",unsigned:true}).notNull(),
+ sessionId: varchar("session_id", {length:64}).notNull(),
+ event: varchar("event", {length:32}).notNull(),
+ path: varchar("path", {length:100}).notNull(),
+ createdAt: timestamp("created_at").defaultNow().notNull(),
+}, table => [uniqueIndex("journey_once").on(table.sessionId,table.event,table.path)]);

@@ -1,3 +1,4 @@
+import {recordInquiryJourney} from "./visitor-journey";
 import { TRPCError } from '@trpc/server';
 import { createRouter, publicQuery } from './middleware';
 import { getDb } from './queries/connection';
@@ -16,6 +17,7 @@ export const brandStudioRouter = createRouter({
     const values = studioLeadValues(input);
     try { await getDb().insert(siteLeads).values(values); }
     catch { throw new TRPCError({ code: 'INTERNAL_SERVER_ERROR', message: 'We could not save your inquiry. Please try again or email Ronald directly.' }); }
+    await recordInquiryJourney(ctx.req);
     // The saved inquiry is authoritative even if the notification provider is unavailable.
     const apiKey = process.env.RESEND_API_KEY, to = process.env.OWNER_NOTIFICATION_EMAIL, from = process.env.NEWSLETTER_FROM_EMAIL;
     if (apiKey && to && from) {

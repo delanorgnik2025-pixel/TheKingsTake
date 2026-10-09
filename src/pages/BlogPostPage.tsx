@@ -1,3 +1,4 @@
+import CultureCityBackdrop from "@/components/CultureCityBackdrop";
 import VideoNewsPlayer from "@/components/VideoNewsPlayer";
 import NewsMemberCTA from "@/components/NewsMemberCTA";
 import { parseUpdates } from "@contracts/video-news";
@@ -579,6 +580,7 @@ export default function BlogPostPage() {
   const beat = apiPost?.newsBeat;
   const section = NEWS_SECTIONS.find(item => beat && item.beats.includes(beat as any));
   const { data: related = [] } = trpc.blog.list.useQuery({ beat: beat || "", limit: 6 }, { enabled: Boolean(beat) });
+  const isCulture = beat === "hip-hop" || beat === "creator-culture";
   const isInvestigation = post?.category === "INVESTIGATIONS";
   const isNews = post?.category === "DAILY NEWS";
   const organizationByline = Boolean(post?.content?.includes("AASOTU Media Group LLC | #TheKingsTake"));
@@ -596,21 +598,22 @@ export default function BlogPostPage() {
 
   return (
     <div className="relative min-h-screen pt-24 pb-16 px-6 md:px-12 overflow-hidden">
-      {post.coverImage && (
+      {isCulture && <CultureCityBackdrop />}
+      {!isCulture && post.coverImage && (
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${post.coverImage})` }}
         />
       )}
-      <div className="absolute inset-0 bg-[#25364B]/85" />
+      <div className={`absolute inset-0 ${isCulture ? "bg-[#09121d]/30" : "bg-[#25364B]/85"}`} />
 
       <div className="relative z-10 max-w-3xl mx-auto">
         <Link
-          to={isInvestigation ? "/investigations" : isNews ? "/news-hub" : "/feed"}
+          to={isCulture ? "/hip-hop" : isInvestigation ? "/investigations" : isNews ? "/news-hub" : "/feed"}
           className="inline-flex items-center gap-2 text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors mb-8"
         >
           <ArrowLeft size={16} />
-          {isInvestigation ? "Back to Investigations" : isNews ? "Back to News Hub" : "Back to The Feed"}
+          {isCulture ? "Back to Hip-Hop & Creator Culture" : isInvestigation ? "Back to Investigations" : isNews ? "Back to News Hub" : "Back to The Feed"}
         </Link>
 
         {isDeveloping && <div className="mb-4 inline-flex items-center rounded-full border border-red-400/30 bg-red-500/10 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-red-300">Breaking / Developing</div>}
@@ -640,7 +643,7 @@ export default function BlogPostPage() {
         )}
 
         {post.slug === 'nolan-wells-garrett-discovery-phone-timeline' && <NolanRecordsCard />}
-        {post.coverImage && <figure className="mb-8 overflow-hidden rounded-lg border border-white/10"><img src={post.coverImage} alt={newsImageForUrl(post.coverImage)?.alt || post.title} className="aspect-video w-full object-cover" />{newsImageForUrl(post.coverImage) && <figcaption className="bg-[#182635] px-4 py-3 text-xs leading-relaxed text-[#C9B99A]">{newsImageForUrl(post.coverImage)?.caption} {newsImageForUrl(post.coverImage)?.credit} · <a href={newsImageForUrl(post.coverImage)?.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline">Source and license</a></figcaption>}</figure>}
+        {post.coverImage && <figure className="mb-8 overflow-hidden rounded-lg border border-white/10"><img src={post.coverImage} alt={newsImageForUrl(post.coverImage)?.alt || post.title} className="aspect-video w-full object-cover" />{newsImageForUrl(post.coverImage) && <figcaption className="bg-[#182635] px-4 py-3 text-xs leading-relaxed text-[#C9B99A]">{newsImageForUrl(post.coverImage)?.caption} {newsImageForUrl(post.coverImage)?.credit} {newsImageForUrl(post.coverImage)?.sourceUrl && <a href={newsImageForUrl(post.coverImage)?.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline">Source and license</a>}</figcaption>}</figure>}
 
         <VideoNewsPlayer value={apiPost?.videoNews} />
         <div id="full-report" className="scroll-mt-24 rounded-2xl border border-[rgba(255,149,0,0.18)] bg-[rgba(24,38,53,0.94)] p-5 shadow-[0_24px_70px_rgba(0,0,0,0.2)] backdrop-blur-lg sm:p-8">

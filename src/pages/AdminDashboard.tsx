@@ -431,6 +431,7 @@ function AudienceModule() {
   const utils = trpc.useUtils();
   const [replyThread, setReplyThread] = useState<string | null>(null);
   const [replyBody, setReplyBody] = useState("");
+  const journey = trpc.visitor.adminServiceJourney.useQuery();
   const { data: visitorData } = trpc.visitor.adminContacts.useQuery(undefined, { refetchInterval: 30_000 });
   const { data: conversations, refetch: refetchConversations } = trpc.visitor.adminConversations.useQuery(undefined, { refetchInterval: 5_000 });
   const reply = trpc.visitor.adminReply.useMutation({ onSuccess: () => { setReplyBody(""); refetchConversations(); } });
@@ -456,6 +457,7 @@ function AudienceModule() {
     return <p className="text-[#C9B99A]">Loading audience activity…</p>;
   return (
     <div>
+      <section className="mb-6 rounded-xl border border-[#FFB840]/25 bg-[#182635] p-5"><h3 className="text-lg text-[#F0EBE1]">Entrance → services</h3>{journey.isError ? <p className="mt-3 text-sm text-red-300">Journey report unavailable.</p> : <><p className="mt-2 text-sm text-[#C9B99A]">Existing writing-interest contacts: {journey.data?.serviceInterested ?? '…'}</p><div className="mt-4 grid gap-3 sm:grid-cols-4">{[['entry','Recorded entrants'],['service_interest_click','Services clicks'],['service_view','Service visitors'],['inquiry_submitted','Identified Studio inquiries']].map(([event,label])=><div key={event} className="rounded bg-[#101b28] p-3"><p className="text-xs text-[#C9B99A]">{label}</p><p className="mt-1 text-2xl text-[#FFB840]">{journey.data ? journey.data.counts.find(row=>row.event===event)?.people ?? 0 : '…'}</p></div>)}</div><p className="mt-3 text-xs text-[#C9B99A]">{journey.data?.historicalNote}</p><p className="mt-2 text-xs text-[#C9B99A]">First recorded entrance: {journey.data?.counts.find(row=>row.event==='entry')?.first || 'No real visitor events yet'}. Counts are distinct identified visitors, not attributed conversion rates.</p></>}</section>
       <h3
         className="text-xl text-[#F0EBE1] mb-2"
         style={{ fontFamily: "Newsreader, serif" }}
