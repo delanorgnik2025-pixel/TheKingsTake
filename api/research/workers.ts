@@ -13,8 +13,26 @@ export function workerSlot(kind:'feed'|'map',now=new Date()){
  const slotHour=kind==='feed'?8+4*Math.floor((h-8)/4):6*Math.floor(h/6);
  return `${researchDay(now)}-${String(slotHour).padStart(2,'0')}`;
 }
-const trusted=(raw:string)=>{try {const h=new URL(raw).hostname;return /(^|\.)(gov|mil)$/.test(h)||['reuters.com','apnews.com','bbc.com','bbc.co.uk','un.org','who.int','wmo.int','nature.com','science.org','sciencedirect.com','ecowas.int','au.int','energy.gov'].some(d=>h===d||h.endsWith('.'+d));}catch{return false;}};
-export function trustedSources<T extends {url:string}>(sources:T[]){return sources.filter(s=>trusted(s.url));}
+const generalPublishers = ['reuters.com','apnews.com','bbc.com','bbc.co.uk','un.org','who.int','wmo.int','nature.com','science.org','sciencedirect.com','ecowas.int','au.int','energy.gov'];
+const culturePublishers = ['billboard.com','variety.com','rollingstone.com','complex.com','thefader.com','musicbusinessworldwide.com','pitchfork.com','streamscharts.com','kick.com','spotify.com','riaa.com'];
+const isCulture = (beat?: string) => beat === 'hip-hop' || beat === 'creator-culture';
+// Return one source per publisher, so two URLs from the same company cannot meet the publication minimum.
+export function trustedSources<T extends {url:string}>(sources:T[], beat?:string){
+ const seen=new Set<string>();
+ return sources.filter(source=>{try {
+  const url=new URL(source.url);if(url.protocol!=='https:')return false;
+  const host=url.hostname.toLowerCase();
+  const publisher=[...generalPublishers,...(isCulture(beat)?culturePublishers:[])].find(domain=>host===domain||host.endsWith('.'+domain)) || (/\.(gov|mil)$/.test(host)?host.replace(/^www\./,''):null);
+  if(!publisher||seen.has(publisher))return false;
+  seen.add(publisher);return true;
+ }catch{return false;}});
+}
+export function scheduledFeedBeat(slot:string){
+ const hour=Number(slot.slice(-2)),day=Number(slot.slice(8,10));
+ // One of the existing four drops covers culture; the other three keep the established desks rotating.
+ const rotation=NEWS_BEATS.filter(beat=>!isCulture(beat.id));
+ return hour===20 ? NEWS_BEATS.find(beat=>beat.id===(day%2?'hip-hop':'creator-culture'))! : rotation[(day+Math.floor((hour-8)/4))%rotation.length];
+}
 async function autoLocate(c:Awaited<ReturnType<typeof agentDb>>,row:RowDataPacket){
  const record=JSON.parse(row.record_json) as ArchiveRecord;
  const suggestions=supportedSuggestions(record,JSON.parse(row.suggestions_json || '[]'));
@@ -71,10 +89,10 @@ export async function runAutonomousWorker(kind:'feed'|'map',now=new Date()){
    notes=`${added} new records researched for this six-hour drop; ${mapped} automatic location matches published (target 10, including supported general areas); ${unavailable} provider failures queued for retry`;
   }else{
    if(!process.env.OPENAI_API_KEY)throw new Error('OpenAI key missing');
-   const h=Number(slot.slice(-2));const day=Number(slot.slice(8,10));const beat=NEWS_BEATS[(day+Math.floor((h-8)/4))%NEWS_BEATS.length];
+   const beat=scheduledFeedBeat(slot);
    const [recentTitles]=await c.query<RowDataPacket[]>("SELECT title FROM posts WHERE published=1 AND createdAt>DATE_SUB(CURRENT_TIMESTAMP,INTERVAL 24 HOUR) ORDER BY createdAt DESC LIMIT 20");
-   const research=await researchCurrentNews(process.env.OPENAI_API_KEY,`${beat.focus} Avoid individual crime or missing-person allegations. Prefer reporting corroborated by at least two independent sources from primary agencies, universities, Reuters, AP or BBC. Avoid repeating these recent published headlines: ${JSON.stringify(recentTitles.map(r=>r.title))}. This is for scheduled website publication: use a dated context brief if there is no confirmed fresh development.`);
-   const sources=trustedSources(research.sources);if(sources.length<2)throw new Error('Fewer than two trusted independent sources; publication withheld');
+   const research=await researchCurrentNews(process.env.OPENAI_API_KEY,`${beat.focus} Avoid individual crime or missing-person allegations. Prefer reporting corroborated by at least two independent sources from primary records and established reporting. For culture, consult official creator channels, Spotify newsroom, RIAA, Billboard, Variety, Rolling Stone or music industry reporting. Two pages from the same publisher do not count as independent sources. Avoid repeating these recent published headlines: ${JSON.stringify(recentTitles.map(r=>r.title))}. This is for scheduled website publication: use a dated context brief if there is no confirmed fresh development.`);
+   const sources=trustedSources(research.sources,beat.id);if(sources.length<2)throw new Error('Fewer than two trusted independent sources; publication withheld');
    const draft=await writeDraft(process.env.OPENAI_API_KEY,research.text,sources);const image=await findCommonsImage(draft.imageSearchTerm,beat.id);
    if(draft.articleTitle.length<10||draft.articleContent.length<300)throw new Error('Article validation failed');
    const [duplicate]=await c.query<RowDataPacket[]>('SELECT id FROM posts WHERE LOWER(title)=LOWER(?) AND published=1 AND createdAt>DATE_SUB(CURRENT_TIMESTAMP,INTERVAL 48 HOUR)',[draft.articleTitle]);if(duplicate.length)throw new Error('Duplicate recent headline; publication withheld');

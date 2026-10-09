@@ -2,6 +2,13 @@ import type { NewsBeatId } from "./news-beats";
 
 export const NEWS_SECTIONS = [
   {
+    id: "hip-hop",
+    label: "Hip-Hop & Creator Culture",
+    kicker: "Music, streams & the industry",
+    detail: "Hip-hop news, Black creators, Kick coverage and the business behind the culture. Sourced reports now; a foundation for future critique.",
+    beats: ["hip-hop", "creator-culture"] as NewsBeatId[],
+  },
+  {
     id: "crime-justice",
     label: "Crime & Justice",
     kicker: "Cases, courts & accountability",

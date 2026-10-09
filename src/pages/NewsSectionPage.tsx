@@ -1,9 +1,10 @@
 import { Link, Navigate, useParams } from "react-router";
-import { ArrowLeft, ArrowRight, CloudLightning, Cpu, Globe2, Landmark, Leaf, Scale } from "lucide-react";
+import { ArrowLeft, ArrowRight, CloudLightning, Cpu, Globe2, Landmark, Leaf, Scale, Mic2 } from "lucide-react";
 import { NEWS_SECTIONS } from "@contracts/news-sections";
 import { trpc } from "@/providers/trpc";
 
 const icons = {
+  "hip-hop": Mic2,
   "crime-justice": Scale,
   "ai-tech": Cpu,
   "world-affairs": Globe2,
@@ -16,6 +17,7 @@ export default function NewsSectionPage() {
   const { sectionId } = useParams<{ sectionId: string }>();
   const section = NEWS_SECTIONS.find(item => item.id === sectionId);
   const { data: posts = [], isLoading } = trpc.blog.list.useQuery({ limit: 200 });
+  if (sectionId === "hip-hop") return <Navigate to="/hip-hop" replace />;
   if (!section) return <Navigate to="/news-hub" replace />;
 
   const stories = posts
