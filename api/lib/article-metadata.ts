@@ -1,8 +1,9 @@
+import { parseVideo, videoSource, safeAsset } from "@contracts/video-news";
 const SITE = "https://thekingstake.com";
 export function escapeHtml(value: string) {
   return value.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
-export function articleMetadataHtml(template: string, post: { title: string; slug: string; excerpt: string | null; content: string; coverImage: string | null; category?: string | null; createdAt: Date; updatedAt: Date }) {
+export function articleMetadataHtml(template: string, post: { title: string; slug: string; excerpt: string | null; content: string; coverImage: string | null; category?: string | null; videoNews?: string | null; createdAt: Date; updatedAt: Date }) {
   const title = `${post.title} | The King's Take`;
   const description = (post.excerpt || post.content.replace(/[#*_`]/g, "")).replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 220);
   const canonical = `${SITE}/blog/${encodeURIComponent(post.slug)}`;
@@ -22,9 +23,11 @@ export function articleMetadataHtml(template: string, post: { title: string; slu
   // Existing images do not necessarily have the site's generic 1200x630 dimensions.
   html = html.replace(/<meta\s+property="og:image:(width|height)"[^>]*>/gi, "");
   html = html.replace(/<link[^>]+rel="canonical"[^>]*>/gi, "").replace("</head>", `<link rel="canonical" href="${escapeHtml(canonical)}" />\n</head>`);
+  const video = parseVideo(post.videoNews);
   const structured = {
     "@context": "https://schema.org",
     "@type": "NewsArticle",
+    ...(video ? { video: { "@type": "VideoObject", name: video.title, description: video.description || description, thumbnailUrl: video.poster ? new URL(safeAsset(video.poster)!, SITE).href : image, uploadDate: video.publicationDate, ...(video.duration ? { duration: video.duration } : {}), ...(video.transcript ? { transcript: video.transcript } : {}), ...(video.provider === "direct" ? { contentUrl: videoSource(video.provider, video.url) } : { embedUrl: videoSource(video.provider, video.url) }) } } : {}),
     headline: post.title,
     description,
     image: [image],

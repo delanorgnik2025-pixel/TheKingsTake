@@ -1,9 +1,18 @@
+import ProtectedAdminRoute from "@/components/ProtectedAdminRoute";
+import { emptyVideo, videoNewsSchema } from "@contracts/video-news";
+import type { VideoNews } from "@contracts/video-news";
 import { useState } from 'react'
 import { Link } from 'react-router'
 import { trpc } from '@/providers/trpc'
 import { ArrowLeft, Plus, Pencil, Trash2, Eye, EyeOff, BookOpen, Save, X, FileText } from 'lucide-react'
 
-export default function AdminBlog() {
+export default function AdminBlog() { return <ProtectedAdminRoute><ArticleEditor /></ProtectedAdminRoute> }
+function ArticleEditor() {
+  const [video, setVideo] = useState<VideoNews>({ ...emptyVideo });
+  const [videoError, setVideoError] = useState("");
+  const [updateText, setUpdateText] = useState("");
+  const [updateDate, setUpdateDate] = useState("");
+  const appendUpdate = trpc.blog.appendUpdate.useMutation();
   const [mode, setMode] = useState<'list' | 'create' | 'edit'>('list')
   const [editPost, setEditPost] = useState<any>(null)
   const [form, setForm] = useState({
@@ -13,20 +22,21 @@ export default function AdminBlog() {
     content: '',
     coverImage: '',
     published: true,
+    category: "DAILY NEWS", newsBeat: "",
   })
 
   const utils = trpc.useUtils()
-  const postsQuery = trpc.blog.list.useQuery()
+  const postsQuery = trpc.blog.adminList.useQuery()
   const createMutation = trpc.blog.create.useMutation({
     onSuccess: () => {
-      utils.blog.list.invalidate()
+      utils.blog.adminList.invalidate(); utils.blog.list.invalidate(); utils.blog.videoList.invalidate()
       setMode('list')
       resetForm()
     },
   })
   const updateMutation = trpc.blog.update.useMutation({
     onSuccess: () => {
-      utils.blog.list.invalidate()
+      utils.blog.adminList.invalidate(); utils.blog.list.invalidate(); utils.blog.videoList.invalidate()
       setMode('list')
       setEditPost(null)
       resetForm()
@@ -34,18 +44,21 @@ export default function AdminBlog() {
   })
   const deleteMutation = trpc.blog.delete.useMutation({
     onSuccess: () => {
-      utils.blog.list.invalidate()
+      utils.blog.adminList.invalidate(); utils.blog.list.invalidate(); utils.blog.videoList.invalidate()
     },
   })
 
   function resetForm() {
-    setForm({ title: '', slug: '', excerpt: '', content: '', coverImage: '', published: true })
+    setVideo({ ...emptyVideo }); setVideoError(''); setUpdateText(''); setUpdateDate('');
+    setForm({ title: '', slug: '', excerpt: '', content: '', coverImage: '', published: true, category: 'DAILY NEWS', newsBeat: '' })
   }
 
   function handleCreate() {
     if (!form.title || !form.content) return
+    const valid = videoNewsSchema.safeParse(video); if (!valid.success) { setVideoError(valid.error.issues.map(i => i.message).join("; ")); return; }
+    setVideoError("");
     createMutation.mutate({
-      category: editPost?.category || "Community",
+      category: form.category, newsBeat: form.newsBeat, videoNews: video,
       title: form.title,
       slug: form.slug || form.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
       excerpt: form.excerpt || form.content.slice(0, 200) + '...',
@@ -57,9 +70,11 @@ export default function AdminBlog() {
 
   function handleUpdate() {
     if (!editPost || !form.title || !form.content) return
+    const valid = videoNewsSchema.safeParse(video); if (!valid.success) { setVideoError(valid.error.issues.map(i => i.message).join("; ")); return; }
+    setVideoError("");
     updateMutation.mutate({
       id: editPost.id,
-      category: editPost?.category || "Community",
+      category: form.category, newsBeat: form.newsBeat, videoNews: video,
       title: form.title,
       slug: form.slug,
       excerpt: form.excerpt,
@@ -70,6 +85,9 @@ export default function AdminBlog() {
   }
 
   function startEdit(post: any) {
+    let stored: unknown; try { stored = JSON.parse(post.videoNews || "null"); } catch { stored = null; }
+    const parsed = videoNewsSchema.safeParse(stored); setVideo(parsed.success ? parsed.data : { ...emptyVideo }); setVideoError("");
+    setUpdateText(""); setUpdateDate("");
     setEditPost(post)
     setForm({
       title: post.title || '',
@@ -78,6 +96,7 @@ export default function AdminBlog() {
       content: post.content || '',
       coverImage: post.coverImage || '',
       published: post.published ?? true,
+      category: post.category || "DAILY NEWS", newsBeat: post.newsBeat || "",
     })
     setMode('edit')
   }
@@ -174,6 +193,19 @@ export default function AdminBlog() {
               </h2>
 
               <div className="space-y-5">
+                <Link to="/admin/dashboard" className="text-[#FFB840]">← Admin dashboard</Link>
+                <label className="block text-[#F0EBE1]">Category<input value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} className="mt-2 w-full rounded bg-[#101b28] p-3" /></label>
+                <label className="block text-[#F0EBE1]">News desk<select value={form.newsBeat} onChange={e => setForm({ ...form, newsBeat: e.target.value })} className="mt-2 w-full rounded bg-[#101b28] p-3"><option value="">General</option><option value="crime-justice">Crime & Justice</option><option value="ai-policy">AI & Technology</option><option value="weather">Weather</option><option value="africa">Africa</option></select></label>
+                <fieldset className="space-y-3 rounded-xl border border-[#FFB840]/25 p-4 text-[#F0EBE1]"><legend>Article video (optional)</legend>
+                <label className="flex gap-2"><input type="checkbox" checked={video.enabled} onChange={e => setVideo({ ...video, enabled: e.target.checked })} />Enable video</label>
+                <label className="block">Provider<select value={video.provider} onChange={e => setVideo({ ...video, provider: e.target.value as VideoNews['provider'] })} className="mt-1 w-full rounded bg-[#101b28] p-3"><option value="youtube">YouTube</option><option value="vimeo">Vimeo</option><option value="direct">Approved direct MP4/WebM</option></select></label>
+                <label className="block">Layout<select value={video.aspectRatio} onChange={e => setVideo({ ...video, aspectRatio: e.target.value as VideoNews['aspectRatio'] })} className="mt-1 w-full rounded bg-[#101b28] p-3"><option>16:9</option><option>9:16</option></select></label>
+                {(['url','title','description','poster','transcript','captions','duration','publicationDate'] as const).map(key => <label key={key} className="block capitalize">{key}{key === 'transcript' || key === 'description' ? <textarea rows={key === 'transcript' ? 6 : 2} value={video[key]} onChange={e => setVideo({ ...video, [key]: e.target.value })} className="mt-1 w-full rounded bg-[#101b28] p-3" /> : <input value={video[key]} onChange={e => setVideo({ ...video, [key]: e.target.value })} placeholder={key === 'duration' ? 'PT1M30S' : key === 'publicationDate' ? '2026-10-09T14:30:00Z' : ''} className="mt-1 w-full rounded bg-[#101b28] p-3" />}</label>)}
+                <p className="text-xs text-[#C9B99A]">Direct media: this site or res.cloudinary.com. Captions: WebVTT URL. Publication date: ISO timestamp. No automatic audio playback.</p>
+                {videoError && <p role="alert" className="text-red-300">{videoError}</p>}
+                </fieldset>
+                {editPost && <fieldset className="space-y-3 rounded-xl border border-white/20 p-4 text-[#F0EBE1]"><legend>Append developing-story update</legend><label className="block">Date and time<input type="datetime-local" value={updateDate} onChange={e => setUpdateDate(e.target.value)} className="block w-full bg-[#101b28] p-3" /></label><label className="block">Verified update<textarea value={updateText} onChange={e => setUpdateText(e.target.value)} className="block w-full bg-[#101b28] p-3" /></label><button type="button" disabled={!updateText.trim() || !updateDate || appendUpdate.isPending} onClick={() => appendUpdate.mutate({ id: editPost.id, update: { date: new Date(updateDate).toISOString(), text: updateText } }, { onSuccess: () => setUpdateText('') })} className="text-[#FFB840] disabled:opacity-40">Append update</button>{appendUpdate.isSuccess && <p>Update saved.</p>}{appendUpdate.error && <p role="alert">{appendUpdate.error.message}</p>}<button type="button" onClick={() => navigator.clipboard.writeText(`${window.location.origin}/blog/${form.slug}`)} className="ml-4 text-[#FFB840]">Copy article URL</button></fieldset>}
+
                 <div>
                   <label className="block text-xs tracking-[0.15em] text-[#C9B99A]/60 uppercase mb-2">Title *</label>
                   <input
@@ -258,7 +290,7 @@ export default function AdminBlog() {
                       className="flex items-center gap-2 h-12 px-8 bg-[#FF9500] text-[#182635] font-medium rounded hover:bg-[#CC6A00] transition-colors disabled:opacity-50"
                     >
                       <Save size={16} />
-                      {createMutation.isPending ? 'Publishing...' : 'Publish Post'}
+                      {createMutation.isPending ? 'Saving...' : form.published ? 'Publish Post' : 'Save Draft'}
                     </button>
                   ) : (
                     <button

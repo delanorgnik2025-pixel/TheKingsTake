@@ -1,10 +1,13 @@
+import { videoNewsSchema, storyUpdateSchema } from "@contracts/video-news";
 import { z } from "zod";
 import { createRouter, publicQuery, authedQuery, adminQuery } from "./middleware";
 import { getDb } from "./queries/connection";
 import { posts, users } from "@db/schema";
-import { and, eq, desc } from "drizzle-orm";
+import { and, eq, desc, sql } from "drizzle-orm";
 
 export const blogRouter = createRouter({
+  adminList: adminQuery.query(() => getDb().select().from(posts).orderBy(desc(posts.createdAt))),
+  videoList: publicQuery.query(() => getDb().select().from(posts).where(and(eq(posts.published, true), sql`JSON_VALID(${posts.videoNews}) AND JSON_EXTRACT(${posts.videoNews}, '$.enabled') = true`)).orderBy(desc(posts.createdAt)).limit(200)),
   // Public: list published posts
   list: publicQuery
     .input(z.object({
@@ -63,12 +66,16 @@ export const blogRouter = createRouter({
       excerpt: z.string().optional(),
       category: z.string().min(1),
       coverImage: z.string().optional(),
+      videoNews: videoNewsSchema.nullable().optional(),
+      newsBeat: z.string().max(32).optional(),
       featured: z.boolean().default(false),
       published: z.boolean().default(true),
     }))
     .mutation(async ({ input }) => {
       const db = getDb();
       const result = await db.insert(posts).values({
+        videoNews: input.videoNews ? JSON.stringify(input.videoNews) : null,
+        newsBeat: input.newsBeat || null,
         title: input.title,
         slug: input.slug,
         content: input.content,
@@ -91,6 +98,8 @@ export const blogRouter = createRouter({
       excerpt: z.string().optional(),
       category: z.string().min(1).optional(),
       coverImage: z.string().optional(),
+      videoNews: videoNewsSchema.nullable().optional(),
+      newsBeat: z.string().max(32).optional(),
       featured: z.boolean().optional(),
       published: z.boolean().optional(),
     }))
@@ -98,6 +107,8 @@ export const blogRouter = createRouter({
       const db = getDb();
       const { id, ...data } = input;
       const updateData: Record<string, unknown> = {};
+      if (data.videoNews !== undefined) updateData.videoNews = data.videoNews ? JSON.stringify(data.videoNews) : null;
+      if (data.newsBeat !== undefined) updateData.newsBeat = data.newsBeat;
       if (data.title !== undefined) updateData.title = data.title;
       if (data.slug !== undefined) updateData.slug = data.slug;
       if (data.content !== undefined) updateData.content = data.content;
@@ -110,6 +121,12 @@ export const blogRouter = createRouter({
       await db.update(posts).set(updateData).where(eq(posts.id, id));
       return { success: true };
     }),
+
+  appendUpdate: adminQuery.input(z.object({ id: z.number(), update: storyUpdateSchema })).mutation(async ({ input }) => {
+    const db = getDb();
+    await db.update(posts).set({ storyUpdates: sql`JSON_ARRAY_APPEND(COALESCE(${posts.storyUpdates}, JSON_ARRAY()), '$', CAST(${JSON.stringify(input.update)} AS JSON))` }).where(eq(posts.id, input.id));
+    return { success: true };
+  }),
 
   // Admin: delete post
   delete: adminQuery
