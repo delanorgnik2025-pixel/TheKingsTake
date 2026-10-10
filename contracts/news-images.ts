@@ -1,4 +1,5 @@
 export const NEWS_IMAGES = {
+  "creator-fallout-20261009": { url: "https://thekingstake.com/images/creator-fallout-20261009.webp", alt: "Separate illustrated portraits of Kai Cenat and Adrien Broner", caption: "Kai Cenat and Adrien Broner · illustration.", credit: "", sourceUrl: "" },
   "hip-hop": { url: "https://thekingstake.com/images/culture-music-v2.webp", alt: "Illustrated musicians in a recording studio", caption: "Independent music · illustration.", credit: "", sourceUrl: "" },
   "creator-culture": { url: "https://thekingstake.com/images/culture-creators-v2.webp", alt: "Illustrated portraits of DDG and Deshae Frost", caption: "DDG and Deshae Frost · illustration.", credit: "", sourceUrl: "" },
   "crime-justice": {

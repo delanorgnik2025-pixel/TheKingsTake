@@ -7,6 +7,7 @@ const migrations = [
   ["20261009_culture_presentation_v2", "db/manual/20261009_culture_presentation_v2.sql"],
   ["20261009_culture_copy_cleanup", "db/manual/20261009_culture_copy_cleanup.sql"],
   ["20261009_article_video_news", "db/manual/20261009_article_video_news.sql"],
+  ["20261009_creator_fallout", "db/manual/20261009_creator_fallout.sql"],
   ["20261009_nathaly_ramirez", "db/manual/20261009_nathaly_ramirez.sql"],
   ["20261008_warfield_security_guard_murder", "db/manual/20261008_warfield_security_guard_murder.sql"],
   ["20261007_ai_image_brand_safety", "db/manual/20261007_ai_image_brand_safety.sql"],
