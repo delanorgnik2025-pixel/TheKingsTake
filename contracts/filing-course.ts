@@ -67,6 +67,9 @@ export type CheckpointAttempt={lesson:number;answer:number;at:string};
 export type TestAttempt={answers:number[];at:string};
 export type CourseProgress={step:number;completed:number[];checkpointAttempts:CheckpointAttempt[];testAttempts:TestAttempt[];quizAnswers:number[];quizGraded:boolean};
 export const emptyProgress=():CourseProgress=>({step:0,completed:[],checkpointAttempts:[],testAttempts:[],quizAnswers:[],quizGraded:false});
+export function moveToLesson(p:CourseProgress,next:number):CourseProgress{
+ return {...p,step:Math.max(0,Math.min(next,p.completed.length,FILING_LESSONS.length))};
+}
 export function recordCheckpoint(p:CourseProgress,lesson:number,answer:number):CourseProgress{
  return {...p,checkpointAttempts:[...p.checkpointAttempts,{lesson,answer,at:new Date().toISOString()}]};
 }
