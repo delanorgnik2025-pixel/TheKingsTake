@@ -1,5 +1,5 @@
 import {describe,it,expect} from 'vitest';
-import {FILING_LESSONS,FINAL_QUIZ,gradeQuiz,readProgress,emptyProgress,recordCheckpoint,submitTest,retryTest,restartLessons} from '../../contracts/filing-course';
+import {FILING_LESSONS,FINAL_QUIZ,gradeQuiz,readProgress,emptyProgress,moveToLesson,recordCheckpoint,submitTest,retryTest,restartLessons} from '../../contracts/filing-course';
 describe('guided filing course progress',()=>{
  it('resets corrupt or old progress without skipping lessons',()=>{expect(readProgress('oops')).toMatchObject({step:0,completed:[]});expect(readProgress('{"version":1,"step":9}').step).toBe(0);});
  it('only restores a contiguous completed path and clamps future steps',()=>{expect(readProgress(JSON.stringify({version:2,step:99,completed:[0,1,3,4]}))).toMatchObject({step:2,completed:[0,1]});});
@@ -29,5 +29,8 @@ describe('guided filing course progress',()=>{
  it('ignores malformed history and restores only matching submitted test answers',()=>{
   const p=readProgress(JSON.stringify({version:3,checkpointAttempts:[null,{lesson:90,answer:0,at:'x'}],testAttempts:[{answers:[0],at:'x'}],quizGraded:true}));
   expect(p.checkpointAttempts).toEqual([]);expect(p.testAttempts).toEqual([]);expect(p.quizGraded).toBe(false);
+ });
+ it('prevents historical review links from skipping lessons after restart',()=>{
+  const p=emptyProgress();p.completed=[0,1];expect(moveToLesson(p,8).step).toBe(2);expect(moveToLesson(restartLessons(p),8).step).toBe(0);
  });
 });
