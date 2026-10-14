@@ -1,3 +1,4 @@
+import {FACEBOOK_SUBSCRIBE_URL} from '@contracts/community';
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link } from "react-router";
 import { trpc } from "@/providers/trpc";
@@ -49,7 +50,7 @@ export default function ResearchPreview({ tool, children }: { tool: Tool; childr
       <h2 className="text-2xl">Your {title} preview is complete</h2>
       <p className="mt-3 text-sm text-[#C9B99A]">Your five-minute preview for this tool is used up. It stays used when you leave and return. Redeem your member access code and sign in for continued access.</p>
       <div className="mt-6 flex flex-wrap justify-center gap-3">
-        <a href="https://www.facebook.com/thekingstake" target="_blank" rel="noopener noreferrer" className="rounded bg-[#FF9500] px-5 py-3 text-sm font-semibold text-[#182635]">Visit #TheKingsTake on Facebook</a>
+        <a href={FACEBOOK_SUBSCRIBE_URL} target="_blank" rel="noopener noreferrer" className="rounded bg-[#FF9500] px-5 py-3 text-sm font-semibold text-[#182635]">Explore Facebook subscription</a>
         <Link to="/feed" className="rounded border border-[#FF9500]/50 px-5 py-3 text-sm text-[#FFB840]">Redeem code / member sign in</Link>
       </div>
       <p className="mt-4 text-xs text-[#C9B99A]">Facebook subscription alone does not unlock access; an issued member code is required.</p>

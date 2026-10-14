@@ -1,3 +1,5 @@
+import {FACEBOOK_SUBSCRIBE_URL} from '@contracts/community';
+import FacebookSubscribeCTA from '@/components/FacebookSubscribeCTA';
 import { useState, useRef, useEffect } from "react";
 import { Link, useParams } from "react-router";
 import { motion, AnimatePresence } from "framer-motion";
@@ -409,6 +411,7 @@ export default function FeedPage() {
       {/* Trending rail */}
       <div className="relative z-10">
         <section className="mx-auto mb-8 max-w-5xl px-4"><div className="rounded-2xl border border-[#FFB840]/30 bg-[#182635]/95 p-5"><p className="text-xs uppercase tracking-widest text-[#FFB840]">Automated conversation starter · The King’s Take</p><p className="mt-3 text-lg text-[#F0EBE1]">{['What would you record first: the timeline, the witnesses, or the original video? Why?','What question would you ask a civil-rights lawyer before filing? Keep personal case details private.','Which report deserves a follow-up? Tell the community what you want covered.'][Math.floor(Date.now()/86400000)%3]}</p><p className="mt-2 text-sm text-[#C9B99A]">A rotating editorial prompt, not a member message. Anyone can read the Feed; approved members can respond.</p><Link to="/learn2file" className="mt-3 inline-block text-[#FFB840] underline">Learn Section 1983 basics for free →</Link></div></section>
+      <div className="mx-auto mb-8 max-w-5xl px-4"><FacebookSubscribeCTA /></div>
       <TrendingRail />
       </div>
 
@@ -626,12 +629,12 @@ export default function FeedPage() {
               Enter Member Access Code
             </button>
             <a
-              href="https://www.facebook.com/thekingstake"
+              href={FACEBOOK_SUBSCRIBE_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-1.5 mt-2 text-[10px] text-[#C9B99A]/60 hover:text-[#FF9500] transition-colors"
             >
-              <ExternalLink size={10} /> Also subscribe on Facebook
+              <ExternalLink size={10} /> Subscribe on Facebook
             </a>
           </div>
 

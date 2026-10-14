@@ -1,3 +1,4 @@
+import {FACEBOOK_SUBSCRIBE_URL} from '@contracts/community';
 import { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -45,7 +46,7 @@ export default function Navigation({ onMenuToggle }: NavigationProps) {
         <Link to="/" className="text-[#F0EBE1] text-sm uppercase tracking-[0.08em] hover:text-[#FF9500] transition-colors duration-300">#TheKingsTake</Link>
       </div>
 
-      <div className="hidden min-[1600px]:flex items-center gap-5">
+      <div className="hidden min-[1600px]:flex items-center gap-5"><a href={FACEBOOK_SUBSCRIBE_URL} target="_blank" rel="noopener noreferrer" className="text-sm text-[#FFB840]">Subscribe</a>
         <Link to="/feed" className="text-[#C9B99A] text-sm hover:text-[#F0EBE1] transition-colors duration-200">The Feed</Link>
         <div className="group relative">
           <Link to="/news-hub" className="flex items-center gap-1 text-sm text-[#FFB840] transition-colors hover:text-[#FF9500]">News Hub <ChevronDown size={14}/></Link>
@@ -137,6 +138,7 @@ export default function Navigation({ onMenuToggle }: NavigationProps) {
         {mobileOpen && (
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
             className="absolute top-16 left-0 right-0 bg-[#25364B]/95 backdrop-blur-xl p-6 min-[1600px]:hidden max-h-[calc(100dvh-4rem)] overflow-y-auto" style={{ borderTop: '1px solid rgba(255,149,0,0.15)' }}>
+            <a href={FACEBOOK_SUBSCRIBE_URL} target="_blank" rel="noopener noreferrer" onClick={() => setMobileOpen(false)} className="block py-3 text-xl text-[#FFB840]">Subscribe on Facebook →</a>
             <Link to="/feed" onClick={() => setMobileOpen(false)} className="block text-[#F0EBE1] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">The Feed</Link>
             <Link to="/news-hub" onClick={() => setMobileOpen(false)} className="block text-[#FFB840] text-xl py-3 border-b border-[rgba(240,235,225,0.08)] hover:text-[#FF9500]">News Hub</Link>
             <div className="pl-4">

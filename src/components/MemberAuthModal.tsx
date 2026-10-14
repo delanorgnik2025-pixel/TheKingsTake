@@ -1,3 +1,4 @@
+import {FACEBOOK_SUBSCRIBE_URL} from '@contracts/community';
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, User, Lock, Mail, Crown, ExternalLink } from "lucide-react";
@@ -193,7 +194,7 @@ export default function MemberAuthModal({ isOpen, onClose }: Props) {
 
             <div className="mt-4 pt-4 border-t border-[#C9B99A]/10 text-center">
               <a
-                href="https://www.facebook.com/thekingstake"
+                href={FACEBOOK_SUBSCRIBE_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 text-xs text-[#C9B99A]/60 hover:text-[#FF9500] transition-colors"
