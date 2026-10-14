@@ -45,3 +45,13 @@ describe('public Nolan capture metadata', () => {
     expect(html).not.toContain('og:image:height');
   });
 });
+
+ describe('free course metadata',()=>{
+  it('serves the free introduction metadata without article or visitor lookup',async()=>{
+   const app = new Hono<{ Bindings: HttpBindings }>(); serveStaticFiles(app,root);
+   const r=await app.request('/learn/section-1983-introduction'); expect(r.status).toBe(200);
+   const html=await r.text(); expect(html).toContain('Free Section 1983 Introduction');
+   expect(html).toContain('href="https://thekingstake.com/learn/section-1983-introduction"');
+   expect(html).toContain('No payment or access code required.');
+  });
+ });

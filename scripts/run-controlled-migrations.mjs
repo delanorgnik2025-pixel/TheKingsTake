@@ -2,6 +2,7 @@ import { readFile } from "node:fs/promises";
 import mysql from "mysql2/promise";
 
 const migrations = [
+  ["20261012_civil_intro", "db/manual/20261012_civil_intro.sql"],
   ["20261010_erie_breaking", "db/manual/20261010_erie_breaking.sql"],
   ["20261009_visitor_journey", "db/manual/20261009_visitor_journey.sql"],
   ["20261009_hip_hop_desk", "db/manual/20261009_hip_hop_desk.sql"],
