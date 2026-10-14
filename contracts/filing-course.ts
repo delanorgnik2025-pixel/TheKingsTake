@@ -63,10 +63,30 @@ export const FILING_LESSONS:Lesson[]=[
 ];
 export const FINAL_QUIZ=[0,1,2,3,4,5,7,8].map(i=>({...FILING_LESSONS[i],lesson:i}));
 export function gradeQuiz(answers:number[]){return FINAL_QUIZ.reduce((score,q,i)=>score+(answers[i]===q.answer?1:0),0);}
-export function readProgress(raw:string|null){
- try{const v=JSON.parse(raw||'null');if(!v||v.version!==2)return {step:0,completed:[] as number[]};
+export type CheckpointAttempt={lesson:number;answer:number;at:string};
+export type TestAttempt={answers:number[];at:string};
+export type CourseProgress={step:number;completed:number[];checkpointAttempts:CheckpointAttempt[];testAttempts:TestAttempt[];quizAnswers:number[];quizGraded:boolean};
+export const emptyProgress=():CourseProgress=>({step:0,completed:[],checkpointAttempts:[],testAttempts:[],quizAnswers:[],quizGraded:false});
+export function recordCheckpoint(p:CourseProgress,lesson:number,answer:number):CourseProgress{
+ return {...p,checkpointAttempts:[...p.checkpointAttempts,{lesson,answer,at:new Date().toISOString()}]};
+}
+export function submitTest(p:CourseProgress):CourseProgress{
+ if(p.quizGraded||!FINAL_QUIZ.every((q,i)=>Number.isInteger(p.quizAnswers[i])&&p.quizAnswers[i]>=0&&p.quizAnswers[i]<q.options.length))return p;
+ return {...p,quizGraded:true,testAttempts:[...p.testAttempts,{answers:[...p.quizAnswers],at:new Date().toISOString()}]};
+}
+export function retryTest(p:CourseProgress):CourseProgress{return {...p,quizAnswers:[],quizGraded:false};}
+export function restartLessons(p:CourseProgress):CourseProgress{return {...retryTest(p),step:0,completed:[]};}
+export function readProgress(raw:string|null):CourseProgress{
+ const blank=emptyProgress();
+ try{const v=JSON.parse(raw||'null');if(!v||![2,3].includes(v.version))return blank;
  const completed=Array.isArray(v.completed)?v.completed.filter((n:unknown)=>Number.isInteger(n)&&Number(n)>=0&&Number(n)<FILING_LESSONS.length):[];
  const sequential:number[]=[];for(let i=0;i<FILING_LESSONS.length;i++){if(completed.includes(i))sequential.push(i);else break;}
  const step=Number.isInteger(v.step)?Math.max(0,Math.min(v.step,sequential.length,FILING_LESSONS.length)):0;
- return {step,completed:sequential};}catch{return {step:0,completed:[] as number[]};}
+ const answerOK=(n:unknown)=>Number.isInteger(n)&&Number(n)>=0&&Number(n)<2;
+ const checkpointAttempts:CheckpointAttempt[]=v.version===3&&Array.isArray(v.checkpointAttempts)?v.checkpointAttempts.filter((a:CheckpointAttempt)=>a&&Number.isInteger(a.lesson)&&a.lesson>=0&&a.lesson<FILING_LESSONS.length&&answerOK(a.answer)&&typeof a.at==='string'):[];
+ const testAttempts:TestAttempt[]=v.version===3&&Array.isArray(v.testAttempts)?v.testAttempts.filter((a:TestAttempt)=>a&&Array.isArray(a.answers)&&a.answers.length===FINAL_QUIZ.length&&a.answers.every(answerOK)&&typeof a.at==='string'):[];
+ const quizAnswers:number[]=v.version===3&&Array.isArray(v.quizAnswers)?FINAL_QUIZ.map((_,i)=>answerOK(v.quizAnswers[i])?v.quizAnswers[i]:-1):[];
+ const last=testAttempts.at(-1);
+ const quizGraded=v.quizGraded===true&&!!last&&FINAL_QUIZ.every((_,i)=>quizAnswers[i]===last.answers[i]);
+ return {step,completed:sequential,checkpointAttempts,testAttempts,quizAnswers,quizGraded};}catch{return blank;}
 }
