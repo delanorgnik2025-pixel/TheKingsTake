@@ -109,7 +109,8 @@ function AppRoutes() {
       <ScrollToTop />
       <Suspense fallback={<div className="min-h-screen bg-[#14202E]" />}>
         <Routes location={location} key={location.pathname}>
-          {['/courses','/learn2file','/buildyourcase','/joininnercircle'].map(path=><Route key={path} path={path} element={<CoursesPage />} />)}
+          {['/courses','/buildyourcase','/joininnercircle'].map(path=><Route key={path} path={path} element={<CoursesPage />} />)}
+          <Route path="/learn2file" element={<CivilRightsIntroPage />} />
           <Route path="/learn/section-1983-introduction" element={<CivilRightsIntroPage />} />
           <Route path="/" element={<HomePage />} />
           <Route path="/feed" element={<FeedPage />} />

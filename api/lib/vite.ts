@@ -106,7 +106,7 @@ export function serveStaticFiles(app: App, buildRoot?: string) {
     const title=route==='/learn2file'?"Learn Section 1983 for Free | The King's Take":"Civil-Rights Courses & Books | The King's Take";
     let html=fs.readFileSync(file,'utf-8').replace(/<title>[^<]*<\/title>/i,`<title>${escapeAttribute(title)}</title>`);
     html=replaceMeta(html,'property','og:title',title);
-    html=replaceMeta(html,'property','og:description','Start the free introduction, sign up for upcoming courses and explore Ronald Lee King’s book.');
+    html=replaceMeta(html,'property','og:description','Open the free guided JS 44 and IFP course, or explore upcoming courses and Ronald Lee King’s book.');
     html=replaceMeta(html,'property','og:url','https://thekingstake.com'+route);
     html=replaceMeta(html,'name','description','Free Section 1983 learning and upcoming courses from AASOTU Media Group LLC.');
     const canonical=`<link rel="canonical" href="https://thekingstake.com${route}" />`;
