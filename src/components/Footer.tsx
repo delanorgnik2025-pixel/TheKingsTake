@@ -1,3 +1,4 @@
+import {FACEBOOK_SUBSCRIBE_URL} from '@contracts/community';
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, useLocation } from 'react-router'
@@ -60,6 +61,7 @@ export default function Footer({ onNavClick, hideNewsletter }: FooterProps) {
           <Link to="/privacy-policy" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">Privacy Policy</Link>
         </div>
 
+        <div className="mb-8"><a href={FACEBOOK_SUBSCRIBE_URL} target="_blank" rel="noopener noreferrer" className="inline-block rounded-full border border-[#FFB840]/50 px-5 py-3 text-sm text-[#FFB840]">Subscribe to #TheKingsTake on Facebook →</a><p className="mt-2 text-xs text-[#C9B99A]">View pricing and subscriber benefits on Facebook.</p></div>
         {/* Social */}
         <div className="flex gap-4 mb-10">
           {socialLinks.map(social => (
