@@ -36,7 +36,7 @@ export default function Footer({ onNavClick, hideNewsletter }: FooterProps) {
         {!hideNewsletter && <div id="newsletter" className="mb-10 max-w-xl scroll-mt-24 rounded-xl border border-[#FF9500]/20 bg-[#182635]/40 p-5">
           <h4 className="mb-1 text-lg text-[#F0EBE1]">The King's Dispatch</h4>
           <p className="mb-3 text-xs leading-relaxed text-[#C9B99A]">Book updates, community strategy, major investigations, and selected releases from #TheKingsTake.</p>
-          {subscribed ? <p className="text-sm text-emerald-300">You are on the list. Welcome.</p> : <form onSubmit={submitNewsletter} className="flex flex-col gap-2 sm:flex-row">
+          {subscribed ? <div><p className="text-sm text-emerald-300">You are on the list. Welcome.</p><Link to="/learn/section-1983-introduction" className="mt-3 inline-block text-sm text-[#FFB840] underline">Start your free Section 1983 introduction →</Link></div> : <form onSubmit={submitNewsletter} className="flex flex-col gap-2 sm:flex-row">
             <input required type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Your email address" className="min-w-0 flex-1 rounded-lg bg-[#0f1b29] px-3 py-2 text-sm text-white outline-none"/>
             <button disabled={subscribe.isPending} className="rounded-lg bg-[#FF9500] px-4 py-2 text-sm font-bold text-[#182635]">Join the Newsletter</button>
           </form>}
@@ -53,6 +53,7 @@ export default function Footer({ onNavClick, hideNewsletter }: FooterProps) {
           <a href="/#heritage" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">Heritage</a>
           <Link to="/services" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">Creative Services</Link>
           <Link to="/feed" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">The Feed</Link>
+          <Link to="/learn/section-1983-introduction" className="text-sm text-[#FFB840]">Free §1983 introduction</Link>
           <Link to="/news-hub" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">News Hub</Link>
           <Link to="/investigations" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">Investigations</Link>
           <Link to="/contact" onClick={() => { if (location.pathname === "/") onNavClick("contact") }} className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">Contact</Link>

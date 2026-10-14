@@ -1,3 +1,5 @@
+import { CIVIL_INTRO_KEY } from "../contracts/civil-rights-intro";
+import { isCourseIntroRecipient } from "./lib/course-intro-audience";
 import { z } from "zod";
 import { and, desc, eq, isNull, lte, ne, sql } from "drizzle-orm";
 import { TRPCError } from "@trpc/server";
@@ -154,13 +156,15 @@ function renderNewsletterCopy(content: string) {
 }
 
 function newsletterHtml(campaign: typeof newsletterCampaigns.$inferSelect, unsubscribeUrl: string, articleUrl?: string) {
+  const introCta = campaign.dailyKey === CIVIL_INTRO_KEY ? `<p><a href="https://thekingstake.com/learn/section-1983-introduction" style="display:inline-block;background:#ffb840;color:#101b28;padding:14px 20px;text-decoration:none">Start your free introduction</a></p>` : "";
+  const postal = campaign.dailyKey === CIVIL_INTRO_KEY ? `<p style="color:#9f927d;font:11px Arial,sans-serif">${escapeHtml(process.env.NEWSLETTER_POSTAL_ADDRESS || "")}</p>` : "";
   const imageUrl = safeHttpUrl(campaign.imageUrl);
   const imageSourceUrl = safeHttpUrl(campaign.imageSourceUrl);
   const image = imageUrl
     ? `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(campaign.imageAlt || campaign.subject)}" style="display:block;width:100%;max-height:380px;object-fit:cover"><div style="padding:8px 20px;background:#101b28;color:#9f927d;font:10px Arial,sans-serif">Image: ${imageSourceUrl ? `<a href="${escapeHtml(imageSourceUrl)}" style="color:#c9b99a">${escapeHtml(campaign.imageCredit || "View credit")}</a>` : escapeHtml(campaign.imageCredit || "AASOTU Media Group LLC")}</div>`
     : "";
   const readMore = articleUrl ? `<p style="margin:25px 0 0"><a href="${escapeHtml(articleUrl)}" style="display:inline-block;padding:12px 18px;background:#ff9500;color:#101b28;text-decoration:none;font:bold 13px Arial,sans-serif">Read the full article</a></p>` : "";
-  return `<!doctype html><html><body style="margin:0;background:#101b28;font-family:Georgia,serif"><div style="display:none;max-height:0;overflow:hidden">${escapeHtml(campaign.previewText || campaign.subject)}</div><div style="max-width:680px;margin:0 auto;padding:32px 20px"><div style="border:1px solid rgba(255,149,0,.3);background:#182635"><div style="padding:28px;border-bottom:1px solid rgba(255,149,0,.25);text-align:center"><div style="color:#ff9500;font:12px Arial,sans-serif;letter-spacing:3px;text-transform:uppercase">AASOTU Media Group LLC</div><h1 style="margin:12px 0 0;color:#f0ebe1;font-size:34px">The King’s Dispatch</h1><div style="margin-top:8px;color:#c9b99a;font:12px Arial,sans-serif">#TheKingsTake · The People’s Voice</div></div>${image}<div style="padding:30px"><h2 style="margin:0 0 22px;color:#ffb840;font-size:25px">${escapeHtml(campaign.subject)}</h2>${renderNewsletterCopy(campaign.content)}${readMore}<div style="margin-top:30px;padding:20px;border:1px solid rgba(255,149,0,.25);color:#dfd5c2;font:14px Arial,sans-serif;line-height:1.6"><strong style="color:#ffb840">Join the conversation</strong><br>Follow #TheKingsTake on Facebook for updates and subscription options. Members with an issued access code can sign in on the website to continue exploring the globe and archives.<br><a href="https://www.facebook.com/thekingstake" style="color:#ffb840">Visit our Facebook page</a></div></div><div style="padding:22px;text-align:center;border-top:1px solid rgba(255,255,255,.08);color:#9f927d;font:11px Arial,sans-serif">Sent by AASOTU Media Group LLC · <a href="${escapeHtml(unsubscribeUrl)}" style="color:#ffb840">Unsubscribe</a></div></div></div></body></html>`;
+  return `<!doctype html><html><body style="margin:0;background:#101b28;font-family:Georgia,serif"><div style="display:none;max-height:0;overflow:hidden">${escapeHtml(campaign.previewText || campaign.subject)}</div><div style="max-width:680px;margin:0 auto;padding:32px 20px"><div style="border:1px solid rgba(255,149,0,.3);background:#182635"><div style="padding:28px;border-bottom:1px solid rgba(255,149,0,.25);text-align:center"><div style="color:#ff9500;font:12px Arial,sans-serif;letter-spacing:3px;text-transform:uppercase">AASOTU Media Group LLC</div><h1 style="margin:12px 0 0;color:#f0ebe1;font-size:34px">The King’s Dispatch</h1><div style="margin-top:8px;color:#c9b99a;font:12px Arial,sans-serif">#TheKingsTake · The People’s Voice</div></div>${image}<div style="padding:30px"><h2 style="margin:0 0 22px;color:#ffb840;font-size:25px">${escapeHtml(campaign.subject)}</h2>${renderNewsletterCopy(campaign.content)}${introCta}${readMore}<div style="margin-top:30px;padding:20px;border:1px solid rgba(255,149,0,.25);color:#dfd5c2;font:14px Arial,sans-serif;line-height:1.6"><strong style="color:#ffb840">Join the conversation</strong><br>Follow #TheKingsTake on Facebook for updates and subscription options. Members with an issued access code can sign in on the website to continue exploring the globe and archives.<br><a href="https://www.facebook.com/thekingstake" style="color:#ffb840">Visit our Facebook page</a></div></div><div style="padding:22px;text-align:center;border-top:1px solid rgba(255,255,255,.08);color:#9f927d;font:11px Arial,sans-serif">${postal}Sent by AASOTU Media Group LLC · <a href="${escapeHtml(unsubscribeUrl)}" style="color:#ffb840">Unsubscribe</a></div></div></div></body></html>`;
 }
 
 const DISPATCH_MIN_GAP_HOURS = Math.max(1, Number(process.env.NEWSLETTER_MIN_GAP_HOURS || "20"));
@@ -175,6 +179,7 @@ function dispatchPublicError(error: unknown) {
 }
 
 async function validateCampaignForApproval(campaign: typeof newsletterCampaigns.$inferSelect) {
+  if (campaign.dailyKey === CIVIL_INTRO_KEY && !process.env.NEWSLETTER_POSTAL_ADDRESS?.trim()) throw new TRPCError({ code: "PRECONDITION_FAILED", message: "Add a valid business postal address before sending the free course invitation." });
   let sourceUrls: string[] = [];
   try { sourceUrls = JSON.parse(campaign.sourceUrls || "[]"); } catch { sourceUrls = []; }
   if (campaign.automated && sourceUrls.length < 2)
@@ -274,7 +279,8 @@ async function deliverNewsletterCampaign(id: number) {
   await validateCampaignForApproval(campaign);
   const { publishedPostId, articleUrl } = await publishCampaignArticle(campaign);
   const siteUrl = (process.env.PUBLIC_SITE_URL || "https://thekingstake.com").replace(/\/$/, "");
-  const subscribers = await db.select().from(newsletterSubscribers).where(eq(newsletterSubscribers.status, "subscribed")).limit(500);
+  const subscribedContacts = await db.select().from(newsletterSubscribers).where(eq(newsletterSubscribers.status, "subscribed")).limit(500);
+  const subscribers = campaign.dailyKey === CIVIL_INTRO_KEY ? subscribedContacts.filter(s => isCourseIntroRecipient(s, [process.env.OWNER_NOTIFICATION_EMAIL || "", "admin@aasotu.com"])) : subscribedContacts;
   let sent = 0;
   for (const subscriber of subscribers) {
     const [previous] = await db.select({ status: newsletterDeliveries.status }).from(newsletterDeliveries)
@@ -287,7 +293,7 @@ async function deliverNewsletterCampaign(id: number) {
     const result = await sendEmail(
       subscriber.email,
       campaign.subject,
-      `${campaign.content}${articleUrl ? `\n\nRead the full article: ${articleUrl}` : ""}\n\nFollow #TheKingsTake and explore subscription options: https://www.facebook.com/thekingstake\nMembers with an issued access code can sign in for continued globe and archive access.\n\nUnsubscribe: ${unsubscribeUrl}`,
+      `${campaign.content}${articleUrl ? `\n\nRead the full article: ${articleUrl}` : ""}\n\nFollow #TheKingsTake and explore subscription options: https://www.facebook.com/thekingstake\nMembers with an issued access code can sign in for continued globe and archive access.\n\nUnsubscribe: ${unsubscribeUrl}${campaign.dailyKey === CIVIL_INTRO_KEY ? `\n\n${process.env.NEWSLETTER_POSTAL_ADDRESS || ""}` : ""}`,
       newsletterHtml(campaign, unsubscribeUrl, articleUrl)
     );
     await db.insert(newsletterDeliveries).values({
@@ -674,6 +680,13 @@ export const engagementRouter = createRouter({
           "How can I help you explore The King's Take?",
       };
     }),
+
+  adminCourseIntroStatus: adminQuery.query(async () => {
+    const contacts = await getDb().select().from(newsletterSubscribers).where(eq(newsletterSubscribers.status, "subscribed"));
+    const eligible = contacts.filter(s => isCourseIntroRecipient(s, [process.env.OWNER_NOTIFICATION_EMAIL || "", "admin@aasotu.com"]));
+    const [campaign] = await getDb().select().from(newsletterCampaigns).where(eq(newsletterCampaigns.dailyKey, CIVIL_INTRO_KEY)).limit(1);
+    return { eligibleCount: eligible.length, excludedCount: contacts.length - eligible.length, postalAddressConfigured: Boolean(process.env.NEWSLETTER_POSTAL_ADDRESS?.trim()), status: campaign?.status || "missing", recipientCount: campaign?.recipientCount || 0 };
+  }),
 
   adminOverview: adminQuery.query(async () => {
     const db = getDb();

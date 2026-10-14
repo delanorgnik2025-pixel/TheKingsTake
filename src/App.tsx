@@ -15,6 +15,7 @@ import MarketingAnalytics from './components/MarketingAnalytics'
 // ============================================
 // LAZY-LOADED PAGES — Prevents eager import crashes
 // ============================================
+const CivilRightsIntroPage = lazy(() => import('./pages/CivilRightsIntroPage'))
 const LandingPreview = lazy(() => import('./pages/LandingPreviewPage'))
 const HomePage = lazy(() => import('./pages/Home'))
 const BlogPostPage = lazy(() => import('./pages/BlogPostPage'))
@@ -62,7 +63,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
   }, [])
   const lenisRef = useRef<Lenis | null>(null)
   const location = useLocation()
-  const publicSalesPage = location.pathname === '/brand-studio' || location.pathname === '/pre-order' || location.pathname === '/pre-order/success' || location.pathname === '/about-author'
+  const publicSalesPage = location.pathname === '/learn/section-1983-introduction' || location.pathname === '/brand-studio' || location.pathname === '/pre-order' || location.pathname === '/pre-order/success' || location.pathname === '/about-author'
   const publicUtilityPage = location.pathname === '/investigations/nolan-wells/captured-report-pages' || publicSalesPage || location.pathname.startsWith('/admin') || location.pathname === '/privacy-policy' || location.pathname === '/newsletter/unsubscribe'
   const hideNav = location.pathname === '/ancestor-root-registry' || location.pathname.startsWith('/ancestor-root-registry/')
 
@@ -93,7 +94,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
         <VisitorJourney />
         {children}
         {!publicUtilityPage && !ownerSession && <VisitorAssistant />}
-        {!hideNav && <Footer onNavClick={scrollToSection} hideNewsletter={location.pathname === '/brand-studio'} />}
+        {!hideNav && <Footer onNavClick={scrollToSection} hideNewsletter={location.pathname === '/brand-studio' || location.pathname === '/learn/section-1983-introduction'} />}
       </>}
     </>
   )
@@ -107,6 +108,7 @@ function AppRoutes() {
       <ScrollToTop />
       <Suspense fallback={<div className="min-h-screen bg-[#14202E]" />}>
         <Routes location={location} key={location.pathname}>
+          <Route path="/learn/section-1983-introduction" element={<CivilRightsIntroPage />} />
           <Route path="/" element={<HomePage />} />
           <Route path="/feed" element={<FeedPage />} />
           <Route path="/feed/post/:postId/:authorSlug?" element={<FeedPage />} />
