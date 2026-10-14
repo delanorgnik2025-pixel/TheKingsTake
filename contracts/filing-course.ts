@@ -73,8 +73,9 @@ export function moveToLesson(p:CourseProgress,next:number):CourseProgress{
 export function recordCheckpoint(p:CourseProgress,lesson:number,answer:number):CourseProgress{
  return {...p,checkpointAttempts:[...p.checkpointAttempts,{lesson,answer,at:new Date().toISOString()}]};
 }
+export function hasCompleteQuiz(answers:number[]){return FINAL_QUIZ.every((q,i)=>Number.isInteger(answers[i])&&answers[i]>=0&&answers[i]<q.options.length);}
 export function submitTest(p:CourseProgress):CourseProgress{
- if(p.quizGraded||!FINAL_QUIZ.every((q,i)=>Number.isInteger(p.quizAnswers[i])&&p.quizAnswers[i]>=0&&p.quizAnswers[i]<q.options.length))return p;
+ if(p.quizGraded||!hasCompleteQuiz(p.quizAnswers))return p;
  return {...p,quizGraded:true,testAttempts:[...p.testAttempts,{answers:[...p.quizAnswers],at:new Date().toISOString()}]};
 }
 export function retryTest(p:CourseProgress):CourseProgress{return {...p,quizAnswers:[],quizGraded:false};}
