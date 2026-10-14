@@ -1,3 +1,4 @@
+import { courseRouter } from "./course-router";
 import { researchRouter } from "./research/router";
 import { designRouter } from "./design-router";
 import { studioPaymentsRouter } from './studio-payments';
@@ -24,6 +25,7 @@ import { visitorRouter } from "./visitor-router";
 import { createRouter, publicQuery } from "./middleware";
 
 export const appRouter = createRouter({
+  courses: courseRouter,
   research: researchRouter,
   design: designRouter,
   brandStudio: brandStudioRouter,

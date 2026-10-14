@@ -26,6 +26,7 @@ export default function Navigation({ onMenuToggle }: NavigationProps) {
   }, [])
 
   const writingDropdownItems = [
+    { label: 'Courses · Learn for free', href: '/courses', desc: 'Civil-rights learning & upcoming courses' },
     { label: 'Services Overview', href: '/services', desc: 'Compare writing, publishing & strategy' },
     { label: 'Writing Services', href: '/writing-services', desc: 'All writing offerings' },
     { label: 'Speechwriting', href: '/writing-services#speechwriting', desc: 'Speeches & narratives' },

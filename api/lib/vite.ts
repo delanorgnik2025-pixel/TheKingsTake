@@ -101,6 +101,19 @@ export function serveStaticFiles(app: App, buildRoot?: string) {
     }
   });
 
+  for (const route of ['/courses','/learn2file','/buildyourcase','/joininnercircle']) app.get(route,c=>{
+    const file=path.resolve(distPath,'index.html'); if(!fs.existsSync(file)) return c.notFound();
+    const title=route==='/learn2file'?"Learn Section 1983 for Free | The King's Take":"Civil-Rights Courses & Books | The King's Take";
+    let html=fs.readFileSync(file,'utf-8').replace(/<title>[^<]*<\/title>/i,`<title>${escapeAttribute(title)}</title>`);
+    html=replaceMeta(html,'property','og:title',title);
+    html=replaceMeta(html,'property','og:description','Start the free introduction, sign up for upcoming courses and explore Ronald Lee King’s book.');
+    html=replaceMeta(html,'property','og:url','https://thekingstake.com'+route);
+    html=replaceMeta(html,'name','description','Free Section 1983 learning and upcoming courses from AASOTU Media Group LLC.');
+    const canonical=`<link rel="canonical" href="https://thekingstake.com${route}" />`;
+    html=/<link[^>]+rel="canonical"[^>]*>/i.test(html)?html.replace(/<link[^>]+rel="canonical"[^>]*>/i,canonical):html.replace('</head>',canonical+'</head>');
+    return c.html(html);
+  });
+
   app.get("/learn/section-1983-introduction", c => {
     const indexPath = path.resolve(distPath, "index.html");
     if (!fs.existsSync(indexPath)) return c.json({ error: "Frontend build not found" }, 500);

@@ -22,7 +22,7 @@ export default function CivilRightsIntroPage() {
     <li><a href="https://www.uscourts.gov/forms-rules/current-rules-practice-procedure/federal-rules-civil-procedure">Federal Rules of Civil Procedure — including Rule 23</a></li>
     <li><a href="https://www.govinfo.gov/content/pkg/USCOURTS-flsd-1_25-cv-22276/pdf/USCOURTS-flsd-1_25-cv-22276-1.pdf">Federal court example addressing pro se class representation</a></li>
    </ul></section>
-   <section className="mt-6 rounded-2xl bg-[#182635] p-6"><h2 className="text-2xl">You have the foundation</h2><p className="mt-3 leading-relaxed text-[#C9B99A]">The full Casefile course and subscriber learning space are in development. This introduction stays free. No payment is being collected here.</p><p className="mt-3 text-sm text-[#FFB840]">AASOTU Media Group LLC | #TheKingsTake</p></section>
+   <section className="mt-6 rounded-2xl bg-[#182635] p-6"><h2 className="text-2xl">You have the foundation</h2><Link to="/buildyourcase" className="mt-4 inline-block text-[#FFB840] underline">Build your case — join the next-course waitlist →</Link><br/><Link to="/pre-order" className="mt-4 inline-block text-[#FFB840] underline">Read Ronald’s story — explore the book →</Link><br/><Link to="/learn2file" className="mt-4 inline-block text-[#FFB840] underline">Sign up for free learning updates →</Link><p className="mt-3 leading-relaxed text-[#C9B99A]">The full Casefile course and subscriber learning space are in development. This introduction stays free. No payment is being collected here.</p><p className="mt-3 text-sm text-[#FFB840]">AASOTU Media Group LLC | #TheKingsTake</p></section>
   </div>
  </main>;
 }
