@@ -304,6 +304,7 @@ export default function FeedPage() {
     { enabled: sharedPostId !== null }
   );
   const liveStatus = trpc.live.status.useQuery(undefined, {
+    enabled: Boolean(member || isAdmin),
     refetchInterval: 15000,
   });
   const dispatches = trpc.blog.list.useQuery({
@@ -407,7 +408,8 @@ export default function FeedPage() {
 
       {/* Trending rail */}
       <div className="relative z-10">
-        <TrendingRail />
+        <section className="mx-auto mb-8 max-w-5xl px-4"><div className="rounded-2xl border border-[#FFB840]/30 bg-[#182635]/95 p-5"><p className="text-xs uppercase tracking-widest text-[#FFB840]">Automated conversation starter · The King’s Take</p><p className="mt-3 text-lg text-[#F0EBE1]">{['What would you record first: the timeline, the witnesses, or the original video? Why?','What question would you ask a civil-rights lawyer before filing? Keep personal case details private.','Which report deserves a follow-up? Tell the community what you want covered.'][Math.floor(Date.now()/86400000)%3]}</p><p className="mt-2 text-sm text-[#C9B99A]">A rotating editorial prompt, not a member message. Anyone can read the Feed; approved members can respond.</p><Link to="/learn2file" className="mt-3 inline-block text-[#FFB840] underline">Learn Section 1983 basics for free →</Link></div></section>
+      <TrendingRail />
       </div>
 
       {/* Live broadcast */}

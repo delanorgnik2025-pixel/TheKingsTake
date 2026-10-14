@@ -345,6 +345,11 @@ export type FeedLike = typeof feedLikes.$inferSelect;
 export type InsertFeedLike = typeof feedLikes.$inferInsert;
 
 // ─── Audience, Newsletter & Consent-Based Leads ────────────────────────────
+export const courseEnrollments = mysqlTable("course_enrollments", {
+ id: serial("id").primaryKey(), email: varchar("email", {length:320}).notNull(),
+ course: varchar("course", {length:40}).notNull(), consentedAt: timestamp("consented_at").defaultNow().notNull(),
+}, t=>[uniqueIndex("course_enrollment_unique").on(t.email,t.course)]);
+
 export const newsletterSubscribers = mysqlTable("newsletter_subscribers", {
   id: serial("id").primaryKey(),
   email: varchar("email", { length: 320 }).notNull().unique(),

@@ -762,6 +762,7 @@ function DispatchScheduleControl({ campaign, pending, onSchedule }: { campaign: 
 }
 
 function NewsletterModule() {
+  const { data: courseEnrollments } = trpc.courses.adminEnrollments.useQuery();
   const { data: courseIntro } = trpc.engagement.adminCourseIntroStatus.useQuery(undefined, { refetchInterval: 30_000 });
   const utils = trpc.useUtils();
   const { data } = trpc.engagement.adminNewsletterCampaigns.useQuery(undefined, { refetchInterval: 30_000 });
@@ -783,6 +784,7 @@ function NewsletterModule() {
   const save = () => create.mutate({ subject: draft.subject, previewText: draft.previewText || undefined, content: draft.content, sourceUrls: draft.sources.split(/\s+/).map(value => value.trim()).filter(Boolean) });
   return (
     <div>
+      <section className="mb-6 rounded-xl border border-[#FFB840]/30 p-4"><h3 className="text-xl text-[#F0EBE1]">Course enrollments & waitlists</h3><p className="mt-2 text-sm text-[#C9B99A]">Latest 100 course registrations. These are enrollments or expressions of interest, not verified payments.</p><div className="mt-3 overflow-x-auto"><table className="w-full text-left text-xs text-[#C9B99A]"><thead><tr><th className="p-2">Email</th><th className="p-2">Course</th><th className="p-2">Registered</th></tr></thead><tbody>{courseEnrollments?.map(e=><tr key={e.id}><td className="p-2">{e.email}</td><td className="p-2">{e.course}</td><td className="p-2">{new Date(e.consentedAt).toLocaleDateString()}</td></tr>)}</tbody></table>{courseEnrollments?.length===0&&<p>No course registrations yet.</p>}</div></section>
       <h3 className="mb-2 text-xl text-[#F0EBE1]" style={{ fontFamily: "Newsreader, serif" }}>The King&apos;s Dispatch</h3>
       <p className="mb-6 text-sm leading-relaxed text-[#C9B99A]/70">The system researches current stories, verifies at least two independent sources, prepares a licensed image, writes the website article and email edition, then stops for your approval. Approved dispatches are timed and kept at least 20 hours apart.</p>
       <section className="mb-6 rounded border border-[#FFB840]/30 p-5"><h4 className="text-lg text-[#F0EBE1]">Free §1983 introduction</h4><a href="/learn/section-1983-introduction" className="text-sm text-[#FFB840] underline">Preview the free course</a><p className="mt-3 text-sm text-[#C9B99A]">{courseIntro?.eligibleCount ?? '…'} consented Dispatch recipients · {courseIntro?.excludedCount ?? '…'} test/owner contacts excluded · Invitation: {courseIntro?.status ?? 'loading'} · {courseIntro?.recipientCount ?? 0} accepted by the email provider</p>{!courseIntro?.postalAddressConfigured && <p className="mt-2 text-sm text-amber-300">Sending is blocked until a valid business mailing address is configured. Review the prepared invitation below.</p>}</section>

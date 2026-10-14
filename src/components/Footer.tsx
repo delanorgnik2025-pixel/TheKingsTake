@@ -53,7 +53,7 @@ export default function Footer({ onNavClick, hideNewsletter }: FooterProps) {
           <a href="/#heritage" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">Heritage</a>
           <Link to="/services" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">Creative Services</Link>
           <Link to="/feed" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">The Feed</Link>
-          <Link to="/learn/section-1983-introduction" className="text-sm text-[#FFB840]">Free §1983 introduction</Link>
+          <Link to="/courses" className="text-sm text-[#FFB840]">Courses · Learn for free</Link>
           <Link to="/news-hub" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">News Hub</Link>
           <Link to="/investigations" className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">Investigations</Link>
           <Link to="/contact" onClick={() => { if (location.pathname === "/") onNavClick("contact") }} className="text-sm text-[#C9B99A] hover:text-[#FF9500] transition-colors duration-200">Contact</Link>
