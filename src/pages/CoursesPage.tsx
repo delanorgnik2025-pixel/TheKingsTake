@@ -3,7 +3,7 @@ import {useState} from 'react';
 import {Link,useLocation} from 'react-router';
 import {trpc} from '@/providers/trpc';
 const courses=[
- {key:'learn2file' as const,title:'Learn Section 1983 basics',badge:'FREE · AVAILABLE NOW',copy:'Four lessons: civil-rights basics, proposed class actions, the filing process and a fictional evidence exercise.',action:'Start learning for free'},
+ {key:'learn2file' as const,title:'Learn the federal filing packet',badge:'FREE · AVAILABLE NOW',copy:'Nine guided lessons: JS 44 cover sheet, court fees, long and short IFP applications, practice checkpoints and a final test.',action:'Start learning for free'},
  {key:'buildyourcase' as const,title:'Build a clearer casefile',badge:'COMING NEXT · WAITLIST',copy:'Planned scenario-based lessons in timelines, source records and questions to prepare for qualified help.',action:'Join the course waitlist'},
  {key:'joininnercircle' as const,title:'Join the learning circle',badge:'PLANNED SUBSCRIBER COURSE · WAITLIST',copy:'A planned private learning community for verified subscribers. Email signup and Facebook follows do not purchase this future course.',action:'Get launch information'},
 ];

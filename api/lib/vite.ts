@@ -118,7 +118,7 @@ export function serveStaticFiles(app: App, buildRoot?: string) {
     const indexPath = path.resolve(distPath, "index.html");
     if (!fs.existsSync(indexPath)) return c.json({ error: "Frontend build not found" }, 500);
     let html = fs.readFileSync(indexPath, "utf-8").replace(/<title>[^<]*<\/title>/i, "<title>Free Section 1983 Introduction | The King's Take</title>");
-    for (const [kind, key, value] of [["property", "og:title", "Free Section 1983 Introduction | The King's Take"], ["property", "og:description", "Your free guide to civil-rights basics, proposed class actions and organizing facts. No payment or access code required."], ["property", "og:url", "https://thekingstake.com/learn/section-1983-introduction"], ["name", "description", "Free civil-rights education from AASOTU Media Group LLC / #TheKingsTake."]]) {
+    for (const [kind, key, value] of [["property", "og:title", "Free Section 1983 Introduction | The King's Take"], ["property", "og:description", "Guided JS 44, filing-fee and IFP lessons with checkpoints and a final test. No payment or access code required."], ["property", "og:url", "https://thekingstake.com/learn/section-1983-introduction"], ["name", "description", "Free civil-rights education from AASOTU Media Group LLC / #TheKingsTake."]]) {
       const re = new RegExp(`<meta ${kind}="${key}"[^>]*>`, "i"); const tag = `<meta ${kind}="${key}" content="${escapeAttribute(value)}" />`;
       html = re.test(html) ? html.replace(re, tag) : html.replace("</head>", `${tag}</head>`);
     }
