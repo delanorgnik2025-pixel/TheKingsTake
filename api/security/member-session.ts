@@ -1,3 +1,4 @@
+import {hasSubscriberAccess} from '../../contracts/subscriber-access';
 import type { Member } from "../../db/schema";
 import { randomUUID } from "node:crypto";
 import { hashPassword, verifyAdminToken, verifyMemberToken } from "./auth";
@@ -35,7 +36,7 @@ export async function getFeedActorFromRequest(
 ): Promise<Member | null> {
   const adminToken = req.headers.get("x-admin-token");
   if (!adminToken || !(await verifyAdminToken(adminToken))) {
-    return getActiveMemberFromRequest(req);
+    return getSubscriberFromRequest(req);
   }
 
   const [{ eq }, { members }, { getDb }] = await Promise.all([
@@ -102,4 +103,8 @@ export async function getFeedActorFromRequest(
       .limit(1);
     return raced[0] || null;
   }
+}
+
+export async function getSubscriberFromRequest(req:Request){
+ const member=await getActiveMemberFromRequest(req);return hasSubscriberAccess(member)?member:null;
 }

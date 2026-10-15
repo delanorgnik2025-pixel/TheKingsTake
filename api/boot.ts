@@ -49,6 +49,7 @@ app.use("/api/trpc/*", async (c) => {
       return c.json({ error: "Complete visitor entry to access the website." }, 401);
     }
   }
+  c.header("Cache-Control", "private, no-store");
   return fetchRequestHandler({
     endpoint: "/api/trpc",
     req: c.req.raw,

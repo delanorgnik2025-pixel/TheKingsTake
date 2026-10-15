@@ -15,11 +15,8 @@ const FALLBACK_HEADLINES = [
  * a link (your news shares) — fall back to brand lines until then.
  */
 export default function NewsTicker() {
-  const { data } = trpc.feed.list.useQuery({ limit: 15, offset: 0 }, { staleTime: 60000 })
-
-  const headlines = (data?.posts ?? [])
-    .filter((p: any) => p.linkUrl)
-    .map((p: any) => ({ text: (p.linkTitle as string) || (p.body as string).slice(0, 90), url: p.linkUrl as string }))
+  const {data}=trpc.blog.list.useQuery({limit:15},{staleTime:60000});
+  const headlines=(data??[]).map(p=>({text:p.title,url:`/blog/${p.slug}`}));
 
   const items: Array<{ text: string; url: string | null }> =
     headlines.length > 0 ? headlines : FALLBACK_HEADLINES.map((t) => ({ text: t, url: null }))

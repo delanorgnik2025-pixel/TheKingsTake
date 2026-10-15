@@ -106,7 +106,7 @@ function postShareUrl(post: FeedPost): string {
 }
 
 function postPreviewImage(): string {
-  return `${window.location.origin}/images/feed-community-share-v1.jpg`;
+  return `${window.location.origin}/images/private-feed-share-20261015.jpg`;
 }
 
 function isAdminPermissionError(error: unknown): boolean {
@@ -279,7 +279,17 @@ function DispatchRail({
 }
 
 // ─── page ─────────────────────────────────────────────────────────────────────
-export default function FeedPage() {
+export default function FeedPage(){
+ const {token}=useMember();
+ const [showAuth,setShowAuth]=useState(false);
+ const sessionKey=token||localStorage.getItem("adminToken")||"";
+ const [verifiedSession,setVerifiedSession]=useState("");
+ const access=trpc.feed.access.useQuery(undefined,{refetchOnWindowFocus:true,retry:false});
+ useEffect(()=>{let active=true;setVerifiedSession("");access.refetch().then(r=>{if(active&&r.data?.allowed)setVerifiedSession(sessionKey);});return()=>{active=false;};},[sessionKey]);
+ if(sessionKey&&verifiedSession===sessionKey&&access.data?.allowed)return <PrivateFeedPage/>;
+ return <main className="relative min-h-screen overflow-hidden px-5 pb-20 pt-28 text-[#F0EBE1]"><FeedBackdrop/><div className="relative mx-auto max-w-3xl rounded-3xl border border-[#FFB840]/40 bg-[#101b28]/95 p-7 sm:p-12"><img src="/images/private-feed-share-20261015.jpg" alt="The Kings Take private Feed: subscriber access required" width="1200" height="628" className="mb-6 w-full rounded-xl"/><Crown className="text-[#FFB840]"/><p className="mt-5 text-xs uppercase tracking-widest text-[#FFB840]">#TheKingsTake · Premium subscriber access</p><h1 className="mt-4 text-4xl">Your circle. Your conversation.</h1><p className="mt-5 leading-8 text-[#C9B99A]">A private space for verified Facebook subscribers to share ideas, plans, links and conversation together. AASOTU Media Group LLC operates this community on its own website, separately from Facebook’s feed.</p><p className="mt-4 leading-7 text-[#C9B99A]">Subscribe on Facebook, then request an access code after the owner verifies your current subscription. Existing members can log in below. Verification is renewed at least every 30 days. Signing up for the free Dispatch does not unlock member posts.</p><div className="mt-6 flex flex-wrap gap-3"><a href="https://www.facebook.com/TheKingsTake/subscribe/" target="_blank" rel="noopener noreferrer" className="rounded-full bg-[#FFB840] px-6 py-3 text-[#101b28]">Subscribe on Facebook →</a><button onClick={()=>setShowAuth(true)} className="rounded-full border border-[#FFB840] px-6 py-3">Member login / access code</button><button onClick={()=>setShowAuth(true)} className="rounded-full border border-white/25 px-6 py-3">Post a comment</button></div><p className="mt-5 text-sm leading-7 text-[#C9B99A]">A shared Feed link invites others to this subscriber entrance; it does not reveal the post. This is a moderated community subject to applicable law. Staff can access posts; confidentiality and freedom from screenshots cannot be guaranteed. Please keep sensitive case records and personal information private.</p><div className="mt-5 flex flex-wrap gap-5 text-[#FFB840]"><Link to="/contact">Request subscriber verification →</Link><Link to="/news-hub">Read the free news →</Link><Link to="/#newsletter">Join the free Dispatch →</Link></div>{access.isError&&<p role="alert" className="mt-4">Access verification is temporarily unavailable. Private posts remain locked.</p>}{access.isLoading&&<p role="status" className="mt-4">Checking member access…</p>}</div><MemberAuthModal isOpen={showAuth} onClose={()=>{setShowAuth(false);access.refetch();}}/></main>;
+}
+function PrivateFeedPage() {
   const { postId } = useParams<{ postId?: string }>();
   const sharedPostId = postId && /^\d+$/.test(postId) ? Number(postId) : null;
   const [adminToken, setAdminToken] = useState<string | null>(() =>
@@ -306,8 +316,8 @@ export default function FeedPage() {
     { enabled: sharedPostId !== null }
   );
   const liveStatus = trpc.live.status.useQuery(undefined, {
-    enabled: Boolean(member || isAdmin),
-    refetchInterval: 15000,
+    enabled: false,
+    refetchInterval: false,
   });
   const dispatches = trpc.blog.list.useQuery({
     category: "DAILY NEWS",
@@ -391,7 +401,7 @@ export default function FeedPage() {
               textShadow: "0 0 40px rgba(255,149,0,0.35)",
             }}
           >
-            The Feed
+            The Private Feed
           </h1>
           <p className="text-[#C9B99A] text-sm sm:text-base max-w-xl">
             Dispatches from{" "}
@@ -410,7 +420,7 @@ export default function FeedPage() {
 
       {/* Trending rail */}
       <div className="relative z-10">
-        <section className="mx-auto mb-8 max-w-5xl px-4"><div className="rounded-2xl border border-[#FFB840]/30 bg-[#182635]/95 p-5"><p className="text-xs uppercase tracking-widest text-[#FFB840]">Automated conversation starter · The King’s Take</p><p className="mt-3 text-lg text-[#F0EBE1]">{['What would you record first: the timeline, the witnesses, or the original video? Why?','What question would you ask a civil-rights lawyer before filing? Keep personal case details private.','Which report deserves a follow-up? Tell the community what you want covered.'][Math.floor(Date.now()/86400000)%3]}</p><p className="mt-2 text-sm text-[#C9B99A]">A rotating editorial prompt, not a member message. Anyone can read the Feed; approved members can respond.</p><Link to="/learn2file" className="mt-3 inline-block text-[#FFB840] underline">Learn Section 1983 basics for free →</Link></div></section>
+        <section className="mx-auto mb-8 max-w-5xl px-4"><div className="rounded-2xl border border-[#FFB840]/30 bg-[#182635]/95 p-5"><p className="text-xs uppercase tracking-widest text-[#FFB840]">Automated conversation starter · The King’s Take</p><p className="mt-3 text-lg text-[#F0EBE1]">{['What would you record first: the timeline, the witnesses, or the original video? Why?','What question would you ask a civil-rights lawyer before filing? Keep personal case details private.','Which report deserves a follow-up? Tell the community what you want covered.'][Math.floor(Date.now()/86400000)%3]}</p><p className="mt-2 text-sm text-[#C9B99A]">A rotating editorial prompt, not a member message. Verified subscribers can read and respond inside this private Feed.</p><Link to="/learn2file" className="mt-3 inline-block text-[#FFB840] underline">Learn Section 1983 basics for free →</Link></div></section>
       <div className="mx-auto mb-8 max-w-5xl px-4"><FacebookSubscribeCTA /></div>
       <TrendingRail />
       </div>
@@ -1576,7 +1586,7 @@ function PostCard({
                   {post.memberName || "Ronald Lee King"} on #TheKingsTake
                 </h3>
                 <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-[#C9B99A]">
-                  News, research and independent conversations. Join the feed to read this post and participate.
+                  Premium subscriber conversation. Member access is required to read this post and participate.
                 </p>
                 <div className="mt-4 grid grid-cols-2 gap-2">
                   <a

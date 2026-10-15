@@ -274,6 +274,7 @@ function SettingsModule({ onLogout }: { onLogout: () => void }) {
 }
 
 function AccessCodesModule() {
+  const [verified,setVerified]=useState(false);
   const [label, setLabel] = useState("");
   const [email, setEmail] = useState("");
   const [newCode, setNewCode] = useState("");
@@ -291,6 +292,7 @@ function AccessCodesModule() {
   const revoke = trpc.member.adminRevokeAccessCode.useMutation({
     onSuccess: () => utils.member.adminListAccessCodes.invalidate(),
   });
+  const verifySubscriber = trpc.member.adminVerifyFacebookSubscriber.useMutation({onSuccess:()=>utils.member.adminListMembers.invalidate()});
   const setMemberActive = trpc.member.adminSetMemberActive.useMutation({
     onSuccess: () => utils.member.adminListMembers.invalidate(),
   });
@@ -322,15 +324,17 @@ function AccessCodesModule() {
           className="bg-white/[0.03] border border-white/[0.08] rounded px-3 py-2 text-[#F0EBE1]"
         />
       </div>
+      <label className="mb-4 flex gap-3 text-sm text-[#C9B99A]"><input type="checkbox" checked={verified} onChange={e=>setVerified(e.target.checked)}/>I checked this person’s current Facebook subscription. Code access expires in 30 days. A locked email is required.</label>
       <button
         onClick={() =>
           generate.mutate({
             label: label || undefined,
             invitedEmail: email,
             expiresInDays: 30,
+            verifiedFacebookSubscriber: true,
           })
         }
-        disabled={generate.isPending}
+        disabled={generate.isPending || !verified || !email}
         className="bg-[#FF9500] text-[#182635] font-bold rounded px-4 py-2 disabled:opacity-50"
       >
         Generate One-Time Code
@@ -402,9 +406,10 @@ function AccessCodesModule() {
             <div className="flex-1">
               <p className="text-sm text-[#F0EBE1]">{member.name}</p>
               <p className="text-xs text-[#C9B99A]/50">
-                {member.email} · {member.isActive ? "Active" : "Disabled"}
+                {member.email} · {member.isActive ? "Active" : "Disabled"} · Facebook access: {member.facebookVerifiedUntil ? new Date(member.facebookVerifiedUntil).toLocaleDateString() : "Not verified"}
               </p>
             </div>
+            <button className="text-xs text-[#FFB840]" onClick={()=>{if(window.confirm("Confirm you checked this member’s current Facebook subscription. Renew access for 30 days?"))verifySubscriber.mutate({id:member.id,verified:true});}}>Verify / renew Facebook access</button><button className="text-xs text-red-300" onClick={()=>verifySubscriber.mutate({id:member.id,verified:false})}>Revoke subscriber access</button>
             <button
               onClick={() =>
                 setMemberActive.mutate({

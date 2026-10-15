@@ -3,7 +3,7 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import type { TrpcContext } from "./context";
 import { verifyAdminToken } from "./security/auth";
-import { getActiveMemberFromRequest } from "./security/member-session";
+import { getFeedActorFromRequest, getActiveMemberFromRequest } from "./security/member-session";
 import type { User } from "@db/schema";
 
 const t = initTRPC.context<TrpcContext>().create({
@@ -72,3 +72,11 @@ export const authedQuery = t.procedure.use(requireAuth);
 export const memberQuery = publicQuery.use(requireMember);
 // Admin query: checks OAuth admin OR password token. Does NOT require OAuth first.
 export const adminQuery = publicQuery.use(requireRole("admin"));
+
+export const subscriberQuery=publicQuery.use(async({ctx,next})=>{
+ if(ctx.user?.role==='admin')return next({ctx});
+ const member=await getFeedActorFromRequest(ctx.req);
+ if(!member)throw new TRPCError({code:"UNAUTHORIZED",message:"Private Feed: an owner-verified Facebook subscription and member login are required."});
+ ctx.resHeaders.set("Cache-Control","private, no-store");
+ return next({ctx:{...ctx,member}});
+});

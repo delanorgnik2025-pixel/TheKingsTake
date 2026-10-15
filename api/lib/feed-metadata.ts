@@ -6,10 +6,11 @@ function escapeAttribute(value: string) {
 
 /** Invite readers into the community without copying a member's post into metadata. */
 export function feedMetadataHtml(template: string, requestUrl: string, author?: string) {
-  const title = author ? `Join ${author} on The King's Take community feed` : "Your voice. Your community. | The King's Take";
-  const description = "News, research and independent conversations. Visit the feed to read, join the community and participate with member access.";
+  const title = "Private Feed · Subscriber Access | #TheKingsTake";
+  void author;
+  const description = "Premium member access: share ideas and conversation inside The King’s Take private subscriber circle. Verified Facebook subscription and website login required. Shared links never disclose the private post.";
   const canonical = new URL(new URL(requestUrl).pathname, siteOrigin).toString();
-  const image = `${siteOrigin}/images/feed-community-share-v1.jpg`;
+  const image = `${siteOrigin}/images/private-feed-share-20261015.jpg`;
   let html = template.replace(/<title>[^<]*<\/title>/i, `<title>${escapeAttribute(title)}</title>`);
   const meta = (attribute: "name" | "property", key: string, value: string) => {
     const tag = `<meta ${attribute}="${key}" content="${escapeAttribute(value)}" />`;
@@ -21,7 +22,7 @@ export function feedMetadataHtml(template: string, requestUrl: string, author?: 
     "og:title": title, "og:description": description, "og:type": "website",
     "og:url": canonical, "og:image": image, "og:image:secure_url": image,
     "og:image:width": "1200", "og:image:height": "628", "og:image:type": "image/jpeg",
-    "og:image:alt": "The King's Take: Your voice. Your community. Join the feed.",
+    "og:image:alt": "#TheKingsTake · Premium subscriber community · Member access required",
   })) meta("property", key, value);
   for (const [key, value] of Object.entries({ "twitter:card": "summary_large_image", "twitter:title": title, "twitter:description": description, "twitter:image": image })) meta("name", key, value);
   html = html.replace(/<link[^>]+rel="canonical"[^>]*>/gi, "").replace("</head>", `<link rel="canonical" href="${escapeAttribute(canonical)}" />\n</head>`);

@@ -6,3 +6,6 @@ Disallow: /pre-order/success
 Disallow: /newsletter/unsubscribe
 
 Sitemap: https://thekingstake.com/sitemap.xml
+
+# Member content requires authorization; only the generic entrance is public.
+Disallow: /feed/post/

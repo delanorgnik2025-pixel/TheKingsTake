@@ -1,6 +1,6 @@
 import { videoNewsSchema, storyUpdateSchema } from "@contracts/video-news";
 import { z } from "zod";
-import { createRouter, publicQuery, authedQuery, adminQuery } from "./middleware";
+import { createRouter, publicQuery, adminQuery } from "./middleware";
 import { getDb } from "./queries/connection";
 import { posts, users } from "@db/schema";
 import { and, eq, desc, sql } from "drizzle-orm";
@@ -42,7 +42,7 @@ export const blogRouter = createRouter({
     }),
 
   // Setup: promote current user to admin (one-time use)
-  makeMeAdmin: authedQuery
+  makeMeAdmin: adminQuery
     .mutation(async ({ ctx }) => {
       const db = getDb();
       const user = (ctx as any).user;

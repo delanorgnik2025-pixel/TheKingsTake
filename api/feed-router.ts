@@ -1,5 +1,6 @@
+import {getFeedActorFromRequest} from './security/member-session';
 import { z } from "zod";
-import { createRouter, publicQuery, adminQuery } from "./middleware";
+import { createRouter, publicQuery, adminQuery, subscriberQuery } from "./middleware";
 import { getDb } from "./queries/connection";
 import { feedPosts, members } from "@db/schema";
 import { eq, desc, sql } from "drizzle-orm";
@@ -7,8 +8,9 @@ import { createDirectUpload, getUpload, getAsset, muxConfigured } from "./mux";
 import { createHash } from "node:crypto";
 
 export const feedRouter = createRouter({
-  // Public: retrieve one post for permanent share links.
-  getById: publicQuery
+  access: publicQuery.query(async({ctx})=>({allowed:ctx.user?.role==='admin'||!!(await getFeedActorFromRequest(ctx.req))})),
+  // Subscriber: retrieve one post for permanent share links.
+  getById: subscriberQuery
     .input(z.object({ id: z.number().int().positive() }))
     .query(async ({ input }) => {
       const db = getDb();
@@ -28,7 +30,7 @@ export const feedRouter = createRouter({
     }),
 
   // Public: list feed posts — pinned first, then newest. Simple cursor paging.
-  list: publicQuery
+  list: subscriberQuery
     .input(
       z.object({
         limit: z.number().min(1).max(50).default(20),
@@ -56,7 +58,7 @@ export const feedRouter = createRouter({
     }),
 
   // Public: like a post
-  like: publicQuery
+  like: subscriberQuery
     .input(z.object({ id: z.number() }))
     .mutation(async ({ input }) => {
       const db = getDb();

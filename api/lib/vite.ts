@@ -5,7 +5,7 @@ import { serveStatic } from "@hono/node-server/serve-static";
 import fs from "fs";
 import path from "path";
 import { and, eq } from "drizzle-orm";
-import { feedPosts, members, posts } from "@db/schema";
+import { posts } from "@db/schema";
 import { getDb } from "../queries/connection";
 
 import { articleMetadataHtml } from "./article-metadata";
@@ -54,26 +54,8 @@ export function serveStaticFiles(app: App, buildRoot?: string) {
     const indexPath = path.resolve(distPath, "index.html");
     if (!fs.existsSync(indexPath)) return c.json({ error: "Frontend build not found" }, 500);
 
-    try {
-      const rows = await getDb()
-        .select({
-          id: feedPosts.id,
-          body: feedPosts.body,
-          imageUrl: feedPosts.imageUrl,
-          muxPlaybackId: feedPosts.muxPlaybackId,
-          memberName: members.name,
-        })
-        .from(feedPosts)
-        .leftJoin(members, eq(members.id, feedPosts.memberId))
-        .where(eq(feedPosts.id, postId))
-        .limit(1);
-      if (!rows[0]) return c.notFound();
-      c.header("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
-      return c.html(feedMetadataHtml(fs.readFileSync(indexPath, "utf-8"), c.req.url, rows[0].memberName || "Ronald Lee King"));
-    } catch (error) {
-      console.error("Could not render shared feed post metadata", error);
-      return c.html(fs.readFileSync(indexPath, "utf-8"));
-    }
+    c.header("Cache-Control", "private, no-store");
+    return c.html(feedMetadataHtml(fs.readFileSync(indexPath, "utf-8"), c.req.url));
   };
 
   app.get("/feed", c => {
@@ -108,9 +90,13 @@ export function serveStaticFiles(app: App, buildRoot?: string) {
     html=replaceMeta(html,'property','og:title',title);
     html=replaceMeta(html,'property','og:description','Open the free guided JS 44 and IFP course, or explore upcoming courses and Ronald Lee King’s book.');
     html=replaceMeta(html,'property','og:url','https://thekingstake.com'+route);
+    const courseImage='https://thekingstake.com/images/learn2file-share-20261015.jpg';
+    for(const [kind,key,value] of [['property','og:image',courseImage],['property','og:image:secure_url',courseImage],['property','og:image:width','1200'],['property','og:image:height','628'],['property','og:image:type','image/jpeg'],['property','og:image:alt','Learn2File: nine free guided lessons and a final test from AASOTU Media Group LLC'],['name','twitter:card','summary_large_image'],['name','twitter:image',courseImage],['name','twitter:title',title],['name','twitter:description','Free JS 44, filing fee and IFP lessons, practice checkpoints and a final test.']])html=replaceMeta(html,kind as 'name'|'property',key,value);
+
     html=replaceMeta(html,'name','description','Free Section 1983 learning and upcoming courses from AASOTU Media Group LLC.');
     const canonical=`<link rel="canonical" href="https://thekingstake.com${route}" />`;
     html=/<link[^>]+rel="canonical"[^>]*>/i.test(html)?html.replace(/<link[^>]+rel="canonical"[^>]*>/i,canonical):html.replace('</head>',canonical+'</head>');
+    c.header("Cache-Control","public, max-age=60");
     return c.html(html);
   });
 
