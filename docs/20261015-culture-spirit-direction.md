@@ -1,0 +1,9 @@
+# Culture and Spirit release
+
+- Dispatch now commissions seven approval drafts, led by creator culture and hip-hop. General Africa is excluded; Burkina Faso remains. Existing articles and campaigns are retained. Today’s previously prepared campaign is not silently rewritten.
+- Broad autonomous news Feed generation remains paused by its existing database control. If resumed, two of four existing slots cover culture and none commissions the legacy broad-Africa beat.
+- The daily Almanac is separate: one dated subscriber Feed post after 08:00 Eastern, including twelve zodiac reflection prompts and one rotating sourced reading. It uses prewritten original material, not computed transits, AI generation or external media calls. Database lock plus transactional completion record prevents duplicate posts across restarts. DAILY_ALMANAC_ENABLED=false disables it. Completed days are cached in memory to avoid repeated database checks.
+- Two new website explainers and two subscriber Feed introductions are inserted once by a controlled migration. No email or external social posting is performed.
+- Spirit & Symbol separates living traditions, historical manuscripts and fiction. UNESCO, Smithsonian, British Library and literary archive sources are linked. Abstract existing cosmic artwork represents the section, not an authentic ritual or artifact. Some UNESCO pages challenge automated readers; indexed source descriptions and institutional records inform the introductory readings.
+- Weather and culture research instructions seek exact verified original video URLs and dates for editorial embed selection. Videos are not fabricated or automatically restreamed. The new creator explainer embeds the already verified original Kai Cenat class-reveal video as dated background.
+- Uranium context is explicitly located in Niger, with Orano’s position attributed. Burkina Faso government reporting is attributed official reporting, not independent verification of outcomes.

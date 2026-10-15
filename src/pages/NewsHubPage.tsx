@@ -44,6 +44,7 @@ export default function NewsHubPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-6 py-4 md:px-12">
+        <Link to="/spirit-and-symbol" className="mb-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-[#FFB840]/30 bg-cover bg-center p-7" style={{backgroundImage:"linear-gradient(90deg,rgba(16,27,40,.9),rgba(16,27,40,.75)),url(/images/cosmic-bg.jpg)"}}><span><span className="text-xs uppercase tracking-widest text-[#FFB840]">Spirit &amp; Symbol</span><span className="mt-2 block text-2xl">Ancestral knowledge. Hidden books. Daily reflections.</span></span><span className="text-[#FFB840]">Explore the library →</span></Link>
         <div className="mb-6"><p className="text-xs uppercase tracking-[0.18em] text-[#D99127]">Sections</p><h2 className="mt-2 text-3xl">Go deeper by desk.</h2></div>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {NEWS_SECTIONS.map(section => {

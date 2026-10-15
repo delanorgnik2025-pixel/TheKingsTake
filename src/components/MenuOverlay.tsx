@@ -19,6 +19,8 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
     { label: 'Foundational Black American', href: '/fba', icon: <Landmark size={16} />, desc: 'Our lineage, identity, and claim' },
     { label: 'The Feed', href: '/feed', icon: <Newspaper size={16} />, desc: 'News, posts & live broadcasts' },
     { label: 'News Hub', href: '/news-hub', icon: <Radio size={16} />, desc: 'Breaking news & sourced daily reporting', highlight: true },
+    { label: 'Hip-Hop & Creator Culture', href: '/hip-hop', icon: <Radio size={16} />, desc: 'Inside the streams, music & creator business', highlight: true },
+    { label: 'Spirit & Symbol', href: '/spirit-and-symbol', icon: <Sparkles size={16} />, desc: 'Ancestral knowledge, texts & daily reflections' },
     { label: 'Investigations', href: '/investigations', icon: <FileSearch size={16} />, desc: 'Documents, timelines & research reports' },
     { label: 'Search Archives', href: '/archives', icon: <Landmark size={16} />, desc: 'NARA and Library of Congress records' },
     { label: 'Brand Studio', href: '/brand-studio', icon: <Globe size={16} />, desc: 'Websites, identity & author launches', highlight: true },

@@ -38,10 +38,10 @@ export const NEWS_SECTIONS = [
   },
   {
     id: "africa-sovereignty",
-    label: "Africa & Sovereignty",
+    label: "Burkina Faso & Regional Politics",
     kicker: "Power, resources & self-determination",
-    detail: "The Sahel, African sovereignty, resource control, decolonization, governance and community movements.",
-    beats: ["sahel", "africa"] as NewsBeatId[],
+    detail: "Burkina Faso, Ibrahim Traoré, resources and regional politics. Niger uranium coverage appears when it directly connects to this regional story; older Africa reporting remains in the archive.",
+    beats: ["sahel"] as NewsBeatId[],
   },
   {
     id: "science-earth",

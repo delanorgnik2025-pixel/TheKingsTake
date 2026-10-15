@@ -50,6 +50,7 @@ const NolanRecordsPage = lazy(() => import('./pages/NolanRecordsPage'))
 const VideoNewsPage = lazy(() => import('./pages/VideoNewsPage'))
 const AdminArticlesPage = lazy(() => import('./pages/AdminBlog'))
 const NewsHubPage = lazy(() => import('./pages/NewsHubPage'))
+const SpiritLibraryPage = lazy(() => import('./pages/SpiritLibraryPage'))
 const HipHopPage = lazy(() => import('./pages/HipHopPage'))
 const NewsSectionPage = lazy(() => import('./pages/NewsSectionPage'))
 const NewsletterUnsubscribePage = lazy(() => import('./pages/NewsletterUnsubscribePage'))
@@ -125,6 +126,8 @@ function AppRoutes() {
           <Route path="/video-news" element={<VideoNewsPage />} />
           <Route path="/admin/articles" element={<AdminArticlesPage />} />
           <Route path="/hip-hop" element={<HipHopPage />} />
+          <Route path="/spirit-and-symbol" element={<SpiritLibraryPage />} />
+          <Route path="/spirit-and-symbol/:entrySlug" element={<SpiritLibraryPage />} />
           <Route path="/news-hub" element={<NewsHubPage />} />
           <Route path="/news-hub/:sectionId" element={<NewsSectionPage />} />
           <Route path="/brand-studio" element={<BrandStudioPage />} />

@@ -81,7 +81,7 @@ export async function researchCurrentNews(apiKey: string, focus: string) {
       tools: [{ type: "web_search", search_context_size: "low" }],
       tool_choice: "required",
       max_output_tokens: 1800,
-      input: `Today is ${easternDailyKey()}. Research current developments from the last 48 hours for TheKingsTake.com readers. Research this coverage beat ONLY: ${focus} Choose one consequential verified story. If no new development is confirmed, explicitly produce a dated background/context brief using the most recent reliable evidence rather than inventing breaking news. Verify the lead with at least two independent credible sources, prioritizing public agencies, primary documents, established newsrooms, and subject-matter institutions. Avoid rumors, clickbait, celebrity gossip, and unsupported claims. Return a concise factual brief with dates, why each item matters, uncertainty, and citations. This is a draft for human approval; do not invent the publisher's personal opinion.`,
+      input: `Today is ${easternDailyKey()}. Research current developments from the last 48 hours for TheKingsTake.com readers. Research this coverage beat ONLY: ${focus} Choose one consequential verified story. If no new development is confirmed, explicitly produce a dated background/context brief using the most recent reliable evidence rather than inventing breaking news. Verify the lead with at least two independent credible sources, prioritizing public agencies, primary documents, established newsrooms, and subject-matter institutions. Avoid rumors, clickbait, celebrity gossip, and unsupported claims. For weather and creator stories, look for a relevant original video from the official agency or creator; include the exact watch URL, publisher and original date only if verified, for editorial embed selection. Never invent video IDs or label old footage as live. Return a concise factual brief with dates, why each item matters, uncertainty, and citations. This is a draft for human approval; do not invent the publisher's personal opinion.`,
     }),
   });
   if (!response.ok) {
@@ -222,14 +222,14 @@ export async function generateDailyNewsDraft() {
   }
   const articles = await db.select().from(posts).where(eq(posts.newsEdition, dailyKey)).orderBy(posts.newsBeat);
   if (articles.length !== DISPATCH_BEATS.length) throw new Error("Some coverage beats are still being researched; completed drafts are saved for the next attempt.");
-  const lead = articles.find(article => article.newsBeat === "ai-policy") || articles.find(article => article.newsBeat === "environment") || articles[0];
+  const lead = articles.find(article => article.newsBeat === "creator-culture") || articles.find(article => article.newsBeat === "hip-hop") || articles.find(article => article.newsBeat === "ai-policy") || articles.find(article => article.newsBeat === "environment") || articles[0];
   const digest = articles.map(article => `## ${NEWS_BEATS.find(beat => beat.id === article.newsBeat)?.label}\n${article.title}\n\n${article.excerpt}\n\n[Read the full report](https://thekingstake.com/blog/${article.slug})`).join("\n\n");
   const sources = [...new Set(articles.flatMap(article => [...article.content.matchAll(/\]\((https?:[^)]+)\)/g)].map(match => match[1])))];
   const [result] = await db.insert(newsletterCampaigns).values({
-    subject: `The King's Dispatch · ${easternDailyKey()} · Nine research beats`,
-    previewText: "Crime and justice, AI, weather, world affairs, Africa, science and policy — today's sourced reporting.",
+    subject: `The King's Dispatch · ${easternDailyKey()} · ${DISPATCH_BEATS.length} research beats`,
+    previewText: "Creators, hip-hop, civil rights, weather, Burkina Faso, technology and science — sourced reporting for our community.",
     content: digest, sourceUrls: JSON.stringify(sources), automated: true, dailyKey,
-    researchSummary: "Nine individually sourced research briefs. Review the full newsroom bundle before approving this single digest.",
+    researchSummary: `${DISPATCH_BEATS.length} individually sourced research briefs, led by culture. Review the full newsroom bundle before approving this single digest.`,
     imageUrl: lead.coverImage, imageAlt: lead.title, imageCredit: "See the image credit in the linked article.",
     articleTitle: lead.title, articleSlug: lead.slug, articleExcerpt: lead.excerpt, articleContent: lead.content,
   });

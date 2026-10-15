@@ -1,3 +1,4 @@
+import {spiritEntry} from '../../contracts/spirit-library';
 import { NOLAN_RECORDS_PATH, NOLAN_RECORDS_TITLE, NOLAN_RECORDS_DESCRIPTION, NOLAN_RECORDS_IMAGE } from '../../contracts/nolan-records';
 import type { Context, Hono } from "hono";
 import type { HttpBindings } from "@hono/node-server";
@@ -34,6 +35,21 @@ export function serveStaticFiles(app: App, buildRoot?: string) {
   // We need ../../dist/public to reach dist/public
   const distPath = buildRoot || path.resolve(import.meta.dirname, "../../dist/public");
   const staticRoot = path.relative(process.cwd(), distPath) || ".";
+
+  const spiritMetadata = (c: Context<{ Bindings: HttpBindings }>) => {
+    const file=path.resolve(distPath,'index.html');if(!fs.existsSync(file))return c.notFound();
+    const slug=c.req.param('entrySlug');const entry=spiritEntry(slug);
+    if(slug&&!entry)return c.notFound();
+    const title=(entry?.title||'Spirit & Symbol')+" | The King's Take";
+    const description=entry?.intro||'Living traditions, historical manuscripts, symbolism and daily zodiac reflections from AASOTU Media Group LLC.';
+    let html=fs.readFileSync(file,'utf8').replace(/<title>[^<]*<\/title>/i,`<title>${escapeAttribute(title)}</title>`);
+    const url='https://thekingstake.com/spirit-and-symbol'+(entry?'/'+entry.slug:'');
+    for(const [kind,key,value] of [['property','og:title',title],['property','og:description',description],['property','og:url',url],['property','og:image','https://thekingstake.com/images/cosmic-bg.jpg'],['name','description',description],['name','twitter:title',title],['name','twitter:description',description],['name','twitter:image','https://thekingstake.com/images/cosmic-bg.jpg'],['name','twitter:card','summary_large_image']])html=replaceMeta(html,kind as 'name'|'property',key,value);
+    html=html.replace(/<link[^>]+rel="canonical"[^>]*>/gi,'').replace('</head>',`<link rel="canonical" href="${url}" /></head>`);
+    c.header('Cache-Control','public, max-age=300');return c.html(html);
+  };
+  app.get('/spirit-and-symbol',spiritMetadata);
+  app.get('/spirit-and-symbol/:entrySlug',spiritMetadata);
 
   // Existing saved article/image URLs also resolve to the confirmed original cover.
   app.get("/images/book-cover.jpg", c => c.redirect("/images/book-cover-author-confirmed-v2.jpg", 302));

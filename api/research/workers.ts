@@ -1,3 +1,4 @@
+import {runDailyAlmanac} from './daily-almanac';
 import {HISTORY_RESEARCH_TOPICS} from '../../contracts/history-research-topics';
 import {RESEARCH_STATE_AREAS} from '../../contracts/research-state-areas';
 import type {RowDataPacket,ResultSetHeader} from 'mysql2/promise';
@@ -29,9 +30,9 @@ export function trustedSources<T extends {url:string}>(sources:T[], beat?:string
 }
 export function scheduledFeedBeat(slot:string){
  const hour=Number(slot.slice(-2)),day=Number(slot.slice(8,10));
- // One of the existing four drops covers culture; the other three keep the established desks rotating.
- const rotation=NEWS_BEATS.filter(beat=>!isCulture(beat.id));
- return hour===20 ? NEWS_BEATS.find(beat=>beat.id===(day%2?'hip-hop':'creator-culture'))! : rotation[(day+Math.floor((hour-8)/4))%rotation.length];
+ // If the owner resumes news publication, two of four existing slots cover culture.
+ const rotation=NEWS_BEATS.filter(beat=>["crime-justice","weather","sahel","ai-policy","environment"].includes(beat.id));
+ return hour===12||hour===20 ? NEWS_BEATS.find(beat=>beat.id===((day+(hour===12?1:0))%2?'hip-hop':'creator-culture'))! : rotation[(day+Math.floor((hour-8)/4))%rotation.length];
 }
 async function autoLocate(c:Awaited<ReturnType<typeof agentDb>>,row:RowDataPacket){
  const record=JSON.parse(row.record_json) as ArchiveRecord;
@@ -125,6 +126,7 @@ export async function runAutonomousWorker(kind:'feed'|'map',now=new Date()){
  }finally{if(locked)await c.query('SELECT RELEASE_LOCK(?)',[`aasotu_${kind}_worker`]);await c.end();}
 }
 export function startAutonomousWorkers(){
- const tick=()=>{void runAutonomousWorker('map').catch(()=>console.error('[map-agent] Database unavailable'));void runAutonomousWorker('feed').catch(()=>console.error('[feed-agent] Database unavailable'));};
- setTimeout(tick,30000).unref();setInterval(tick,5*60*1000).unref();console.log('[agents] Map archive drops at 00:00/06:00/12:00/18:00 Eastern and feed at 08:00/12:00/16:00/20:00 Eastern enabled.');
+ let almanacDay='';
+ const tick=()=>{const day=researchDay(new Date());if(almanacDay!==day)void runDailyAlmanac().then(result=>{if(result.status==='completed')almanacDay=day;}).catch(()=>console.error('[almanac] Daily publication unavailable; will retry without external generation'));void runAutonomousWorker('map').catch(()=>console.error('[map-agent] Database unavailable'));void runAutonomousWorker('feed').catch(()=>console.error('[feed-agent] Database unavailable'));};
+ setTimeout(tick,30000).unref();setInterval(tick,5*60*1000).unref();console.log('[almanac] One daily zodiac/reflection post after 08:00 Eastern; no AI calls.');console.log('[agents] Map archive drops at 00:00/06:00/12:00/18:00 Eastern and feed at 08:00/12:00/16:00/20:00 Eastern enabled.');
 }
