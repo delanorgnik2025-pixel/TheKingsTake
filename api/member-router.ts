@@ -2,7 +2,7 @@ import { z } from "zod";
 import { eq, and, desc, sql } from "drizzle-orm";
 import { createHash } from "node:crypto";
 import { TRPCError } from "@trpc/server";
-import { adminQuery, createRouter, publicQuery } from "./middleware";
+import { adminQuery, createRouter, publicQuery, subscriberQuery } from "./middleware";
 import { getDb } from "./queries/connection";
 import {
   members,
@@ -21,6 +21,7 @@ import { createDirectUpload, getAsset, getUpload } from "./mux";
 import {
   getActiveMemberFromRequest as getMemberFromRequest,
   getFeedActorFromRequest,
+  getSubscriberFromRequest,
 } from "./security/member-session";
 
 export const memberRouter = createRouter({
@@ -30,6 +31,7 @@ export const memberRouter = createRouter({
       const [invite] = await getDb()
         .select({
           id: memberAccessCodes.id,
+          subscriberVerifiedUntil: memberAccessCodes.subscriberVerifiedUntil,
           invitedEmail: memberAccessCodes.invitedEmail,
           expiresAt: memberAccessCodes.expiresAt,
           usedAt: memberAccessCodes.usedAt,
@@ -40,6 +42,7 @@ export const memberRouter = createRouter({
         .limit(1);
       const valid = Boolean(
         invite &&
+        invite.subscriberVerifiedUntil && invite.subscriberVerifiedUntil > new Date() &&
         !invite.usedAt &&
         !invite.revokedAt &&
         (!invite.expiresAt || invite.expiresAt > new Date())
@@ -76,6 +79,7 @@ export const memberRouter = createRouter({
           .for("update");
         if (
           !invite ||
+          !invite.subscriberVerifiedUntil || invite.subscriberVerifiedUntil <= new Date() ||
           invite.usedAt ||
           invite.revokedAt ||
           (invite.expiresAt && invite.expiresAt <= new Date())
@@ -109,6 +113,7 @@ export const memberRouter = createRouter({
           email,
           passwordHash: await hashPassword(input.password),
           facebookSubscribed: true,
+          facebookVerifiedUntil: invite.subscriberVerifiedUntil,
         });
         const id = Number(result[0].insertId);
         await tx
@@ -212,7 +217,7 @@ export const memberRouter = createRouter({
       z.object({
         name: z.string().min(2).max(100).optional(),
         avatar: z.string().url().optional().nullable(),
-        facebookSubscribed: z.boolean().optional(),
+
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -229,9 +234,7 @@ export const memberRouter = createRouter({
         .set({
           ...(input.name && { name: input.name }),
           ...(input.avatar !== undefined && { avatar: input.avatar }),
-          ...(input.facebookSubscribed !== undefined && {
-            facebookSubscribed: input.facebookSubscribed,
-          }),
+
           updatedAt: new Date(),
         })
         .where(eq(members.id, member.id));
@@ -241,7 +244,7 @@ export const memberRouter = createRouter({
 
   // ── Feed: Post as Member ─────────────────────────────────────
   createImageUploadSignature: publicQuery.mutation(async ({ ctx }) => {
-    const member = await getMemberFromRequest(ctx.req);
+    const member = await getSubscriberFromRequest(ctx.req);
     if (!member)
       throw new TRPCError({ code: "UNAUTHORIZED", message: "Members only." });
     const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
@@ -297,7 +300,7 @@ export const memberRouter = createRouter({
       z.object({ corsOrigin: z.string().max(500).default("*") }).optional()
     )
     .mutation(async ({ input, ctx }) => {
-      const member = await getMemberFromRequest(ctx.req);
+      const member = await getSubscriberFromRequest(ctx.req);
       if (!member)
         throw new TRPCError({ code: "UNAUTHORIZED", message: "Members only." });
       const upload = await createDirectUpload(input?.corsOrigin || "*");
@@ -309,7 +312,7 @@ export const memberRouter = createRouter({
       z.object({ uploadId: z.string().min(1), body: z.string().max(2000) })
     )
     .mutation(async ({ input, ctx }) => {
-      const member = await getMemberFromRequest(ctx.req);
+      const member = await getSubscriberFromRequest(ctx.req);
       if (!member)
         throw new TRPCError({ code: "UNAUTHORIZED", message: "Members only." });
       const upload = await getUpload(input.uploadId);
@@ -360,7 +363,7 @@ export const memberRouter = createRouter({
     }),
 
   // ── Feed: List Comments ──────────────────────────────────────
-  listComments: publicQuery
+  listComments: subscriberQuery
     .input(z.object({ postId: z.number() }))
     .query(async ({ input }) => {
       const rows = await getDb()
@@ -463,8 +466,9 @@ export const memberRouter = createRouter({
     .input(
       z.object({
         label: z.string().max(255).optional(),
-        invitedEmail: z.string().email().optional().or(z.literal("")),
-        expiresInDays: z.number().int().min(1).max(365).default(30),
+        invitedEmail: z.string().email(),
+        expiresInDays: z.number().int().min(1).max(30).default(30),
+        verifiedFacebookSubscriber: z.literal(true),
       })
     )
     .mutation(async ({ input }) => {
@@ -473,6 +477,7 @@ export const memberRouter = createRouter({
       await getDb()
         .insert(memberAccessCodes)
         .values({
+          subscriberVerifiedUntil: expiresAt,
           codeHash: hashAccessCode(code),
           codePreview: `••••-${code.slice(-4)}`,
           label: input.label?.trim() || null,
@@ -521,12 +526,17 @@ export const memberRouter = createRouter({
         name: members.name,
         email: members.email,
         facebookSubscribed: members.facebookSubscribed,
+        facebookVerifiedUntil: members.facebookVerifiedUntil,
         isActive: members.isActive,
         role: members.role,
         createdAt: members.createdAt,
       })
       .from(members)
       .orderBy(desc(members.createdAt));
+  }),
+
+  adminVerifyFacebookSubscriber: adminQuery.input(z.object({id:z.number().int().positive(),verified:z.boolean()})).mutation(async({input})=>{
+   await getDb().update(members).set({facebookSubscribed:input.verified,facebookVerifiedUntil:input.verified?new Date(Date.now()+30*86400000):null,updatedAt:new Date()}).where(eq(members.id,input.id));return {success:true};
   }),
 
   adminSetMemberActive: adminQuery

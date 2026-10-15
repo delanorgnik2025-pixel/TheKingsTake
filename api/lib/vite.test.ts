@@ -55,3 +55,14 @@ describe('public Nolan capture metadata', () => {
    expect(html).toContain('No payment or access code required.');
   });
  });
+
+ describe('course sharing and private Feed metadata',()=>{
+  it('serves the actual course artwork, dimensions and Twitter metadata without JavaScript',async()=>{
+   const app=new Hono<{Bindings:HttpBindings}>();serveStaticFiles(app,root);const r=await app.request('/learn2file');const html=await r.text();
+   expect(html).toContain('https://thekingstake.com/images/learn2file-share-20261015.jpg');expect(html).toContain('property="og:image:width" content="1200"');expect(html).toContain('property="og:image:height" content="628"');expect(html).toContain('name="twitter:card" content="summary_large_image"');
+  });
+  it('returns only a generic subscriber invitation for a shared private-post URL',async()=>{
+   const app=new Hono<{Bindings:HttpBindings}>();serveStaticFiles(app,root);const r=await app.request('/feed/post/72/any-person');const html=await r.text();
+   expect(r.status).toBe(200);expect(html).toContain('Private Feed');expect(html).toContain('Subscriber Access');expect(html).not.toContain('Join any-person');expect(r.headers.get('cache-control')).toContain('no-store');
+  });
+ });

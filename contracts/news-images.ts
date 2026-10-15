@@ -1,4 +1,6 @@
 export const NEWS_IMAGES = {
+ 'doechii-archive':{url:'https://thekingstake.com/images/doechii-world-pride-archive.jpg',alt:'Doechii performing at World Pride in Washington DC in June 2025',caption:'Doechii, June 8, 2025. Archive photograph, not the new video.',credit:'Thesavagenorwegian · CC BY 4.0 · resized/compressed',sourceUrl:'https://commons.wikimedia.org/wiki/File:Doechii_World_Pride_DC_11.jpg',licenseUrl:'https://creativecommons.org/licenses/by/4.0/'},
+ 'kai-archive':{url:'https://thekingstake.com/images/kai-cenat-archive.jpg',alt:'Kai Cenat in a September 2021 archive screenshot',caption:'Kai Cenat, September 2021. Archive screenshot, not the 2026 event.',credit:'Agent 00 Gaming · CC BY 3.0 · resized/compressed',sourceUrl:'https://commons.wikimedia.org/wiki/File:Kai_Cenat.png',licenseUrl:'https://creativecommons.org/licenses/by/3.0/'},
   "erie-memorial-20261010": { url: "https://thekingstake.com/images/erie-memorial-20261010.webp", alt: "Symbolic candle memorial editorial illustration", caption: "Symbolic memorial · editorial illustration, not the scene or an actual vigil.", credit: "AASOTU Media Group LLC · #TheKingsTake", sourceUrl: "" },
   "creator-fallout-20261009": { url: "https://thekingstake.com/images/creator-fallout-20261009.webp", alt: "Separate illustrated portraits of Kai Cenat and Adrien Broner", caption: "Kai Cenat and Adrien Broner · illustration.", credit: "", sourceUrl: "" },
   "hip-hop": { url: "https://thekingstake.com/images/culture-music-v2.webp", alt: "Illustrated musicians in a recording studio", caption: "Independent music · illustration.", credit: "", sourceUrl: "" },
@@ -125,7 +127,9 @@ export const NEWS_IMAGES = {
   }
 } as const;
 
-export function newsImageForUrl(url: string | null | undefined) {
-  if (!url) return undefined;
-  return Object.values(NEWS_IMAGES).find(image => url.split("?")[0].endsWith(image.url.slice(image.url.indexOf("/images/"))));
+export function newsImageForUrl(url:string|null|undefined){
+ if(!url)return undefined;
+ try{const path=new URL(url,'https://thekingstake.com').pathname;
+ return Object.values(NEWS_IMAGES).find(image=>new URL(image.url,'https://thekingstake.com').pathname===path);
+ }catch{return undefined;}
 }

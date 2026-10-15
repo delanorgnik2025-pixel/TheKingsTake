@@ -1,3 +1,4 @@
+import {SECTION_ART} from '@contracts/section-art';
 import { Link, Navigate, useParams } from "react-router";
 import { ArrowLeft, ArrowRight, CloudLightning, Cpu, Globe2, Landmark, Leaf, Scale, Mic2 } from "lucide-react";
 import { NEWS_SECTIONS } from "@contracts/news-sections";
@@ -30,9 +31,10 @@ export default function NewsSectionPage() {
 
   return (
     <main className="min-h-screen bg-[#101b28] pb-24 pt-16 text-[#F0EBE1]">
-      <header className="border-b border-white/10 bg-[#182635] px-6 py-12 md:px-12">
+      <header className="border-b border-white/10 bg-[#182635] bg-cover bg-center px-6 py-12 md:px-12" style={{backgroundImage:`linear-gradient(90deg,rgba(16,27,40,.92),rgba(16,27,40,.72)),url(${SECTION_ART[section.id]})`}}>
         <div className="mx-auto max-w-7xl">
           <Link to="/news-hub" className="inline-flex items-center gap-2 text-sm text-[#C9B99A] hover:text-[#FFB840]"><ArrowLeft size={15}/> News Hub</Link>
+          <p className="mt-5 text-xs text-[#C9B99A]">Section artwork · not a live image or evidence of a current event</p>
           <div className="mt-8 flex items-start gap-4">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-[#FF9500]/25 bg-[#FF9500]/[0.07]"><Icon className="text-[#FF9500]" size={22}/></div>
             <div><p className="text-[10px] uppercase tracking-[0.22em] text-[#C9B99A]/60">{section.kicker}</p><h1 className="mt-1 text-4xl md:text-6xl">{section.label}</h1><p className="mt-4 max-w-3xl text-lg leading-relaxed text-[#C9B99A]">{section.detail}</p></div>
@@ -50,7 +52,7 @@ export default function NewsSectionPage() {
             <div className="overflow-hidden rounded-3xl border border-white/10 bg-[#182635]">
               <div className="border-b border-white/10 px-6 py-4"><p className="text-[10px] uppercase tracking-[0.2em] text-[#C9B99A]/60">Also in {section.label}</p></div>
               <div className="divide-y divide-white/10">
-                {secondary.map(story => <Link key={story.id} to={`/blog/${story.slug}`} className="block p-6 hover:bg-white/[0.02]"><h3 className="text-xl leading-snug">{story.title}</h3><p className="mt-2 line-clamp-2 text-sm leading-relaxed text-[#C9B99A]">{story.excerpt}</p></Link>)}
+                {secondary.map(story => <Link key={story.id} to={`/blog/${story.slug}`} className="block p-6 hover:bg-white/[0.02]">{story.coverImage&&<img src={story.coverImage} alt="" loading="lazy" className="mb-4 aspect-video w-full rounded-lg object-cover"/>}<h3 className="text-xl leading-snug">{story.title}</h3><p className="mt-2 line-clamp-2 text-sm leading-relaxed text-[#C9B99A]">{story.excerpt}</p></Link>)}
                 {secondary.length === 0 && <p className="p-6 text-sm text-[#C9B99A]">More approved stories will appear here.</p>}
               </div>
             </div>

@@ -24,6 +24,7 @@ const FeedPage = lazy(() => import('./pages/FeedPage'))
 const ServicesPage = lazy(() => import('./pages/ServicesPage'))
 const BrandStudioPage = lazy(() => import('./pages/BrandStudioPage'))
 const WritingServicesPage = lazy(() => import('./pages/WritingServicesPage'))
+const SitePoliciesPage = lazy(() => import('./pages/SitePoliciesPage'))
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 const CivicsPage = lazy(() => import('./pages/CivicsPage'))
@@ -65,7 +66,8 @@ function AppLayout({ children }: { children: React.ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null)
   const location = useLocation()
   const publicSalesPage = ['/courses','/learn2file','/buildyourcase','/joininnercircle','/feed'].includes(location.pathname) || location.pathname.startsWith('/feed/post/') || location.pathname === '/learn/section-1983-introduction' || location.pathname === '/brand-studio' || location.pathname === '/pre-order' || location.pathname === '/pre-order/success' || location.pathname === '/about-author'
-  const publicUtilityPage = location.pathname === '/investigations/nolan-wells/captured-report-pages' || publicSalesPage || location.pathname.startsWith('/admin') || location.pathname === '/privacy-policy' || location.pathname === '/newsletter/unsubscribe'
+  const researchEntryRequired = ['/archives','/deep-roots','/land-report','/ancestor-root-registry'].some(p=>location.pathname.startsWith(p))
+  const publicUtilityPage = !researchEntryRequired || location.pathname === '/investigations/nolan-wells/captured-report-pages' || publicSalesPage || location.pathname.startsWith('/admin') || location.pathname === '/privacy-policy' || location.pathname === '/newsletter/unsubscribe'
   const hideNav = location.pathname === '/ancestor-root-registry' || location.pathname.startsWith('/ancestor-root-registry/')
 
   useEffect(() => {
@@ -115,8 +117,8 @@ function AppRoutes() {
           <Route path="/" element={<HomePage />} />
           <Route path="/feed" element={<FeedPage />} />
           <Route path="/feed/post/:postId/:authorSlug?" element={<FeedPage />} />
-          <Route path="/blog" element={<Navigate to="/feed" replace />} />
-          <Route path="/news" element={<Navigate to="/feed" replace />} />
+          <Route path="/blog" element={<Navigate to="/news-hub" replace />} />
+          <Route path="/news" element={<Navigate to="/news-hub" replace />} />
           <Route path="/blog/:slug" element={<BlogPostPage />} />
           <Route path="/investigations/nolan-wells/captured-report-pages" element={<NolanRecordsPage />} />
           <Route path="/investigations" element={<InvestigationsPage />} />
@@ -128,6 +130,7 @@ function AppRoutes() {
           <Route path="/brand-studio" element={<BrandStudioPage />} />
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/writing-services" element={<WritingServicesPage />} />
+          <Route path="/site-policies" element={<SitePoliciesPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           {/* Terms of Service page - add when file exists */}
           {/* Ancestor Root Registry & Ancestor Realm — temporarily offline, in development */}

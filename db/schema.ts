@@ -293,6 +293,7 @@ export const members = mysqlTable("members", {
   name: varchar("name", { length: 255 }).notNull(),
   avatar: text("avatar"),
   facebookSubscribed: boolean("facebook_subscribed").default(false).notNull(),
+  facebookVerifiedUntil: timestamp("facebook_verified_until"),
   isActive: boolean("is_active").default(true).notNull(),
   role: mysqlEnum("role", ["member", "moderator", "admin"]).default("member").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -306,6 +307,7 @@ export type InsertMember = typeof members.$inferInsert;
 export const memberAccessCodes = mysqlTable("member_access_codes", {
   id: serial("id").primaryKey(),
   codeHash: varchar("code_hash", { length: 64 }).notNull().unique(),
+  subscriberVerifiedUntil: timestamp("subscriber_verified_until"),
   codePreview: varchar("code_preview", { length: 16 }).notNull(),
   label: varchar("label", { length: 255 }),
   invitedEmail: varchar("invited_email", { length: 320 }),

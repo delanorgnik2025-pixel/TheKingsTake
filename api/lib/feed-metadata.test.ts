@@ -6,7 +6,7 @@ const template = '<head><title>Generic</title><meta property="og:image" content=
 describe("community feed social preview", () => {
   it("replaces the generic image and dimensions while preserving the application", () => {
     const html = feedMetadataHtml(template, "https://thekingstake.com/feed/post/23/ronald-lee-king", "Ronald Lee King");
-    expect(html).toContain('content="https://thekingstake.com/images/feed-community-share-v1.jpg"');
+    expect(html).toContain('content="https://thekingstake.com/images/private-feed-share-20261015.jpg"');
     expect(html).toContain('property="og:image:height" content="628"');
     expect(html).not.toContain("generic.jpg");
     expect(html).toContain('name="twitter:card" content="summary_large_image"');
@@ -21,10 +21,11 @@ describe("community feed social preview", () => {
     expect(html).not.toContain("tracking=1");
   });
 
-  it("escapes author names and produces a community invitation", () => {
+  it("keeps author identities out of the public premium invitation", () => {
     const html = feedMetadataHtml(template, "https://thekingstake.com/feed", '<img src=x onerror="alert(1)">');
     expect(html).not.toContain('<img src=x');
-    expect(html).toContain("&lt;img");
+    expect(html).not.toContain("&lt;img");
+    expect(html).toContain("Subscriber Access");
     expect(html).toContain("member access");
   });
 });
