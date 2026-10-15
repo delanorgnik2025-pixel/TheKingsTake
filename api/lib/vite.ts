@@ -1,3 +1,4 @@
+import {FACEBOOK_SUBSCRIBE_URL} from '../../contracts/community';
 import {spiritEntry} from '../../contracts/spirit-library';
 import { NOLAN_RECORDS_PATH, NOLAN_RECORDS_TITLE, NOLAN_RECORDS_DESCRIPTION, NOLAN_RECORDS_IMAGE } from '../../contracts/nolan-records';
 import type { Context, Hono } from "hono";
@@ -99,18 +100,23 @@ export function serveStaticFiles(app: App, buildRoot?: string) {
     }
   });
 
-  for (const route of ['/courses','/learn2file','/buildyourcase','/joininnercircle']) app.get(route,c=>{
+  app.get('/joininnercircle',c=>c.redirect(FACEBOOK_SUBSCRIBE_URL,302));
+
+  for (const route of ['/courses','/learn2file','/case2court','/buildyourcase']) app.get(route,c=>{
     const file=path.resolve(distPath,'index.html'); if(!fs.existsSync(file)) return c.notFound();
-    const title=route==='/learn2file'?"Learn2File: Your Filing Roadmap | The King's Take":"Civil-Rights Courses & Books | The King's Take";
+    const isCase=route==='/case2court'||route==='/buildyourcase';
+    const canonicalRoute=isCase?'/case2court':route;
+    const title=isCase?"Case2Court: The Civil Rights Case Blueprint | The King's Take":route==='/learn2file'?"Learn2File: Your Filing Roadmap | The King's Take":"Civil-Rights Courses & Books | The King's Take";
+    const description=isCase?'Preview the planned six-module Case2Court course: organize a fictional civil-rights incident, preserve sources and build a practice case blueprint. In development.':'Open the free guided JS 44 and IFP course, or explore upcoming courses and Ronald Lee King’s book.';
     let html=fs.readFileSync(file,'utf-8').replace(/<title>[^<]*<\/title>/i,`<title>${escapeAttribute(title)}</title>`);
     html=replaceMeta(html,'property','og:title',title);
-    html=replaceMeta(html,'property','og:description','Open the free guided JS 44 and IFP course, or explore upcoming courses and Ronald Lee King’s book.');
-    html=replaceMeta(html,'property','og:url','https://thekingstake.com'+route);
-    const courseImage='https://thekingstake.com/images/learn2file-share-20261015.jpg';
-    for(const [kind,key,value] of [['property','og:image',courseImage],['property','og:image:secure_url',courseImage],['property','og:image:width','1200'],['property','og:image:height','628'],['property','og:image:type','image/jpeg'],['property','og:image:alt','Learn2File: nine free guided lessons and a final test from AASOTU Media Group LLC'],['name','twitter:card','summary_large_image'],['name','twitter:image',courseImage],['name','twitter:title',title],['name','twitter:description','Free JS 44, filing fee and IFP lessons, practice checkpoints and a final test.']])html=replaceMeta(html,kind as 'name'|'property',key,value);
+    html=replaceMeta(html,'property','og:description',description);
+    html=replaceMeta(html,'property','og:url','https://thekingstake.com'+canonicalRoute);
+    const courseImage=isCase?'https://thekingstake.com/images/bg-services.jpg':'https://thekingstake.com/images/learn2file-share-20261015.jpg';
+    for(const [kind,key,value] of [['property','og:image',courseImage],['property','og:image:secure_url',courseImage],...(!isCase?[['property','og:image:width','1200'],['property','og:image:height','628']]:[]),['property','og:image:type','image/jpeg'],['property','og:image:alt',isCase?'Case2Court: upcoming civil-rights case blueprint course':'Learn2File: nine free guided lessons and a final test from AASOTU Media Group LLC'],['name','twitter:card','summary_large_image'],['name','twitter:image',courseImage],['name','twitter:title',title],['name','twitter:description',description]])html=replaceMeta(html,kind as 'name'|'property',key,value);
 
-    html=replaceMeta(html,'name','description','Free Section 1983 learning and upcoming courses from AASOTU Media Group LLC.');
-    const canonical=`<link rel="canonical" href="https://thekingstake.com${route}" />`;
+    html=replaceMeta(html,'name','description',description);
+    const canonical=`<link rel="canonical" href="https://thekingstake.com${canonicalRoute}" />`;
     html=/<link[^>]+rel="canonical"[^>]*>/i.test(html)?html.replace(/<link[^>]+rel="canonical"[^>]*>/i,canonical):html.replace('</head>',canonical+'</head>');
     c.header("Cache-Control","public, max-age=60");
     return c.html(html);

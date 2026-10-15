@@ -77,3 +77,20 @@ describe('public Nolan capture metadata', () => {
    expect(r.status).toBe(200);expect(html).toContain('Private Feed');expect(html).toContain('Subscriber Access');expect(html).not.toContain('Join any-person');expect(r.headers.get('cache-control')).toContain('no-store');
   });
  });
+
+describe('course preview and membership destinations',()=>{
+ it('gives both case-course links a distinct preview and one canonical URL',async()=>{
+  const app=new Hono<{Bindings:HttpBindings}>();serveStaticFiles(app,root);
+  for(const route of ['/case2court','/buildyourcase']){
+   const response=await app.request(route);expect(response.status).toBe(200);
+   const html=await response.text();expect(html).toContain('Case2Court: The Civil Rights Case Blueprint');
+   expect(html).toContain('rel="canonical" href="https://thekingstake.com/case2court"');
+   expect(html).toContain('In development.');expect(html).not.toContain('learn2file-share-20261015.jpg');
+  }
+ });
+ it('takes the legacy Inner Circle link to the Facebook subscription instead of another course waitlist',async()=>{
+  const app=new Hono<{Bindings:HttpBindings}>();serveStaticFiles(app,root);
+  const response=await app.request('/joininnercircle');expect(response.status).toBe(302);
+  expect(response.headers.get('location')).toBe('https://www.facebook.com/TheKingsTake/subscribe/');
+ });
+});
