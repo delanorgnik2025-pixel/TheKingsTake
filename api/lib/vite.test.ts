@@ -7,6 +7,17 @@ import path from 'node:path';
 vi.mock('../queries/connection', () => ({ getDb: vi.fn() }));
 import { serveStaticFiles } from './vite';
 
+describe('Spirit and Symbol metadata',()=>{
+ it('shares a public reading title and rejects unknown entries without a database lookup',async()=>{
+  const app=new Hono<{Bindings:HttpBindings}>();serveStaticFiles(app,root);
+  const response=await app.request('/spirit-and-symbol/necronomicon-fiction-and-myth');
+  expect(response.status).toBe(200);const html=await response.text();
+  expect(html).toContain('The Necronomicon and the art of making a myth');
+  expect(html).toContain('https://thekingstake.com/spirit-and-symbol/necronomicon-fiction-and-myth');
+  expect((await app.request('/spirit-and-symbol/unknown')).status).toBe(404);
+ });
+});
+
 const root = mkdtempSync(path.join(tmpdir(), 'tkt-crawlers-'));
 writeFileSync(path.join(root, 'index.html'), '<html><head><title>Generic</title></head><body>SPA fallback</body></html>');
 for (const file of ['robots.txt', 'sitemap.xml']) writeFileSync(path.join(root, file), readFileSync(path.resolve('public', file)));
