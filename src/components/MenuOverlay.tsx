@@ -14,10 +14,11 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
 
   const menuItems = [
     { label: 'Home', href: '/', icon: null, desc: 'Main page' },
+    { label: 'Learn2File', href: '/learn2file', icon: <ScrollText size={16} />, desc: 'Free guided filing course & final test', highlight: true },
     { label: 'Sign the Petition', href: '/petition', icon: <Flame size={16} />, desc: 'Demand FBA federal recognition', highlight: true },
     { label: 'Book Consultation', href: '/consultation', icon: <Calendar size={16} />, desc: 'One-on-one with Ronald Lee King', highlight: true },
     { label: 'Foundational Black American', href: '/fba', icon: <Landmark size={16} />, desc: 'Our lineage, identity, and claim' },
-    { label: 'The Feed', href: '/feed', icon: <Newspaper size={16} />, desc: 'News, posts & live broadcasts' },
+    { label: 'The Feed', href: '/feed', icon: <Newspaper size={16} />, desc: 'Private conversations for subscribers' },
     { label: 'News Hub', href: '/news-hub', icon: <Radio size={16} />, desc: 'Breaking news & sourced daily reporting', highlight: true },
     { label: 'Hip-Hop & Creator Culture', href: '/hip-hop', icon: <Radio size={16} />, desc: 'Inside the streams, music & creator business', highlight: true },
     { label: 'Spirit & Symbol', href: '/spirit-and-symbol', icon: <Sparkles size={16} />, desc: 'Ancestral knowledge, texts & daily reflections' },
@@ -52,7 +53,7 @@ export default function MenuOverlay({ isOpen, onClose }: MenuOverlayProps) {
           style={{ background: 'rgba(5,8,14,0.97)', backdropFilter: 'blur(20px)' }}
         >
           {/* Close */}
-          <button onClick={onClose} className="absolute top-6 right-6 text-[#F0EBE1] hover:text-[#FF9500] transition-colors p-2">
+          <button aria-label="Close navigation menu" onClick={onClose} className="absolute top-6 right-6 text-[#F0EBE1] hover:text-[#FF9500] transition-colors p-2">
             <X size={28} />
           </button>
 
