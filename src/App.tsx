@@ -66,7 +66,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
   }, [])
   const lenisRef = useRef<Lenis | null>(null)
   const location = useLocation()
-  const publicSalesPage = ['/courses','/learn2file','/buildyourcase','/joininnercircle','/feed'].includes(location.pathname) || location.pathname.startsWith('/feed/post/') || location.pathname === '/learn/section-1983-introduction' || location.pathname === '/brand-studio' || location.pathname === '/pre-order' || location.pathname === '/pre-order/success' || location.pathname === '/about-author'
+  const publicSalesPage = ['/courses','/learn2file','/case2court','/buildyourcase','/joininnercircle','/feed'].includes(location.pathname) || location.pathname.startsWith('/feed/post/') || location.pathname === '/learn/section-1983-introduction' || location.pathname === '/brand-studio' || location.pathname === '/pre-order' || location.pathname === '/pre-order/success' || location.pathname === '/about-author'
   const researchEntryRequired = ['/archives','/deep-roots','/land-report','/ancestor-root-registry'].some(p=>location.pathname.startsWith(p))
   const publicUtilityPage = !researchEntryRequired || location.pathname === '/investigations/nolan-wells/captured-report-pages' || publicSalesPage || location.pathname.startsWith('/admin') || location.pathname === '/privacy-policy' || location.pathname === '/newsletter/unsubscribe'
   const hideNav = location.pathname === '/ancestor-root-registry' || location.pathname.startsWith('/ancestor-root-registry/')
@@ -98,7 +98,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
         <VisitorJourney />
         {children}
         {!publicUtilityPage && !ownerSession && <VisitorAssistant />}
-        {!hideNav && <Footer onNavClick={scrollToSection} hideNewsletter={['/brand-studio','/learn/section-1983-introduction','/courses','/learn2file','/buildyourcase','/joininnercircle','/feed'].includes(location.pathname) || location.pathname.startsWith('/feed/post/')} />}
+        {!hideNav && <Footer onNavClick={scrollToSection} hideNewsletter={['/brand-studio','/learn/section-1983-introduction','/courses','/learn2file','/case2court','/buildyourcase','/joininnercircle','/feed'].includes(location.pathname) || location.pathname.startsWith('/feed/post/')} />}
       </>}
     </>
   )
@@ -112,7 +112,7 @@ function AppRoutes() {
       <ScrollToTop />
       <Suspense fallback={<div className="min-h-screen bg-[#14202E]" />}>
         <Routes location={location} key={location.pathname}>
-          {['/courses','/buildyourcase','/joininnercircle'].map(path=><Route key={path} path={path} element={<CoursesPage />} />)}
+          {['/courses','/case2court','/buildyourcase','/joininnercircle'].map(path=><Route key={path} path={path} element={<CoursesPage />} />)}
           <Route path="/learn2file" element={<CivilRightsIntroPage />} />
           <Route path="/learn/section-1983-introduction" element={<CivilRightsIntroPage />} />
           <Route path="/" element={<HomePage />} />
