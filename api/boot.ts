@@ -50,12 +50,14 @@ app.use("/api/trpc/*", async (c) => {
     }
   }
   c.header("Cache-Control", "private, no-store");
-  return fetchRequestHandler({
+  const response = await fetchRequestHandler({
     endpoint: "/api/trpc",
     req: c.req.raw,
     router: appRouter,
     createContext,
   });
+  response.headers.set("Cache-Control", "private, no-store");
+  return response;
 });
 // Health check endpoint — safe, no secrets
 app.get("/api/health", async (c) => {

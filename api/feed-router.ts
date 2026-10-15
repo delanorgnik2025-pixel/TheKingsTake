@@ -29,7 +29,7 @@ export const feedRouter = createRouter({
       return { post: rows[0] ?? null, muxConfigured: muxConfigured() };
     }),
 
-  // Public: list feed posts — pinned first, then newest. Simple cursor paging.
+  // Subscribers: list feed posts — pinned first, then newest. Simple cursor paging.
   list: subscriberQuery
     .input(
       z.object({
@@ -57,7 +57,7 @@ export const feedRouter = createRouter({
       return { posts: rows, muxConfigured: muxConfigured() };
     }),
 
-  // Public: like a post
+  // Subscribers: like a post
   like: subscriberQuery
     .input(z.object({ id: z.number() }))
     .mutation(async ({ input }) => {
