@@ -101,7 +101,7 @@ export function serveStaticFiles(app: App, buildRoot?: string) {
 
   for (const route of ['/courses','/learn2file','/buildyourcase','/joininnercircle']) app.get(route,c=>{
     const file=path.resolve(distPath,'index.html'); if(!fs.existsSync(file)) return c.notFound();
-    const title=route==='/learn2file'?"Learn Section 1983 for Free | The King's Take":"Civil-Rights Courses & Books | The King's Take";
+    const title=route==='/learn2file'?"Learn2File: Your Filing Roadmap | The King's Take":"Civil-Rights Courses & Books | The King's Take";
     let html=fs.readFileSync(file,'utf-8').replace(/<title>[^<]*<\/title>/i,`<title>${escapeAttribute(title)}</title>`);
     html=replaceMeta(html,'property','og:title',title);
     html=replaceMeta(html,'property','og:description','Open the free guided JS 44 and IFP course, or explore upcoming courses and Ronald Lee King’s book.');
