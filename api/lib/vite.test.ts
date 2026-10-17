@@ -85,7 +85,7 @@ describe('course preview and membership destinations',()=>{
    const response=await app.request(route);expect(response.status).toBe(200);
    const html=await response.text();expect(html).toContain('Case2Court: The Civil Rights Case Blueprint');
    expect(html).toContain('rel="canonical" href="https://thekingstake.com/case2court"');
-   expect(html).toContain('In development.');expect(html).not.toContain('learn2file-share-20261015.jpg');
+   expect(html).toContain('Verified subscriber access required.');expect(html).not.toContain('learn2file-share-20261015.jpg');
   }
  });
  it('takes the legacy Inner Circle link to the Facebook subscription instead of another course waitlist',async()=>{
@@ -94,3 +94,10 @@ describe('course preview and membership destinations',()=>{
   expect(response.headers.get('location')).toBe('https://www.facebook.com/TheKingsTake/subscribe/');
  });
 });
+
+ describe('subscriber classroom metadata',()=>{
+ it('serves a public invitation without putting case-room content in the HTML',async()=>{
+ const app=new Hono<{Bindings:HttpBindings}>();serveStaticFiles(app,root);const response=await app.request('/case2court/learn');const html=await response.text();
+ expect(response.status).toBe(200);expect(html).toContain('Case2Court Classroom');expect(html).toContain('href="https://thekingstake.com/case2court/learn"');expect(html).not.toContain('Jordan Avery');
+ });
+ });

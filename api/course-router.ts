@@ -1,3 +1,4 @@
+import {case2courtProcedures} from './education/case2court-router';
 import { TRPCError } from '@trpc/server';
 import { createRouter, publicQuery, adminQuery } from './middleware';
 import { getDb } from './queries/connection';
@@ -7,6 +8,7 @@ import { nanoid } from 'nanoid';
 import { desc } from 'drizzle-orm';
 const attempts = new Map<string,{count:number;expires:number}>();
 export const courseRouter = createRouter({
+ ...case2courtProcedures,
  enroll: publicQuery.input(courseEnrollmentSchema).mutation(async ({input,ctx})=>{
   if(input.website) throw new TRPCError({code:'BAD_REQUEST',message:'Please leave the verification field empty.'});
   const now=Date.now(); for(const [k,v] of attempts) if(v.expires<=now) attempts.delete(k);
