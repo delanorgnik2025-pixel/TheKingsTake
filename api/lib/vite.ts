@@ -102,18 +102,19 @@ export function serveStaticFiles(app: App, buildRoot?: string) {
 
   app.get('/joininnercircle',c=>c.redirect(FACEBOOK_SUBSCRIBE_URL,302));
 
-  for (const route of ['/courses','/learn2file','/case2court','/buildyourcase']) app.get(route,c=>{
+  for (const route of ['/courses','/learn2file','/case2court','/case2court/learn','/buildyourcase']) app.get(route,c=>{
     const file=path.resolve(distPath,'index.html'); if(!fs.existsSync(file)) return c.notFound();
-    const isCase=route==='/case2court'||route==='/buildyourcase';
-    const canonicalRoute=isCase?'/case2court':route;
-    const title=isCase?"Case2Court: The Civil Rights Case Blueprint | The King's Take":route==='/learn2file'?"Learn2File: Your Filing Roadmap | The King's Take":"Civil-Rights Courses & Books | The King's Take";
-    const description=isCase?'Preview the planned six-module Case2Court course: organize a fictional civil-rights incident, preserve sources and build a practice case blueprint. In development.':'Open the free guided JS 44 and IFP course, or explore upcoming courses and Ronald Lee King’s book.';
+    const isClassroom=route==='/case2court/learn';
+    const isCase=isClassroom||route==='/case2court'||route==='/buildyourcase';
+    const canonicalRoute=isClassroom?'/case2court/learn':isCase?'/case2court':route;
+    const title=isClassroom?"Case2Court Classroom · Subscriber Access | The King's Take":isCase?"Case2Court: The Civil Rights Case Blueprint | The King's Take":route==='/learn2file'?"Learn2File: Your Filing Roadmap | The King's Take":"Civil-Rights Courses & Books | The King's Take";
+    const description=isCase?'Case2Court: 16 guided lessons, fictional exhibits, a workbook and recorded assessments through filing preparation and PACER. Verified subscriber access required.':'Open the free guided JS 44 and IFP course, or explore Case2Court subscriber lessons and Ronald Lee King’s book.';
     let html=fs.readFileSync(file,'utf-8').replace(/<title>[^<]*<\/title>/i,`<title>${escapeAttribute(title)}</title>`);
     html=replaceMeta(html,'property','og:title',title);
     html=replaceMeta(html,'property','og:description',description);
     html=replaceMeta(html,'property','og:url','https://thekingstake.com'+canonicalRoute);
     const courseImage=isCase?'https://thekingstake.com/images/bg-services.jpg':'https://thekingstake.com/images/learn2file-share-20261015.jpg';
-    for(const [kind,key,value] of [['property','og:image',courseImage],['property','og:image:secure_url',courseImage],...(!isCase?[['property','og:image:width','1200'],['property','og:image:height','628']]:[]),['property','og:image:type','image/jpeg'],['property','og:image:alt',isCase?'Case2Court: upcoming civil-rights case blueprint course':'Learn2File: nine free guided lessons and a final test from AASOTU Media Group LLC'],['name','twitter:card','summary_large_image'],['name','twitter:image',courseImage],['name','twitter:title',title],['name','twitter:description',description]])html=replaceMeta(html,kind as 'name'|'property',key,value);
+    for(const [kind,key,value] of [['property','og:image',courseImage],['property','og:image:secure_url',courseImage],...(!isCase?[['property','og:image:width','1200'],['property','og:image:height','628']]:[]),['property','og:image:type','image/jpeg'],['property','og:image:alt',isCase?'Case2Court: subscriber civil-rights case blueprint course':'Learn2File: nine free guided lessons and a final test from AASOTU Media Group LLC'],['name','twitter:card','summary_large_image'],['name','twitter:image',courseImage],['name','twitter:title',title],['name','twitter:description',description]])html=replaceMeta(html,kind as 'name'|'property',key,value);
 
     html=replaceMeta(html,'name','description',description);
     const canonical=`<link rel="canonical" href="https://thekingstake.com${canonicalRoute}" />`;

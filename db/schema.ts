@@ -502,3 +502,18 @@ export const visitorJourneyEvents = mysqlTable("visitor_journey_events", {
  path: varchar("path", {length:100}).notNull(),
  createdAt: timestamp("created_at").defaultNow().notNull(),
 }, table => [uniqueIndex("journey_once").on(table.sessionId,table.event,table.path)]);
+
+// Immutable knowledge-check submissions. No learner case documents or credentials.
+export const courseAttempts = mysqlTable('course_attempts', {
+ id: serial('id').primaryKey(),
+ memberId: int('member_id').notNull(),
+ courseVersion: varchar('course_version',{length:40}).notNull(),
+ submissionId: varchar('submission_id',{length:36}).notNull().unique(),
+ kind: varchar('kind',{length:16}).notNull(),
+ lessonIndex: int('lesson_index'),
+ answers: text('answers').notNull(),
+ correctCount: int('correct_count').notNull(),
+ totalCount: int('total_count').notNull(),
+ passed: boolean('passed').notNull(),
+ createdAt: timestamp('created_at').defaultNow().notNull(),
+});
